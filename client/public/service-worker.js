@@ -120,7 +120,8 @@ self.addEventListener('fetch', event => {
     url.pathname.startsWith('/books') ||
     url.pathname.startsWith('/students') ||
     url.pathname.startsWith('/announcements') ||
-    url.pathname.startsWith('/metrices')
+    url.pathname.startsWith('/metrices')||
+    url.pathname.startsWith('/admin') 
   ) {
     event.respondWith(
       fetch(request)

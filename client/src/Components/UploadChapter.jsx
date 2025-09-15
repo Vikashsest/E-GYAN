@@ -718,7 +718,7 @@ const [videoUrl, setVideoUrl] = useState("");
     //   toast.warning("Please enter chapter number, select a file, and upload a thumbnail.");
     //   return;
     // }
-     if (!chapterNum || (!f && !vUrl) || !t) {
+     if (!chapterNum || (!f && !vUrl)) {
     toast.warning("Please enter chapter number, file/video URL and thumbnail.");
     return;
   }
@@ -989,7 +989,7 @@ if (r === "video") {
               )}
 
               {/* Add Part Form */}
-              {addPartChapterId === c.id && (
+              {/* {addPartChapterId === c.id && (
                 <div className="mt-4 ml-14 bg-[#2f3042] p-4 rounded-lg space-y-3">
                   <h4 className="font-semibold text-white">➕ Add Part to Chapter {c.chapterNumber}</h4>
                   <select
@@ -1023,7 +1023,64 @@ if (r === "video") {
                     Upload Part
                   </button>
                 </div>
-              )}
+              )} */}
+
+              {addPartChapterId === c.id && (
+  <div className="mt-4 ml-14 bg-[#2f3042] p-4 rounded-lg space-y-3">
+    <h4 className="font-semibold text-white">➕ Add Part to Chapter {c.chapterNumber}</h4>
+
+    <select
+      className="w-full border border-gray-500 rounded-lg p-2 mt-1 text-black"
+      value={resourceType}
+      onChange={(e) => setResourceType(e.target.value)}
+    >
+      <option value="">Select Resource Type</option>
+      <option value="pdf">PDF</option>
+      <option value="video">Video</option>
+      <option value="audio">Audio</option>
+    </select>
+
+    {resourceType === "video" ? (
+      <input
+        type="text"
+        placeholder="Enter video link"
+        className="w-full border border-gray-500 rounded-lg p-2 mt-1 bg-[#2a2b39] text-white"
+        value={videoUrl}
+        onChange={(e) => setVideoUrl(e.target.value)}
+      />
+    ) : (
+      <input
+        type="file"
+        className="w-full border border-gray-500 rounded-lg p-2 mt-1 bg-[#2a2b39] text-white"
+        onChange={(e) => setFile(e.target.files[0])}
+      />
+    )}
+
+    <input
+      type="file"
+      accept="image/*"
+      className="w-full border border-gray-500 rounded-lg p-2 mt-1 bg-[#2a2b39] text-white"
+      onChange={(e) => setThumbnail(e.target.files[0])}
+    />
+
+    <button
+      type="button"
+      onClick={() =>
+        handleAddChapter(
+          c.chapterNumber,
+          file,
+          thumbnail,
+          resourceType,
+          videoUrl
+        )
+      }
+      className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg"
+    >
+      Upload Part
+    </button>
+  </div>
+)}
+
             </li>
           ))}
         </ul>
