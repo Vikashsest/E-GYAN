@@ -1978,6 +1978,7 @@ navigate(`/books/${result.id}/chapters`);
           >
             <option value="">Select Education Level</option>
             <option value="School Education">School Education</option>
+            <option value="School Education">Simulation</option>
           </select>
         </div>
 
