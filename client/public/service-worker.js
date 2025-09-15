@@ -74,7 +74,6 @@
 //     self.skipWaiting();
 //   }
 // });
-
 const CACHE_NAME = 'e-Gyan';
 const OFFLINE_URL = '/offline.html';
 const STATIC_ASSETS = [
@@ -109,42 +108,29 @@ self.addEventListener('fetch', event => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // 1️⃣ Bypass large streaming files (video/audio/pdf)
+  // 1️⃣ Bypass auth requests completely (login/register/etc.)
+  if (url.pathname.startsWith('/auth')) {
+    return; // Let network handle it, no SW interception
+  }
+
+  // 2️⃣ Bypass non-GET API requests
+  if (
+    request.method !== 'GET' &&
+    (url.pathname.startsWith('/books') ||
+     url.pathname.startsWith('/students') ||
+     url.pathname.startsWith('/announcements') ||
+     url.pathname.startsWith('/metrices') ||
+     url.pathname.startsWith('/admin'))
+  ) {
+    return; // Let network handle POST/PUT/DELETE
+  }
+
+  // 3️⃣ Bypass large streaming files
   if (url.pathname.startsWith('/books/') && url.pathname.endsWith('/file')) {
     return;
   }
 
-  // 2️⃣ API requests → cache-first fallback to offline
-  if (
-    url.pathname.startsWith('/books') ||
-    url.pathname.startsWith('/students') ||
-    url.pathname.startsWith('/announcements') ||
-    url.pathname.startsWith('/metrices') ||
-    url.pathname.startsWith('/admin')
-  ) {
-    event.respondWith(
-      fetch(request)
-        .then(res => {
-          if (res.ok) {
-            const resClone = res.clone();
-            caches.open('api-cache').then(cache => cache.put(request, resClone));
-          }
-          return res;
-        })
-        .catch(() => caches.match(request).then(cached => cached || caches.match(OFFLINE_URL)))
-    );
-    return;
-  }
-
-  // 3️⃣ Auth requests → always network, fallback offline
-  if (url.pathname.startsWith('/auth')) {
-    event.respondWith(
-      fetch(request).catch(() => caches.match(OFFLINE_URL))
-    );
-    return;
-  }
-
-  // 4️⃣ Navigation → offline.html fallback
+  // 4️⃣ Navigation → offline fallback
   if (
     request.mode === 'navigate' ||
     (request.method === 'GET' && request.headers.get('accept')?.includes('text/html'))
@@ -161,10 +147,9 @@ self.addEventListener('fetch', event => {
   );
 });
 
-// 6️⃣ Allow skipWaiting from client
+// Allow skipWaiting from client
 self.addEventListener('message', event => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
 });
-
