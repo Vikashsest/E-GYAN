@@ -12,7 +12,7 @@ import { Chapter } from './entities/chapter.entity';
 import { NextcloudService } from '../nextcloud/nextcloud.service';
 import { generatePublicLink } from 'src/common/utils/nextcloud.config';
 import { StudentActivity } from '../student/entities/student-activity.entity';
-
+import { IsNull } from 'typeorm';
 
 
 @Injectable()
@@ -523,7 +523,14 @@ async deleteChapter(chapterId: number): Promise<{ message: string }> {
 
 async addChapter(
   bookId: number,
-  body: { chapterNumber: number; resourceType?: 'pdf' | 'video' | 'audio'; videoUrl?: string },
+  // body: { chapterNumber: number; resourceType?: 'pdf' | 'video' | 'audio'; videoUrl?: string,  parentChapterId?: number; },
+  body: { 
+  chapterNumber: number; 
+  resourceType?: 'pdf' | 'video' | 'audio' | 'simulation'; 
+  videoUrl?: string;  
+  parentChapterId?: number; 
+},
+
   file?: Express.Multer.File,
   thumbnail?: Express.Multer.File,
 ) {
@@ -532,7 +539,7 @@ async addChapter(
 
   let fileUrl: string | undefined;
   let totalPages: number | undefined;
-  let resourceType: 'pdf' | 'video' | 'audio' = body.resourceType || 'pdf';
+  let resourceType: 'pdf' | 'video' | 'audio' | 'simulation' = body.resourceType || 'pdf';
 
   if (resourceType === 'pdf') {
     if (!file) throw new BadRequestException('PDF file is required');
@@ -554,13 +561,36 @@ async addChapter(
     const fileRemotePath = `books/${bookId}/chapters/chapter-${body.chapterNumber}.${extension}`;
     const uploadedFilePath = await this.nextcloudService.uploadFile(file.path, fileRemotePath);
     fileUrl = await generatePublicLink(uploadedFilePath);
+  }else if (resourceType === 'simulation') {
+  if (!body.videoUrl) throw new BadRequestException('Simulation URL is required');
+  fileUrl = body.videoUrl;
+}else if (resourceType === 'simulation') {
+    if (!body.videoUrl) throw new BadRequestException('Simulation URL is required');
+    fileUrl = body.videoUrl;
   }
-  let thumbnailUrl: string | undefined;
-  if (thumbnail) {
-    const thumbRemotePath = `books/${bookId}/chapters/thumbnails/chapter-${body.chapterNumber}.jpg`;
-    const uploadedThumbPath = await this.nextcloudService.uploadFile(thumbnail.path, thumbRemotePath);
-    thumbnailUrl = await generatePublicLink(uploadedThumbPath);
-  }
+  // let thumbnailUrl: string | undefined;
+  // if (thumbnail) {
+  //   const thumbRemotePath = `books/${bookId}/chapters/thumbnails/chapter-${body.chapterNumber}.jpg`;
+  //   const uploadedThumbPath = await this.nextcloudService.uploadFile(thumbnail.path, thumbRemotePath);
+  //   thumbnailUrl = await generatePublicLink(uploadedThumbPath);
+  // }
+let thumbnailUrl: string | undefined;
+
+if (thumbnail) {
+  // Agar user ne thumbnail upload kiya
+  const thumbRemotePath = `books/${bookId}/chapters/thumbnails/chapter-${body.chapterNumber}.jpg`;
+  const uploadedThumbPath = await this.nextcloudService.uploadFile(thumbnail.path, thumbRemotePath);
+  thumbnailUrl = await generatePublicLink(uploadedThumbPath);
+} else {
+  // Agar user ne upload nahi kiya, existing chapter ka thumbnail reuse karo
+  const existingChapter = await this.chapterRepo.findOne({
+    where: { chapterNumber: body.chapterNumber, book: { id: bookId } },
+  });
+  thumbnailUrl = existingChapter?.thumbnail;
+}
+ const parentChapter = body.parentChapterId
+  ? (await this.chapterRepo.findOne({ where: { id: body.parentChapterId } })) ?? undefined
+  : undefined;
 
   const chapter = this.chapterRepo.create({
     chapterNumber: body.chapterNumber,
@@ -569,6 +599,7 @@ async addChapter(
     totalPages,
     resourceType,
     book,
+    parentChapter
   });
 
   return this.chapterRepo.save(chapter);
@@ -576,30 +607,46 @@ async addChapter(
 
 
 async getChaptersMeta(bookId: number) {
-  // Fetch the book first
   const book = await this.bookrepo.findOne({ where: { id: bookId } });
   if (!book) throw new NotFoundException("Book not found");
 
-  // Fetch all chapters of the book, ordered by chapterNumber
   const chapters = await this.chapterRepo.find({
-    where: { book: { id: bookId } },
-    order: { chapterNumber: "ASC" },
-  });
+  where: { 
+    book: { id: bookId },
+    parentChapter: IsNull(), // ✅ only main chapters
+  },
+  relations: ['parts'], // include sub-chapters
+  order: { chapterNumber: 'ASC', id: 'ASC' },
+});
 
-  // Map chapter data to a clean response object
-  return chapters.map((ch) => ({
+  // Map main chapters and their parts
+ return chapters
+  .filter(ch => !ch.parentChapter) // sirf top-level chapters
+  .map(ch => ({
     id: ch.id,
     chapterNumber: ch.chapterNumber,
-    resourceType: ch.resourceType || "pdf",
+    chapterName: ch.chapterName,
+    resourceType: ch.resourceType || 'pdf',
     totalPages: ch.totalPages,
     thumbnail: ch.thumbnail,
-    thumbnailProxyUrl: ch.thumbnail
-      ? `${process.env.API_URL}/books/proxy/thumbnail?url=${encodeURIComponent(ch.thumbnail)}`
-      : null,
-    fileUrl: ch.fileUrl, // ✅ Added
-    proxyUrl: `${process.env.API_URL}/books/${bookId}/chapters/${ch.id}/file`, // Proxy access URL
+    thumbnailProxyUrl: ch.thumbnail ? `${process.env.API_URL}/books/proxy/thumbnail?url=${encodeURIComponent(ch.thumbnail)}` : null,
+    fileUrl: ch.fileUrl,
+    proxyUrl: `${process.env.API_URL}/books/${bookId}/chapters/${ch.id}/file`,
+    parts: ch.parts?.map(p => ({
+      id: p.id,
+      chapterNumber: p.chapterNumber,
+      chapterName: p.chapterName,
+      resourceType: p.resourceType || 'pdf',
+      totalPages: p.totalPages,
+      thumbnail: p.thumbnail,
+      thumbnailProxyUrl: p.thumbnail ? `${process.env.API_URL}/books/proxy/thumbnail?url=${encodeURIComponent(p.thumbnail)}` : null,
+      fileUrl: p.fileUrl,
+      proxyUrl: `${process.env.API_URL}/books/${bookId}/chapters/${p.id}/file`,
+    })) || []
   }));
+
 }
+
 
 
 

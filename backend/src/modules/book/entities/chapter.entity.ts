@@ -26,7 +26,11 @@ thumbnail: string;
   @ManyToOne(() => Book, (book) => book.chapters, { onDelete: 'CASCADE' })
   @Index()
   book: Book;
+ @ManyToOne(() => Chapter, (chapter) => chapter.parts, { nullable: true })
+  parentChapter?: Chapter;
 
+  @OneToMany(() => Chapter, (chapter) => chapter.parentChapter)
+  parts?: Chapter[];
   @CreateDateColumn()
   createdAt: Date;
   
