@@ -74,6 +74,7 @@
 //     self.skipWaiting();
 //   }
 // });
+
 const CACHE_NAME = 'e-Gyan';
 const OFFLINE_URL = '/offline.html';
 const STATIC_ASSETS = [

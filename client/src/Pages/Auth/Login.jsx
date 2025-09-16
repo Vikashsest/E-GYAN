@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function LoginPage() {
-  const [data, setData] = useState({ email: '', password: '' });
+  const [data, setData] = useState({ username: '', password: '' });
   const navigate = useNavigate();
 
   function handledata(e) {
@@ -33,7 +33,7 @@ export default function LoginPage() {
          localStorage.setItem("role", result.role); 
         toast.success("Login successful ✅");
 
-        setData({ email: '', password: '' });
+        setData({ username: '', password: '' });
 
         setTimeout(() => {
           switch (result.role) {
@@ -80,10 +80,10 @@ export default function LoginPage() {
             <FaEnvelope className="absolute top-3.5 left-3 text-white z-10" />
             <input
               onChange={handledata}
-              name="email"
-              type="email"
-              placeholder="Email Address"
-              value={data.email}
+              name="username"
+              type="name"
+              placeholder="username"
+              value={data.username}
               required
               className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 backdrop-blur-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-white/10"
             />
