@@ -162,8 +162,7 @@ async importUsersFromFile(filePath: string) {
 
   for (const row of data) {
     const r = row as {
-      name?: string;
-      email?: string;
+      username?: string;
       password?: string;
       role?: string;
       subject?: string;
@@ -171,16 +170,16 @@ async importUsersFromFile(filePath: string) {
       isactive?: boolean | string | number;
     };
 
-    let { name, email, password, role, subject, dob, isactive } = r;
+    let { username, password, role, subject, dob, isactive } = r;
 
-    if (!email || !password || !name || !role) {
+    if (  !password || !username || !role) {
       skippedRows.push({ row, reason: "Missing required field" });
       continue;
     }
 
     // Convert to lowercase + trim
-    name = name.toString().trim();
-    email = email.toString().trim().toLowerCase();
+    username = username.toString().trim();
+    // email = email.toString().trim().toLowerCase();
     role = role.toString().trim().toLowerCase();
     // subject = subject ? subject.toString().trim() : null;
 
@@ -209,8 +208,8 @@ async importUsersFromFile(filePath: string) {
         : false;
 
     const user: User = this.userRepo.create({
-      name,
-      email,
+      username,
+      email: `${username}@example.com`,
       password: hashedPassword,
       role: role as any,
       subject,

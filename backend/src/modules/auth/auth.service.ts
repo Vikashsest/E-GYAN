@@ -27,9 +27,8 @@ export class AuthService {
       throw new Error('JWT_ACCESS_SECRET is not defined in environment variables');
     }
     const payload = {
-      email: user.email,
       id: user.id,
-      name: user.name,
+      name: user.username,
       role: user.role,
     };
 
@@ -73,39 +72,39 @@ export class AuthService {
   // }
 
 
-  async login(email: string, password: string, @Res({ passthrough: true }) res: Response): Promise<void> {
+  async login(username: string, password: string, @Res({ passthrough: true }) res: Response): Promise<void> {
     try {
       const user = await this.userRepository.findOne({
-        where: { email },
+        where: { username },
       });
       if (!user) {
         return this.throwError(
-          'Invalid email or password',
+          'Invalid username or password',
           HttpStatus.BAD_REQUEST,
         );
       }
       const isPasswordValid = await bcrypt.compare(password, user.password);
       if (!isPasswordValid) {
         return this.throwError(
-          'Invalid email or password',
+          'Invalid username or password',
           HttpStatus.BAD_REQUEST,
         );
       }
       const access_token = this.generateToken(user);
   
-   res.cookie('access_token', access_token, {
-      httpOnly: true,
-      secure: true, 
-      sameSite: 'none', 
-       maxAge: 7 * 24 * 60 * 60 * 1000, 
-    });
-//   res.cookie('access_token', access_token, {
-//   httpOnly: true,
-//   secure: false,         // ✅ required for HTTP/IP
-//   sameSite: 'lax',       // ✅ works without HTTPS
-//   maxAge: 7 * 24 * 60 * 60 * 1000,
-//    path: '/'
-// });
+  //  res.cookie('access_token', access_token, {
+  //     httpOnly: true,
+  //     secure: true, 
+  //     sameSite: 'none', 
+  //      maxAge: 7 * 24 * 60 * 60 * 1000, 
+  //   });
+  res.cookie('access_token', access_token, {
+  httpOnly: true,
+  secure: false,         // ✅ required for HTTP/IP
+  sameSite: 'lax',       // ✅ works without HTTPS
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+   path: '/'
+});
 
       
       res.status(HttpStatus.OK).json({
@@ -136,7 +135,7 @@ export class AuthService {
         where: {
           id
         },
-        select: ['id', 'email', 'name', 'role'],
+        select: ['id', 'email', 'username', 'role'],
 
       })
     return {

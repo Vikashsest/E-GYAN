@@ -19,10 +19,10 @@ export class User {
   id: number;
 
   @Column()
-  name: string;
+  username: string;
 
-  @Column({ unique: true })
-  email: string;
+  @Column({ unique: true,nullable: true })
+ email?: string;
 @Column({ nullable: true })
 @Exclude()
 password: string;

@@ -43,11 +43,12 @@ export const multerConfig = {
   // fileFilter: (req, file, cb) => {
   //   cb(null, true);
   // },
-  fileFilter: (req, file, cb) => {
-  const allowed = /pdf|jpg|jpeg|png|mp4|mov|mp3|wav/;
+ fileFilter: (req, file, cb) => {
+  const allowed = /pdf|jpg|jpeg|png|mp4|mov|mp3|wav|xlsx|xls/;
   const ext = file.originalname.split('.').pop()?.toLowerCase();
   if (ext && allowed.test(ext)) cb(null, true);
   else cb(new BadRequestException('Invalid file type'), false);
 },
+
 
 };

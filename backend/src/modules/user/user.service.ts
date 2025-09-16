@@ -21,7 +21,7 @@ export class UserService {
     // if(admin.role !== UserRole.ADMIN){
     //    throw new HttpException('Unauthorized', HttpStatus.FORBIDDEN);
     // }
-    const isExist= await this.userRepository.findOneBy({email:Dto.email})
+    const isExist= await this.userRepository.findOneBy({email:Dto.username})
     if(isExist){
        throw new HttpException('Email already exists', HttpStatus.CONFLICT);
     }
@@ -52,7 +52,7 @@ export class UserService {
 async findByRole(role: UserRole) {
   const users = await this.userRepository.find({
     where: { role },
-    order: { name: 'ASC' },
+    order: { username: 'ASC' },
   });
 
   return plainToInstance(User, users);

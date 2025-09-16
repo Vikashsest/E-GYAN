@@ -6,6 +6,7 @@ import {
   UseGuards,
   Get,
   Req,
+  BadRequestException,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { AuthService } from './auth.service';
@@ -18,13 +19,29 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
 
+  // @Post('login')
+  // async login(
+  //   @Body() loginDTO: CreateUserDto,
+  //   @Res() res: Response,
+  // ) {
+  //   return this.authService.login(loginDTO.username, loginDTO.password, res);
+  // }
   @Post('login')
-  async login(
-    @Body() loginDTO: CreateUserDto,
-    @Res() res: Response,
-  ) {
-    return this.authService.login(loginDTO.email, loginDTO.password, res);
+async login(
+  @Body() loginDTO: CreateUserDto,
+  @Res() res: Response,
+) {
+  if (!loginDTO.username || !loginDTO.password) {
+    throw new BadRequestException("Username and password are required");
   }
+
+  return this.authService.login(
+    loginDTO.username,
+    loginDTO.password,
+    res
+  );
+}
+
 @UseGuards(JwtAuthGuard)
 @Get('me')
 getMe(@Req() req: Request) {

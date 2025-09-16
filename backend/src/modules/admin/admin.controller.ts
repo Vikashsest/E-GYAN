@@ -39,11 +39,10 @@ async getAllConcerns(@Req() req) {
 async uploadCredentials(@UploadedFile() file: Express.Multer.File) {
   if (!file) throw new BadRequestException('File is required');
 
-  const ext = extname(file.originalname).toLowerCase();
-  if (!['.xlsx', '.xls'].includes(ext)) {
-    throw new BadRequestException('Only Excel files are allowed');
-  }
-
+const ext = extname(file.originalname).toLowerCase();
+if (!['.xlsx', '.xls', '.csv'].includes(ext)) {
+  throw new BadRequestException('Only Excel files are allowed');
+}
   return this.adminService.importUsersFromFile(file.path);
 }
 
