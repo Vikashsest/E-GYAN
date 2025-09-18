@@ -571,50 +571,101 @@ export class BookController {
 //     throw new HttpException("Failed to fetch file", HttpStatus.BAD_GATEWAY);
 //   }
 // }
- @Get('proxy/file')
-  async proxyFile(
-    @Query('url') url: string,
-    @Req() req: Request,
-    @Res() res: Response,
-  ) {
-    if (!url) throw new BadRequestException('url query param required');
 
-    try {
-      // Nextcloud share link adjustment
-      if (url.includes('/index.php/s/') && !url.endsWith('/download')) {
-        url = url.replace(/\/+$/, '') + '/download';
-      }
+@Get('proxy/file')
+async proxyFile(
+  @Query('url') url: string,
+  @Req() req: Request,
+  @Res() res: Response,
+) {
+  if (!url) throw new BadRequestException('url query param required');
 
-      const client = url.startsWith('https') ? https : http;
-      const requestOptions = { headers: req.headers };
-
-      client.get(url, requestOptions, (response) => {
-        if (response.statusCode && response.statusCode >= 400) {
-          res.status(response.statusCode).send('File not found');
-          return;
-        }
-
-        // Pass headers (Content-Type, Content-Length, etc.)
-        Object.entries(response.headers).forEach(([key, value]) => {
-          if (value) res.setHeader(key, value as string);
-        });
-
-        // Pipe streaming response directly
-        response.pipe(res);
-      }).on('error', (err: any) => {
-        if (err.code === 'ECONNRESET') {
-          console.warn('Client aborted request');
-          return;
-        }
-        console.error('Proxy file error:', err.message);
-        if (!res.headersSent) res.status(502).send('Failed to fetch file');
-      });
-
-    } catch (err: any) {
-      console.error('Proxy file outer error:', err.message);
-      if (!res.headersSent) res.status(502).send('Failed to fetch file');
+  try {
+    // Nextcloud share link adjustment
+    if (url.includes('/index.php/s/') && !url.endsWith('/download')) {
+      url = url.replace(/\/+$/, '') + '/download';
     }
+
+    const headers: Record<string, string> = {};
+    if (req.headers['range']) headers['Range'] = req.headers['range'] as string;
+
+    // Agar DAV API use ho rahi hai toh auth headers bhejna
+    if (url.includes('/remote.php/dav')) {
+      headers['Authorization'] =
+        'Basic ' +
+        Buffer.from(
+          `${process.env.NEXTCLOUD_USER}:${process.env.NEXTCLOUD_PASS}`,
+        ).toString('base64');
+    }
+
+    const response = await axios.get(url, {
+      headers,
+      responseType: 'stream',
+      validateStatus: () => true,
+    });
+
+    if (response.status >= 400) {
+      throw new NotFoundException('File not found');
+    }
+
+    res.status(response.status);
+    Object.entries(response.headers).forEach(([key, value]) => {
+      if (value) res.setHeader(key, value as string);
+    });
+
+    await streamPipeline(response.data, res);
+  } catch (err) {
+    console.error('Proxy error:', err.message);
+    throw new HttpException('Failed to fetch file', HttpStatus.BAD_GATEWAY);
   }
+}
+
+
+
+//  @Get('proxy/file')
+//   async proxyFile(
+//     @Query('url') url: string,
+//     @Req() req: Request,
+//     @Res() res: Response,
+//   ) {
+//     if (!url) throw new BadRequestException('url query param required');
+
+//     try {
+//       // Nextcloud share link adjustment
+//       if (url.includes('/index.php/s/') && !url.endsWith('/download')) {
+//         url = url.replace(/\/+$/, '') + '/download';
+//       }
+
+//       const client = url.startsWith('https') ? https : http;
+//       const requestOptions = { headers: req.headers };
+
+//       client.get(url, requestOptions, (response) => {
+//         if (response.statusCode && response.statusCode >= 400) {
+//           res.status(response.statusCode).send('File not found');
+//           return;
+//         }
+
+//         // Pass headers (Content-Type, Content-Length, etc.)
+//         Object.entries(response.headers).forEach(([key, value]) => {
+//           if (value) res.setHeader(key, value as string);
+//         });
+
+//         // Pipe streaming response directly
+//         response.pipe(res);
+//       }).on('error', (err: any) => {
+//         if (err.code === 'ECONNRESET') {
+//           console.warn('Client aborted request');
+//           return;
+//         }
+//         console.error('Proxy file error:', err.message);
+//         if (!res.headersSent) res.status(502).send('Failed to fetch file');
+//       });
+
+//     } catch (err: any) {
+//       console.error('Proxy file outer error:', err.message);
+//       if (!res.headersSent) res.status(502).send('Failed to fetch file');
+//     }
+//   }
 
 
 @Get('education-levels')
@@ -732,26 +783,48 @@ async getEducationLevels() {
   }
 
   // ✅ Chapter file stream
-  @Get(":id/chapters/:chapterId/file")
-  async getChapterFile(@Param("id") bookId: string, @Param("chapterId") chapterId: string, @Res() res: Response, @Req() req: Request) {
-    const fileUrl = await this.bookService.getChapterFileStream(+bookId, +chapterId);
-    if (!fileUrl) throw new NotFoundException("File not found");
+@Get(":id/chapters/:chapterId/file")
+async getChapterFile(
+  @Param("id") bookId: string,
+  @Param("chapterId") chapterId: string,
+  @Res() res: Response,
+  @Req() req: Request
+) {
+  const fileUrl = await this.bookService.getChapterFileStream(+bookId, +chapterId);
+  if (!fileUrl) throw new NotFoundException("File not found");
 
-    const headers: Record<string, string> = {};
-    if (req.headers["range"]) headers["Range"] = req.headers["range"] as string;
-
-    if (fileUrl.includes("/remote.php/dav")) {
-      headers["Authorization"] =
-        "Basic " + Buffer.from(`${process.env.NEXTCLOUD_USER}:${process.env.NEXTCLOUD_PASS}`).toString("base64");
-    }
-
-    const response = await axios.get(fileUrl, { headers, responseType: "stream", validateStatus: () => true });
-
-    res.status(response.status);
-    Object.entries(response.headers).forEach(([key, value]) => value && res.setHeader(key, value as string));
-
-    await streamPipeline(response.data, res);
+  const headers: any = {};
+  if (req.headers["range"]) {
+    headers["Range"] = req.headers["range"] as string;
   }
+
+  // Remote authorization agar needed ho
+  if (fileUrl.includes("/remote.php/dav")) {
+    headers["Authorization"] =
+      "Basic " + Buffer.from(`${process.env.NEXTCLOUD_USER}:${process.env.NEXTCLOUD_PASS}`).toString("base64");
+  }
+
+  const response = await axios.get(fileUrl, {
+    headers,
+    responseType: "stream",
+    validateStatus: () => true,
+  });
+
+  // Headers fix for PDF.js
+  res.setHeader("Content-Disposition", "inline; filename=chapter.pdf");
+  res.setHeader("Content-Type", "application/pdf");
+  res.setHeader("Accept-Ranges", "bytes");
+
+  // Forward remote headers (like Content-Length)
+  Object.entries(response.headers).forEach(([key, value]) => {
+    if (value && !["content-disposition", "content-type"].includes(key.toLowerCase())) {
+      res.setHeader(key, value as string);
+    }
+  });
+
+  await streamPipeline(response.data, res);
+}
+
 
 
   @Get()

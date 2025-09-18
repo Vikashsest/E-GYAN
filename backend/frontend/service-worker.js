@@ -157,82 +157,180 @@
 //   }
 // });
 
-const CACHE_NAME = 'e-Gyan';
-const OFFLINE_URL = '/offline.html';
-const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/offline.html',
-  '/assets/index.css',
-  '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png'
-];
+// const CACHE_NAME = 'e-Gyan';
+// const OFFLINE_URL = '/offline.html';
+// const STATIC_ASSETS = [
+//   '/',
+//   '/index.html',
+//   '/offline.html',
+//   '/assets/index.css',
+//   '/icons/icon-192x192.png',
+//   '/icons/icon-512x512.png'
+// ];
 
-// Install → cache static assets
-self.addEventListener('install', event => {
-  self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_ASSETS))
-  );
-});
+// // Install → cache static assets
+// self.addEventListener('install', event => {
+//   self.skipWaiting();
+//   event.waitUntil(
+//     caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_ASSETS))
+//   );
+// });
 
-// Activate → delete old caches
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.map(k => (k !== CACHE_NAME ? caches.delete(k) : null)))
-    )
-  );
-  self.clients.claim();
-});
+// // Activate → delete old caches
+// self.addEventListener('activate', event => {
+//   event.waitUntil(
+//     caches.keys().then(keys =>
+//       Promise.all(keys.map(k => (k !== CACHE_NAME ? caches.delete(k) : null)))
+//     )
+//   );
+//   self.clients.claim();
+// });
 
-// Fetch → handle requests
-self.addEventListener('fetch', event => {
-  const { request } = event;
-  const url = new URL(request.url);
+// // Fetch → handle requests
+// self.addEventListener('fetch', event => {
+//   const { request } = event;
+//   const url = new URL(request.url);
 
-  // 1️⃣ Bypass auth requests completely (login/register/etc.)
-  if (url.pathname.startsWith('/auth')) {
-    return; // Let network handle it, no SW interception
-  }
+//   // 1️⃣ Bypass auth requests completely (login/register/etc.)
+//   if (url.pathname.startsWith('/auth')) {
+//     return; // Let network handle it, no SW interception
+//   }
 
-  // 2️⃣ Bypass non-GET API requests
-  if (
-    request.method !== 'GET' &&
-    (url.pathname.startsWith('/books') ||
-     url.pathname.startsWith('/students') ||
-     url.pathname.startsWith('/announcements') ||
-     url.pathname.startsWith('/metrices') ||
-     url.pathname.startsWith('/admin'))
-  ) {
-    return; // Let network handle POST/PUT/DELETE
-  }
+//   // 2️⃣ Bypass non-GET API requests
+//   if (
+//     request.method !== 'GET' &&
+//     (url.pathname.startsWith('/books') ||
+//      url.pathname.startsWith('/students') ||
+//      url.pathname.startsWith('/announcements') ||
+//      url.pathname.startsWith('/metrices') ||
+//      url.pathname.startsWith('/admin'))
+//   ) {
+//     return; // Let network handle POST/PUT/DELETE
+//   }
 
-  // 3️⃣ Bypass large streaming files
-  if (url.pathname.startsWith('/books/') && url.pathname.endsWith('/file')) {
-    return;
-  }
+//   // 3️⃣ Bypass large streaming files
+//   if (url.pathname.startsWith('/books/') && url.pathname.endsWith('/file')) {
+//     return;
+//   }
 
-  // 4️⃣ Navigation → offline fallback
-  if (
-    request.mode === 'navigate' ||
-    (request.method === 'GET' && request.headers.get('accept')?.includes('text/html'))
-  ) {
-    event.respondWith(
-      fetch(request).catch(() => caches.match(OFFLINE_URL))
-    );
-    return;
-  }
+//   // 4️⃣ Navigation → offline fallback
+//   if (
+//     request.mode === 'navigate' ||
+//     (request.method === 'GET' && request.headers.get('accept')?.includes('text/html'))
+//   ) {
+//     event.respondWith(
+//       fetch(request).catch(() => caches.match(OFFLINE_URL))
+//     );
+//     return;
+//   }
 
-  // 5️⃣ Static assets → cache-first
-  event.respondWith(
-    caches.match(request).then(cached => cached || fetch(request).catch(() => caches.match(OFFLINE_URL)))
-  );
-});
+//   // 5️⃣ Static assets → cache-first
+//   event.respondWith(
+//     caches.match(request).then(cached => cached || fetch(request).catch(() => caches.match(OFFLINE_URL)))
+//   );
+// });
 
-// Allow skipWaiting from client
-self.addEventListener('message', event => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
-});
+// // Allow skipWaiting from client
+// self.addEventListener('message', event => {
+//   if (event.data && event.data.type === 'SKIP_WAITING') {
+//     self.skipWaiting();
+//   }
+// });
+
+
+
+// const CACHE_NAME = 'e-Gyan';
+// const OFFLINE_URL = '/offline.html';
+// const STATIC_ASSETS = [
+//   '/',
+//   '/index.html',
+//   '/offline.html',
+//   '/assets/index.css',
+//   '/icons/icon-192x192.png',
+//   '/icons/icon-512x512.png'
+// ];
+
+// const API_HOST = 'http://localhost:5000'; // Backend URL
+
+// // Install → cache static assets
+// self.addEventListener('install', event => {
+//   self.skipWaiting();
+//   event.waitUntil(
+//     caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_ASSETS))
+//   );
+// });
+
+// // Activate → delete old caches
+// self.addEventListener('activate', event => {
+//   event.waitUntil(
+//     caches.keys().then(keys =>
+//       Promise.all(keys.map(k => (k !== CACHE_NAME ? caches.delete(k) : null)))
+//     )
+//   );
+//   self.clients.claim();
+// });
+
+// // Fetch → handle requests
+// self.addEventListener('fetch', event => {
+//   const { request } = event;
+//   const url = new URL(request.url);
+
+//   // 1️⃣ Bypass auth requests
+//   if (url.pathname.startsWith('/auth')) return;
+
+//   // 2️⃣ Bypass non-GET API requests
+//   if (
+//     request.method !== 'GET' &&
+//     (url.pathname.startsWith('/books') ||
+//      url.pathname.startsWith('/students') ||
+//      url.pathname.startsWith('/announcements') ||
+//      url.pathname.startsWith('/metrices') ||
+//      url.pathname.startsWith('/admin'))
+//   ) return;
+
+//   // 3️⃣ API GET requests → force backend URL
+//   if (
+//     request.method === 'GET' &&
+//     (url.pathname.startsWith('/admin') ||
+//      url.pathname.startsWith('/students') ||
+//      url.pathname.startsWith('/books') ||
+//      url.pathname.startsWith('/announcements') ||
+//      url.pathname.startsWith('/metrices'))
+//   ) {
+//     const backendUrl = API_HOST + url.pathname + url.search;
+//     event.respondWith(
+//       fetch(backendUrl, {
+//         credentials: 'include',
+//         headers: { 'Accept': 'application/json' } // ensures JSON response
+//       }).catch(() => caches.match(OFFLINE_URL))
+//     );
+//     return; // Important! Stop further SW handling
+//   }
+
+//   // 4️⃣ Bypass large streaming files
+//   if (url.pathname.startsWith('/books/') && url.pathname.endsWith('/file')) return;
+
+//   // 5️⃣ Navigation → offline fallback for actual page navigations
+//   if (
+//     request.mode === 'navigate' ||
+//     (request.method === 'GET' && request.headers.get('accept')?.includes('text/html'))
+//   ) {
+//     event.respondWith(
+//       fetch(request).catch(() => caches.match(OFFLINE_URL))
+//     );
+//     return;
+//   }
+
+//   // 6️⃣ Static assets → cache-first
+//   event.respondWith(
+//     caches.match(request).then(cached => cached || fetch(request).catch(() => caches.match(OFFLINE_URL)))
+//   );
+// });
+
+
+// // Allow skipWaiting from client
+// self.addEventListener('message', event => {
+//   if (event.data && event.data.type === 'SKIP_WAITING') {
+//     self.skipWaiting();
+//   }
+// });
