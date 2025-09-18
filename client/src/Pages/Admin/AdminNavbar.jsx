@@ -5,7 +5,7 @@ function AdminNavbar({
   searchTerm = "",
   onSearchChange,
   onAdd,
-  // onUpload,
+  onUpload,
   buttonLabel,
   uploadLabel = "Upload Credentials +",
   searchPlaceholder = "Search by name or email...",
@@ -34,14 +34,14 @@ function AdminNavbar({
       {/* Right Icons */}
       <div className="flex items-center space-x-6 relative">
         {/* Upload Button */}
-        {/* {onUpload && (
+        {onUpload && (
           <button
             onClick={onUpload}
             className="bg-blue-600 px-4 py-1 rounded text-sm font-semibold hover:bg-blue-700"
           >
             {uploadLabel}
           </button>
-        )} */}
+        )}
 
         {/* Add Button */}
         {/* {onAdd && (
