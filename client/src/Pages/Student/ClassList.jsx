@@ -177,12 +177,13 @@ import { useNavigate, useLocation } from "react-router-dom";
 import StudentNavbar from "./StudentNavbar";
 import StudentSidebar from "./StudentSidebar";
 import { fetchBooks, fetchEducationLevels } from "../../apiServices/booksApi";
-import { FaBookReader, FaArrowLeft } from "react-icons/fa";
+import { FaBookReader, FaArrowLeft,FaSpinner } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
 
 const ClassList = () => {
   const [classes, setClasses] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [loading,setLoading] = useState(false)
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -216,6 +217,7 @@ const ClassList = () => {
   // }, [category, navigate]);
 
   useEffect(() => {
+    setLoading(true)
   async function loadClasses() {
     try {
       if (category === "School Education" || category === "Higher Education") {
@@ -227,6 +229,9 @@ const ClassList = () => {
       }
     } catch (error) {
       console.error("Failed to load classes:", error);
+    }
+    finally{
+      setLoading(false)
     }
   }
   loadClasses();
@@ -294,13 +299,12 @@ const ClassList = () => {
               </div>
             ))}
           </div>
-        ) : (
-          <p className="text-center mt-6 text-gray-400">
-            {category === "School Education" || category === "Higher Education"
-              ? "No classes found."
-              : "No resources found."}
-          </p>
-        )}
+        ) :(loading &&
+                  <div className="flex flex-col items-center h-screen space-y-4">
+              <FaSpinner className="animate-spin text-blue-500 text-6xl" />
+              <p className="text-gray-600 font-semibold">Loading, please wait...</p>
+            </div>
+                )}
       </main>
     </div>
   );

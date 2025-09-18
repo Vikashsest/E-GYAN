@@ -82,7 +82,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import StudentNavbar from "./StudentNavbar";
 import StudentSidebar from "./StudentSidebar";
 import { fetchBooks } from "../../apiServices/booksApi";
-import { FaBookOpen, FaArrowLeft } from "react-icons/fa";
+import { FaBookOpen, FaArrowLeft,FaSpinner } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
 
 // Helper function to normalize class names
@@ -97,11 +97,13 @@ const normalizeClassName = (str) => {
 const ClassSubjects = () => {
   const { className } = useParams();
   const [subjects, setSubjects] = useState([]);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [loading,setLoading] = useState(false)
   const navigate = useNavigate();
 
   useEffect(() => {
     async function loadSubjects() {
+      setLoading(true)
       try {
         const books = await fetchBooks();
 
@@ -110,7 +112,7 @@ const ClassSubjects = () => {
           (b) =>
             b.educationLevel &&
             normalizeClassName(b.educationLevel) ===
-              normalizeClassName(className)
+            normalizeClassName(className)
         );
 
         // extract unique subjects
@@ -121,6 +123,9 @@ const ClassSubjects = () => {
         setSubjects(uniqueSubjects);
       } catch (error) {
         console.error("Failed to load subjects:", error);
+      }
+      finally{
+        setLoading(false)
       }
     }
     loadSubjects();
@@ -135,7 +140,7 @@ const ClassSubjects = () => {
   };
 
   return (
-   <div className="flex min-h-screen bg-[#1e1f2b] text-white relative">
+    <div className="flex min-h-screen bg-[#1e1f2b] text-white relative">
       {/* Sidebar */}
       <StudentSidebar
         isOpen={isSidebarOpen}
@@ -190,10 +195,11 @@ const ClassSubjects = () => {
               </div>
             ))}
           </div>
-        ) : (
-          <p className="text-gray-400 text-center mt-6">
-            No subjects found for this class.
-          </p>
+        ) : (loading &&
+          <div className="flex flex-col items-center h-screen space-y-4">
+            <FaSpinner className="animate-spin text-blue-500 text-6xl" />
+            <p className="text-gray-600 font-semibold">Loading, please wait...</p>
+          </div>
         )}
       </main>
     </div>

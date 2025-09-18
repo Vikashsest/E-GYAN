@@ -64,7 +64,7 @@
 
 //   const handleBookClick = (bookId) => {
 //    console.log("bookId",bookId);
- 
+
 
 //     navigate(`/student/books/${bookId}/chapters`);
 
@@ -159,7 +159,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import StudentNavbar from "./StudentNavbar";
 import StudentSidebar from "./StudentSidebar";
 import { fetchBooks, fetchFavoriteBooks, toggleFavoriteBook } from "../../apiServices/booksApi";
-import { FaArrowLeft, FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaArrowLeft, FaHeart, FaRegHeart,FaSpinner } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -169,6 +169,7 @@ const BooksList = () => {
   const location = useLocation();
   const [books, setBooks] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [loading,setLoading] = useState(false)
   const navigate = useNavigate();
 
   const queryParams = new URLSearchParams(location.search);
@@ -188,6 +189,7 @@ const BooksList = () => {
 
   useEffect(() => {
     async function loadBooks() {
+      setLoading(true)
       try {
         const [allBooks, favoriteIds] = await Promise.all([fetchBooks(), fetchFavoriteBooks()]);
         let filteredBooks = [];
@@ -221,6 +223,9 @@ const BooksList = () => {
       } catch (error) {
         console.error("Failed to load books or favorites:", error);
       }
+      finally{
+        setLoading(false)
+      }
     }
 
     loadBooks();
@@ -242,7 +247,7 @@ const BooksList = () => {
   };
 
   return (
-     <div className="flex min-h-screen bg-[#1e1f2b] text-white relative">
+    <div className="flex min-h-screen bg-[#1e1f2b] text-white relative">
       {/* Sidebar */}
       <StudentSidebar
         isOpen={isSidebarOpen}
@@ -293,11 +298,11 @@ const BooksList = () => {
                 <div className="relative w-full h-48 overflow-hidden rounded-lg bg-gray-700 flex items-center justify-center">
                   {book.thumbnail ? (
                     <img
-         src={
-    book.thumbnail.includes('/index.php/s/')
-      ? book.thumbnail + '/download' // 🔹 add /download
-      : `${API_URL}/books/proxy/thumbnail?url=${encodeURIComponent(book.thumbnail)}`
-  }
+                      src={
+                        book.thumbnail.includes('/index.php/s/')
+                          ? book.thumbnail + '/download' // 🔹 add /download
+                          : `${API_URL}/books/proxy/thumbnail?url=${encodeURIComponent(book.thumbnail)}`
+                      }
                       alt={book.bookName}
                       className="w-full h-full object-cover"
                       onClick={() => handleBookClick(book.id)}
@@ -318,8 +323,11 @@ const BooksList = () => {
               </div>
             ))}
           </div>
-        ) : (
-          <p className="text-gray-400 text-center mt-6">No books found.</p>
+        ) : (loading &&
+          <div className="flex flex-col items-center h-screen space-y-4">
+            <FaSpinner className="animate-spin text-blue-500 text-6xl" />
+            <p className="text-gray-600 font-semibold">Loading, please wait...</p>
+          </div>
         )}
       </main>
     </div>

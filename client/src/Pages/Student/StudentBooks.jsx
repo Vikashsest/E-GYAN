@@ -250,16 +250,18 @@ import { useNavigate } from "react-router-dom";
 import StudentNavbar from "./StudentNavbar";
 import StudentSidebar from "./StudentSidebar";
 import { fetchBooks } from "../../apiServices/booksApi";
-import { FaBookReader } from "react-icons/fa";
+import { FaBookReader,FaSpinner } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
 
 const Books = () => {
   const [categories, setCategories] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate();
 
   useEffect(() => {
     async function loadCategories() {
+      setLoading(true)
       try {
         const bookData = await fetchBooks();
 
@@ -271,6 +273,9 @@ const Books = () => {
         setCategories(uniqueCategories);
       } catch (error) {
         console.error("Failed to load categories:", error);
+      }
+      finally {
+        setLoading(false)
       }
     }
 
@@ -332,8 +337,11 @@ const Books = () => {
               </div>
             ))}
           </div>
-        ) : (
-          <p className="text-center mt-6 text-gray-400">No categories found.</p>
+        ) : (loading &&
+          <div className="flex flex-col items-center h-screen space-y-4">
+      <FaSpinner className="animate-spin text-blue-500 text-6xl" />
+      <p className="text-gray-600 font-semibold">Loading, please wait...</p>
+    </div>
         )}
       </main>
     </div>
