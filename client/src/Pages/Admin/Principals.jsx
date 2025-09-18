@@ -32,7 +32,7 @@ export default function ManagePrincipalsPage() {
   const filteredPrincipals = Array.isArray(principals)
     ? principals.filter(
         (p) =>
-          p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          p.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
           p.email.toLowerCase().includes(searchTerm.toLowerCase())
       )
     : [];

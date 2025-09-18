@@ -31,18 +31,18 @@ export default function RoleManagement({ currentUserRole }) {
 
   const filteredUsers = users.filter((u) => {
     const matchesSearch =
-      u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      u.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
       u.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesRole = roleFilter === "all" || u.role === roleFilter;
 
-    let hasPermission = true;
-    if (currentUserRole === "principal") {
-      hasPermission = u.role !== "principal";
-    } else if (currentUserRole === "teacher") {
-      hasPermission = u.role === "student";
-    }
+    // let hasPermission = true;
+    // if (currentUserRole === "principal") {
+    //   hasPermission = u.role !== "principal";
+    // } else if (currentUserRole === "teacher") {
+    //   hasPermission = u.role === "student";
+    // }
 
-    return matchesSearch && matchesRole && hasPermission;
+      return matchesSearch && matchesRole;
   });
 
   const handleEdit = (user) => setEditData(user);
@@ -131,7 +131,7 @@ export default function RoleManagement({ currentUserRole }) {
           {filteredUsers.map((u, index) => (
             <tr key={u.id}>
               <td className="p-2 border">{index + 1}</td>
-              <td className="p-2 border">{u.name}</td>
+              <td className="p-2 border">{u.username}</td>
               <td className="p-2 border">{u.email}</td>
               <td className="p-2 border capitalize">{u.role}</td>
               <td className="p-2 border">
@@ -196,7 +196,7 @@ export default function RoleManagement({ currentUserRole }) {
                 <label className="block mb-1 font-medium">Name</label>
                 <input
                   disabled
-                  value={editData.name}
+                  value={editData.username}
                   className="w-full border p-2 rounded bg-gray-100"
                 />
               </div>

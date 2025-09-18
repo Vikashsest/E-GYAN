@@ -76,12 +76,12 @@ export default function Sidebar() {
                   <span>Manage Students</span>
                 </li>
               </Link>
-              {/* <Link className="flex items-center space-x-2" to="/admin/reports">
+              <Link className="flex items-center space-x-2" to="/admin/reports">
                 <li className="flex items-center space-x-2 text-gray-300">
                   <FaFileAlt />
                   <span>Reports</span>
                 </li>
-              </Link> */}
+              </Link>
               <Link
                 className="flex items-center space-x-2"
                 to="/admin/role"
@@ -95,10 +95,10 @@ export default function Sidebar() {
                 className="flex items-center space-x-2"
                 to="/admin/upload-books"
               >
-                <li className="flex items-center space-x-2 text-gray-300">
+                {/* <li className="flex items-center space-x-2 text-gray-300">
                   <FaBookOpen />
                   <span>My Books</span>
-                </li>
+                </li> */}
               </Link>
             </ul>
           </div>

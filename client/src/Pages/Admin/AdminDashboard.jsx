@@ -21,8 +21,8 @@ export default function FileManagerDashboard() {
     totalStudents: 0,
   });
 
-  const [showUploadModal, setShowUploadModal] = useState(false);
-  const [file, setFile] = useState(null);
+const [showUploadModal, setShowUploadModal] = useState(false);
+const [file, setFile] = useState(null);
 
   const [concerns, setConcerns] = useState([]); 
   const API_URL = import.meta.env.VITE_API_URL;
@@ -239,11 +239,156 @@ export default function FileManagerDashboard() {
   );
 }
 
+// import Sidebar from "./AdminSidebar";
+// import AdminNavbar from "./AdminNavbar";
+// import WelcomeHeading from "../../Components/WelcomeHeading";
+// import {
+//   PieChart,
+//   Pie,
+//   Cell,
+//   Tooltip,
+//   Legend,
+//   ResponsiveContainer,
+//   BarChart,
+//   Bar,
+//   XAxis,
+//   YAxis,
+//   CartesianGrid,
+//   LineChart,
+//   Line,
+// } from "recharts";
+// import { useState, useEffect } from "react";
 
+// export default function LibraryDashboard() {
+//   const [stats, setStats] = useState({
+//     totalBooks: 120,
+//     totalPdf: 90,
+//     totalVideos: 45,
+//     totalAudio: 25,
+//     totalStudents: 200,
+//     activeUsers: 150,
+//   });
 
+//   // Subject-wise resources
+//   const subjectWise = [
+//     { subject: "Mathematics", count: 35 },
+//     { subject: "Science", count: 40 },
+//     { subject: "English", count: 30 },
+//     { subject: "Geography", count: 20 },
+//     { subject: "History", count: 15 },
+//   ];
 
+//   // Resource access trend
+//   const usageTrend = [
+//     { day: "Mon", users: 50 },
+//     { day: "Tue", users: 65 },
+//     { day: "Wed", users: 40 },
+//     { day: "Thu", users: 70 },
+//     { day: "Fri", users: 90 },
+//     { day: "Sat", users: 55 },
+//     { day: "Sun", users: 30 },
+//   ];
 
+//   // Resource type usage
+//   const resourceUsage = [
+//     { name: "PDFs", value: 45 },
+//     { name: "Videos", value: 30 },
+//     { name: "Audios", value: 15 },
+//     { name: "Books", value: 60 },
+//   ];
 
+//   const COLORS = ["#3b82f6", "#f97316", "#22c55e", "#eab308"];
+
+//   return (
+//     <div className="flex min-h-screen bg-[#1e1f2b] text-white">
+//       <Sidebar />
+//       <main className="pl-[280px] py-6 pr-5 w-full">
+//         <AdminNavbar />
+//         <div className="p-2 mb-5">
+//           <WelcomeHeading />
+//         </div>
+
+//         {/* Quick Stats */}
+//         <section className="mb-8">
+//           <h2 className="text-lg font-semibold mb-4">Quick Stats</h2>
+//           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+//             {[
+//               { label: "Books", value: stats.totalBooks, color: "orange-500" },
+//               { label: "PDFs", value: stats.totalPdf, color: "blue-500" },
+//               { label: "Videos", value: stats.totalVideos, color: "yellow-500" },
+//               { label: "Audios", value: stats.totalAudio, color: "green-500" },
+//               { label: "Students", value: stats.totalStudents, color: "purple-500" },
+//               { label: "Active Users", value: stats.activeUsers, color: "teal-400" },
+//             ].map((item, idx) => (
+//               <div key={idx} className="bg-[#2a2b39] p-4 rounded shadow">
+//                 <p className={`text-${item.color} font-bold`}>{item.label}</p>
+//                 <p className="text-xl">{item.value}</p>
+//               </div>
+//             ))}
+//           </div>
+//         </section>
+
+//         {/* Analytics */}
+//         <section>
+//           <h2 className="text-lg font-semibold mb-4">Analytics</h2>
+//           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+//             {/* Subject Wise Resources */}
+//             <div className="bg-[#2a2b39] p-4 rounded shadow">
+//               <h3 className="mb-4 font-medium">Subject-wise Resources</h3>
+//               <ResponsiveContainer width="100%" height={250}>
+//                 <BarChart data={subjectWise}>
+//                   <CartesianGrid strokeDasharray="3 3" />
+//                   <XAxis dataKey="subject" />
+//                   <YAxis />
+//                   <Tooltip />
+//                   <Bar dataKey="count" fill="#3b82f6" radius={[6, 6, 0, 0]} />
+//                 </BarChart>
+//               </ResponsiveContainer>
+//             </div>
+
+//             {/* Active Users Trend */}
+//             <div className="bg-[#2a2b39] p-4 rounded shadow">
+//               <h3 className="mb-4 font-medium">Active Users (Weekly)</h3>
+//               <ResponsiveContainer width="100%" height={250}>
+//                 <LineChart data={usageTrend}>
+//                   <CartesianGrid strokeDasharray="3 3" />
+//                   <XAxis dataKey="day" />
+//                   <YAxis />
+//                   <Tooltip />
+//                   <Line type="monotone" dataKey="users" stroke="#22c55e" strokeWidth={2} />
+//                 </LineChart>
+//               </ResponsiveContainer>
+//             </div>
+
+//             {/* Resource Type Usage */}
+//             <div className="bg-[#2a2b39] p-4 rounded shadow col-span-2">
+//               <h3 className="mb-4 font-medium">Resource Usage by Type</h3>
+//               <ResponsiveContainer width="100%" height={250}>
+//                 <PieChart>
+//                   <Pie
+//                     data={resourceUsage}
+//                     dataKey="value"
+//                     cx="50%"
+//                     cy="50%"
+//                     outerRadius={90}
+//                     label
+//                   >
+//                     {resourceUsage.map((entry, index) => (
+//                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+//                     ))}
+//                   </Pie>
+//                   <Tooltip />
+//                   <Legend />
+//                 </PieChart>
+//               </ResponsiveContainer>
+//             </div>
+//           </div>
+//         </section>
+//       </main>
+//     </div>
+//   );
+// }
 
 
 

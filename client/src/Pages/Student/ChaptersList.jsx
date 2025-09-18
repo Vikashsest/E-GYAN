@@ -988,7 +988,7 @@ useEffect(() => {
                 key={selectedChapter.id}
                 controls
                 className="w-full h-full object-contain"
-                src={selectedChapter.file}
+                src={selectedChapter.fileUrl}
               />
             )}
 
@@ -1003,7 +1003,7 @@ useEffect(() => {
                   className="w-60 h-60 object-cover rounded-lg shadow-lg"
                 />
                 <audio key={selectedChapter.id} controls className="w-2/3">
-                  <source src={selectedChapter.file} type="audio/mpeg" />
+                  <source src={selectedChapter.fileUrl} type="audio/mpeg" />
                 </audio>
               </div>
             )}
