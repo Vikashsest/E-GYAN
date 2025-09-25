@@ -6,6 +6,8 @@ import TeacherProfile from "../Pages/Teacher/TeacherProfile";
 import TeacherRole from "../Pages/Teacher/TeacherRole";
 import TeacherUploadedBooks from "../Pages/Teacher/TeacherUploadBooks";
 import UploadChapter from "../Components/UploadChapter";
+import CreateQuiz from "../Pages/Teacher/CreateQuiz";
+import CreateAssignment from "../Pages/Teacher/CreateAssignment";
 
 export const teacherRouteList = [
   {
@@ -31,6 +33,22 @@ export const teacherRouteList = [
   {
     path: "/teacher/upload-books",
     element: <ProtectedRoute allowedRoles={["teacher"]}><TeacherUploadedBooks /></ProtectedRoute>,
+  },
+  {
+    path: "/teacher/assignment",
+    element: (
+      <ProtectedRoute allowedRoles={["teacher"]}>
+        <CreateAssignment />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/teacher/quiz",
+    element: (
+      <ProtectedRoute allowedRoles={["teacher"]}>
+        <CreateQuiz />
+      </ProtectedRoute>
+    ),
   },
  {
   path: "/books/:bookId/chapters",

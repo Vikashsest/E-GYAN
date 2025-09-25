@@ -11,6 +11,8 @@ import SchoolOverview from "../Pages/Admin/SchoolOverview";
 import AdminReports from "../Pages/Admin/AdminReports";
 import AdminUploadBooks from "../Pages/Admin/AdminUploadBooks"
 import RepositoryManagement from "../Pages/Admin/RepositoryManagement";
+import AdminAnnouncements from "../Pages/Admin/Annoucements";
+import AdminStudentProgress from "../Pages/Admin/AdminStudentProgress";
 
 export const adminRouteList = [
   {
@@ -25,10 +27,10 @@ export const adminRouteList = [
     path: "/admin/teachers",
     element: <ProtectedRoute allowedRoles={["admin"]}><AdminTeachers /></ProtectedRoute>
   },
-  {
-    path: "/admin/students",
-    element: <ProtectedRoute allowedRoles={["admin"]}><AdminStudents /></ProtectedRoute>
-  },
+  // {
+  //   path: "/admin/students",
+  //   element: <ProtectedRoute allowedRoles={["admin"]}><AdminStudents /></ProtectedRoute>
+  // },
   {
     path: "/admin-books",
     element: <ProtectedRoute allowedRoles={["admin"]}><AdminBooks /></ProtectedRoute>
@@ -52,6 +54,14 @@ export const adminRouteList = [
   {
     path: "/admin/upload-books",
     element: <ProtectedRoute allowedRoles={["admin"]}><AdminUploadBooks /></ProtectedRoute>
+  },
+  {
+    path: "/admin/announcements",
+    element: <ProtectedRoute allowedRoles={["admin"]}><AdminAnnouncements /></ProtectedRoute>
+  },
+   {
+    path: "/admin/students",
+    element: <ProtectedRoute allowedRoles={["admin"]}><AdminStudentProgress/></ProtectedRoute>
   },
   {
   path: "/admin/repository",

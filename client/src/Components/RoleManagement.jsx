@@ -75,7 +75,7 @@ export default function RoleManagement({ currentUserRole }) {
 
   return (
     <div className="px-4">
-      <h2 className="text-2xl font-bold text-white mb-4">Manage Students</h2>
+      <h2 className="text-2xl font-bold text-white mb-4">Manage Role</h2>
 
       <div className="flex justify-between items-center mb-4">
         <input

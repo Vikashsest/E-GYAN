@@ -7,6 +7,7 @@ import {
   FaTachometerAlt,
   FaSchool,
   FaBookOpen,
+  FaBullhorn,
 } from "react-icons/fa";
 import { RiGitRepositoryFill } from "react-icons/ri";
 import { MdManageAccounts } from "react-icons/md";
@@ -58,7 +59,7 @@ export default function Sidebar() {
                   <span> Manage Books</span>
                 </li>
               </Link>
-              <Link
+              {/* <Link
                 className="flex items-center space-x-2"
                 to="/admin/principals"
               >
@@ -66,8 +67,8 @@ export default function Sidebar() {
                   <FaUserTie />
                   <span>Manage Principals</span>
                 </li>
-              </Link>
-              <Link
+              </Link> */}
+              {/* <Link
                 className="flex items-center space-x-2"
                 to="/admin/students"
               >
@@ -75,7 +76,19 @@ export default function Sidebar() {
                   <FaUsers />
                   <span>Manage Students</span>
                 </li>
-              </Link>
+              </Link> */}
+              <Link className="flex items-center space-x-2" to="/admin/students">
+  <li className="flex items-center space-x-2 text-gray-300">
+    <FaUsers />
+    <span>Manage Students</span>
+  </li>
+</Link>
+              <Link className="flex items-center space-x-2" to="/admin/announcements">
+              <li className="flex items-center space-x-2 text-gray-300">
+                <FaBullhorn />
+                <span>Announcements</span>
+              </li>
+            </Link>
               <Link className="flex items-center space-x-2" to="/admin/reports">
                 <li className="flex items-center space-x-2 text-gray-300">
                   <FaFileAlt />

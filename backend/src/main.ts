@@ -82,7 +82,7 @@ res.setHeader("Accept-Ranges", "bytes");
 // });
 app.enableCors({
   origin: (origin, callback) => {
-    const allowedOrigins = ['https://egyan.ptgn.in', 'http://localhost:5173','http://172.16.0.28:5173'];
+    const allowedOrigins = ['https://egyan.ptgn.in', 'http://localhost:5173','http://172.16.0.19:5173'];
     if (!origin || allowedOrigins.includes(origin)) callback(null, true);
     else callback(new Error(`CORS error: origin ${origin} not allowed`));
   },

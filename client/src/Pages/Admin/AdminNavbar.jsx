@@ -44,14 +44,14 @@ function AdminNavbar({
         )}
 
         {/* Add Button */}
-        {/* {onAdd && (
+        {onAdd && (
           <button
             onClick={onAdd}
             className="bg-blue-600 px-4 py-1 rounded text-sm font-semibold hover:bg-blue-700"
           >
             {buttonLabel}
           </button>
-        )} */}
+        )}
 
           <div className="relative">
           <FiBell

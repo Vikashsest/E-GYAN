@@ -249,7 +249,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import StudentNavbar from "./StudentNavbar";
 import StudentSidebar from "./StudentSidebar";
-import { fetchBooks } from "../../apiServices/booksApi";
+import { fetchBooks, fetchCategories } from "../../apiServices/booksApi";
 import { FaBookReader,FaSpinner } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
 
@@ -263,13 +263,14 @@ const Books = () => {
     async function loadCategories() {
       setLoading(true)
       try {
-        const bookData = await fetchBooks();
-
+        const bookData = await fetchCategories();
+  console.log(bookData);
+  
         // API se unique categories extract
-        const uniqueCategories = [
-          ...new Set(bookData.map((book) => book.category).filter(Boolean)),
-        ];
-
+        // const uniqueCategories = [
+        //   ...new Set(bookData.map((book) => book.category))
+        // ];
+        const uniqueCategories = [...new Set(bookData)];
         setCategories(uniqueCategories);
       } catch (error) {
         console.error("Failed to load categories:", error);

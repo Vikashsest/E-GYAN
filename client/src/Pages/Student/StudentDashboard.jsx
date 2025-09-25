@@ -13,7 +13,7 @@ import { getCookie } from "../../utils/cookie";
 import StudentNavbar from "./StudentNavbar";
 import StudentSidebar from "./StudentSidebar";
 import WelcomeHeading from "../../Components/WelcomeHeading";
-
+import { useNavigate } from "react-router-dom";
 const API_URL = import.meta.env.VITE_API_URL;
 const access_token = getCookie("access_token");
 
@@ -30,7 +30,7 @@ export default function DashboardMetrics() {
     recentActivity: 0,
     favorites: 0,
   });
-
+ const navigate = useNavigate();
   const [announcements, setAnnouncements] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -164,7 +164,15 @@ export default function DashboardMetrics() {
           {/* Text */}
           <div>
             <p className="text-sm text-gray-200">{announcement.message}</p>
-            <span className="text-xs text-gray-400">📅 Just now</span>
+            {/* <span className="text-xs  text-gray-400">  📅 {new Date(announcement.createdAt).toLocaleDateString()}</span> */}
+            <span className="text-xs text-gray-400">
+  📅 {new Date(announcement.createdAt).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  })}
+</span>
+
           </div>
 
           {/* Decorative pulse dot */}
@@ -176,6 +184,49 @@ export default function DashboardMetrics() {
     )}
   </div>
 </div>
+{/* Assessment & Quiz Section */}
+<div className="mt-12 px-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+  {/* Assessment Card */}
+  <div className="bg-gradient-to-br from-[#2e2f44] to-[#1f202f] p-6 rounded-xl shadow-md border border-white/10">
+    <h3 className="text-xl font-bold mb-4">📝 Assessments</h3>
+    <ul className="space-y-3 text-gray-300 text-sm">
+      <li className="flex justify-between items-center">
+        <span>Math Assessment 1</span>
+        <button className="px-3 py-1 text-xs bg-blue-600 rounded-lg hover:bg-blue-700"    onClick={() => navigate("/student/assessments")}>Start</button>
+      </li>
+      <li className="flex justify-between items-center">
+        <span>Science Assessment 2</span>
+        <button className="px-3 py-1 text-xs bg-blue-600 rounded-lg hover:bg-blue-700">Start</button>
+      </li>
+      <li className="flex justify-between items-center">
+        <span>English Assessment</span>
+        <button className="px-3 py-1 text-xs bg-blue-600 rounded-lg hover:bg-blue-700">Start</button>
+      </li>
+    </ul>
+    <button className="mt-4 text-xs text-yellow-400 hover:underline">View All Assessments →</button>
+  </div>
+
+  {/* Quiz Card */}
+  <div className="bg-gradient-to-br from-[#2e2f44] to-[#1f202f] p-6 rounded-xl shadow-md border border-white/10">
+    <h3 className="text-xl font-bold mb-4">🎯 Quizzes</h3>
+    <ul className="space-y-3 text-gray-300 text-sm">
+      <li className="flex justify-between items-center">
+        <span>Quiz on Algebra</span>
+        <button className="px-3 py-1 text-xs bg-green-600 rounded-lg hover:bg-green-700"   onClick={() => navigate("/student/quizzes")}>Take Quiz</button>
+      </li>
+      <li className="flex justify-between items-center">
+        <span>Quiz on World History</span>
+        <button className="px-3 py-1 text-xs bg-green-600 rounded-lg hover:bg-green-700">Take Quiz</button>
+      </li>
+      <li className="flex justify-between items-center">
+        <span>Quiz on Environment</span>
+        <button className="px-3 py-1 text-xs bg-green-600 rounded-lg hover:bg-green-700">Take Quiz</button>
+      </li>
+    </ul>
+    <button className="mt-4 text-xs text-yellow-400 hover:underline">View All Quizzes →</button>
+  </div>
+</div>
+
 
       </main>
     </div>

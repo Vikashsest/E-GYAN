@@ -146,8 +146,6 @@ const ClassSubjects = () => {
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
       />
-
-      {/* Overlay for mobile when sidebar open */}
       {isSidebarOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"

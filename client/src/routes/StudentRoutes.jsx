@@ -11,6 +11,10 @@ import Subjects from "../Pages/Student/Subjects"
 import BooksList from "../Pages/Student/BooksList"
 import ClassList from "../Pages/Student/ClassList";
 import ChaptersList from "../Pages/Student/ChaptersList";
+import QuizPage from "../Pages/Student/QuizPage";
+import AssessmentPage from "../Pages/Student/AssessmentPage";
+import QuizStartPage from "../Pages/Student/QuizStartPage";
+import AssessmentStartPage from "../Pages/Student/AssessmentStartPage";
 
 export const studentRouteList = [
   {
@@ -53,6 +57,22 @@ export const studentRouteList = [
     </ProtectedRoute>
   ),
 },
+ {
+    path: "/student/assessments",
+    element: (
+      <ProtectedRoute allowedRoles={["student"]}>
+        <AssessmentPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/student/quizzes",
+    element: (
+      <ProtectedRoute allowedRoles={["student"]}>
+        <QuizPage />
+      </ProtectedRoute>
+    ),
+  },
 // {
 //   path: "/books/:className/:subject",
 //   element: (
@@ -98,6 +118,22 @@ export const studentRouteList = [
     element: (
       <ProtectedRoute allowedRoles={["student"]}>
         <ChaptersList />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/student/assessments/start",
+    element: (
+      <ProtectedRoute allowedRoles={["student"]}>
+        <AssessmentStartPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/student/quiz/start",
+    element: (
+      <ProtectedRoute allowedRoles={["student"]}>
+        <QuizStartPage />
       </ProtectedRoute>
     ),
   },

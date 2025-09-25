@@ -19,20 +19,7 @@ export async function fetchBooks() {
     throw error;
   }
 }
-export async function fetchCategories() {
-  try {
-    const res = await fetch(`${API_URL}/books/category`, {
-      method: "GET",
-      credentials: "include",
-    });
 
-    const data = await res.json();
-    return Array.isArray(data) ? data : data.categories || [];
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-    throw error;
-  }
-}
 export async function fetchEducationLevels() {
   try {
     const res = await fetch(`${API_URL}/books/education-levels`, {
@@ -212,6 +199,19 @@ export async function deleteChapter(chapterId) {
     return result;
   } catch (error) {
     console.error("Error deleting chapter:", error);
+    throw error;
+  }
+}
+export async function fetchCategories() {
+  try {
+    const res = await fetch(`${API_URL}/books/category`, {
+      method: "GET",
+      credentials: "include",
+    });
+    const data = await res.json();
+    return Array.isArray(data) ? data : data.categories || [];
+  } catch (error) {
+    console.error("Error fetching categories:", error);
     throw error;
   }
 }
