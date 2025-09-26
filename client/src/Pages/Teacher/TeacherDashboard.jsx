@@ -454,7 +454,6 @@
 //   );
 // }
 
-
 // TeacherDashboard.jsx
 import { useEffect, useState } from "react";
 import TeacherSidebar from "./TeacherSidebar";
@@ -476,9 +475,54 @@ export default function TeacherDashboard() {
 
   const [recentUploads, setRecentUploads] = useState([]);
 
+  // ----------------- API FETCH FUNCTIONS -----------------
+  const fetchDashboardStats = async () => {
+    try {
+      const res = await fetch(`${API_URL}/dashboard/teacher`, {
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to fetch dashboard stats");
+
+      const data = await res.json();
+      setOverview({
+        totalStudents: data.totalStudents || 0,
+        totalSubjects: data.totalSubjects || 0,
+        teacherUploadBooks: data.teacherUploadBooks || 0,
+        totalBooks: data.totalBooks || 0,
+      });
+
+      // Optionally populate recent uploads from dashboard
+      const allUploads = Object.values(data.subjectWiseUploads || {}).flat();
+      setRecentUploads(allUploads);
+
+      toast.success("📊 Dashboard loaded");
+    } catch (err) {
+      console.error("Error fetching dashboard stats:", err);
+      toast.error("❌ Failed to load dashboard");
+    }
+  };
+
+  const fetchRecentUploads = async () => {
+    try {
+      const res = await fetch(`${API_URL}/dashboard/recent-upload`, {
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to fetch recent uploads");
+
+      const data = await res.json();
+      const uploads = Array.isArray(data) ? data : data.uploads || [];
+      setRecentUploads(uploads);
+      toast.success("📘 Recent uploads loaded");
+    } catch (err) {
+      console.error("Error fetching recent uploads:", err);
+      toast.error("❌ Failed to load recent uploads");
+    }
+  };
+
+  // ----------------- USE EFFECT -----------------
   useEffect(() => {
-    // fetchDashboardStats();
-    // fetchRecentUploads();
+    fetchDashboardStats();
+    fetchRecentUploads();
   }, []);
 
   return (

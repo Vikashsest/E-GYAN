@@ -2016,6 +2016,7 @@ navigate(`/books/${result.id}/chapters`);
             <option value="">Select Language</option>
             <option value="English">English</option>
             <option value="Hindi">Hindi</option>
+            <option value="Sanskrit">Sanskrit</option>
           </select>
         </div>
 
