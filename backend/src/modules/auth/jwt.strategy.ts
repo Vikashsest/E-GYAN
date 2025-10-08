@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 
 
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
@@ -29,7 +30,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       where: { id: payload.id },
       select: ['id', 'username', 'role'], 
     });
-
+console.log("user",user)
     if (!user) {
       throw new UnauthorizedException('Invalid token');
     }

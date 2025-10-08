@@ -5,6 +5,10 @@ import { StudentActivity } from "src/modules/student/entities/student-activity.e
 import { Concern } from "src/modules/student/entities/raise-concern.entity";
 import { Book } from "src/modules/book/entities/book.entity";
 import { BookProgress } from "src/modules/book/entities/book-progress.entity";
+import { Assessment } from "src/modules/assessments/entities/assessment.entity";
+import { Quiz } from "src/modules/quizzes/entities/quiz.entity";
+import { AssessmentAttempt } from "src/modules/assessments/entities/assessment-attempt.entity";
+import { QuizAttempt } from "src/modules/quizzes/entities/quiz-attempt.entity";
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -52,4 +56,17 @@ concerns: Concern[];
 books: Book[];
 @OneToMany(() => BookProgress, (progress) => progress.book)
 progressRecords: BookProgress[];
+@OneToMany(() => AssessmentAttempt, (attempt) => attempt.student)
+assessmentAttempts: AssessmentAttempt[];
+
+@OneToMany(() => QuizAttempt, (attempt) => attempt.student)
+quizAttempts: QuizAttempt[];
+
+@OneToMany(() => Assessment, (assessment) => assessment.created_by)
+assessments: Assessment[];
+
+@OneToMany(() => Quiz, (quiz) => quiz.created_by)
+quizzes: Quiz[];
+
+
 }

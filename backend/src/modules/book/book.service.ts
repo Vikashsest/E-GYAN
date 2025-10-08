@@ -60,7 +60,6 @@ const newBook = this.bookrepo.create({
 }
 
 
-
   async findOneById(id: number): Promise<Book | null> {
     return this.bookrepo.findOne({
       where: { id },
@@ -176,13 +175,65 @@ books.forEach(book => {
   }
 });
 return {
-    totalBooks,
+  totalBooks,
   totalTeachers,
   totalStudents,
   booksPerSubject,
   subjectWiseUploads
     };
   }
+
+async getSubjects(className?: string) {
+  let query = this.bookrepo.createQueryBuilder('book').select('book.subject');
+
+  if (className) {
+  query = query.where('TRIM(LOWER(book.educationLevel)) = TRIM(LOWER(:className))', { className });
+}
+const subjects = await query.getMany();
+const uniqueSubjects = [...new Set(subjects.map((b) => b.subject?.trim()).filter(Boolean))];
+
+  return uniqueSubjects;
+}
+async getBooks(filters: { className?: string; subject?: string; category?: string }) {
+  const books = await this.bookrepo.find({
+    relations: ['chapters'], 
+    order: { uploadedAt: 'ASC' },
+  });
+  let filteredBooks = books;
+  if (filters.className) {
+    filteredBooks = filteredBooks.filter(
+      b => b.educationLevel?.toLowerCase() === filters.className?.toLowerCase()
+    );
+  }
+  if (filters.subject) {
+    filteredBooks = filteredBooks.filter(
+      b => b.subject?.toLowerCase() === filters.subject?.toLowerCase()
+    );
+  }
+  if (filters.category) {
+    filteredBooks = filteredBooks.filter(
+      b => b.category?.toLowerCase() === filters.category?.toLowerCase()
+    );
+  }
+
+  return filteredBooks.map(book => {
+    const firstChapterThumbnail = book.chapters?.[0]?.thumbnail;
+
+    return {
+      id: book.id,
+      bookName: book.bookName,
+      category: book.category,
+      subject: book.subject,
+      educationLevel: book.educationLevel,
+      language: book.language,
+      uploadedAt: book.uploadedAt,
+      thumbnail: firstChapterThumbnail || book.thumbnail || null,
+      thumbnailProxyUrl: (firstChapterThumbnail || book.thumbnail)
+        ? `${process.env.API_URL}/books/proxy/thumbnail?url=${encodeURIComponent(firstChapterThumbnail || book.thumbnail)}`
+        : null,
+    };
+  });
+}
 
 
  

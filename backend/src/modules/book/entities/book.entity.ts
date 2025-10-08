@@ -34,7 +34,6 @@ uploadedBy: User;
 progressRecords: BookProgress[];
 @Column({ nullable: true })
 totalPages?: number;
-
-  @OneToMany(() => Chapter, (chapter) => chapter.book)
-  chapters: Chapter[];
+@OneToMany(() => Chapter, (chapter) => chapter.book)
+chapters: Chapter[];
 }

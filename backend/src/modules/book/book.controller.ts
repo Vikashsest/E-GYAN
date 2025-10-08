@@ -250,11 +250,23 @@ async proxyFile(
 //     }
 //   }
 
-
+ @Get('subject')
+  async getSubjects(@Query('class') className?: string) {
+    return this.bookService.getSubjects(className);
+  }
 @Get('education-levels')
 async getEducationLevels() {
   return this.bookService.findAllEducationLevels();
 }
+@Get()
+async getBooks(
+  @Query('class') className?: string,
+  @Query('subject') subject?: string,
+  @Query('category') category?: string
+) {
+  return this.bookService.getBooks({ className, subject, category });
+}
+
 @Get('category')
 async getCategory(){
   return this.bookService.getCategories()

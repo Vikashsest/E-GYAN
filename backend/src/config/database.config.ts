@@ -10,6 +10,13 @@ import { BookProgress } from 'src/modules/book/entities/book-progress.entity';
 import { Announcement } from 'src/modules/student/entities/announcement.entity';
 import { Chapter } from 'src/modules/book/entities/chapter.entity';
 import { Repositories } from 'src/modules/repository/entities/repository.entity';
+import { Assessment } from 'src/modules/assessments/entities/assessment.entity';
+import { AssessmentQuestion } from 'src/modules/assessments/entities/assessment-question.entity';
+import { AssessmentAttempt } from 'src/modules/assessments/entities/assessment-attempt.entity';
+import { Query } from '@nestjs/common';
+import { Quiz } from 'src/modules/quizzes/entities/quiz.entity';
+import { QuizAttempt } from 'src/modules/quizzes/entities/quiz-attempt.entity';
+import { QuizQuestion } from 'src/modules/quizzes/entities/quiz-question.entity';
 
 
 dotenv.config();
@@ -37,7 +44,7 @@ export const databaseConfig: TypeOrmModuleOptions = {
   type: 'postgres',
   url:'postgresql://neondb_owner:npg_VUoArT49ZSDk@ep-silent-river-a1if9gjk-pooler.ap-southeast-1.aws.neon.tech/egyan?sslmode=require&channel_binding=require',
   ssl: { rejectUnauthorized: false },
-  entities: [User, Book, Student, StudentActivity, Concern, BookProgress, Announcement, Chapter,Repositories],
+  entities: [User, Book, Student, StudentActivity, Concern, BookProgress, Announcement, Chapter,Repositories,Assessment,AssessmentQuestion,AssessmentAttempt,Quiz,QuizAttempt,QuizQuestion],
   synchronize: false,
   extra: {
     connectionTimeoutMillis: 30000,
