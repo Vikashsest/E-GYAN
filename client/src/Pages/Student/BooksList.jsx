@@ -225,16 +225,16 @@ useEffect(() => {
     navigate(`/student/books/${bookId}/chapters`);
   };
 
-  const toggleFavorite = async (bookId) => {
-    try {
-      await toggleFavoriteBook(bookId);
-      setBooks((prevBooks) =>
-        prevBooks.map((b) => (b.id === bookId ? { ...b, isFavorite: !b.isFavorite } : b))
-      );
-    } catch (err) {
-      console.error("Failed to toggle favorite:", err);
-    }
-  };
+  // const toggleFavorite = async (bookId) => {
+  //   try {
+  //     await toggleFavoriteBook(bookId);
+  //     setBooks((prevBooks) =>
+  //       prevBooks.map((b) => (b.id === bookId ? { ...b, isFavorite: !b.isFavorite } : b))
+  //     );
+  //   } catch (err) {
+  //     console.error("Failed to toggle favorite:", err);
+  //   }
+  // };
 
   return (
     <div className="flex min-h-screen bg-[#1e1f2b] text-white relative">
@@ -300,15 +300,24 @@ useEffect(() => {
                   ) : (
                     <p className="text-gray-300">No Image</p>
                   )}
-                  <button
-                    className="absolute top-2 right-2 text-red-400 hover:text-red-600 text-lg"
-                    onClick={() => toggleFavorite(book.id)}
-                  >
-                    {book.isFavorite ? <FaHeart /> : <FaRegHeart />}
-                  </button>
+<div className="absolute top-2 right-2 flex items-center space-x-2">
+  {book.language && (
+    <span className="bg-black/60 text-white text-xs px-2 py-1 rounded-md">
+      {book.language}
+    </span>
+  )}
+  <button
+    className="text-red-400 hover:text-red-600 text-lg"
+    // onClick={() => toggleFavorite(book.id)}
+  >
+    {/* {book.isFavorite ? <FaHeart /> : <FaRegHeart />} */}
+  </button>
+</div>
+
                 </div>
                 <div className="mt-4 text-center">
                   <h3 className="text-lg font-bold">{book.bookName}</h3>
+                  
                 </div>
               </div>
             ))}
