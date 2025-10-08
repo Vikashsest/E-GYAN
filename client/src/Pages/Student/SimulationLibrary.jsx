@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FaTh, FaList, FaFilter, FaTimes } from "react-icons/fa";
 import SimulationModal from "./SimulationModal";
 import StudentSidebar from "./StudentSidebar";
+import { FiMenu } from "react-icons/fi";
 
 const categories = [
   {
@@ -126,9 +127,16 @@ export default function SimulationLibrary() {
   const [selectedTopics, setSelectedTopics] = useState([]);
   const [selectedGrades, setSelectedGrades] = useState([]);
   const [sortOrder, setSortOrder] = useState("Newest");
-  const [collapsed, setCollapsed] = useState({});
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [filterSidebarOpen, setFilterSidebarOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(() => {
+  const initial = { subjects: true, grades: true };
+  categories.forEach(cat => {
+    initial[cat.subject] = true; 
+  });
+  return initial;
+});
+
 
   const toggleCollapse = (key) => {
     setCollapsed((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -163,31 +171,34 @@ export default function SimulationLibrary() {
 
   return (
     <div className="flex min-h-screen bg-[#1e1f2b] text-white relative">
-      {/* Hamburger Icon for Mobile / iPad */}
-<div className="absolute top-4 left-4 lg:hidden z-50">
-  <button
-    onClick={() => setIsSidebarOpen(true)}
-    className="text-gray-200 p-2 bg-gray-700 rounded hover:bg-gray-600"
-  >
-    <FaTh />
-  </button>
-</div>
-
-      <StudentSidebar
-        isOpen={isSidebarOpen}
-        onClose={() => setIsSidebarOpen(false)}
-      />
-
-      {/* Overlay for Left Sidebar (Mobile) */}
-      {isSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-          onClick={() => setIsSidebarOpen(false)}
-        ></div>
-      )}
+          {/* Sidebar */}
+          <StudentSidebar
+            isOpen={isSidebarOpen}
+            onClose={() => setIsSidebarOpen(false)}
+          />
+    
+          {/* Overlay for mobile when sidebar open */}
+          {isSidebarOpen && (
+            <div
+              className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+              onClick={() => setIsSidebarOpen(false)}
+            ></div>
+          )}
+    
+          {/* Main Content */}
+          <main className="flex-1 lg:pl-[280px] py-6 px-4 sm:px-6 w-full">
+            {/* Mobile Menu Icon */}
+            <div className="lg:hidden mb-2 flex items-center">
+              <button
+                onClick={() => setIsSidebarOpen(true)}
+                className="text-white focus:outline-none"
+              >
+                <FiMenu size={28} />
+              </button>
+            </div>
 
       {/* ✅ Main Content Area */}
-      <div className="ml-64 flex-1 min-h-screen bg-gray-900 text-gray-100 relative">
+      <div className="flex-1 min-h-screen bg-gray-900 text-gray-100 relative">
         {/* 🧭 Top Bar */}
         <div className="flex justify-between items-center p-4 border-b border-gray-700 bg-gray-800 sticky top-0 z-20">
           <h1 className="font-semibold text-lg">
@@ -266,84 +277,118 @@ export default function SimulationLibrary() {
       </div>
 
       {/* ✅ Right Filter Sidebar */}
-      <div
-        className={`fixed top-0 right-0 h-full w-72 bg-gray-800 border-l border-gray-700 transform ${
-          filterSidebarOpen ? "translate-x-0" : "translate-x-full"
-        } transition-transform duration-300 ease-in-out z-30`}
-      >
-        <div className="flex justify-between items-center p-4 border-b border-gray-700">
-          <h2 className="font-bold text-lg">Filters</h2>
-          <button
-            onClick={() => setFilterSidebarOpen(false)}
-            className="text-gray-400 hover:text-gray-200"
-          >
-            <FaTimes />
-          </button>
-        </div>
+<div
+  className={`fixed top-0 right-0 h-full w-72 bg-gray-800 border-l border-gray-700 transform ${
+    filterSidebarOpen ? "translate-x-0" : "translate-x-full"
+  } transition-transform duration-300 ease-in-out z-30`}
+>
+  <div className="flex justify-between items-center p-4 border-b border-gray-700">
+    <h2 className="font-bold text-lg">Filters</h2>
+    <button
+      onClick={() => setFilterSidebarOpen(false)}
+      className="text-gray-400 hover:text-gray-200"
+    >
+      <FaTimes />
+    </button>
+  </div>
 
-        <div className="p-4 overflow-y-auto h-[calc(100%-3rem)]">
-          <h3 className="font-semibold mb-3 text-gray-200">Subjects</h3>
-          {categories.map((cat) => (
-            <div key={cat.subject} className="mb-3">
-              <button
-                onClick={() => toggleCollapse(cat.subject)}
-                className="w-full flex justify-between items-center font-semibold text-gray-300"
-              >
-                {cat.subject}
-                <span>{collapsed[cat.subject] ? "+" : "-"}</span>
-              </button>
-              {!collapsed[cat.subject] && (
-                <div className="ml-3 mt-2 space-y-1">
-                  {cat.topics.map((topic) => (
-                    <label
-                      key={topic}
-                      className="flex items-center space-x-2 text-gray-400"
-                    >
-                      <input
-                        type="checkbox"
-                        className="form-checkbox text-blue-500"
-                        checked={selectedTopics.includes(topic)}
-                        onChange={() => handleTopicChange(topic)}
-                      />
-                      <span>{topic}</span>
-                    </label>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
+  <div className="p-4 overflow-y-auto h-[calc(100%-3rem)]">
+  {/* 📘 Subjects Section */}
+  <div className="mb-4 border-b border-gray-700 pb-3">
+    <button
+      onClick={() => toggleCollapse("subjects")}
+      className="w-full flex justify-between items-center font-semibold text-gray-200"
+    >
+      <span>Subjects</span>
+      <span className="text-xl">{collapsed["subjects"] ? "+" : "–"}</span>
+    </button>
 
-          <h3 className="font-semibold mt-4 mb-2 text-gray-200">Grade Level</h3>
-          {gradelevel.map((grade) => (
-            <label
-              key={grade}
-              className="flex items-center space-x-2 text-gray-400"
+    {!collapsed["subjects"] && (
+      <div className="mt-3">
+        {categories.map((cat) => (
+          <div key={cat.subject} className="mb-3">
+            <button
+              onClick={() => toggleCollapse(cat.subject)}
+              className="w-full flex justify-between items-center font-semibold text-gray-300"
             >
-              <input
-                type="checkbox"
-                className="form-checkbox text-green-500"
-                checked={selectedGrades.includes(grade)}
-                onChange={() => handleGradeChange(grade)}
-              />
-              <span>{grade}</span>
-            </label>
-          ))}
-        </div>
-      </div>
+              {cat.subject}
+              <span className="text-sm">
+                {collapsed[cat.subject] ? "+" : "–"}
+              </span>
+            </button>
 
-      {/* Overlay for Right Filter Sidebar */}
-      {filterSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-40 z-20"
-          onClick={() => setFilterSidebarOpen(false)}
-        ></div>
-      )}
+            {!collapsed[cat.subject] && (
+              <div className="ml-3 mt-2 space-y-1">
+                {cat.topics.map((topic) => (
+                  <label
+                    key={topic}
+                    className="flex items-center space-x-2 text-gray-400"
+                  >
+                    <input
+                      type="checkbox"
+                      className="form-checkbox text-blue-500"
+                      checked={selectedTopics.includes(topic)}
+                      onChange={() => handleTopicChange(topic)}
+                    />
+                    <span>{topic}</span>
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+
+  {/* 🎓 Grade Level Section */}
+  <div className="border-b border-gray-700 pb-3">
+    <button
+      onClick={() => toggleCollapse("grades")}
+      className="w-full flex justify-between items-center font-semibold text-gray-200"
+    >
+      <span>Grade Level</span>
+      <span className="text-xl">{collapsed["grades"] ? "+" : "–"}</span>
+    </button>
+
+    {!collapsed["grades"] && (
+      <div className="mt-3 space-y-1">
+        {gradelevel.map((grade) => (
+          <label
+            key={grade}
+            className="flex items-center space-x-2 text-gray-400"
+          >
+            <input
+              type="checkbox"
+              className="form-checkbox text-green-500"
+              checked={selectedGrades.includes(grade)}
+              onChange={() => handleGradeChange(grade)}
+            />
+            <span>{grade}</span>
+          </label>
+        ))}
+      </div>
+    )}
+  </div>
+</div>
+
+</div>
+
+{/* Overlay for Right Filter Sidebar */}
+{filterSidebarOpen && (
+  <div
+    className="fixed inset-0 bg-black bg-opacity-40 z-20"
+    onClick={() => setFilterSidebarOpen(false)}
+  ></div>
+)}
+
 
       {/* 🪟 Simulation Modal */}
       <SimulationModal
         url={openSimulation}
         onClose={() => setOpenSimulation(null)}
       />
+      </main>
     </div>
   );
 }
