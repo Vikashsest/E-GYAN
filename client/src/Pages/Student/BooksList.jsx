@@ -158,7 +158,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import StudentNavbar from "./StudentNavbar";
 import StudentSidebar from "./StudentSidebar";
-import { fetchBooks, fetchFavoriteBooks, toggleFavoriteBook } from "../../apiServices/booksApi";
+import {  fetchFavoriteBooks, subjectWiseBooks, toggleFavoriteBook } from "../../apiServices/booksApi";
 import { FaArrowLeft, FaHeart, FaRegHeart,FaSpinner } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
 
@@ -187,49 +187,39 @@ const BooksList = () => {
       .replace(/v/g, "5");
   };
 
-  useEffect(() => {
-    async function loadBooks() {
-      setLoading(true)
-      try {
-        const [allBooks, favoriteIds] = await Promise.all([fetchBooks(), fetchFavoriteBooks()]);
-        let filteredBooks = [];
+useEffect(() => {
+  async function loadBooks() {
+    setLoading(true);
+    try {
+      // Call new fetchBooks with filters
+      const [allBooks, favoriteIds] = await Promise.all([
+        subjectWiseBooks({ className, subject, category }),
+        fetchFavoriteBooks(),
+      ]);
 
-        if (category) {
-          filteredBooks = allBooks.filter((b) => b.category === category);
-        } else if (className && subject) {
-          const decodedSubject = decodeURIComponent(subject);
-          filteredBooks = allBooks.filter(
-            (b) =>
-              b.educationLevel &&
-              b.subject &&
-              normalizeClass(b.educationLevel) === normalizeClass(className) &&
-              b.subject.toLowerCase() === decodedSubject.toLowerCase()
-          );
-        }
+      // Unique books by name
+      const uniqueBooksMap = {};
+      allBooks.forEach((book) => {
+        const key = book.bookName.toLowerCase().trim();
+        if (!uniqueBooksMap[key]) uniqueBooksMap[key] = book;
+      });
 
-        // Unique books by name
-        const uniqueBooksMap = {};
-        filteredBooks.forEach((book) => {
-          const key = book.bookName.toLowerCase().trim();
-          if (!uniqueBooksMap[key]) uniqueBooksMap[key] = book;
-        });
+      const booksWithFavorites = Object.values(uniqueBooksMap).map((b) => ({
+        ...b,
+        isFavorite: favoriteIds.includes(b.id),
+      }));
 
-        const booksWithFavorites = Object.values(uniqueBooksMap).map((b) => ({
-          ...b,
-          isFavorite: favoriteIds.includes(b.id),
-        }));
-
-        setBooks(booksWithFavorites);
-      } catch (error) {
-        console.error("Failed to load books or favorites:", error);
-      }
-      finally{
-        setLoading(false)
-      }
+      setBooks(booksWithFavorites);
+    } catch (error) {
+      console.error("Failed to load books or favorites:", error);
+    } finally {
+      setLoading(false);
     }
+  }
 
-    loadBooks();
-  }, [className, subject, category]);
+  loadBooks();
+}, [className, subject, category]);
+
 
   const handleBookClick = (bookId) => {
     navigate(`/student/books/${bookId}/chapters`);

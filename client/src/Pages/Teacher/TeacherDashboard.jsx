@@ -455,6 +455,7 @@
 // }
 
 // TeacherDashboard.jsx
+
 import { useEffect, useState } from "react";
 import TeacherSidebar from "./TeacherSidebar";
 import TeacherNavbar from "./TeacherNavbar";
@@ -490,8 +491,6 @@ export default function TeacherDashboard() {
         teacherUploadBooks: data.teacherUploadBooks || 0,
         totalBooks: data.totalBooks || 0,
       });
-
-      // Optionally populate recent uploads from dashboard
       const allUploads = Object.values(data.subjectWiseUploads || {}).flat();
       setRecentUploads(allUploads);
 
@@ -519,7 +518,6 @@ export default function TeacherDashboard() {
     }
   };
 
-  // ----------------- USE EFFECT -----------------
   useEffect(() => {
     fetchDashboardStats();
     fetchRecentUploads();
@@ -542,8 +540,7 @@ export default function TeacherDashboard() {
           <OverviewCard title="Total Books" icon={<FaBook />} value={overview.totalBooks} bg="bg-yellow-500" />
         </div>
 
-        {/* Assignments & Quizzes */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 p-6">
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 p-6">
           <Card
             title="📋 Assessment"
             description="Create and assign new Assessment to your students."
@@ -560,8 +557,32 @@ export default function TeacherDashboard() {
           />
         </div>
 
+ <div className="p-6 screen rounded-2xl shadow-lg bg-gradient-to-br from-green-600 to-green-800 flex flex-col gap-4 hover:scale-105 transition-transform duration-300">
+    <div className="flex items-center gap-4">
+      <FaBook size={36} />
+      <h3 className="text-xl font-bold">📑 Upload Question Bank</h3>
+    </div>
+    <p className="text-gray-200">Upload your question bank in PDF or Excel format.</p>
+    <input
+      type="file"
+      accept=".pdf,.xls,.xlsx"
+      className="mt-3 block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4
+        file:rounded-lg file:border-0
+        file:text-sm file:font-semibold
+        file:bg-white file:text-black
+        hover:file:bg-gray-200"
+      onChange={(e) => {
+        if (e.target.files.length > 0) {
+          toast.success(`📂 ${e.target.files[0].name} selected`);
+        }
+      }}
+    />
+    <button className="mt-4 px-4 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition">
+      Upload
+    </button>
+  </div>
         {/* Recent Uploads */}
-        <div className="bg-[#2a2b3c] rounded-2xl p-6 shadow-md mt-6">
+        {/* <div className="bg-[#2a2b3c] rounded-2xl p-6 shadow-md mt-6">
           <h3 className="text-lg font-bold mb-4 text-white">📘 Recent Uploads</h3>
           <ul className="space-y-3">
             {recentUploads.length > 0 ? (
@@ -574,7 +595,7 @@ export default function TeacherDashboard() {
               <li className="text-gray-400">No recent uploads</li>
             )}
           </ul>
-        </div>
+        </div> */}
       </main>
     </div>
   );

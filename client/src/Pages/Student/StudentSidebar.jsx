@@ -62,6 +62,7 @@ export default function StudentSidebar({ isOpen, onClose }) {
               </Link>
             </li>
 
+
             <li>
               <Link
                 to="/student/recent-read-books"
@@ -91,6 +92,15 @@ export default function StudentSidebar({ isOpen, onClose }) {
                 <span>Raise Concern</span>
               </Link>
             </li>
+            <li>
+  {/* <Link
+    to="/student/chat"
+    className="flex items-center space-x-3 text-gray-300 hover:text-white transition"
+  >
+    💬
+    <span>Chat</span>
+  </Link> */}
+</li>
           </ul>
         </nav>
       </div>

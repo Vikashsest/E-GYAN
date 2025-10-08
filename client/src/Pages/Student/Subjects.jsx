@@ -76,56 +76,33 @@
 
 // export default ClassSubjects;
 
-
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import StudentNavbar from "./StudentNavbar";
 import StudentSidebar from "./StudentSidebar";
-import { fetchBooks } from "../../apiServices/booksApi";
-import { FaBookOpen, FaArrowLeft,FaSpinner } from "react-icons/fa";
-import { FiMenu } from "react-icons/fi";
 
-// Helper function to normalize class names
-const normalizeClassName = (str) => {
-  if (!str) return "";
-  return str
-    .toLowerCase()
-    .replace(/\s+/g, "") // remove spaces
-    .replace(/[^a-z0-9]/g, ""); // remove special chars
-};
+import { FaBookOpen, FaArrowLeft, FaSpinner } from "react-icons/fa";
+import { FiMenu } from "react-icons/fi";
+import fetechSubjects from "../../apiServices/booksApi";
 
 const ClassSubjects = () => {
   const { className } = useParams();
   const [subjects, setSubjects] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [loading,setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     async function loadSubjects() {
-      setLoading(true)
+      setLoading(true);
       try {
-        const books = await fetchBooks();
+         const data = await fetechSubjects(className);
+        setSubjects(data);
 
-        // filter books of this class
-        const filteredBooks = books.filter(
-          (b) =>
-            b.educationLevel &&
-            normalizeClassName(b.educationLevel) ===
-            normalizeClassName(className)
-        );
-
-        // extract unique subjects
-        const uniqueSubjects = [
-          ...new Set(filteredBooks.map((b) => b.subject).filter(Boolean)),
-        ];
-
-        setSubjects(uniqueSubjects);
       } catch (error) {
         console.error("Failed to load subjects:", error);
-      }
-      finally{
-        setLoading(false)
+      } finally {
+        setLoading(false);
       }
     }
     loadSubjects();
@@ -167,7 +144,6 @@ const ClassSubjects = () => {
 
         <StudentNavbar />
 
-
         <button
           onClick={handleBack}
           className="flex items-center gap-2 mb-6 px-4 py-2 bg-[#3b3c4e] hover:bg-[#4a4b61] text-white rounded-xl shadow-md transition"
@@ -179,7 +155,12 @@ const ClassSubjects = () => {
           📖 Subjects in {className}
         </h2>
 
-        {subjects.length > 0 ? (
+        {loading ? (
+          <div className="flex flex-col items-center h-screen space-y-4">
+            <FaSpinner className="animate-spin text-blue-500 text-6xl" />
+            <p className="text-gray-400 font-semibold">Loading subjects...</p>
+          </div>
+        ) : subjects.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {subjects.map((sub, index) => (
               <div
@@ -189,15 +170,14 @@ const ClassSubjects = () => {
                 flex flex-col items-center justify-center hover:scale-105 transform transition-all duration-300 cursor-pointer"
               >
                 <FaBookOpen className="text-yellow-400 text-4xl mb-4 drop-shadow-lg" />
-                <h3 className="text-lg font-bold text-center break-words leading-snug">{sub}</h3>
+                <h3 className="text-lg font-bold text-center break-words leading-snug">
+                  {sub.trim()}
+                </h3>
               </div>
             ))}
           </div>
-        ) : (loading &&
-          <div className="flex flex-col items-center h-screen space-y-4">
-            <FaSpinner className="animate-spin text-blue-500 text-6xl" />
-            <p className="text-gray-600 font-semibold">Loading, please wait...</p>
-          </div>
+        ) : (
+          <p className="text-gray-400">No subjects available.</p>
         )}
       </main>
     </div>

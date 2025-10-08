@@ -37,6 +37,49 @@ export async function fetchEducationLevels() {
     throw error;
   }
 }
+export default async function fetechSubjects(className){
+  try {
+     const res = await fetch(`${API_URL}/books/subject?class=${encodeURIComponent(className)}`,{
+      method:'GET',
+      credentials:"include"
+    })
+    const data=await res.json()
+     if (!res.ok) throw new Error(data.message || "Failed to fetch sujects");
+      return data; 
+  } catch (error) {
+    console.error("Error fetching education levels:", error);
+    throw error;
+  }
+}
+/**
+ * Fetch books with optional filters
+ * @param {string} className
+ * @param {string} subject
+ * @param {string} category
+ */
+export async function subjectWiseBooks({ className, subject, category } = {}) {
+  try {
+    // Build query params
+    const params = new URLSearchParams();
+    if (className) params.append("class", className);
+    if (subject) params.append("subject", subject);
+    if (category) params.append("category", category);
+
+    const res = await fetch(`${API_URL}/books?${params.toString()}`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    });
+
+    const data = await res.json();
+    return Array.isArray(data) ? data : data.books || [];
+  } catch (error) {
+    console.error("Error fetching books:", error);
+    throw error;
+  }
+}
 
 /**
  * Upload a new book
