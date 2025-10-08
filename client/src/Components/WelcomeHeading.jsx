@@ -15,7 +15,6 @@ const API_URL = import.meta.env.VITE_API_URL;
             });
     
             const data = await res.json();
-            console.log(data)
             setUserData(data);
           } catch (err) {
             console.error("❌ Failed to fetch your name", err);

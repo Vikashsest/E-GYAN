@@ -18,7 +18,6 @@ export default function StudentProfile() {
         const data = await res.json();
         setUser(data.profile);
       } catch (err) {
-        console.error("❌ Failed to fetch profile:", err);
         toast.error("❌ Failed to fetch profile:", err)
       }
     }
