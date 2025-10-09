@@ -49,7 +49,7 @@ async function bootstrap() {
   res.setHeader('Access-Control-Allow-Headers', 'Range');
   res.setHeader("Content-Disposition", "inline; filename=chapter.pdf");
 res.setHeader("Accept-Ranges", "bytes");
-
+res.setHeader("Content-Type", "application/pdf");
   res.setHeader(
     'Access-Control-Expose-Headers',
     'Accept-Ranges, Content-Encoding, Content-Length, Content-Range',
