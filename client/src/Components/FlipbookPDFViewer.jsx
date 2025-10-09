@@ -1642,6 +1642,11 @@
 // }
 
 
+
+
+
+
+
 import { useEffect, useState, useRef, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import HTMLFlipBook from "react-pageflip";
@@ -1779,57 +1784,58 @@ export default function FlipbookPDFViewer({
 
     let cancelled = false;
     const loadPdf = async () => {
-      setLoading(true);
-      try {
-        // const loadingTask = pdfjsLib.getDocument(bookUrl);
-         const loadingTask = pdfjsLib.getDocument({
-  url: bookUrl,
-  rangeChunkSize: 65536, 
-  httpHeaders: {
-   
-    "Cache-Control": "no-cache",
-  },
-});
-        const pdf = await loadingTask.promise;
-        if (cancelled) return;
+  setLoading(true);
+  try {
+    const loadingTask = pdfjsLib.getDocument({
+      url: bookUrl,
+      rangeChunkSize: 1024 * 512, // 512 KB chunks for faster streaming
+      disableStream: false,
+    });
 
-        pdfRef.current = pdf;
-        setTotalPages?.(pdf.numPages);
-        setTotal(pdf.numPages);
+    const pdf = await loadingTask.promise;
+    pdfRef.current = pdf;
+    setTotalPages?.(pdf.numPages);
+    setTotal(pdf.numPages);
 
-        // load first page
-        await renderPage(1);
-      } catch (err) {
-        console.error("Error loading PDF:", err);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    };
+    // ✅ render first page immediately
+    await renderPage(1);
+  } catch (err) {
+    console.error("Error loading PDF:", err);
+  } finally {
+    setLoading(false); // first page render ke baad hide loader
+  }
+};
+
     loadPdf();
     return () => (cancelled = true);
   }, [bookUrl, fileType]);
 
   // ✅ Render single page on demand
-  const renderPage = async (num) => {
-    if (!pdfRef.current || pages[num]) return; // already rendered
-    try {
-      const pageObj = await pdfRef.current.getPage(num);
-      const viewport = pageObj.getViewport({ scale: 1.5 });
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      await pageObj.render({ canvasContext: context, viewport }).promise;
+const renderPage = async (num) => {
+  if (!pdfRef.current || pages[num]) return; // already rendered
+  try {
+    const pageObj = await pdfRef.current.getPage(num);
+    const viewport = pageObj.getViewport({ scale: 1.5 });
 
-      if (num === 1) {
-        setPageSize({ width: viewport.width, height: viewport.height });
-      }
+    const canvas = document.createElement("canvas");
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    const context = canvas.getContext("2d");
 
-      setPages((prev) => ({ ...prev, [num]: canvas.toDataURL() }));
-    } catch (err) {
-      console.error("Error rendering page:", err);
-    }
-  };
+    await pageObj.render({ canvasContext: context, viewport }).promise;
+
+    // Convert canvas to blob (not Base64)
+   canvas.toBlob((blob) => {
+  if (!blob) return;
+  const url = URL.createObjectURL(blob);
+  setPages((prev) => ({ ...prev, [num]: url }));
+}, "image/png");
+
+    if (num === 1) setPageSize({ width: viewport.width, height: viewport.height });
+  } catch (err) {
+    console.error("Error rendering page:", err);
+  }
+};
 
   // ✅ Flipbook Keyboard nav
   useEffect(() => {
@@ -1846,18 +1852,29 @@ export default function FlipbookPDFViewer({
   }, [isFullscreen]);
 
   // ✅ Load next/prev pages lazily when flipping
-  const handleFlip = async (e) => {
-    const newPage = e.data + 1;
-    setCurrentPage(newPage);
-    setPage?.(newPage);
-    logActivity(newPage);
-    startTimeRef.current = Date.now();
+  // const handleFlip = async (e) => {
+  //   const newPage = e.data + 1;
+  //   setCurrentPage(newPage);
+  //   setPage?.(newPage);
+  //   logActivity(newPage);
+  //   startTimeRef.current = Date.now();
 
-    // pre-load surrounding pages
-    await renderPage(newPage);
-    if (newPage + 1 <= total) renderPage(newPage + 1);
-    if (newPage - 1 > 0) renderPage(newPage - 1);
-  };
+  //   // pre-load surrounding pages
+  //   await renderPage(newPage);
+  //   if (newPage + 1 <= total) renderPage(newPage + 1);
+  //   if (newPage - 1 > 0) renderPage(newPage - 1);
+  // };
+const handleFlip = async (e) => {
+  const newPage = e.data + 1;
+  setCurrentPage(newPage);
+  setPage?.(newPage);
+  logActivity(newPage);
+  startTimeRef.current = Date.now();
+
+  // lazy load
+  renderPage(newPage + 1);
+  renderPage(newPage - 1);
+};
 
   // ✅ Scroll Mode Lazy Loading
   useEffect(() => {
