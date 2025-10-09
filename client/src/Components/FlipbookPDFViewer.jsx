@@ -1781,7 +1781,15 @@ export default function FlipbookPDFViewer({
     const loadPdf = async () => {
       setLoading(true);
       try {
-        const loadingTask = pdfjsLib.getDocument(bookUrl);
+        // const loadingTask = pdfjsLib.getDocument(bookUrl);
+         const loadingTask = pdfjsLib.getDocument({
+  url: bookUrl,
+  rangeChunkSize: 65536, 
+  httpHeaders: {
+   
+    "Cache-Control": "no-cache",
+  },
+});
         const pdf = await loadingTask.promise;
         if (cancelled) return;
 
