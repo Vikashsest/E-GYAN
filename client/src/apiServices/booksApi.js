@@ -235,7 +235,7 @@ export async function deleteChapter(chapterId) {
     const res = await fetch(`${API_URL}/books/chapter/${chapterId}`, {
       method: "DELETE",
       credentials: "include",
-      headers: { Authorization: `Bearer ${access_token}` },
+      // headers: { Authorization: `Bearer ${access_token}` },
     });
     const result = await res.json();
     if (!res.ok) throw new Error(result.message || "Failed to delete chapter");

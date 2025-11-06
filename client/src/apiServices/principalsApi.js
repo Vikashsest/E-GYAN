@@ -6,9 +6,9 @@ export async function fetchPrincipals() {
   const res = await fetch(`${API_URL}/user/filter?role=principal`, {
     method: "GET",
     credentials: "include",
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${access_token}`,
+    // },
   });
 
   if (!res.ok) {
