@@ -1,34 +1,29 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Get, Param, Body } from '@nestjs/common';
 import { AnalyticsService } from './analytics.service';
-import { CreateAnalyticsDto } from './dto/create-analytics.dto';
-import { UpdateAnalyticsDto } from './dto/update-analytics.dto';
+import { Analytics, AnalyticsType } from '../analytics/entities/analytics.entity';
 
 @Controller('analytics')
 export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
 
-  @Post()
-  create(@Body() createAnalyticsDto: CreateAnalyticsDto) {
-    return this.analyticsService.create(createAnalyticsDto);
-  } 
 
-  @Get()
-  findAll() {
-    return this.analyticsService.findAll();
+  @Post('track')
+  async track(@Body() data: Partial<Analytics>): Promise<Analytics> {
+    return this.analyticsService.trackAnalytics(data);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.analyticsService.findOne(+id);
+  @Get('student/:id')
+  async getByStudent(@Param('id') studentId: number): Promise<Analytics[]> {
+    return this.analyticsService.getStudentAnalytics(studentId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAnalyticsDto: UpdateAnalyticsDto) {
-    return this.analyticsService.update(+id, updateAnalyticsDto);
+  @Get('book/:id')
+  async getByBook(@Param('id') bookId: number): Promise<Analytics[]> {
+    return this.analyticsService.getBookAnalytics(bookId);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.analyticsService.remove(+id);
+  @Post('sync')
+  async sync(@Body() records: Partial<Analytics>[]): Promise<Analytics[]> {
+    return this.analyticsService.syncOfflineAnalytics(records);
   }
 }

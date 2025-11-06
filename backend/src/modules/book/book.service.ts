@@ -3,7 +3,7 @@ import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Book } from './entities/book.entity';
-import { ILike, Repository } from 'typeorm';
+import { ILike, In, Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { UserRole } from '../user/entities/user.entity'; 
 import { Announcement } from '../student/entities/announcement.entity';
@@ -13,6 +13,7 @@ import { NextcloudService } from '../nextcloud/nextcloud.service';
 import { generatePublicLink } from 'src/common/utils/nextcloud.config';
 import { StudentActivity } from '../student/entities/student-activity.entity';
 import { IsNull } from 'typeorm';
+import { Simulation } from './entities/simulation';
 
 
 @Injectable()
@@ -29,7 +30,9 @@ export class BookService {
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
         @InjectRepository(Announcement)
-        private readonly announcementRepo:Repository<Announcement>
+        private readonly announcementRepo:Repository<Announcement>,
+        @InjectRepository(Simulation)
+    private readonly simulationRepo:Repository<Simulation>,
   ) {}
   
 
@@ -464,7 +467,23 @@ async getChaptersMeta(bookId: number) {
 
 }
 
+async createSimulation(data: {
+  title: string;
+  subject: string;
+  topic: string;
+  grade: string;
+  link: string;
+  image?: string;
+}) {
+  const simulation = this.simulationRepo.create(data);
+  return await this.simulationRepo.save(simulation);
+}
 
+async fetechAllSimulations(){
+  return await this.simulationRepo.find({
+    order:{createdAt:'DESC'}
+  });
+}
 
 
 }

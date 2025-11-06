@@ -1,26 +1,33 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAnalyticsDto } from './dto/create-analytics.dto';
-import { UpdateAnalyticsDto } from './dto/update-analytics.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Analytics, AnalyticsType } from '../analytics/entities/analytics.entity';
 
+import { User } from '../user/entities/user.entity';
+import { Book } from '../book/entities/book.entity';
+import { Chapter } from '../book/entities/chapter.entity';
 @Injectable()
 export class AnalyticsService {
-  create(createAnalyticsDto: CreateAnalyticsDto) {
-    return 'This action adds a new analytics';
+  constructor(
+    @InjectRepository(Analytics)
+    private analyticsRepo: Repository<Analytics>,
+  ) {}
+
+  async trackAnalytics(data: Partial<Analytics>): Promise<Analytics> {
+    const record = this.analyticsRepo.create(data);
+    return await this.analyticsRepo.save(record);
   }
 
-  findAll() {
-    return `This action returns all analytics`;
+  async getStudentAnalytics(studentId: number): Promise<Analytics[]> {
+    return this.analyticsRepo.find({ where: { student: { id: studentId } } });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} analytics`;
+  async getBookAnalytics(bookId: number): Promise<Analytics[]> {
+    return this.analyticsRepo.find({ where: { book: { id: bookId } } });
   }
 
-  update(id: number, updateAnalyticsDto: UpdateAnalyticsDto) {
-    return `This action updates a #${id} analytics`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} analytics`;
+  async syncOfflineAnalytics(records: Partial<Analytics>[]): Promise<Analytics[]> {
+    const analytics = this.analyticsRepo.create(records);
+    return this.analyticsRepo.save(analytics);
   }
 }

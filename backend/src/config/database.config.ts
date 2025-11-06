@@ -17,6 +17,8 @@ import { Query } from '@nestjs/common';
 import { Quiz } from 'src/modules/quizzes/entities/quiz.entity';
 import { QuizAttempt } from 'src/modules/quizzes/entities/quiz-attempt.entity';
 import { QuizQuestion } from 'src/modules/quizzes/entities/quiz-question.entity';
+import { Analytics } from 'src/modules/analytics/entities/analytics.entity';
+import { Simulation } from 'src/modules/book/entities/simulation';
 
 
 dotenv.config();
@@ -44,8 +46,8 @@ export const databaseConfig: TypeOrmModuleOptions = {
   type: 'postgres',
   url:'postgresql://neondb_owner:npg_VUoArT49ZSDk@ep-silent-river-a1if9gjk-pooler.ap-southeast-1.aws.neon.tech/egyan?sslmode=require&channel_binding=require',
   ssl: { rejectUnauthorized: false },
-  entities: [User, Book, Student, StudentActivity, Concern, BookProgress, Announcement, Chapter,Repositories,Assessment,AssessmentQuestion,AssessmentAttempt,Quiz,QuizAttempt,QuizQuestion],
-  synchronize: false,
+  entities: [User, Book, Student, StudentActivity, Concern, BookProgress, Announcement, Chapter,Repositories,Assessment,AssessmentQuestion,AssessmentAttempt,Quiz,QuizAttempt,QuizQuestion,Analytics,Simulation],
+  synchronize: true,
   extra: {
     connectionTimeoutMillis: 30000,
   },

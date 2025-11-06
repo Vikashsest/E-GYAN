@@ -155,6 +155,21 @@ export class BookController {
 //   }
 // }
 
+@Post('simulation')
+async addSimulation(@Body() data: {
+  title: string;
+  subject: string;
+  topic: string;
+  grade: string;
+  link: string;
+  image?: string;
+}) {
+  return this.bookService.createSimulation(data);
+}
+@Get('simulations')
+async getSimulations(){
+  return this.bookService.fetechAllSimulations()
+}
 @Get('proxy/file')
 async proxyFile(
   @Query('url') url: string,
@@ -382,25 +397,67 @@ async getCategory(){
   }
 
   // ✅ Chapter file stream
+// @Get(":id/chapters/:chapterId/file")
+// async getChapterFile(
+//   @Param("id") bookId: string,
+//   @Param("chapterId") chapterId: string,
+//   @Res() res: Response,
+//   @Req() req: Request
+// ) {
+//   const fileUrl = await this.bookService.getChapterFileStream(+bookId, +chapterId);
+//   if (!fileUrl) throw new NotFoundException("File not found");
+
+//   const headers: any = {};
+//   if (req.headers["range"]) {
+//     headers["Range"] = req.headers["range"] as string;
+//   }
+
+//   // Remote authorization agar needed ho
+//   if (fileUrl.includes("/remote.php/dav")) {
+//     headers["Authorization"] =
+//       "Basic " + Buffer.from(`${process.env.NEXTCLOUD_USER}:${process.env.NEXTCLOUD_PASS}`).toString("base64");
+//   }
+
+//   const response = await axios.get(fileUrl, {
+//     headers,
+//     responseType: "stream",
+//     validateStatus: () => true,
+//   });
+
+//   // Headers fix for PDF.js
+//   res.setHeader("Content-Disposition", "inline; filename=chapter.pdf");
+//   res.setHeader("Content-Type", "application/pdf");
+//   res.setHeader("Accept-Ranges", "bytes");
+
+//   // Forward remote headers (like Content-Length)
+//   Object.entries(response.headers).forEach(([key, value]) => {
+//     if (value && !["content-disposition", "content-type"].includes(key.toLowerCase())) {
+//       res.setHeader(key, value as string);
+//     }
+//   });
+
+//   await streamPipeline(response.data, res);
+// }
+
 @Get(":id/chapters/:chapterId/file")
 async getChapterFile(
   @Param("id") bookId: string,
   @Param("chapterId") chapterId: string,
-  @Res() res: Response,
-  @Req() req: Request
+  @Req() req: Request,
+  @Res() res: Response
 ) {
   const fileUrl = await this.bookService.getChapterFileStream(+bookId, +chapterId);
   if (!fileUrl) throw new NotFoundException("File not found");
 
+  const range = req.headers["range"];
   const headers: any = {};
-  if (req.headers["range"]) {
-    headers["Range"] = req.headers["range"] as string;
-  }
 
-  // Remote authorization agar needed ho
+  if (range) headers["Range"] = range;
+
   if (fileUrl.includes("/remote.php/dav")) {
     headers["Authorization"] =
-      "Basic " + Buffer.from(`${process.env.NEXTCLOUD_USER}:${process.env.NEXTCLOUD_PASS}`).toString("base64");
+      "Basic " +
+      Buffer.from(`${process.env.NEXTCLOUD_USER}:${process.env.NEXTCLOUD_PASS}`).toString("base64");
   }
 
   const response = await axios.get(fileUrl, {
@@ -409,21 +466,22 @@ async getChapterFile(
     validateStatus: () => true,
   });
 
-  // Headers fix for PDF.js
-  res.setHeader("Content-Disposition", "inline; filename=chapter.pdf");
+  res.status(response.status === 206 ? 206 : 200);
   res.setHeader("Content-Type", "application/pdf");
   res.setHeader("Accept-Ranges", "bytes");
 
-  // Forward remote headers (like Content-Length)
-  Object.entries(response.headers).forEach(([key, value]) => {
-    if (value && !["content-disposition", "content-type"].includes(key.toLowerCase())) {
-      res.setHeader(key, value as string);
-    }
+  if (response.headers["content-length"])
+    res.setHeader("Content-Length", response.headers["content-length"]);
+  if (response.headers["content-range"])
+    res.setHeader("Content-Range", response.headers["content-range"]);
+
+  response.data.on("error", (err) => {
+    console.error("Stream error:", err);
+    res.end();
   });
 
-  await streamPipeline(response.data, res);
+  response.data.pipe(res);
 }
-
 
 
   @Get()

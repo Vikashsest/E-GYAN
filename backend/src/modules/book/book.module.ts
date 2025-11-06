@@ -11,8 +11,9 @@ import { Chapter } from './entities/chapter.entity';
 import { NextcloudService } from '../nextcloud/nextcloud.service';
 import { NextcloudModule } from '../nextcloud/nextcloud.module';
 import { StudentActivity } from '../student/entities/student-activity.entity';
+import { Simulation } from './entities/simulation';
 @Module({
-   imports: [TypeOrmModule.forFeature([Book,User,BookProgress,Announcement,Chapter,StudentActivity]),UserModule,NextcloudModule],
+   imports: [TypeOrmModule.forFeature([Book,User,BookProgress,Announcement,Chapter,StudentActivity,Simulation]),UserModule,NextcloudModule],
   controllers: [BookController],
   providers: [BookService,NextcloudService],
 })
