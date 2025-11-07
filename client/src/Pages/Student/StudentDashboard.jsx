@@ -193,6 +193,7 @@
 // }
 
 
+
 import { useEffect, useState } from "react";
 import {
   FaClock,
@@ -332,7 +333,46 @@ export default function DashboardMetrics() {
 </div>
 
 
-        {/* Announcements */}
+{/* Action Buttons Below Metrics */}
+<div className="flex flex-wrap justify-center gap-4 px-6 mt-6">
+  <button
+    onClick={() => navigate("/students/books")}
+    className="px-6 py-3 border-2 border-blue-600 rounded-xl 
+               text-white font-semibold shadow-md hover:scale-105 
+               hover:shadow-lg transition-all duration-300"
+  >
+    📚 Study Material
+  </button>
+
+  <button
+    onClick={() => navigate("/student/myprogress")}
+    className="px-6 py-3 border-2 border-green-600 rounded-xl 
+               text-white font-semibold shadow-md hover:scale-105 
+               hover:shadow-lg transition-all duration-300"
+  >
+    📈 My Progress
+  </button>
+
+  <button
+    onClick={() => navigate("/student/recent-read-books")}
+    className="px-6 py-3 border-2 border-yellow-500 rounded-xl 
+               text-white font-semibold shadow-md hover:scale-105 
+               hover:shadow-lg transition-all duration-300"
+  >
+    🕓 Recent Activity
+  </button>
+
+  <button
+    onClick={() => navigate("/student/favorites")}
+    className="px-6 py-3 border-2 border-pink-500 rounded-xl 
+               text-white font-semibold shadow-md hover:scale-105 
+               hover:shadow-lg transition-all duration-300"
+  >
+    ❤️ Favorites
+  </button>
+</div>
+
+       
        {/* Announcements */}
 <div className="mt-10 px-4">
   <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-white">
