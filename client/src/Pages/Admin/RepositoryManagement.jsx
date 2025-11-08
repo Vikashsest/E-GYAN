@@ -173,7 +173,7 @@
 //     </div>
 //   );
 // }
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
 const API_URL = import.meta.env.VITE_API_URL;
@@ -185,8 +185,18 @@ export default function RepositoryManagement() {
   const [languages, setLanguages] = useState([]);
   const [categories, setCategories] = useState([]);
 
+  const [repoName, setRepoName] = useState("");
+  const [selected, setSelected] = useState({
+    resourceType: "",
+    subject: "",
+    level: "",
+    language: "",
+    category: "",
+  });
+
   const [newValue, setNewValue] = useState("");
   const [activeField, setActiveField] = useState("");
+
   useEffect(() => {
     const fetchRepo = async () => {
       try {
@@ -194,12 +204,11 @@ export default function RepositoryManagement() {
         if (!res.ok) throw new Error("Failed to fetch repository");
         const data = await res.json();
         const repo = data[0];
-
-        setResourceTypes(repo.ResourceTypes ? repo.ResourceTypes.split(",") : []);
-        setSubjects(repo.Subjects ? repo.Subjects.split(",") : []);
-        setLevels(repo.EducationLevels ? repo.EducationLevels.split(",") : []);
-        setLanguages(repo.Languages ? repo.Languages.split(",") : []);
-        setCategories(repo.Categories ? repo.Categories.split(",") : []);
+        setResourceTypes(repo.ResourceTypes?.split(",") || []);
+        setSubjects(repo.Subjects?.split(",") || []);
+        setLevels(repo.EducationLevels?.split(",") || []);
+        setLanguages(repo.Languages?.split(",") || []);
+        setCategories(repo.Categories?.split(",") || []);
       } catch (err) {
         console.error(err);
       }
@@ -207,9 +216,9 @@ export default function RepositoryManagement() {
     fetchRepo();
   }, []);
 
+  // ✅ Add new dropdown value (POST)
   const addValue = async (type) => {
-    if (!newValue.trim()) return;
-
+    if (!newValue.trim()) return alert("Please enter a value!");
     try {
       const res = await fetch(`${API_URL}/repository`, {
         method: "POST",
@@ -217,20 +226,47 @@ export default function RepositoryManagement() {
         credentials: "include",
         body: JSON.stringify({ type, value: newValue }),
       });
-      if (!res.ok) throw new Error("Failed to save");
+      if (!res.ok) throw new Error("Failed to add value");
       const data = await res.json();
-
-      // ✅ Update frontend arrays from backend response
-      setResourceTypes(data.ResourceTypes ? data.ResourceTypes.split(",") : []);
-      setSubjects(data.Subjects ? data.Subjects.split(",") : []);
-      setLevels(data.EducationLevels ? data.EducationLevels.split(",") : []);
-      setLanguages(data.Languages ? data.Languages.split(",") : []);
-      setCategories(data.Categories ? data.Categories.split(",") : []);
-
-      setNewValue(""); // clear input
+      setResourceTypes(data.ResourceTypes?.split(",") || []);
+      setSubjects(data.Subjects?.split(",") || []);
+      setLevels(data.EducationLevels?.split(",") || []);
+      setLanguages(data.Languages?.split(",") || []);
+      setCategories(data.Categories?.split(",") || []);
+      setNewValue("");
+      alert("✅ Added successfully!");
     } catch (err) {
       console.error(err);
       alert("Failed to save");
+    }
+  };
+
+  // ✅ Create new repository (POST)
+  const createRepository = async () => {
+    if (!repoName.trim()) return alert("Enter repository name");
+    try {
+      const res = await fetch(`${API_URL}/repository/create`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          name: repoName,
+          ...selected,
+        }),
+      });
+      if (!res.ok) throw new Error("Failed to create repository");
+      alert("✅ Repository created successfully!");
+      setRepoName("");
+      setSelected({
+        resourceType: "",
+        subject: "",
+        level: "",
+        language: "",
+        category: "",
+      });
+    } catch (err) {
+      console.error(err);
+      alert("Failed to create repository");
     }
   };
 
@@ -239,49 +275,147 @@ export default function RepositoryManagement() {
       <Sidebar />
       <div className="ml-64 flex-1 bg-[#0f1017] min-h-screen p-6 text-white">
         <AdminNavbar />
-        <h1 className="text-3xl font-bold mb-8">📚 Repository Management</h1>
+        <h1 className="text-3xl font-bold mb-8">📘 Create Repository</h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          <Card title="Resource Types" color="blue" items={resourceTypes} activeField={activeField} newValue={newValue} setActiveField={setActiveField} setNewValue={setNewValue} onAdd={() => addValue("resource")} placeholder="Add new type" />
-          <Card title="Subjects" color="green" items={subjects} activeField={activeField} newValue={newValue} setActiveField={setActiveField} setNewValue={setNewValue} onAdd={() => addValue("subject")} placeholder="Add new subject" />
-          <Card title="Education Levels" color="orange" items={levels} activeField={activeField} newValue={newValue} setActiveField={setActiveField} setNewValue={setNewValue} onAdd={() => addValue("level")} placeholder="Add new level" />
-          <Card title="Languages" color="yellow" items={languages} activeField={activeField} newValue={newValue} setActiveField={setActiveField} setNewValue={setNewValue} onAdd={() => addValue("language")} placeholder="Add new language" />
-          <Card title="Categories" color="purple" items={categories} activeField={activeField} newValue={newValue} setActiveField={setActiveField} setNewValue={setNewValue} onAdd={() => addValue("category")} placeholder="Add new category" />
+        <div className="bg-[#1e1f29] p-6 rounded-xl shadow-lg space-y-5 max-w-4xl">
+          {/* Repository Name */}
+          {/* <div>
+            <label className="block mb-2 font-semibold">Repository Name</label>
+            <input
+              type="text"
+              value={repoName}
+              onChange={(e) => setRepoName(e.target.value)}
+              placeholder="Enter repository name"
+              className="w-full p-2 rounded text-black"
+            />
+          </div> */}
+
+          {/* Dropdowns in one grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <DropdownWithAdd
+              title="Resource Type"
+              items={resourceTypes}
+              value={selected.resourceType}
+              onChange={(v) => setSelected({ ...selected, resourceType: v })}
+              onAdd={() => addValue("resource")}
+              placeholder="Add new type"
+              newValue={newValue}
+              setNewValue={setNewValue}
+              activeField={activeField}
+              setActiveField={setActiveField}
+            />
+
+            <DropdownWithAdd
+              title="Subject"
+              items={subjects}
+              value={selected.subject}
+              onChange={(v) => setSelected({ ...selected, subject: v })}
+              onAdd={() => addValue("subject")}
+              placeholder="Add new subject"
+              newValue={newValue}
+              setNewValue={setNewValue}
+              activeField={activeField}
+              setActiveField={setActiveField}
+            />
+
+            <DropdownWithAdd
+              title="Education Level"
+              items={levels}
+              value={selected.level}
+              onChange={(v) => setSelected({ ...selected, level: v })}
+              onAdd={() => addValue("level")}
+              placeholder="Add new level"
+              newValue={newValue}
+              setNewValue={setNewValue}
+              activeField={activeField}
+              setActiveField={setActiveField}
+            />
+
+            <DropdownWithAdd
+              title="Language"
+              items={languages}
+              value={selected.language}
+              onChange={(v) => setSelected({ ...selected, language: v })}
+              onAdd={() => addValue("language")}
+              placeholder="Add new language"
+              newValue={newValue}
+              setNewValue={setNewValue}
+              activeField={activeField}
+              setActiveField={setActiveField}
+            />
+
+            <DropdownWithAdd
+              title="Category"
+              items={categories}
+              value={selected.category}
+              onChange={(v) => setSelected({ ...selected, category: v })}
+              onAdd={() => addValue("category")}
+              placeholder="Add new category"
+              newValue={newValue}
+              setNewValue={setNewValue}
+              activeField={activeField}
+              setActiveField={setActiveField}
+            />
+          </div>
+
+          {/* Create Button
+          <button
+            onClick={createRepository}
+            className="w-full bg-blue-600 hover:bg-blue-700 p-2 rounded text-white font-semibold"
+          >
+            Create Repository
+          </button> */}
         </div>
       </div>
     </div>
   );
 }
 
-function Card({ title, color, items, activeField, newValue, setActiveField, setNewValue, onAdd, placeholder }) {
-  const colors = {
-    blue: "bg-blue-600",
-    green: "bg-green-600",
-    orange: "bg-orange-600",
-    yellow: "bg-yellow-600",
-    purple: "bg-purple-600",
-  };
-
+// ✅ Reusable dropdown + add input
+function DropdownWithAdd({
+  title,
+  items,
+  value,
+  onChange,
+  onAdd,
+  placeholder,
+  newValue,
+  setNewValue,
+  activeField,
+  setActiveField,
+}) {
   return (
-    <div className="bg-[#1e1f29] p-5 rounded-xl shadow-lg flex flex-col justify-between">
-      <h2 className="text-xl font-semibold mb-3">{title}</h2>
-      <ul className="list-disc ml-5 mb-4 space-y-1 text-gray-300">
-        {items.map((item, i) => (
-          <li key={i}>{item}</li>
-        ))}
-      </ul>
-      <div className="flex gap-2 mt-auto">
+    <div>
+      <label className="block mb-1 font-semibold">{title}</label>
+      <div className="flex gap-2">
+        <select
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="flex-1 p-2 rounded text-black"
+        >
+          <option value="">Select {title}</option>
+          {items.map((item, i) => (
+            <option key={i} value={item}>
+              {item}
+            </option>
+          ))}
+        </select>
+
+        {/* Add new input */}
         <input
           type="text"
-          value={activeField === title.toLowerCase().split(" ")[0] ? newValue : ""}
+          placeholder={placeholder}
+          value={activeField === title.toLowerCase() ? newValue : ""}
           onChange={(e) => {
-            setActiveField(title.toLowerCase().split(" ")[0]);
+            setActiveField(title.toLowerCase());
             setNewValue(e.target.value);
           }}
-          placeholder={placeholder}
-          className="p-2 rounded text-black flex-1"
+          className="w-1/2 p-2 rounded text-black"
         />
-        <button onClick={onAdd} className={`${colors[color]} px-3 py-1 rounded text-white`}>
+        <button
+          onClick={onAdd}
+          className="bg-green-600 px-3 py-1 rounded text-white"
+        >
           Add
         </button>
       </div>
