@@ -45,7 +45,10 @@ if (!['.xlsx', '.xls', '.csv'].includes(ext)) {
 }
   return this.adminService.importUsersFromFile(file.path);
 }
-
+@Get("student-progress")
+async studentsprogres(){
+  return this.adminService.studentProgress()
+}
 }
 
 

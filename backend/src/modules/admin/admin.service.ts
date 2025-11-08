@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Book } from '../book/entities/book.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { User, UserRole } from '../user/entities/user.entity';
 import { ILike } from 'typeorm';
 import { Concern } from '../student/entities/raise-concern.entity';
@@ -10,10 +10,11 @@ import { Student } from '../student/entities/student.entity';
 import * as bcrypt from 'bcrypt';
 import * as XLSX from 'xlsx';
 import { NextcloudService } from '../nextcloud/nextcloud.service';
-
 import { unlink } from 'fs/promises';
 import * as path from 'path';
 import { Chapter } from '../book/entities/chapter.entity';
+import { BookProgress } from '../book/entities/book-progress.entity';
+import { StudentActivity, ActivityType } from '../student/entities/student-activity.entity';
 @Injectable()
 export class AdminService {
   constructor(
@@ -27,6 +28,10 @@ export class AdminService {
     private readonly concernRepo:Repository<Concern>,
     @InjectRepository(Student)
     private readonly studentRepo:Repository<Student>,
+        @InjectRepository(BookProgress)
+    private readonly progressRepo:Repository<BookProgress>,
+    @InjectRepository(StudentActivity)
+    private readonly studentActivityRepo:Repository<StudentActivity>,
     private readonly nextcloudService: NextcloudService,
   ) {}
 
@@ -144,7 +149,7 @@ async importUsersFromFile(filePath: string) {
   const sheet = workbook.Sheets[workbook.SheetNames[0]];
   const rawData = XLSX.utils.sheet_to_json(sheet);
 
-  // Normalize keys (lowercase + trim)
+
   const data = rawData.map((row: any) => {
     const normalized: any = {};
     Object.keys(row).forEach((key) => {
@@ -247,6 +252,87 @@ async importUsersFromFile(filePath: string) {
     skippedRows,
   };
 }
+
+
+async studentProgress() {
+  // 1️⃣ Pehle saare students lao
+  const students = await this.userRepo.find({
+    where: { role: UserRole.STUDENT },
+    select: ['id', 'username'],
+  });
+
+  if (!students.length) return [];
+
+  const studentIds = students.map((s) => s.id);
+
+  // 2️⃣ Saare student activities lao (sirf completed)
+  const allActivities = await this.studentActivityRepo.find({
+    where: { user: { id: In(studentIds) }, activityType: ActivityType.COMPLETED },
+     relations: ['book', 'user'],
+    select: {
+      id: true,
+      isCompleted: true,
+      book: { id: true, bookName: true },
+      user: { id: true },
+    },
+  });
+
+  // 3️⃣ Har student ka progress calculate karo
+  const result = await Promise.all(
+    students.map(async (s) => {
+      // Student ke completed activities nikaalo
+      const userActivities = allActivities.filter((a) => a.user.id === s.id);
+
+      // Group by book
+      const booksMap: Record<string, number> = {};
+      for (const act of userActivities) {
+        const bookId = act.book?.id;
+        if (!bookId) continue;
+        booksMap[bookId] = (booksMap[bookId] || 0) + 1;
+      }
+
+      // 4️⃣ Har book ke total chapters count karo
+      const progressByBook = await Promise.all(
+        Object.keys(booksMap).map(async (bookId) => {
+          const totalChapters = await this.chapterRepo.count({
+            where: { book: { id: +bookId } },
+          });
+          const completed = booksMap[bookId];
+          const progress = totalChapters
+            ? Math.round((completed / totalChapters) * 100)
+            : 0;
+
+          const book = userActivities.find((a) => a.book?.id === +bookId)?.book;
+
+          return {
+            bookName: book?.bookName || 'Unknown Book',
+            progress,
+          };
+        }),
+      );
+
+      // 5️⃣ Average progress nikalo
+      const averageProgress =
+        progressByBook.length > 0
+          ? Math.round(
+              progressByBook.reduce((sum, b) => sum + b.progress, 0) /
+                progressByBook.length,
+            )
+          : 0;
+
+      return {
+        id: s.id,
+        username: s.username,
+        email: s.email,
+        progressByBook,
+        averageProgress,
+      };
+    }),
+  );
+
+  return result;
+}
+
 
 
 }
