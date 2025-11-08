@@ -211,7 +211,8 @@ export default function AdminStudentProgress() {
   useEffect(() => {
     async function fetchStudents() {
       try {
-        const res = await fetch("http://localhost:5000/admin/student-progress");
+        // const res = await fetch("http://localhost:5000/admin/student-progress");
+        const res=await fetch(`${import.meta.env.VITE_API_URL}/admin/student-progress`,)
         const data = await res.json();
 
         const formattedData = data.map((s, i) => ({
