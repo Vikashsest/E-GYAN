@@ -483,8 +483,12 @@ const Books = () => {
               <h3 className="text-base sm:text-lg md:text-xl font-bold text-center">
                 Simulation
               </h3>
+              
             </div>
+            
           </div>
+
+          
         ) : (
           loading && (
             <div className="flex flex-col items-center h-screen space-y-4">

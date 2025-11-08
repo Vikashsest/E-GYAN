@@ -158,7 +158,6 @@
 //     </div>
 //   );
 // }
-
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 import Sidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
@@ -175,14 +174,15 @@ function debounce(fn, delay) {
   };
 }
 
-// calculate avg progress
+// calculate average progress
 function avgProgress(student) {
+  if (student.averageProgress !== undefined) return Math.round(student.averageProgress);
   if (!student.progressByBook || student.progressByBook.length === 0) return 0;
   const sum = student.progressByBook.reduce((s, b) => s + (b.progressPercent || 0), 0);
   return Math.round(sum / student.progressByBook.length);
 }
 
-// progress bar color
+// progress color
 function progressColor(percent) {
   if (percent >= 80) return "bg-green-500";
   if (percent >= 50) return "bg-yellow-400";
@@ -190,54 +190,52 @@ function progressColor(percent) {
 }
 
 export default function AdminStudentProgress() {
-  // Mock students
-  const allStudentsMock = useMemo(() => {
-    return Array.from({ length: 500 }, (_, i) => ({
-      id: i + 1,
-      username: `Student ${i + 1}`,
-      email: `student${i + 1}@example.com`,
-      class: `Class ${((i % 12) + 1)}`,
-      subject: i % 3 === 0 ? "Mathematics" : i % 3 === 1 ? "Science" : "English",
-      avatarColor: ["bg-blue-600", "bg-purple-600", "bg-indigo-500"][i % 3],
-      progressByBook: [
-        { bookName: `Book A - Class ${((i % 12) + 1)}`, progressPercent: Math.floor(Math.random() * 101) },
-        { bookName: `Book B - Class ${((i % 12) + 1)}`, progressPercent: Math.floor(Math.random() * 101) },
-      ],
-    }));
-  }, []);
-
-  const [students, setStudents] = useState(allStudentsMock);
+  const [students, setStudents] = useState([]);
   const [search, setSearch] = useState("");
-  const [filterClass, setFilterClass] = useState("");
-  const [filterSubject, setFilterSubject] = useState("");
   const [sortBy, setSortBy] = useState("name_asc");
   const [expandedIds, setExpandedIds] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
-  const [useVirtual, setUseVirtual] = useState(true);
   const [selectedStudent, setSelectedStudent] = useState(null);
 
   // debounce search
-  const handleSearchDebounced = useCallback(
-    debounce((q) => {
-      setSearch(q);
-      setCurrentPage(1);
-    }, 300),
-    []
-  );
+  // const handleSearchDebounced = useCallback(
+  //   debounce((q) => {
+  //     setSearch(q);
+  //     setCurrentPage(1);
+  //   }, 300),
+  //   []
+  // );
 
-  const classesList = useMemo(() => Array.from(new Set(students.map((s) => s.class))).sort(), [students]);
-  const subjectsList = useMemo(() => Array.from(new Set(students.map((s) => s.subject))).sort(), [students]);
+  // fetch students from backend
+  useEffect(() => {
+    async function fetchStudents() {
+      try {
+        const res = await fetch("http://localhost:5000/admin/student-progress");
+        const data = await res.json();
+
+        const formattedData = data.map((s, i) => ({
+          ...s,
+          avatarColor: ["bg-blue-600", "bg-purple-600", "bg-indigo-500"][i % 3],
+          progressByBook: (s.progressByBook || []).map(b => ({
+            bookName: b.bookName,
+            progressPercent: b.progress,
+          })),
+        }));
+
+        setStudents(formattedData);
+      } catch (err) {
+        console.error("Failed to fetch students", err);
+      }
+    }
+
+    fetchStudents();
+  }, []);
 
   // Filter + sort
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    let arr = students.filter((s) => {
-      const matchesQuery = q ? s.username.toLowerCase().includes(q) || s.email.toLowerCase().includes(q) : true;
-      const matchesClass = filterClass ? s.class === filterClass : true;
-      const matchesSubject = filterSubject ? s.subject === filterSubject : true;
-      return matchesQuery && matchesClass && matchesSubject;
-    });
+    let arr = students.filter(s => q ? s.username.toLowerCase().includes(q) || s.email.toLowerCase().includes(q) : true);
 
     if (sortBy === "name_asc") arr.sort((a, b) => a.username.localeCompare(b.username));
     if (sortBy === "name_desc") arr.sort((a, b) => b.username.localeCompare(a.username));
@@ -245,7 +243,7 @@ export default function AdminStudentProgress() {
     if (sortBy === "progress_asc") arr.sort((a, b) => avgProgress(a) - avgProgress(b));
 
     return arr;
-  }, [students, search, filterClass, filterSubject, sortBy]);
+  }, [students, search, sortBy]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   useEffect(() => { if (currentPage > totalPages) setCurrentPage(1); }, [totalPages]);
@@ -256,14 +254,14 @@ export default function AdminStudentProgress() {
   }, [filtered, currentPage, pageSize]);
 
   const toggleExpand = (id) => {
-    setExpandedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+    setExpandedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
   };
 
-  // CSV Export
+  // CSV export
   const exportCsv = () => {
-    const rows = [["ID", "Name", "Email", "Class", "Subject", "AverageProgress"]];
-    filtered.forEach((st) => rows.push([st.id, st.username, st.email, st.class, st.subject, avgProgress(st)]));
-    const csvContent = rows.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const rows = [["ID", "Name", "Email", "AverageProgress"]];
+    filtered.forEach(st => rows.push([st.id, st.username, st.email, avgProgress(st)]));
+    const csvContent = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
     saveAs(new Blob([csvContent], { type: "text/csv;charset=utf-8;" }), `students_progress_${new Date().toISOString()}.csv`);
   };
 
@@ -281,7 +279,6 @@ export default function AdminStudentProgress() {
               <div>
                 <div className="font-semibold text-lg">{student.username}</div>
                 <div className="text-sm text-gray-400">{student.email}</div>
-                <div className="text-sm text-gray-500">{student.class} • {student.subject}</div>
               </div>
             </div>
 
@@ -332,41 +329,23 @@ export default function AdminStudentProgress() {
       <main className="pl-[280px] py-6 pr-5 w-full">
         <AdminNavbar notificationsCount={0} />
 
+        {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-100">Students Progress</h1>
-            {/* <p className="text-sm text-gray-400 mt-1">Search, filter, sort and export — optimized for many students.</p> */}
-          </div>
-
+          <h1 className="text-3xl font-bold text-gray-100">Students Progress</h1>
           <div className="flex gap-2 items-center">
             <button className="flex items-center gap-2 px-3 py-2 bg-blue-600 rounded hover:bg-blue-700" onClick={exportCsv}><FaDownload /> Export CSV</button>
-            <label className="flex items-center gap-2 bg-gray-800 px-3 py-2 rounded">
-              <input type="checkbox" checked={useVirtual} onChange={(e) => setUseVirtual(e.target.checked)} /> Virtualize
-            </label>
           </div>
         </div>
 
-        {/* Controls */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        {/* Search + Sort */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div className="flex items-center bg-[#2a2b39] p-2 rounded">
             <FaSearch className="ml-2 text-gray-400" />
             <input
               placeholder="Search name or email..."
               className="bg-transparent px-3 py-2 w-full outline-none text-sm"
-              onChange={(e) => handleSearchDebounced(e.target.value)}
+              // onChange={(e) => handleSearchDebounced(e.target.value)}
             />
-          </div>
-
-          <div className="flex gap-2">
-            <select className="px-3 py-2 rounded bg-[#2a2b39] text-sm" value={filterClass} onChange={(e) => { setFilterClass(e.target.value); setCurrentPage(1); }}>
-              <option value="">All Classes</option>
-              {classesList.map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
-
-            <select className="px-3 py-2 rounded bg-[#2a2b39] text-sm" value={filterSubject} onChange={(e) => { setFilterSubject(e.target.value); setCurrentPage(1); }}>
-              <option value="">All Subjects</option>
-              {subjectsList.map((s) => <option key={s} value={s}>{s}</option>)}
-            </select>
           </div>
 
           <div className="flex items-center justify-end gap-2">
@@ -376,28 +355,27 @@ export default function AdminStudentProgress() {
               <option value="progress_desc">Progress High → Low</option>
               <option value="progress_asc">Progress Low → High</option>
             </select>
-
-            <select className="px-3 py-2 rounded bg-[#2a2b39] text-sm" value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setCurrentPage(1); }}>
+            {/* <select className="px-3 py-2 rounded bg-[#2a2b39] text-sm" value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setCurrentPage(1); }}>
               <option value={8}>8 / page</option>
               <option value={12}>12 / page</option>
               <option value={24}>24 / page</option>
               <option value={48}>48 / page</option>
-            </select>
+            </select> */}
           </div>
         </div>
 
-        {/* List */}
+        {/* Students List */}
         <div className="grid gap-4">
-          {paged.map((student) => <Row key={student.id} student={student} />)}
+          {paged.map(student => <Row key={student.id} student={student} />)}
         </div>
 
         {/* Pagination */}
         <div className="flex justify-between items-center gap-4 mt-6">
           <div className="text-sm text-gray-400">Showing {filtered.length} students — page {currentPage} / {totalPages}</div>
           <div className="flex items-center gap-2">
-            <button className="px-3 py-2 bg-gray-700 rounded disabled:opacity-50" disabled={currentPage===1} onClick={() => setCurrentPage((p) => Math.max(1, p-1))}>Prev</button>
-            <input className="w-12 text-center rounded bg-[#2a2b39] px-2 py-1" value={currentPage} onChange={(e)=>{const v=Number(e.target.value)||1; setCurrentPage(Math.min(Math.max(1,v), totalPages));}} />
-            <button className="px-3 py-2 bg-gray-700 rounded disabled:opacity-50" disabled={currentPage===totalPages} onClick={() => setCurrentPage((p) => Math.min(totalPages, p+1))}>Next</button>
+            <button className="px-3 py-2 bg-gray-700 rounded disabled:opacity-50" disabled={currentPage===1} onClick={() => setCurrentPage(p => Math.max(1, p-1))}>Prev</button>
+            <input className="w-12 text-center rounded bg-[#2a2b39] px-2 py-1" value={currentPage} onChange={e => { const v = Number(e.target.value) || 1; setCurrentPage(Math.min(Math.max(1,v), totalPages)); }} />
+            <button className="px-3 py-2 bg-gray-700 rounded disabled:opacity-50" disabled={currentPage===totalPages} onClick={() => setCurrentPage(p => Math.min(totalPages, p+1))}>Next</button>
           </div>
         </div>
 
@@ -410,11 +388,10 @@ export default function AdminStudentProgress() {
                   <h2 className="text-xl font-semibold">{selectedStudent.username}</h2>
                   <button className="text-sm text-gray-600" onClick={()=>setSelectedStudent(null)}>Close</button>
                 </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <p><strong>Email:</strong> {selectedStudent.email}</p>
-                    <p><strong>Class:</strong> {selectedStudent.class}</p>
-                    <p><strong>Subject:</strong> {selectedStudent.subject}</p>
                     <p><strong>Average Progress:</strong> {avgProgress(selectedStudent)}%</p>
                   </div>
 
@@ -436,14 +413,13 @@ export default function AdminStudentProgress() {
                   </div>
                 </div>
 
-                <div className="mt-4 flex justify-end gap-2">
+                <div className="mt-4 flex justify-end">
                   <button className="px-4 py-2 rounded bg-gray-200" onClick={()=>setSelectedStudent(null)}>Close</button>
                 </div>
               </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
-
       </main>
     </div>
   );
