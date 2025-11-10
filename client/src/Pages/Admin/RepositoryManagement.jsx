@@ -173,10 +173,24 @@
 //     </div>
 //   );
 // }
-import { useEffect, useState } from "react";
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { useEffect, useState,useRef } from "react";
 import Sidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
 const API_URL = import.meta.env.VITE_API_URL;
+import { FaTimes } from "react-icons/fa";
 
 export default function RepositoryManagement() {
   const [resourceTypes, setResourceTypes] = useState([]);
@@ -277,7 +291,7 @@ export default function RepositoryManagement() {
         <AdminNavbar />
         <h1 className="text-3xl font-bold mb-8">📘 Create Repository</h1>
 
-        <div className="bg-[#1e1f29] p-6 rounded-xl shadow-lg space-y-5 max-w-4xl">
+        <div className="bg-[#1e1f29] p-6 rounded-xl shadow-lg space-y-5 max-w-6xl">
           {/* Repository Name */}
           {/* <div>
             <label className="block mb-2 font-semibold">Repository Name</label>
@@ -371,7 +385,7 @@ export default function RepositoryManagement() {
   );
 }
 
-// ✅ Reusable dropdown + add input
+// ✅ Updated DropdownWithAdd with delete option
 function DropdownWithAdd({
   title,
   items,
@@ -383,42 +397,89 @@ function DropdownWithAdd({
   setNewValue,
   activeField,
   setActiveField,
+  onDelete,
 }) {
-  return (
-    <div>
-      <label className="block mb-1 font-semibold">{title}</label>
-      <div className="flex gap-2">
-        <select
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className="flex-1 p-2 rounded text-black"
-        >
-          <option value="">Select {title}</option>
-          {items.map((item, i) => (
-            <option key={i} value={item}>
-              {item}
-            </option>
-          ))}
-        </select>
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
-        {/* Add new input */}
-        <input
-          type="text"
-          placeholder={placeholder}
-          value={activeField === title.toLowerCase() ? newValue : ""}
-          onChange={(e) => {
-            setActiveField(title.toLowerCase());
-            setNewValue(e.target.value);
-          }}
-          className="w-1/2 p-2 rounded text-black"
-        />
-        <button
-          onClick={onAdd}
-          className="bg-green-600 px-3 py-1 rounded text-white"
-        >
-          Add
-        </button>
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <label className="block mb-1 font-semibold text-gray-300">{title}</label>
+      <div
+        className="bg-gray-800 p-2 rounded-lg cursor-pointer flex justify-between items-center"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span>{value || `Select ${title}`}</span>
+        <span className="text-gray-400">{isOpen ? "▲" : "▼"}</span>
       </div>
+
+      {isOpen && (
+        <div className="absolute z-50 mt-1 w-full bg-gray-700 rounded-lg shadow-lg max-h-60 overflow-auto">
+          {/* Options */}
+          {items.map((item, i) => (
+            <div
+              key={i}
+              className="flex justify-between items-center px-3 py-2 hover:bg-gray-600 cursor-pointer"
+            >
+              <span
+                onClick={() => {
+                  onChange(item);
+                  setIsOpen(false);
+                }}
+              >
+                {item}
+              </span>
+              <FaTimes
+                className="text-red-400 hover:text-red-600"
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent selecting while deleting
+                  onDelete(item);
+                }}
+              />
+            </div>
+          ))}
+
+          {/* Add new input */}
+          <div className="flex gap-2 p-2 border-t border-gray-600">
+            <input
+              type="text"
+              placeholder={placeholder}
+              value={activeField === title.toLowerCase() ? newValue : ""}
+              onChange={(e) => {
+                setActiveField(title.toLowerCase());
+                setNewValue(e.target.value);
+              }}
+              className="flex-1 p-2 rounded-lg text-black"
+            />
+            <button
+              onClick={onAdd}
+              className="bg-green-500 hover:bg-green-600 px-3 py-1 rounded-lg text-white"
+            >
+              Add
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
+
+
+
+
+
+
+
+

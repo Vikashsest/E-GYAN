@@ -258,7 +258,7 @@
 //   //     try {
 //   //       const bookData = await fetchCategories();
 //   // console.log(bookData);
-  
+
 //   //       // API se unique categories extract
 //   //       // const uniqueCategories = [
 //   //       //   ...new Set(bookData.map((book) => book.category))
@@ -483,12 +483,26 @@ const Books = () => {
               <h3 className="text-base sm:text-lg md:text-xl font-bold text-center">
                 Simulation
               </h3>
-              
+
             </div>
-            
+
+            <div
+              onClick={() => {
+                navigate(`/current-affairs`);
+              }}
+              className="p-5 sm:p-6 rounded-2xl shadow-lg border border-gray-300 
+  bg-[#2f3e46] text-white flex flex-col items-center justify-center 
+  hover:scale-105 transform transition-all duration-300 cursor-pointer"
+            >
+              <FaBookReader className="text-yellow-400 text-4xl sm:text-5xl mb-3 sm:mb-4 drop-shadow-lg" />
+              <h3 className="text-base sm:text-lg md:text-xl font-bold text-center">
+                Current Affairs
+              </h3>
+            </div>
+
           </div>
 
-          
+
         ) : (
           loading && (
             <div className="flex flex-col items-center h-screen space-y-4">
