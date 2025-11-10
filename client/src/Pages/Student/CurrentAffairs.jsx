@@ -45,7 +45,6 @@ const CurrentAffairs = () => {
       (!selectedDate || new Date(n.date).toDateString() === selectedDate.toDateString()) &&
       n.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
   return (
     <div className="flex min-h-screen bg-[#1e1f2b] text-white relative">
       <StudentSidebar
