@@ -12,7 +12,7 @@ import NewsModal from "./NewsModel";
 import sampleNews from './sampleNews.json';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; 
-
+import {  useNavigate } from "react-router-dom";
 const menuLinks = [
   { name: "All", url: "" },
   { name: "Science & Technology", url: "" },
@@ -35,9 +35,9 @@ const CurrentAffairs = () => {
   const [isTopicsDropdownOpen, setIsTopicsDropdownOpen] = useState(false);
   const [isMonthsDropdownOpen, setIsMonthsDropdownOpen] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(null);
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false); // For calendar icon click
-  const [selectedDate, setSelectedDate] = useState(null); // For calendar picker
-
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false); 
+  const [selectedDate, setSelectedDate] = useState(null); 
+  const navigate = useNavigate();
   const filteredNews = sampleNews.filter(
     (n) => 
       (filter === "All" || n.category === filter) &&
@@ -219,7 +219,8 @@ const CurrentAffairs = () => {
                 </div>
 
                 <button
-                  onClick={() => setSelectedNews(news)}
+                  onClick={() => setSelectedNews(news.id)  || navigate(`${news.id}`)  }
+              
                   className="flex items-center gap-2 text-blue-400 hover:text-blue-300 mt-4 font-semibold"
                 >
                   Keep Reading <FaArrowRight />

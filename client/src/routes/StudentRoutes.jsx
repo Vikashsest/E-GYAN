@@ -265,7 +265,7 @@ export const studentRouteList = [
     ),
   },
    {
-    path: "newsmodel",
+    path: "current-affairs/:id",
     element: (
       <ProtectedRoute allowedRoles={["student"]}>
         <NewsModal />

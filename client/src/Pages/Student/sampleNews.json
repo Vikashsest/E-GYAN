@@ -1,5 +1,6 @@
 [
   {
+    "id":1,
     "title": "भारत – बहरीन द्विपक्षीय संबंध",
     "date": "Nov 8, 2025",
     "category": "Daily Current Affairs",
@@ -7,6 +8,7 @@
     "image": "https://currentaffairs.khanglobalstudies.com/wp-content/uploads/2025/11/India_Bahrain_trade_talks_1762177562127_1762177562308-480x270.webp"
   },
   {
+     "id":2,
     "title": "India Launches Chandrayaan-4 Mission",
     "date": "Nov 8, 2025",
     "category": "Science & Technology",
@@ -14,6 +16,7 @@
     "image": "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=800&q=80"
   },
   {
+     "id":3,
     "title": "India Wins ICC World Cup 2025",
     "date": "Nov 3, 2025",
     "category": "Sports",
@@ -21,6 +24,7 @@
     "image": "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=800&q=80"
   },
   {
+     "id":4,
     "title": "India Signs New Climate Agreement",
     "date": "Nov 2, 2025",
     "category": "Environment",
@@ -28,6 +32,7 @@
     "image": "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=800&q=80"
   },
   {
+     "id":5,
     "title": "Stock Market Hits Record High",
     "date": "Nov 7, 2025",
     "category": "Economy",
@@ -35,6 +40,7 @@
     "image": "https://images.unsplash.com/photo-1554224154-22dec7ec8818?auto=format&fit=crop&w=800&q=80"
   },
   {
+     "id":6,
     "title": "New AI Research Center Opened in India",
     "date": "Nov 6, 2025",
     "category": "Science & Technology",
@@ -42,12 +48,14 @@
     "image": "https://images.unsplash.com/photo-1581091215368-3f1b8bfbf51f?auto=format&fit=crop&w=800&q=80"
   },
   {
+     "id":7,
     "title": "National Football League Begins in India",
     "date": "Nov 5, 2025",
     "category": "Sports",
     "description": "भारत में राष्ट्रीय फुटबॉल लीग की शुरुआत हुई, जिसमें देशभर की टीमें प्रतिस्पर्धा कर रही हैं।",
     "image": "https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=800&q=80"
   }, {
+     "id":8,
     "title": "India Develops Solar-Powered Train",
     "date": "Nov 10, 2025",
     "category": "Science & Technology",
@@ -55,6 +63,7 @@
     "image": "https://images.unsplash.com/photo-1508050919630-b135583b29ab?auto=format&fit=crop&w=800&q=80"
   },
   {
+     "id":9,
     "title": "New Education Policy 2025 Announced",
     "date": "Nov 9, 2025",
     "category": "Daily Current Affairs",
@@ -62,6 +71,7 @@
     "image": "https://images.unsplash.com/photo-1581093458424-8a8f4d2f4c4a?auto=format&fit=crop&w=800&q=80"
   },
   {
+     "id":10,
     "title": "India Hosts International Yoga Festival",
     "date": "Nov 7, 2025",
     "category": "Environment",

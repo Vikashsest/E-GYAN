@@ -3,17 +3,19 @@ import sampleNews from "./sampleNews.json";
 import { FaArrowLeft, FaCalendarAlt } from "react-icons/fa";
 
 const NewsPage = () => {
-  const { newsId } = useParams();
+  const { id } = useParams();
+
+  console.log("newsId:", id);
   const navigate = useNavigate();
 
-  const newsItem = sampleNews.find((n) => n.id === parseInt(newsId));
-
+  const newsItem = sampleNews.find((n) => n.id === parseInt(id));
+  
   if (!newsItem) return <p className="text-white p-4">News not found</p>;
 
   return (
     <div className="min-h-screen bg-[#1e1f2b] text-white p-6">
       <button
-        onClick={() => navigate(-1)}
+        onClick={() => navigate(newsItem.newsId)}
         className="flex items-center gap-2 text-blue-400 hover:text-blue-300 mb-6"
       >
         <FaArrowLeft /> Back
