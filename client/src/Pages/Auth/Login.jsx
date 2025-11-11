@@ -63,61 +63,77 @@ export default function LoginPage() {
   }
 
   return (
-    <main
-      className="min-h-screen bg-cover bg-center text-white flex items-center justify-center px-6 relative overflow-hidden"
-      style={{ backgroundImage: "url('/signup3.jpg')" }}
-    >
-      <div className="absolute inset-0 bg-black opacity-60 z-0"></div>
+  <main
+  className="min-h-screen bg-cover bg-center text-white flex items-center justify-center px-6 relative overflow-hidden"
+  style={{ backgroundImage: "url('/signup3.jpg')" }}
+>
+  <div className="absolute inset-0 bg-black opacity-60 z-0"></div>
 
-      <div className="w-full max-w-md z-10 bg-[#1c1d2a]/70 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl p-10 space-y-8 transition-all duration-300">
-        <h2 className="text-3xl font-bold text-center  text-blue-400 drop-shadow-md">
-          Unlock Knowledge.<br />
-          <span className='text-white'>Log In.</span>
-        </h2>
+  <div className="w-full max-w-md z-10 bg-[#1c1d2a]/70 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl p-10 space-y-8 transition-all duration-300 text-center">
+    
+    {/* 🔹 App Title */}
+    <h2 className="text-3xl font-bold text-center text-blue-400 drop-shadow-md">
+      Unlock Knowledge.
+      <br />
+      <span className="text-white">Log In.</span>
+    </h2>
 
-        <form className="space-y-6" onSubmit={handlesubmit}>
-          <div className="relative">
-            <FaEnvelope className="absolute top-3.5 left-3 text-white z-10" />
-            <input
-              onChange={handledata}
-              name="username"
-              type="name"
-              placeholder="username"
-              value={data.username}
-              required
-              className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 backdrop-blur-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-white/10"
-            />
-          </div>
-
-          <div className="relative">
-            <FaLock className="absolute top-3.5 left-3 text-white z-10" />
-            <input
-              onChange={handledata}
-              name="password"
-              type="password"
-              placeholder="Password"
-              value={data.password}
-              required
-              className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 backdrop-blur-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-white/10"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 transition-all duration-200 text-white font-semibold py-3 rounded-xl shadow-lg"
-          >
-            Log In
-          </button>
-
-          <p className="text-sm text-center text-gray-300">
-            Start learning–Log In.?{' '}
-            <Link to="/forgot-password" className="text-blue-400 hover:underline">
-              Forgot Password
-            </Link>
-          </p>
-        </form>
+    {/* 🔹 Login Form */}
+    <form className="space-y-6" onSubmit={handlesubmit}>
+      <div className="relative">
+        <FaEnvelope className="absolute top-3.5 left-3 text-white z-10" />
+        <input
+          onChange={handledata}
+          name="username"
+          type="text"
+          placeholder="Username"
+          value={data.username}
+          required
+          className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 backdrop-blur-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-white/10"
+        />
       </div>
-    </main>
+
+      <div className="relative">
+        <FaLock className="absolute top-3.5 left-3 text-white z-10" />
+        <input
+          onChange={handledata}
+          name="password"
+          type="password"
+          placeholder="Password"
+          value={data.password}
+          required
+          className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 backdrop-blur-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-white/10"
+        />
+      </div>
+
+      <button
+        type="submit"
+        className="w-full bg-blue-600 hover:bg-blue-700 transition-all duration-200 text-white font-semibold py-3 rounded-xl shadow-lg"
+      >
+        Log In
+      </button>
+
+      <p className="text-sm text-center text-gray-300">
+        Start learning – Log In?{" "}
+        <Link to="/forgot-password" className="text-blue-400 hover:underline">
+          Forgot Password
+        </Link>
+      </p>
+    </form>
+
+    {/* 🔹 APK Download Link */}
+    <div className="pt-4 border-t border-white/10">
+      <a
+        href="" 
+        download
+        className="inline-block mt-2 px-5 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-white font-semibold shadow-md transition-all duration-200"
+      >
+        ⬇️ Download Android Apk
+      </a>
+    </div>
+  </div>
+</main>
+
   );
 }
 

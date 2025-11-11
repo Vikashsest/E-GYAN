@@ -89,6 +89,7 @@ const CurrentAffairs = () => {
               <FaSearch className="absolute left-3 top-3 text-gray-400" />
             </div>
 
+            <div className="flex gap-5 justify-center items-center">
             {/* Topics Dropdown */}
             <div className="relative">
               <button
@@ -181,6 +182,7 @@ const CurrentAffairs = () => {
                   />
                 </div>
               )}
+            </div>
             </div>
           </div>
         </header>

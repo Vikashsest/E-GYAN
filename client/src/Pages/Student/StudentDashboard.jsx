@@ -334,7 +334,7 @@ export default function DashboardMetrics() {
 
 
 {/* Action Buttons Below Metrics */}
-<div className="flex flex-wrap justify-center gap-4 px-6 mt-6">
+<div className="grid grid-cols-2 md:grid-cols-4 justify-center gap-4 px-6 mt-6">
   <button
     onClick={() => navigate("/students/books")}
     className="px-6 py-3 border-2 border-blue-600 rounded-xl 
