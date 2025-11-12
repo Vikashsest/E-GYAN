@@ -124,12 +124,13 @@ export default function LoginPage() {
     {/* 🔹 APK Download Link */}
     <div className="pt-4 border-t border-white/10">
       <a
-        href="" 
-        download
-        className="inline-block mt-2 px-5 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-white font-semibold shadow-md transition-all duration-200"
-      >
-        ⬇️ Download Android Apk
-      </a>
+  href="https://drive.google.com/uc?export=download&id=1xmTX99uooBTmYWJzMS8IYFIGpYJAeNGn"
+  download
+  className="inline-block mt-2 px-5 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-white font-semibold shadow-md transition-all duration-200"
+>
+  ⬇️ Download Android Apk
+</a>
+
     </div>
   </div>
 </main>
