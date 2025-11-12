@@ -123,7 +123,6 @@ import AssessmentPage from "../Pages/Student/AssessmentPage";
 import QuizStartPage from "../Pages/Student/QuizStartPage";
 import AssessmentStartPage from "../Pages/Student/AssessmentStartPage";
 import SimulationLibrary from "../Pages/Student/SimulationLibrary";
-import { BiCurrentLocation } from "react-icons/bi";
 import CurrentAffairs from "../Pages/Student/CurrentAffairs";
 import NewsModal from "../Pages/Student/NewsModel";
 
