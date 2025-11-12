@@ -13,6 +13,7 @@ import AdminUploadBooks from "../Pages/Admin/AdminUploadBooks"
 import RepositoryManagement from "../Pages/Admin/RepositoryManagement";
 import AdminAnnouncements from "../Pages/Admin/Annoucements";
 import AdminStudentProgress from "../Pages/Admin/AdminStudentProgress";
+import LatestVersions from "../Pages/Admin/Versions";
 
 export const adminRouteList = [
   {
@@ -68,6 +69,14 @@ export const adminRouteList = [
   element: (
     <ProtectedRoute allowedRoles={["admin"]}>
       <RepositoryManagement/>
+    </ProtectedRoute>
+  ),
+},
+ {
+  path: "latest-release",
+  element: (
+    <ProtectedRoute allowedRoles={["admin"]}>
+      <LatestVersions/>
     </ProtectedRoute>
   ),
 },
