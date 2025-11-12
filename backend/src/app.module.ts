@@ -90,6 +90,7 @@ import { RepositoryModule } from './modules/repository/repository.module';
 import { AssessmentsModule } from './modules/assessments/assessments.module';
 import { QuizzesModule } from './modules/quizzes/quizzes.module';
 import { ChatModule } from './modules/chat/chat.module';
+import { CurrentAffairsModule } from './modules/current-affairs/current-affairs.module';
 
 @Module({
   imports: [
@@ -114,7 +115,8 @@ import { ChatModule } from './modules/chat/chat.module';
     RepositoryModule,
     AssessmentsModule,
     QuizzesModule,
-  ChatModule
+  ChatModule,
+  CurrentAffairsModule
   ],
   controllers: [AuthController],
   providers: [
