@@ -48,7 +48,7 @@ export const databaseConfig: TypeOrmModuleOptions = {
   url:'postgresql://neondb_owner:npg_VUoArT49ZSDk@ep-silent-river-a1if9gjk-pooler.ap-southeast-1.aws.neon.tech/egyan?sslmode=require&channel_binding=require',
   ssl: { rejectUnauthorized: false },
   entities: [User, Book, Student, StudentActivity, Concern, BookProgress, Announcement, Chapter,Repositories,Assessment,AssessmentQuestion,AssessmentAttempt,Quiz,QuizAttempt,QuizQuestion,Analytics,Simulation,CurrentAffair],
-  synchronize: true,
+ synchronize: true,
   extra: {
     connectionTimeoutMillis: 30000,
   },

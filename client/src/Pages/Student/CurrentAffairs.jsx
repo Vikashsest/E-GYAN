@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import {
   FaCalendarAlt,
   FaChevronDown,
@@ -9,10 +9,10 @@ import {
 import { FiMenu } from "react-icons/fi";
 import StudentSidebar from "./StudentSidebar";
 import NewsModal from "./NewsModel";
-import sampleNews from './sampleNews.json';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; 
 import {  useNavigate } from "react-router-dom";
+import { fetchCurrentAffairs } from "../../apiServices/booksApi";
 const menuLinks = [
   { name: "All", url: "" },
   { name: "Science & Technology", url: "" },
@@ -37,14 +37,37 @@ const CurrentAffairs = () => {
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false); 
   const [selectedDate, setSelectedDate] = useState(null); 
+  const [loading, setLoading] = useState(true);
+  const [newsList, setNewsList] = useState([]);
   const navigate = useNavigate();
-  const filteredNews = sampleNews.filter(
-    (n) => 
+
+  useEffect(() => {
+    async function loadCurrentAffairs() {
+      try {
+        setLoading(true);
+        const data = await fetchCurrentAffairs();
+       
+        setNewsList(data); 
+      } catch (err) {
+        console.error("Error loading current affairs:", err);
+        setError("Failed to load current affairs");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadCurrentAffairs();
+  }, []);
+
+  const filteredNews = newsList.filter(
+    (n) =>
       (filter === "All" || n.category === filter) &&
       (!selectedMonth || new Date(n.date).getMonth() === selectedMonth) &&
       (!selectedDate || new Date(n.date).toDateString() === selectedDate.toDateString()) &&
       n.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const categories = ["All", ...new Set(newsList.map(item => item.category).filter(Boolean))];
   return (
     <div className="flex min-h-screen bg-[#1e1f2b] text-white relative">
       <StudentSidebar
@@ -100,24 +123,25 @@ const CurrentAffairs = () => {
               </button>
               {isTopicsDropdownOpen && (
                 <ul className="absolute right-0 mt-2 w-56 bg-[#1f2030] border border-gray-600 rounded-lg shadow-xl z-50">
-                  {menuLinks.map((link, i) => (
-                    <li
-                      key={i}
-                      className={`border-b border-gray-700 last:border-none ${
-                        filter === link.name ? "bg-blue-700" : ""
-                      }`}
-                    >
-                      <button
-                        onClick={() => {
-                          setFilter(link.name);
-                          setIsTopicsDropdownOpen(false);
-                        }}
-                        className="w-full text-left px-4 py-2 hover:bg-blue-600 transition-all"
-                      >
-                        {link.name}
-                      </button>
-                    </li>
-                  ))}
+                 {categories.map((cat, i) => (
+  <li
+    key={i}
+    className={`border-b border-gray-700 last:border-none ${
+      filter === cat ? "bg-blue-700" : ""
+    }`}
+  >
+    <button
+      onClick={() => {
+        setFilter(cat);
+        setIsTopicsDropdownOpen(false);
+      }}
+      className="w-full text-left px-4 py-2 hover:bg-blue-600 transition-all"
+    >
+      {cat}
+    </button>
+  </li>
+))}
+
                 </ul>
               )}
             </div>
@@ -195,11 +219,15 @@ const CurrentAffairs = () => {
               className="flex flex-col md:flex-row bg-[#2a2b3d] rounded-xl overflow-hidden hover:shadow-lg hover:shadow-blue-600/20 transition-all duration-300"
             >
               <div className="md:w-1/3 w-full">
-                <img
-                  src={news.image}
-                  alt={news.title}
-                  className="w-full h-44 md:h-56 object-cover"
-                />
+               <img
+  src={
+    news.imageUrl?.includes("/download")
+      ? news.imageUrl
+      : `${news.imageUrl}/download`
+  }
+  alt={news.title}
+  className="w-full h-44 md:h-56 object-cover"
+/>
               </div>
 
               <div className="p-5 flex flex-col justify-between md:w-2/3">

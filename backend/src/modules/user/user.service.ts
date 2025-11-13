@@ -59,7 +59,8 @@ async findByRole(role: UserRole) {
 }
 async findAll(): Promise<User[]> {
   const users = await this.userRepository.find({ order: { id: 'ASC' } });
-  return plainToInstance(User, users); 
+  // return plainToInstance(User, users); 
+  return users;
 }
 
 //UPDATE ROLE MANAGEMENT

@@ -245,9 +245,47 @@ export async function deleteChapter(chapterId) {
     throw error;
   }
 }
+
+
 export async function fetchCategories() {
   try {
     const res = await fetch(`${API_URL}/books/category`, {
+      method: "GET",
+      credentials: "include",
+    });
+    const data = await res.json();
+    return Array.isArray(data) ? data : data.categories || [];
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw error;
+  }
+}
+
+
+
+
+export async function addCurrentAffairs(bookId, formData) {
+  try {
+    const res = await fetch(`${API_URL}/current-affairs`, {
+      method: "POST",
+      body: formData,
+      credentials: "include",
+      // headers: { Authorization: `Bearer ${access_token}` },
+    });
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.message || "Failed to add chapter");
+    return result.chapter || result;
+  } catch (error) {
+    console.error("Error adding chapter:", error);
+    throw error;
+  }
+}
+
+
+
+export async function fetchCurrentAffairs() {
+  try {
+    const res = await fetch(`${API_URL}/current-affairs`, {
       method: "GET",
       credentials: "include",
     });

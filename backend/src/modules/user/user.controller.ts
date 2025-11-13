@@ -49,7 +49,7 @@ async getUsers(@Query('role') role: UserRole, @Req() req) {
 @Get()
 @Roles(UserRole.ADMIN,UserRole.PRINCIPAL,UserRole.TEACHER)
 getAllUsers(): Promise<User[]> {
-console.log(this.userService.findAll())
+
   return this.userService.findAll();
 }
 //Delete role
