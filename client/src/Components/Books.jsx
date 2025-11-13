@@ -1294,6 +1294,7 @@ import { useEffect, useMemo, useState } from "react";
 import FlipbookPDFViewer from "./FlipbookPDFViewer";
 import { FaEdit, FaTrash, FaExpand, FaCompress } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { FiMenu } from "react-icons/fi";
 import {
   fetchBooks,
   uploadBook,
@@ -1331,6 +1332,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   const [selectedChapter, setSelectedChapter] = useState(null);
   const [classes, setClasses] = useState([]); // <-- API se classes
   const [selectedClass, setSelectedClass] = useState(""); // <-- filter state
+   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     bookName: "",
@@ -1459,8 +1461,13 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
 
   return (
     <div className="flex min-h-screen bg-[#1e1f2b] text-white">
-      {Sidebar && <Sidebar />}
-      <main className="pl-[280px] py-6 pr-5 w-full">
+      {Sidebar && <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />}
+     <main className="flex-1 lg:pl-[280px] py-6 px-5 w-full">
+        <div className="lg:hidden px-4 mb-4">
+          <button onClick={() => setIsSidebarOpen(true)} className="text-white">
+            <FiMenu size={28} />
+          </button>
+        </div>
         {Navbar && (
           <Navbar
             searchTerm={searchTerm}

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Sidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
+import { FiMenu } from "react-icons/fi";
 
 export default function AdminAnnouncements() {
   const [announcements, setAnnouncements] = useState([
@@ -11,6 +12,7 @@ export default function AdminAnnouncements() {
 
   const [newAnnouncement, setNewAnnouncement] = useState("");
   const [isImportant, setIsImportant] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [editModal, setEditModal] = useState({ open: false, id: null, text: "", important: false });
 
   const handleAddAnnouncement = (e) => {
@@ -48,11 +50,20 @@ export default function AdminAnnouncements() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#1e1f2b] text-white">
-      <Sidebar />
+     <div className="flex min-h-screen bg-[#1e1f2b] text-white">
+      {/* Sidebar */}
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
-      <main className="pl-[280px] py-6 pr-5 w-full">
-        <AdminNavbar notificationsCount={announcements.length} />
+      {/* Main Content */}
+      <main className="flex-1 lg:pl-[280px] py-6 px-5 w-full">
+        {/* Mobile Menu Icon */}
+        <div className="lg:hidden px-4 mb-4">
+          <button onClick={() => setIsSidebarOpen(true)} className="text-white">
+            <FiMenu size={28} />
+          </button>
+        </div>
+
+        <AdminNavbar/>
 
         <div className="p-2 mb-5">
           <h1 className="text-3xl font-bold mb-2">Announcements</h1>

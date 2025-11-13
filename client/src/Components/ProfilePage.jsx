@@ -159,7 +159,7 @@
 // ProfilePage.jsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaEnvelope, FaUserShield, FaPhoneAlt, FaEdit } from "react-icons/fa";
+import { FaEnvelope, FaUserShield, FaEdit } from "react-icons/fa";
 import { FaArrowLeft } from "react-icons/fa6";
 import Logout from "../Pages/Auth/Logout";
 
@@ -208,7 +208,7 @@ export default function ProfilePage({ user }) {
             height={100}
             className="rounded-full border-4 border-blue-500"
           />
-          <h2 className="text-2xl font-bold mt-4">{formData?.name || "—"}</h2>
+          <h2 className="text-2xl font-bold mt-4">{formData?.username }</h2>
           <p className="text-gray-400 text-sm">
             {formData?.role || "—"} | School Library System
           </p>
@@ -217,7 +217,6 @@ export default function ProfilePage({ user }) {
         {/* Details */}
         <div className="mt-8 space-y-4 text-sm">
           <ProfileRow icon={<FaEnvelope />} label="Email" value={formData?.email} />
-          <ProfileRow icon={<FaPhoneAlt />} label="Phone" value={formData?.phone} />
           <ProfileRow icon={<FaUserShield />} label="Role" value={formData?.role} />
         </div>
 
@@ -234,7 +233,7 @@ export default function ProfilePage({ user }) {
             onClick={() => setShowModal(true)}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm"
           >
-            <FaEdit /> Edit Profile
+            <FaEdit /> User Request
           </button>
 
           <div>
@@ -247,27 +246,13 @@ export default function ProfilePage({ user }) {
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg w-full max-w-md text-black">
-            <h3 className="text-lg font-semibold mb-4">✏️ Edit Profile</h3>
+            <h3 className="text-lg font-semibold mb-4">✏️ User Request</h3>
             <form className="space-y-4">
               <input
                 type="text"
-                value={formData?.name || ""}
-                onChange={(e) => handleChange("name", e.target.value)}
-                placeholder="Full Name"
-                className="w-full border p-2 rounded"
-              />
-              <input
-                type="email"
-                value={formData?.email || ""}
-                onChange={(e) => handleChange("email", e.target.value)}
-                placeholder="Email"
-                className="w-full border p-2 rounded"
-              />
-              <input
-                type="tel"
-                value={formData?.phone || ""}
+                value={formData?.descripation || ""}
                 onChange={(e) => handleChange("phone", e.target.value)}
-                placeholder="Phone Number"
+                placeholder="Enter your request..."
                 className="w-full border p-2 rounded"
               />
               <div className="flex justify-end gap-2 pt-4">

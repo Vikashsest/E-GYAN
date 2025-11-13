@@ -158,12 +158,16 @@
 //     </div>
 //   );
 // }
+
+
+
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 import Sidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
 import { FaChevronDown, FaChevronUp, FaSearch, FaDownload } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { saveAs } from "file-saver";
+import { FiMenu } from "react-icons/fi";
 
 // debounce helper
 function debounce(fn, delay) {
@@ -197,6 +201,7 @@ export default function AdminStudentProgress() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // debounce search
   // const handleSearchDebounced = useCallback(
@@ -326,12 +331,22 @@ export default function AdminStudentProgress() {
 
   return (
     <div className="flex min-h-screen bg-[#1e1f2b] text-white">
-      <Sidebar />
-      <main className="pl-[280px] py-6 pr-5 w-full">
-        <AdminNavbar notificationsCount={0} />
+      {/* Sidebar */}
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+
+      {/* Main Content */}
+      <main className="flex-1 lg:pl-[280px] py-6 px-5 w-full">
+        {/* Mobile Menu Icon */}
+        <div className="lg:hidden px-4 mb-4">
+          <button onClick={() => setIsSidebarOpen(true)} className="text-white">
+            <FiMenu size={28} />
+          </button>
+        </div>
+
+        <AdminNavbar/>
 
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between  mb-6">
           <h1 className="text-3xl font-bold text-gray-100">Students Progress</h1>
           <div className="flex gap-2 items-center">
             <button className="flex items-center gap-2 px-3 py-2 bg-blue-600 rounded hover:bg-blue-700" onClick={exportCsv}><FaDownload /> Export CSV</button>

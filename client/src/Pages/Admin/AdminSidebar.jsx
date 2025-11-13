@@ -10,13 +10,26 @@ import {
   FaBullhorn,
 } from "react-icons/fa";
 import { RiGitRepositoryFill } from "react-icons/ri";
+import { FiX } from "react-icons/fi";
 import { MdManageAccounts } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Logout from "../Auth/Logout";
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose }) {
   return (
-    <aside className="fixed top-0 left-0 h-screen w-64 bg-[#15161e] p-6 flex flex-col justify-between z-50">
+   <aside
+      className={`fixed top-0 left-0 h-screen w-64 bg-[#15161e] p-6 flex flex-col justify-between z-50 transform transition-transform duration-300
+      ${isOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
+    >
+      {/* Close button (only mobile/ipad) */}
+      <button
+        className="absolute top-4 right-4 text-white lg:hidden"
+        onClick={onClose}
+      >
+        <FiX size={26} />
+      </button>
+
+
       <div>
         <h1 className="text-2xl font-bold flex items-center space-x-2 mb-8">
           <span className="bg-blue-600 w-2.5 h-2.5 rounded-sm"></span>

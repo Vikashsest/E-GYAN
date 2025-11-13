@@ -1,8 +1,11 @@
 import { motion } from "framer-motion";
 import AdminSidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
+import { FiMenu } from "react-icons/fi";
+import { useState } from "react";
 
 export default function LatestVersions() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const updates = [
     {
       version: "2.1",
@@ -26,11 +29,20 @@ export default function LatestVersions() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white">
-      <AdminSidebar />
+   <div className="flex min-h-screen bg-[#1e1f2b] text-white">
+      {/* Sidebar */}
+      <AdminSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
-      <main className="flex-1 pl-[280px] pr-6 py-6">
-        <AdminNavbar />
+      {/* Main Content */}
+      <main className="flex-1 lg:pl-[280px] py-6 px-5 w-full">
+        {/* Mobile Menu Icon */}
+        <div className="lg:hidden px-4 mb-4">
+          <button onClick={() => setIsSidebarOpen(true)} className="text-white">
+            <FiMenu size={28} />
+          </button>
+        </div>
+
+        <AdminNavbar/>
 
       <div className="max-w-3xl mx-auto">
         {/* Header Section with background */}
