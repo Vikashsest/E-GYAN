@@ -191,7 +191,8 @@ import Sidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
 import { FiMenu } from "react-icons/fi";
 const API_URL = import.meta.env.VITE_API_URL;
-import { FaTimes } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+
 
 export default function RepositoryManagement() {
   const [resourceTypes, setResourceTypes] = useState([]);
@@ -325,6 +326,9 @@ export default function RepositoryManagement() {
               value={selected.resourceType}
               onChange={(v) => setSelected({ ...selected, resourceType: v })}
               onAdd={() => addValue("resource")}
+              onDelete={(item) => {
+                setResourceTypes(prev => prev.filter(i => i !== item));
+              }}
               placeholder="Add new type"
               newValue={newValue}
               setNewValue={setNewValue}
@@ -338,6 +342,9 @@ export default function RepositoryManagement() {
               value={selected.subject}
               onChange={(v) => setSelected({ ...selected, subject: v })}
               onAdd={() => addValue("subject")}
+              onDelete={(item) => {
+                setSubjects(prev => prev.filter(i => i !== item));
+              }}
               placeholder="Add new subject"
               newValue={newValue}
               setNewValue={setNewValue}
@@ -351,6 +358,9 @@ export default function RepositoryManagement() {
               value={selected.level}
               onChange={(v) => setSelected({ ...selected, level: v })}
               onAdd={() => addValue("level")}
+              onDelete={(item) => {
+                setLevels(prev => prev.filter(i => i !== item));
+              }}
               placeholder="Add new level"
               newValue={newValue}
               setNewValue={setNewValue}
@@ -364,6 +374,9 @@ export default function RepositoryManagement() {
               value={selected.language}
               onChange={(v) => setSelected({ ...selected, language: v })}
               onAdd={() => addValue("language")}
+              onDelete={(item) => {
+                setLanguages(prev => prev.filter(i => i !== item));
+              }}
               placeholder="Add new language"
               newValue={newValue}
               setNewValue={setNewValue}
@@ -377,6 +390,9 @@ export default function RepositoryManagement() {
               value={selected.category}
               onChange={(v) => setSelected({ ...selected, category: v })}
               onAdd={() => addValue("category")}
+              onDelete={(item) => {
+                setCategories(prev => prev.filter(i => i !== item));
+              }}
               placeholder="Add new category"
               newValue={newValue}
               setNewValue={setNewValue}
@@ -398,7 +414,9 @@ export default function RepositoryManagement() {
   );
 }
 
-// ✅ Updated DropdownWithAdd with delete option
+
+
+
 function DropdownWithAdd({
   title,
   items,
@@ -428,43 +446,50 @@ function DropdownWithAdd({
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <label className="block mb-1 font-semibold text-gray-300">{title}</label>
+      <label className="block mb-2 font-semibold text-gray-300">{title}</label>
       <div
-        className="bg-gray-800 p-2 rounded-lg cursor-pointer flex justify-between items-center"
+        className="bg-gradient-to-r from-purple-600 to-indigo-600 p-3 rounded-lg cursor-pointer flex justify-between items-center shadow-lg hover:from-purple-700 hover:to-indigo-700 transition-colors"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span>{value || `Select ${title}`}</span>
-        <span className="text-gray-400">{isOpen ? "▲" : "▼"}</span>
+        <span className={`${value ? "text-white" : "text-gray-300"}`}>{value || `Select ${title}`}</span>
+        <span className="text-gray-200">{isOpen ? "▲" : "▼"}</span>
       </div>
 
       {isOpen && (
-        <div className="absolute z-50 mt-1 w-full bg-gray-700 rounded-lg shadow-lg max-h-60 overflow-auto">
+        <div className="absolute z-50 mt-1 w-full bg-gray-800 rounded-lg shadow-lg max-h-60 overflow-auto ring-1 ring-gray-600">
           {/* Options */}
-          {items.map((item, i) => (
-            <div
-              key={i}
-              className="flex justify-between items-center px-3 py-2 hover:bg-gray-600 cursor-pointer"
-            >
-              <span
-                onClick={() => {
-                  onChange(item);
-                  setIsOpen(false);
-                }}
+          {items.length > 0 ? (
+            items.map((item, i) => (
+              <div
+                key={i}
+                className="flex justify-between items-center px-4 py-2 hover:bg-gray-700 cursor-pointer transition-colors"
               >
-                {item}
-              </span>
-              <FaTimes
-                className="text-red-400 hover:text-red-600"
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent selecting while deleting
-                  onDelete(item);
-                }}
-              />
-            </div>
-          ))}
+                <span
+                  onClick={() => {
+                    onChange(item);
+                    setIsOpen(false);
+                  }}
+                  className="text-white"
+                >
+                  {item}
+                </span>
+                {onDelete && (
+                  <MdDelete
+                    className="text-red-400 text-lg hover:text-red-600 "
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDelete(item);
+                    }}
+                  />
+                )}
+              </div>
+            ))
+          ) : (
+            <div className="px-4 py-2 text-gray-400">No options available</div>
+          )}
 
           {/* Add new input */}
-          <div className="flex gap-2 p-2 border-t border-gray-600">
+          <div className="flex gap-2 p-3 border-t border-gray-600">
             <input
               type="text"
               placeholder={placeholder}
@@ -473,11 +498,11 @@ function DropdownWithAdd({
                 setActiveField(title.toLowerCase());
                 setNewValue(e.target.value);
               }}
-              className="flex-1 p-2 rounded-lg text-black"
+              className="flex-1 p-2 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
             <button
               onClick={onAdd}
-              className="bg-green-500 hover:bg-green-600 px-3 py-1 rounded-lg text-white"
+              className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg text-white font-semibold transition-colors"
             >
               Add
             </button>

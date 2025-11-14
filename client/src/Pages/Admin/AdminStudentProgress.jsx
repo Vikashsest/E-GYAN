@@ -161,7 +161,7 @@
 
 
 
-import React, { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import Sidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
 import { FaChevronDown, FaChevronUp, FaSearch, FaDownload } from "react-icons/fa";
@@ -217,7 +217,7 @@ export default function AdminStudentProgress() {
     async function fetchStudents() {
       try {
         // const res = await fetch("http://localhost:5000/admin/student-progress");
-        const res=await fetch(`${import.meta.env.VITE_API_URL}/admin/student-progress`,)
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/student-progress`,)
         const data = await res.json();
 
         const formattedData = data.map((s, i) => ({
@@ -277,8 +277,8 @@ export default function AdminStudentProgress() {
     return (
       <div className="px-2">
         <div className="bg-[#2a2b39] p-4 rounded-lg shadow hover:shadow-xl transition-all">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+            <div className="flex items-center gap-4 w-full md:w-auto">
               <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white ${student.avatarColor}`}>
                 {student.username.split(" ")[1] || student.username[0]}
               </div>
@@ -288,15 +288,15 @@ export default function AdminStudentProgress() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="text-right">
+            <div className="flex flex-col md:flex-row md:items-center gap-3 w-full md:w-auto">
+              <div className="text-right md:text-right flex-1 md:flex-none">
                 <div className="text-sm text-gray-300">Avg {avgProgress(student)}%</div>
-                <div className="w-36 bg-gray-700 h-3 rounded mt-1 overflow-hidden">
+                <div className="w-full md:w-36 bg-gray-700 h-3 rounded mt-1 overflow-hidden">
                   <div className={`${progressColor(avgProgress(student))} h-3 rounded`} style={{ width: `${avgProgress(student)}%` }}></div>
                 </div>
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <button className="px-3 py-1 bg-gray-800 rounded hover:bg-gray-700" onClick={() => setSelectedStudent(student)}>View</button>
                 <button className="px-3 py-1 bg-gray-800 rounded hover:bg-gray-700" onClick={() => toggleExpand(student.id)}>
                   {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
@@ -304,6 +304,7 @@ export default function AdminStudentProgress() {
               </div>
             </div>
           </div>
+
 
           <AnimatePresence>
             {isExpanded && (
@@ -343,7 +344,7 @@ export default function AdminStudentProgress() {
           </button>
         </div>
 
-        <AdminNavbar/>
+        <AdminNavbar />
 
         {/* Header */}
         <div className="flex items-center justify-between  mb-6">
@@ -360,7 +361,7 @@ export default function AdminStudentProgress() {
             <input
               placeholder="Search name or email..."
               className="bg-transparent px-3 py-2 w-full outline-none text-sm"
-              // onChange={(e) => handleSearchDebounced(e.target.value)}
+            // onChange={(e) => handleSearchDebounced(e.target.value)}
             />
           </div>
 
@@ -389,20 +390,20 @@ export default function AdminStudentProgress() {
         <div className="flex justify-between items-center gap-4 mt-6">
           <div className="text-sm text-gray-400">Showing {filtered.length} students — page {currentPage} / {totalPages}</div>
           <div className="flex items-center gap-2">
-            <button className="px-3 py-2 bg-gray-700 rounded disabled:opacity-50" disabled={currentPage===1} onClick={() => setCurrentPage(p => Math.max(1, p-1))}>Prev</button>
-            <input className="w-12 text-center rounded bg-[#2a2b39] px-2 py-1" value={currentPage} onChange={e => { const v = Number(e.target.value) || 1; setCurrentPage(Math.min(Math.max(1,v), totalPages)); }} />
-            <button className="px-3 py-2 bg-gray-700 rounded disabled:opacity-50" disabled={currentPage===totalPages} onClick={() => setCurrentPage(p => Math.min(totalPages, p+1))}>Next</button>
+            <button className="px-3 py-2 bg-gray-700 rounded disabled:opacity-50" disabled={currentPage === 1} onClick={() => setCurrentPage(p => Math.max(1, p - 1))}>Prev</button>
+            <input className="w-12 text-center rounded bg-[#2a2b39] px-2 py-1" value={currentPage} onChange={e => { const v = Number(e.target.value) || 1; setCurrentPage(Math.min(Math.max(1, v), totalPages)); }} />
+            <button className="px-3 py-2 bg-gray-700 rounded disabled:opacity-50" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}>Next</button>
           </div>
         </div>
 
         {/* Detail Modal */}
         <AnimatePresence>
           {selectedStudent && (
-            <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
-              <motion.div initial={{ scale:0.9 }} animate={{ scale:1 }} exit={{ scale:0.9 }} className="bg-white text-black rounded-lg p-6 w-full max-w-2xl">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+              <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }} className="bg-white text-black rounded-lg p-6 w-full max-w-2xl">
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-xl font-semibold">{selectedStudent.username}</h2>
-                  <button className="text-sm text-gray-600" onClick={()=>setSelectedStudent(null)}>Close</button>
+                  <button className="text-sm text-gray-600" onClick={() => setSelectedStudent(null)}>Close</button>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -430,7 +431,7 @@ export default function AdminStudentProgress() {
                 </div>
 
                 <div className="mt-4 flex justify-end">
-                  <button className="px-4 py-2 rounded bg-gray-200" onClick={()=>setSelectedStudent(null)}>Close</button>
+                  <button className="px-4 py-2 rounded bg-gray-200" onClick={() => setSelectedStudent(null)}>Close</button>
                 </div>
               </motion.div>
             </motion.div>
