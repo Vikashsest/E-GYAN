@@ -481,12 +481,10 @@ export default function FileManagerDashboard() {
                 V
               </div>
               <div className="text-left">
-                <p className="font-semibold text-white">Admin Dashboard</p>
-                <p className="text-xs text-gray-400">Smart File Manager System</p>
+                <p className="font-semibold text-white">Latest Release </p>
+                <p className="text-xs text-gray-400">eGyan</p>
               </div>
             </div>
-
-            {/* Center - Version Info */}
             <div className="text-sm">
               <p className="text-gray-400">
                 📦 <span className="text-white font-semibold">Version:</span>{" "}
@@ -508,7 +506,7 @@ export default function FileManagerDashboard() {
             <div className="text-sm">
               <p className="text-gray-400">
                 ⚙️ Developed by{" "}
-                <span className="text-blue-400 font-medium">Admin Team</span>
+                <span className="text-blue-400 font-medium">SEST INFOTECH PVT LTD</span>
               </p>
               <p className="text-gray-500 text-xs">
                 © {new Date().getFullYear()} All rights reserved

@@ -156,18 +156,19 @@
 
 
 
-// ProfilePage.jsx
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaEnvelope, FaUserShield, FaEdit } from "react-icons/fa";
 import { FaArrowLeft } from "react-icons/fa6";
 import Logout from "../Pages/Auth/Logout";
+import { createRequest } from "../apiServices/request";
 
 export default function ProfilePage({ user }) {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState(user || {});
-
+const [requestMessage, setRequestMessage] = useState("");
   useEffect(() => {
     if (user) setFormData(user);
   }, [user]);
@@ -195,6 +196,21 @@ export default function ProfilePage({ user }) {
         navigate("/login");
     }
   };
+const handleRequestSubmit = async (e) => {
+  e.preventDefault();
+  if (!requestMessage.trim()) return alert("Please enter a message");
+
+  try {
+    await createRequest({ message: requestMessage });
+    setShowModal(false);
+    setRequestMessage("");
+    alert("Request submitted!");
+  } catch (err) {
+    console.error(err);
+    alert("Failed to submit request");
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-[#1e1f2b] text-white p-6">
@@ -203,15 +219,15 @@ export default function ProfilePage({ user }) {
         <div className="flex flex-col items-center text-center">
           <img
             src="/user.png"
-            alt={formData?.name || "User"}
+            alt={formData?.username || "User"}
             width={100}
             height={100}
             className="rounded-full border-4 border-blue-500"
           />
           <h2 className="text-2xl font-bold mt-4">{formData?.username }</h2>
-          <p className="text-gray-400 text-sm">
-            {formData?.role || "—"} | School Library System
-          </p>
+          {/* <p className="text-gray-400 text-sm">
+            {formData?.role || "—"} 
+          </p> */}
         </div>
 
         {/* Details */}
@@ -230,6 +246,7 @@ export default function ProfilePage({ user }) {
           </button>
 
           <button
+          type="text"
             onClick={() => setShowModal(true)}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm"
           >
@@ -247,34 +264,31 @@ export default function ProfilePage({ user }) {
         <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg w-full max-w-md text-black">
             <h3 className="text-lg font-semibold mb-4">✏️ User Request</h3>
-            <form className="space-y-4">
-              <input
-                type="text"
-                value={formData?.descripation || ""}
-                onChange={(e) => handleChange("phone", e.target.value)}
-                placeholder="Enter your request..."
-                className="w-full border p-2 rounded"
-              />
-              <div className="flex justify-end gap-2 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-2 border rounded hover:bg-gray-200"
-                >
-                  ❌ Cancel
-                </button>
-                <button
-                  type="submit"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setShowModal(false);
-                  }}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                >
-                  ✅ Save
-                </button>
-              </div>
-            </form>
+         <form className="space-y-4" onSubmit={handleRequestSubmit}>
+  <input
+    type="text"
+    value={requestMessage}
+    onChange={(e) => setRequestMessage(e.target.value)}
+    placeholder="Enter your request..."
+    className="w-full border p-2 rounded"
+  />
+  <div className="flex justify-end gap-2 pt-4">
+    <button
+      type="button"
+      onClick={() => setShowModal(false)}
+      className="px-4 py-2 border rounded hover:bg-gray-200"
+    >
+      ❌ Cancel
+    </button>
+    <button
+      type="submit"
+      className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+    >
+      ✅ Save
+    </button>
+  </div>
+</form>
+
           </div>
         </div>
       )}

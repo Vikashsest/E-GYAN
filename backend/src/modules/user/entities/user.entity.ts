@@ -9,6 +9,7 @@ import { Assessment } from "src/modules/assessments/entities/assessment.entity";
 import { Quiz } from "src/modules/quizzes/entities/quiz.entity";
 import { AssessmentAttempt } from "src/modules/assessments/entities/assessment-attempt.entity";
 import { QuizAttempt } from "src/modules/quizzes/entities/quiz-attempt.entity";
+import { Request } from "./user.request.entity";
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -25,8 +26,9 @@ export class User {
   @Column()
   username: string;
 
-  @Column({ unique: true,nullable: true })
+@Column({ unique: true,nullable: true })
  email?: string;
+
 @Column({ nullable: true })
 @Exclude()
 password: string;
@@ -67,6 +69,8 @@ assessments: Assessment[];
 
 @OneToMany(() => Quiz, (quiz) => quiz.created_by)
 quizzes: Quiz[];
+@OneToMany(() => Request, (request) => request.user)
+requests: Request[];
 
 
 }

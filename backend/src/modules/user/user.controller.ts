@@ -9,6 +9,7 @@ import { Roles } from 'src/common/decorators/role.decorator';
 import { Request } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateRequestDto } from './dto/create-request.dto';
 @Controller('user')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class UserController {
@@ -18,6 +19,14 @@ export class UserController {
 async createUser(@Body() dto: CreateUserDto, @Req() req: any) {
   return this.userService.createUser(dto, req.user);
 }
+@Post('request')
+async createRequest(@Body() dto: { message: string }, @Req() req: any) {
+
+  const userId = req.user.id;
+
+  return this.userService.createRequest({ ...dto, userId });
+}
+
 
 //ROLE MANAGEMET API 
 @Patch('update-role/:id')
@@ -54,6 +63,10 @@ getAllUsers(): Promise<User[]> {
 }
 //Delete role
 
+@Get('requests')
+ fetchRequests(){
+  return this.userService.fetchUserRequest()
+ }
 
 @Delete('delete-role/:id')
 @Roles(UserRole.ADMIN,UserRole.TEACHER,UserRole.PRINCIPAL)
