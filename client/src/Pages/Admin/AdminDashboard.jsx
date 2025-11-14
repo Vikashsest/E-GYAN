@@ -258,6 +258,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { FiMenu } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { getCookie } from "../../utils/cookie";
 
@@ -273,6 +274,7 @@ export default function FileManagerDashboard() {
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [file, setFile] = useState(null);
   const [concerns, setConcerns] = useState([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const API_URL = import.meta.env.VITE_API_URL;
   const access_token = getCookie("access_token");
@@ -344,15 +346,21 @@ export default function FileManagerDashboard() {
 
   return (
     <div className="flex min-h-screen bg-[#1e1f2b] text-white">
-      <Sidebar />
+      {/* Sidebar */}
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
-      <main className="pl-[280px] py-6 pr-5 w-full">
-        <AdminNavbar
-          onUpload={() => setShowUploadModal(true)}
-          notificationsCount={concerns.length}
-        />
+      {/* Main Content */}
+      <main className="flex-1 lg:pl-[280px] py-6 px-5 w-full">
+        {/* Mobile Menu Icon */}
+        <div className="lg:hidden px-4 mb-4">
+          <button onClick={() => setIsSidebarOpen(true)} className="text-white">
+            <FiMenu size={28} />
+          </button>
+        </div>
 
-        <div className="p-2 mb-5">
+        <AdminNavbar/>
+
+        <div className="p-4">
           <WelcomeHeading />
         </div>
 

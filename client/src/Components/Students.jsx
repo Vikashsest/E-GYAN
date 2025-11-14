@@ -90,7 +90,7 @@ export default function Students() {
   };
 
   return (
-    <div className="px-4">
+    <div className="px-4 min-h-screen">
       <h2 className="text-2xl font-bold text-white mb-4">Manage Students</h2>
 
       <div className="flex justify-between items-center mb-4">

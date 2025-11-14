@@ -1,9 +1,11 @@
 import AdminSidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
 import { useState } from "react";
+import { FiMenu } from "react-icons/fi";
 import { FaFileExport, FaPrint, FaBook, FaUsers, FaClock } from "react-icons/fa";
 
 export default function EgYanReportsPage() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [filters, setFilters] = useState({
     class: "",
     subject: "",
@@ -19,11 +21,20 @@ export default function EgYanReportsPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white">
-      <AdminSidebar />
+    <div className="flex min-h-screen bg-[#1e1f2b] text-white">
+      {/* Sidebar */}
+      <AdminSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
-      <main className="flex-1 pl-[280px] pr-6 py-6">
-        <AdminNavbar />
+      {/* Main Content */}
+      <main className="flex-1 lg:pl-[280px] py-6 px-5 w-full">
+        {/* Mobile Menu Icon */}
+        <div className="lg:hidden px-4 mb-4">
+          <button onClick={() => setIsSidebarOpen(true)} className="text-white">
+            <FiMenu size={28} />
+          </button>
+        </div>
+
+        <AdminNavbar/>
 
         <section className="px-4">
           {/* Header */}

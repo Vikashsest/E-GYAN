@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa";
 import { getCookie } from "../../utils/cookie";
 import { toast } from "react-toastify";
+import { FiMenu } from "react-icons/fi";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -20,6 +21,8 @@ const access_token = getCookie("access_token");
 export default function AdminSchoolOverview() {
   const [data, setData] = useState({});
   const [lastSync, setLastSync] = useState("Loading...");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
 
   useEffect(() => {
   const fetchSchoolOverview = async () => {
@@ -83,10 +86,21 @@ export default function AdminSchoolOverview() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#1e1f2b] text-white">
-      <AdminSidebar />
-      <main className="pl-[280px] py-6 pr-5 w-full">
-        <AdminNavbar />
+     <div className="flex min-h-screen bg-[#1e1f2b] text-white">
+      {/* Sidebar */}
+      <AdminSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+
+      {/* Main Content */}
+      <main className="flex-1 lg:pl-[280px] py-6 px-5 w-full">
+        {/* Mobile Menu Icon */}
+        <div className="lg:hidden px-4 mb-4">
+          <button onClick={() => setIsSidebarOpen(true)} className="text-white">
+            <FiMenu size={28} />
+          </button>
+        </div>
+
+        <AdminNavbar/>
+
 
         <div className="p-4">
           <div className="mb-6">

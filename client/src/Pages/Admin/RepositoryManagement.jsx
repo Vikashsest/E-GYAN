@@ -189,6 +189,7 @@
 import { useEffect, useState,useRef } from "react";
 import Sidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
+import { FiMenu } from "react-icons/fi";
 const API_URL = import.meta.env.VITE_API_URL;
 import { FaTimes } from "react-icons/fa";
 
@@ -198,6 +199,7 @@ export default function RepositoryManagement() {
   const [levels, setLevels] = useState([]);
   const [languages, setLanguages] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const [repoName, setRepoName] = useState("");
   const [selected, setSelected] = useState({
@@ -285,10 +287,21 @@ export default function RepositoryManagement() {
   };
 
   return (
-    <div className="flex">
-      <Sidebar />
-      <div className="ml-64 flex-1 bg-[#0f1017] min-h-screen p-6 text-white">
-        <AdminNavbar />
+    <div className="flex min-h-screen bg-[#1e1f2b] text-white">
+      {/* Sidebar */}
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+
+      {/* Main Content */}
+      <main className="flex-1 lg:pl-[280px] py-6 px-5 w-full">
+        {/* Mobile Menu Icon */}
+        <div className="lg:hidden px-4 mb-4">
+          <button onClick={() => setIsSidebarOpen(true)} className="text-white">
+            <FiMenu size={28} />
+          </button>
+        </div>
+
+        <AdminNavbar/>
+
         <h1 className="text-3xl font-bold mb-8">📘 Create Repository</h1>
 
         <div className="bg-[#1e1f29] p-6 rounded-xl shadow-lg space-y-5 max-w-6xl">
@@ -380,7 +393,7 @@ export default function RepositoryManagement() {
             Create Repository
           </button> */}
         </div>
-      </div>
+      </main>
     </div>
   );
 }
