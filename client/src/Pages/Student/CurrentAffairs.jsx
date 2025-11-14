@@ -83,7 +83,7 @@ const CurrentAffairs = () => {
       )}
 
       <main className="flex-1 lg:pl-[280px] py-6 px-4 sm:px-6 w-full">
-        {/* Mobile Menu */}
+      
         <div className="lg:hidden mb-4 flex items-center">
           <button
             onClick={() => setIsSidebarOpen(true)}
@@ -93,14 +93,14 @@ const CurrentAffairs = () => {
           </button>
         </div>
 
-        {/* Header */}
+     
         <header className="flex flex-col md:flex-row justify-between items-center bg-[#2a2b3d] rounded-2xl shadow-md p-4 mb-8 gap-4">
           <h2 className="text-2xl font-bold flex items-center gap-2 text-blue-500">
              Daily Current Affairs
           </h2>
 
           <div className="flex flex-col md:flex-row gap-4 w-full md:w-2/3 items-center">
-            {/* Search Box */}
+         
             <div className="relative w-full md:w-1/2">
               <input
                 type="text"
@@ -113,7 +113,7 @@ const CurrentAffairs = () => {
             </div>
 
             <div className="flex gap-5 justify-center items-center">
-            {/* Topics Dropdown */}
+          
             <div className="relative">
               <button
                 onClick={() => setIsTopicsDropdownOpen(!isTopicsDropdownOpen)}
