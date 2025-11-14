@@ -4,7 +4,8 @@ import { UserRole } from '../entities/user.entity'
 export class CreateUserDto {
   @IsOptional()
   username?: string;
-
+@IsOptional()
+ request?: string;
 
   @IsOptional()
   password: string;

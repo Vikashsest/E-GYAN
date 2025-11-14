@@ -2,7 +2,7 @@ import axios from 'axios';
 import path from 'path';
 
 export const nextcloudConfig = {
-  baseUrl: process.env.NEXTCLOUD_BASE_URL || 'https://cloud.ptgn.in/c', // sirf root server URL
+  baseUrl: process.env.NEXTCLOUD_BASE_URL || 'https://cloud.ptgn.in/c', 
   username: process.env.NEXTCLOUD_USER || 'egyan',
   password: process.env.NEXTCLOUD_PASS || 'B9++H9Zv8}pI',
   rootFolder: process.env.NEXTCLOUD_ROOT_FOLDER || 'books',

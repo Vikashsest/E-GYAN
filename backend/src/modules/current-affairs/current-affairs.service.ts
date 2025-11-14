@@ -4,13 +4,17 @@ import { UpdateCurrentAffairDto } from './dto/update-current-affair.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CurrentAffair } from './entities/current-affair.entity';
 import { Repository } from 'typeorm';
-import { uploadToGoogleDrive } from 'src/common/utils/googleDriveUtil';
+
+import { generatePublicLink } from 'src/common/utils/nextcloud.config';
+import { NextcloudService } from '../nextcloud/nextcloud.service';
 
 @Injectable()
 export class CurrentAffairsService {
   constructor(
     @InjectRepository(CurrentAffair)
     private readonly currentAffairRepository: Repository<CurrentAffair>,
+       private readonly nextcloudService: NextcloudService,
+    // private readonly googleDriveService: GoogleDriveService,
   ){}
 //  async createCurrentAffair(dto: CreateCurrentAffairDto): Promise<CurrentAffair> {
 //     try {
@@ -23,17 +27,23 @@ export class CurrentAffairsService {
 //   }
 async createCurrentAffair(
   dto: CreateCurrentAffairDto,
-  image?: Express.Multer.File,
+  file?: Express.Multer.File,
 ): Promise<CurrentAffair> {
   try {
-    let imageLink: string | undefined = undefined; // ✅ null -> undefined
-    if (image) {
-      const uploaded = await uploadToGoogleDrive(image, process.env.GOOGLE_DRIVE_FOLDER_ID);
-      imageLink = uploaded.downloadLink; 
+    let imageLink: string | undefined = undefined;
+
+    if (file) {
+      // 1️⃣ Nextcloud me file upload
+      const remotePath = `current_affairs/${Date.now()}_${file.originalname}`; // aapke folder ke under
+      await this.nextcloudService.uploadBuffer(file.buffer, remotePath);
+
+      // 2️⃣ Public link generate karo
+      imageLink = await generatePublicLink(remotePath); // ye link DB me save hoga
     }
+
     const newAffair = this.currentAffairRepository.create({
       ...dto,
-      imageUrl: imageLink, // ✅ now type matches string | undefined
+      imageUrl: imageLink,
     });
 
     return await this.currentAffairRepository.save(newAffair);
@@ -42,6 +52,7 @@ async createCurrentAffair(
     throw new InternalServerErrorException('Failed to create current affair');
   }
 }
+
 
 
     async getAllCurrentAffairs(): Promise<CurrentAffair[]> {

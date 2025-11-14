@@ -678,6 +678,7 @@ import {
   fetchBooks,
   uploadBook,
   deleteBook,
+  addCurrentAffairs
 } from "../apiServices/booksApi";
 import { useNavigate } from "react-router-dom";
 
@@ -729,6 +730,14 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
     language: "",
     file: null,
     thumbnail: null,
+
+    //current affairs 
+  title: "",
+  description: "",
+  newsCategory: "",
+  date: "",
+  source: "",
+  link: "",
   });
 
 
@@ -782,49 +791,119 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   };
 
 
-  const handleUpload = async (e) => {
-    e.preventDefault();
+  // const handleUpload = async (e) => {
+  //   e.preventDefault();
 
-    const uploadData = new FormData();
-    uploadData.append("bookName", formData.bookName);
-    uploadData.append("category", formData.category);
-    uploadData.append("subject", formData.subject);
-    uploadData.append("educationLevel", formData.educationLevel);
-    uploadData.append("language", formData.language);
-    // uploadData.append("resourceType", formData.resourceType);
-    if (formData.file) uploadData.append("file", formData.file);
-    if (formData.thumbnail) uploadData.append("thumbnail", formData.thumbnail);
+  //   const uploadData = new FormData();
+  //   uploadData.append("bookName", formData.bookName);
+  //   uploadData.append("category", formData.category);
+  //   uploadData.append("subject", formData.subject);
+  //   uploadData.append("educationLevel", formData.educationLevel);
+  //   uploadData.append("language", formData.language);
+  //   // uploadData.append("resourceType", formData.resourceType);
+  //   if (formData.file) uploadData.append("file", formData.file);
+  //   if (formData.thumbnail) uploadData.append("thumbnail", formData.thumbnail);
 
-    try {
+  //   try {
+  //     const result = await uploadBook(uploadData);
+
+  //     if (result && result.id) {
+  //       setBookList((prev) => [...prev, result]);
+  //       setShowUploadModal(false);
+  //       setFormData({
+
+  //         bookName: "",
+  //         subject: "",
+
+  //         educationLevel: "",
+  //         language: "",
+
+  //         category: "",
+  //         file: null,
+  //         thumbnail: null,
+  //       });
+  //       navigate(`/books/${result.id}/chapters`);
+
+
+  //       toast.success("Book uploaded successfully ✅");
+  //     } else {
+  //       toast.error("Upload failed ❌");
+  //     }
+  //   } catch (error) {
+  //     toast.error("Something went wrong during upload ❌");
+  //     console.error("Upload Error:", error);
+  //   }
+  // };
+
+
+const handleUpload = async (e) => {
+  e.preventDefault();
+
+  try {
+    if (formData.category === "Current Affairs") {
+const currentFormData = new FormData();
+
+      currentFormData.append("title", formData.title?.trim() || "");
+      currentFormData.append("mainCategory", formData.category || ""); // 📰 "Current Affairs"
+currentFormData.append("category", formData.newsCategory || ""); // 🧠 "Science & Technology"
+
+      currentFormData.append("description", formData.description?.trim() || "");
+      currentFormData.append("date", formData.date || "");
+      currentFormData.append("source", formData.source?.trim() || "");
+      if (formData.file) currentFormData.append("file", formData.file);
+      if (formData.link) currentFormData.append("link", formData.link);
+
+      console.log("📦 Sending FormData entries:", [...currentFormData.entries()]);
+
+      const result = await addCurrentAffairs(null, currentFormData);
+      if (result) {
+        toast.success("✅ Current Affairs added successfully");
+        setShowUploadModal(false);
+        setFormData({
+          bookName: "",
+          category: "",
+          subject: "",
+          educationLevel: "",
+          language: "",
+          file: null,
+          thumbnail: null,
+          title: "",
+          description: "",
+          newsCategory: "",
+          date: "",
+          source: "",
+          link: "",
+        });
+      } else {
+        toast.error("❌ Failed to add Current Affairs");
+      }
+    } else {
+      // 🟢 Normal book upload
+      const uploadData = new FormData();
+      uploadData.append("bookName", formData.bookName);
+      uploadData.append("category", formData.category);
+      uploadData.append("subject", formData.subject);
+      uploadData.append("educationLevel", formData.educationLevel);
+      uploadData.append("language", formData.language);
+      if (formData.file) uploadData.append("file", formData.file);
+      if (formData.thumbnail) uploadData.append("thumbnail", formData.thumbnail);
+
       const result = await uploadBook(uploadData);
-
       if (result && result.id) {
         setBookList((prev) => [...prev, result]);
         setShowUploadModal(false);
-        setFormData({
-
-          bookName: "",
-          subject: "",
-
-          educationLevel: "",
-          language: "",
-
-          category: "",
-          file: null,
-          thumbnail: null,
-        });
         navigate(`/books/${result.id}/chapters`);
-
-
-        toast.success("Book uploaded successfully ✅");
+        toast.success("✅ Book uploaded successfully");
       } else {
-        toast.error("Upload failed ❌");
+        toast.error("❌ Upload failed");
       }
-    } catch (error) {
-      toast.error("Something went wrong during upload ❌");
-      console.error("Upload Error:", error);
     }
-  };
+  } catch (error) {
+    console.error(error);
+    toast.error("⚠️ Something went wrong during upload");
+  }
+};
+
 
 
   const getViewLabel = (type) => {
@@ -1261,12 +1340,12 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                       onChange={(e) => setFormData(prev => ({ ...prev, prerequisites: e.target.value }))}
                     />
 
-                    <input
+                    {/* <input
                       type="text"
                       placeholder="Tags (comma separated)"
                       value={formData.tags}
                       onChange={(e) => setFormData(prev => ({ ...prev, tags: e.target.value }))}
-                    />
+                    /> */}
                   </>
                 )}
 
@@ -1356,7 +1435,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                     </div>
 
                     {/* 🔹 Tags / Keywords */}
-                    <div>
+                    {/* <div>
                       <label className="text-sm font-medium">Tags (comma separated)</label>
                       <input
                         type="text"
@@ -1369,10 +1448,10 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                           }))
                         }
                       />
-                    </div>
+                    </div> */}
 
                     {/* 🔹 Thumbnail Image */}
-                    <div>
+                    {/* <div>
                       <label className="text-sm font-medium">Thumbnail Image</label>
                       <input
                         type="file"
@@ -1385,7 +1464,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                           }))
                         }
                       />
-                    </div>
+                    </div> */}
 
                     {/* 🔹 Full News File (Optional PDF or Image) */}
                     <div>

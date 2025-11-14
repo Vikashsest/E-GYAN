@@ -12,7 +12,10 @@ export class CurrentAffair {
   description: string;
 
   @Column({ nullable: true })
-  category: string; 
+  category: string; // ✅ news category (Science & Tech, etc.)
+
+  @Column({ nullable: true })
+  mainCategory: string; // ✅ "Current Affairs" or "Books"
 
   @Column({ nullable: true })
   source: string;

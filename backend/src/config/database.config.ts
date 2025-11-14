@@ -20,6 +20,7 @@ import { QuizQuestion } from 'src/modules/quizzes/entities/quiz-question.entity'
 import { Analytics } from 'src/modules/analytics/entities/analytics.entity';
 import { Simulation } from 'src/modules/book/entities/simulation';
 import { CurrentAffair } from 'src/modules/current-affairs/entities/current-affair.entity';
+import { Request } from 'src/modules/user/entities/user.request.entity';
 
 
 dotenv.config();
@@ -47,8 +48,8 @@ export const databaseConfig: TypeOrmModuleOptions = {
   type: 'postgres',
   url:'postgresql://neondb_owner:npg_VUoArT49ZSDk@ep-silent-river-a1if9gjk-pooler.ap-southeast-1.aws.neon.tech/egyan?sslmode=require&channel_binding=require',
   ssl: { rejectUnauthorized: false },
-  entities: [User, Book, Student, StudentActivity, Concern, BookProgress, Announcement, Chapter,Repositories,Assessment,AssessmentQuestion,AssessmentAttempt,Quiz,QuizAttempt,QuizQuestion,Analytics,Simulation,CurrentAffair],
-  synchronize: true,
+  entities: [User, Book, Student, StudentActivity, Concern, BookProgress, Announcement, Chapter,Repositories,Assessment,AssessmentQuestion,AssessmentAttempt,Quiz,QuizAttempt,QuizQuestion,Analytics,Simulation,CurrentAffair,Request],
+ synchronize: true,
   extra: {
     connectionTimeoutMillis: 30000,
   },
