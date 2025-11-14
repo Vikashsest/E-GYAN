@@ -358,7 +358,7 @@ export default function FileManagerDashboard() {
           </button>
         </div>
 
-        <AdminNavbar/>
+  <AdminNavbar onUpload={() => setShowUploadModal(true)}notificationsCount={concerns.length}  />
 
         <div className="p-4">
           <WelcomeHeading />
