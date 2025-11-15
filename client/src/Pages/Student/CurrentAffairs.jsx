@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   FaCalendarAlt,
   FaChevronDown,
@@ -10,8 +10,8 @@ import { FiMenu } from "react-icons/fi";
 import StudentSidebar from "./StudentSidebar";
 import NewsModal from "./NewsModel";
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css"; 
-import {  useNavigate } from "react-router-dom";
+import "react-datepicker/dist/react-datepicker.css";
+import { useNavigate } from "react-router-dom";
 import { fetchCurrentAffairs } from "../../apiServices/booksApi";
 const menuLinks = [
   { name: "All", url: "" },
@@ -23,8 +23,8 @@ const menuLinks = [
 ];
 
 const months = [
-  "January","February","March","April","May","June",
-  "July","August","September","October","November","December"
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
 ];
 
 const CurrentAffairs = () => {
@@ -35,8 +35,8 @@ const CurrentAffairs = () => {
   const [isTopicsDropdownOpen, setIsTopicsDropdownOpen] = useState(false);
   const [isMonthsDropdownOpen, setIsMonthsDropdownOpen] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(null);
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false); 
-  const [selectedDate, setSelectedDate] = useState(null); 
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
   const [loading, setLoading] = useState(true);
   const [newsList, setNewsList] = useState([]);
   const navigate = useNavigate();
@@ -46,8 +46,8 @@ const CurrentAffairs = () => {
       try {
         setLoading(true);
         const data = await fetchCurrentAffairs();
-       
-        setNewsList(data); 
+
+        setNewsList(data);
       } catch (err) {
         console.error("Error loading current affairs:", err);
         setError("Failed to load current affairs");
@@ -66,12 +66,34 @@ const CurrentAffairs = () => {
       (!selectedDate || new Date(n.date).toDateString() === selectedDate.toDateString()) &&
       n.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
-const truncateText = (text, limit = 150) => {
-  if (!text) return "";
-  return text.length > limit ? text.substring(0, limit) + "..." : text;
-};
+  const truncateText = (text, limit = 150) => {
+    if (!text) return "";
+    return text.length > limit ? text.substring(0, limit) + "..." : text;
+  };
 
   const categories = ["All", ...new Set(newsList.map(item => item.category).filter(Boolean))];
+
+
+  useEffect(() => {
+  const handleClickOutside = (event) => {
+    // Topics Dropdown Close
+    if (!event.target.closest(".topics-dropdown")) {
+      setIsTopicsDropdownOpen(false);
+    }
+    // Months Dropdown Close
+    if (!event.target.closest(".months-dropdown")) {
+      setIsMonthsDropdownOpen(false);
+    }
+    // Calendar Close
+    if (!event.target.closest(".calendar-container")) {
+      setIsCalendarOpen(false);
+    }
+  };
+
+  document.addEventListener("click", handleClickOutside);
+  return () => document.removeEventListener("click", handleClickOutside);
+}, []);
+
   return (
     <div className="flex min-h-screen bg-[#1e1f2b] text-white relative">
       <StudentSidebar
@@ -87,7 +109,7 @@ const truncateText = (text, limit = 150) => {
       )}
 
       <main className="flex-1 lg:pl-[280px] py-6 px-4 sm:px-6 w-full">
-      
+
         <div className="lg:hidden mb-4 flex items-center">
           <button
             onClick={() => setIsSidebarOpen(true)}
@@ -97,14 +119,14 @@ const truncateText = (text, limit = 150) => {
           </button>
         </div>
 
-     
+
         <header className="flex flex-col md:flex-row justify-between items-center bg-[#2a2b3d] rounded-2xl shadow-md p-4 mb-8 gap-4">
           <h2 className="text-2xl font-bold flex items-center gap-2 text-blue-500">
-             Daily Current Affairs
+            Daily Current Affairs
           </h2>
 
           <div className="flex flex-col md:flex-row gap-4 w-full md:w-2/3 items-center">
-         
+
             <div className="relative w-full md:w-1/2">
               <input
                 type="text"
@@ -117,100 +139,92 @@ const truncateText = (text, limit = 150) => {
             </div>
 
             <div className="flex gap-5 justify-center items-center">
-          
-            <div className="relative">
-              <button
-                onClick={() => setIsTopicsDropdownOpen(!isTopicsDropdownOpen)}
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg text-white font-semibold"
-              >
-                Topics <FaChevronDown />
-              </button>
-              {isTopicsDropdownOpen && (
-                <ul className="absolute right-0 mt-2 w-56 bg-[#1f2030] border border-gray-600 rounded-lg shadow-xl z-50">
-                 {categories.map((cat, i) => (
-  <li
-    key={i}
-    className={`border-b border-gray-700 last:border-none ${
-      filter === cat ? "bg-blue-700" : ""
-    }`}
-  >
-    <button
-      onClick={() => {
-        setFilter(cat);
-        setIsTopicsDropdownOpen(false);
-      }}
-      className="w-full text-left px-4 py-2 hover:bg-blue-600 transition-all"
-    >
-      {cat}
-    </button>
-  </li>
-))}
+              {/* Topics Dropdown */}
+              <div className="relative topics-dropdown">
+                <button
+                  onClick={() => setIsTopicsDropdownOpen(!isTopicsDropdownOpen)}
+                  className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg"
+                >
+                  Topics <FaChevronDown />
+                </button>
 
-                </ul>
-              )}
-            </div>
+                {isTopicsDropdownOpen && (
+                  <ul className="absolute right-0 mt-2 w-56 bg-[#1f2030] border border-gray-600 rounded-lg shadow-xl z-50">
+                    {categories.map((cat, i) => (
+                      <li key={i} className="border-b border-gray-700 last:border-none">
+                        <button
+                          onClick={() => {
+                            setFilter(cat);
+                            setIsTopicsDropdownOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-2 hover:bg-blue-600"
+                        >
+                          {cat}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
 
-            {/* Months Dropdown */}
-            <div className="relative">
-              <button
-                onClick={() => setIsMonthsDropdownOpen(!isMonthsDropdownOpen)}
-                className="flex items-center gap-2 bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg text-white font-semibold"
-              >
-                <FaRegCalendarAlt /> {selectedMonth !== null ? months[selectedMonth] : "Month"} <FaChevronDown />
-              </button>
-              {isMonthsDropdownOpen && (
-                <ul className="absolute right-0 mt-2 w-40 bg-[#1f2030] border border-gray-600 rounded-lg shadow-xl z-50">
-                  {months.map((month, i) => (
-                    <li
-                      key={i}
-                      className={`border-b border-gray-700 last:border-none ${
-                        selectedMonth === i ? "bg-green-700" : ""
-                      }`}
-                    >
+
+              {/* Months Dropdown */}
+              <div className="relative months-dropdown">
+                <button
+                  onClick={() => setIsMonthsDropdownOpen(!isMonthsDropdownOpen)}
+                  className="flex items-center gap-2 bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg"
+                >
+                  {selectedMonth !== null ? months[selectedMonth] : "Month"} <FaChevronDown />
+                </button>
+
+                {isMonthsDropdownOpen && (
+                  <ul className="absolute right-0 mt-2 w-40 bg-[#1f2030] border border-gray-600 rounded-lg shadow-xl z-50">
+                    {months.map((month, i) => (
+                      <li key={i}>
+                        <button
+                          onClick={() => {
+                            setSelectedMonth(i);
+                            setIsMonthsDropdownOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-2 hover:bg-green-600"
+                        >
+                          {month}
+                        </button>
+                      </li>
+                    ))}
+                    <li>
                       <button
                         onClick={() => {
-                          setSelectedMonth(i);
+                          setSelectedMonth(null);
                           setIsMonthsDropdownOpen(false);
                         }}
-                        className="w-full text-left px-4 py-2 hover:bg-green-600 transition-all"
+                        className="w-full text-left px-4 py-2 hover:bg-green-600 text-gray-300"
                       >
-                        {month}
+                        Clear Month
                       </button>
                     </li>
-                  ))}
-                  <li>
-                    <button
-                      onClick={() => {
-                        setSelectedMonth(null);
-                        setIsMonthsDropdownOpen(false);
-                      }}
-                      className="w-full text-left px-4 py-2 hover:bg-green-600 transition-all text-sm text-gray-300"
-                    >
-                      Clear Month
-                    </button>
-                  </li>
-                </ul>
-              )}
-            </div>
+                  </ul>
+                )}
+              </div>
 
-            {/* Calendar Icon */}
-            <div className="relative">
-              <button
-                onClick={() => setIsCalendarOpen(!isCalendarOpen)}
-                className="flex items-center justify-center w-12 h-12 bg-purple-600 hover:bg-purple-500 rounded-full"
-              >
-                <FaCalendarAlt size={20} />
-              </button>
-              {isCalendarOpen && (
-                <div className="absolute right-0 mt-2 z-50">
-                  <DatePicker
-                    selected={selectedDate}
-                    onChange={(date) => setSelectedDate(date)}
-                    inline
-                  />
-                </div>
-              )}
-            </div>
+
+              {/* Calendar */}
+              <div className="relative calendar-container">
+                <button
+                  onClick={() => setIsCalendarOpen(!isCalendarOpen)}
+                  className="flex items-center justify-center w-12 h-12 bg-purple-600 hover:bg-purple-500 rounded-full"
+                >
+                  <FaCalendarAlt size={20} />
+                </button>
+
+                {isCalendarOpen && (
+                  <div className="absolute right-0 mt-2 z-50">
+                    <DatePicker selected={selectedDate} onChange={(date) => setSelectedDate(date)} inline />
+                  </div>
+                )}
+              </div>
+
+
             </div>
           </div>
         </header>
@@ -223,15 +237,15 @@ const truncateText = (text, limit = 150) => {
               className="flex flex-col md:flex-row bg-[#2a2b3d] rounded-xl overflow-hidden hover:shadow-lg hover:shadow-blue-600/20 transition-all duration-300"
             >
               <div className="md:w-1/3 w-full">
-               <img
-  src={
-    news.imageUrl?.includes("/download")
-      ? news.imageUrl
-      : `${news.imageUrl}/download`
-  }
-  alt={news.title}
-  className="w-full h-44 md:h-56 object-cover"
-/>
+                <img
+                  src={
+                    news.imageUrl?.includes("/download")
+                      ? news.imageUrl
+                      : `${news.imageUrl}/download`
+                  }
+                  alt={news.title}
+                  className="w-full h-44 md:h-56 object-cover"
+                />
               </div>
 
               <div className="p-5 flex flex-col justify-between md:w-2/3">
@@ -247,16 +261,16 @@ const truncateText = (text, limit = 150) => {
                   <h3 className="text-xl font-semibold text-white mb-2 hover:text-blue-400 transition-all">
                     {news.title}
                   </h3>
-                 <p className="text-gray-300 text-sm leading-relaxed">
-  {truncateText(news.description, 150)}
-</p>
+                  <p className="text-gray-300 text-sm leading-relaxed">
+                    {truncateText(news.description, 150)}
+                  </p>
 
                 </div>
 
                 <button
                   onClick={() => navigate(`/current-affairs/${news.id}`)}
 
-              
+
                   className="flex items-center gap-2 text-blue-400 hover:text-blue-300 mt-4 font-semibold"
                 >
                   Keep Reading <FaArrowRight />

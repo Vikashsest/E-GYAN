@@ -25,7 +25,7 @@
 //         setLoading(true);
 //         const data = await fetchChapters(bookId);
 //         console.log("book id",data);
-        
+
 //         setChapters(data || []);
 //       } catch (err) {
 //         toast.error("Error fetching chapters");
@@ -1089,30 +1089,59 @@
 //   );
 // }
 
+
+
 import { useEffect, useState, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom"; 
+import { useParams, useNavigate } from "react-router-dom";
 import { fetchChapters, deleteChapter } from "../apiServices/booksApi";
 import { toast } from "react-toastify";
+import { getRepository } from "../apiServices/apiRepository";
 
 export default function UploadChapter() {
   const { bookId } = useParams();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [chapterNumber, setChapterNumber] = useState("");
   const [file, setFile] = useState(null);
   const [thumbnail, setThumbnail] = useState(null);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [chapters, setChapters] = useState([]);
-  const [resourceType, setResourceType] = useState(""); 
-  const [openChapterId, setOpenChapterId] = useState(null); 
-  const [addPartChapterId, setAddPartChapterId] = useState(null); 
+  const [resourceType, setResourceType] = useState("");
+  const [openChapterId, setOpenChapterId] = useState(null);
+  const [addPartChapterId, setAddPartChapterId] = useState(null);
   const [videoUrl, setVideoUrl] = useState("");
-  const [simulationUrl, setSimulationUrl] = useState(""); // ✅ new state
+  const [simulationUrl, setSimulationUrl] = useState("");
+  const [resourceTypes, setResourceTypes] = useState([]);
+
 
   const API_URL = import.meta.env.VITE_API_URL;
   const progressIntervalRef = useRef(null);
 
-  // Load Chapters
+
+  useEffect(() => {
+  const loadResourceTypes = async () => {
+    try {
+      const data = await getRepository();
+
+      // Filter for School Education (or relevant category)
+      const schoolData = data.find(item => item.Categories.includes("School Education"));
+
+      if (schoolData) {
+        setResourceTypes(schoolData.ResourceTypes.split(',').map(r => r.trim()));
+      } else {
+        setResourceTypes([]);
+      }
+    } catch (err) {
+      console.error("Failed to fetch resource types:", err);
+      setResourceTypes([]);
+    }
+  };
+
+  loadResourceTypes();
+}, []);
+
+
+
   useEffect(() => {
     async function loadChapters() {
       try {
@@ -1193,7 +1222,7 @@ export default function UploadChapter() {
       setChapterNumber("");
       setFile(null);
       setThumbnail(null);
-      setVideoUrl("");  
+      setVideoUrl("");
       setSimulationUrl(""); // ✅ reset simulation url
       setResourceType("");
       setAddPartChapterId(null);
@@ -1346,11 +1375,10 @@ export default function UploadChapter() {
               type="button"
               onClick={() => handleAddChapter()}
               disabled={loading}
-              className={`px-4 py-2 rounded-lg transition ${
-                loading
+              className={`px-4 py-2 rounded-lg transition ${loading
                   ? "bg-blue-500 font-semibold"
                   : "font-semibold bg-blue-500 hover:bg-blue-800"
-              } text-white`}
+                } text-white`}
             >
               {loading ? "Uploading..." : "Upload"}
             </button>
@@ -1374,7 +1402,7 @@ export default function UploadChapter() {
                     <img
                       src={`${API_URL}/books/proxy/thumbnail?url=${encodeURIComponent(
                         c.thumbnail + "/download"
-                      )}`} 
+                      )}`}
                       alt={c.chapterNumber}
                       className="w-12 h-12 object-cover rounded"
                     />
@@ -1421,16 +1449,19 @@ export default function UploadChapter() {
                   <h4 className="font-semibold text-white">➕ Add Part to Chapter {c.chapterNumber}</h4>
 
                   <select
-                    className="w-full border border-gray-500 rounded-lg p-2 mt-1 text-black"
+                    className="w-full border border-gray-500 rounded-lg p-2 mt-1 text-black focus:outline-none focus:ring-2 focus:ring-blue-400"
                     value={resourceType}
                     onChange={(e) => setResourceType(e.target.value)}
+                    required
                   >
                     <option value="">Select Resource Type</option>
-                    <option value="pdf">PDF</option>
-                    <option value="video">Video</option>
-                    <option value="audio">Audio</option>
-                    <option value="simulation">Simulation</option> {/* ✅ new option */}
+                    {resourceTypes.map((rType, idx) => (
+                      <option key={idx} value={rType.toLowerCase()}>
+                        {rType}
+                      </option>
+                    ))}
                   </select>
+
 
                   {resourceType === "video" && (
                     <input
