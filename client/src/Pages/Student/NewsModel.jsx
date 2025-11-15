@@ -81,7 +81,12 @@ const NewsPage = () => {
     loadNews();
   }, [id]);
 
-  if (loading) return <p className="text-white p-6">Loading...</p>;
+ if (loading)
+  return (
+    <div className="min-h-screen bg-[#1e1f2b] flex items-center justify-center">
+      <p className="text-white text-xl">Loading...</p>
+    </div>
+  );
 
   if (!newsItem) return <p className="text-white p-6">News Not Found</p>;
 
@@ -116,7 +121,11 @@ const NewsPage = () => {
           </div>
 
           <h1 className="text-3xl font-bold">{newsItem.title}</h1>
-          <p className="text-gray-300 text-lg">{newsItem.description}</p>
+       <div
+  className="text-gray-300 text-lg space-y-4"
+  dangerouslySetInnerHTML={{ __html: newsItem.description }}
+></div>
+
         </div>
       </div>
     </div>

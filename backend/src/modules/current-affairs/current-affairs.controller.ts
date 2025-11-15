@@ -5,6 +5,7 @@ import {
   UseInterceptors,
   UploadedFile,
   Body,
+  Param,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CurrentAffairsService } from './current-affairs.service';
@@ -38,8 +39,9 @@ export class CurrentAffairsController {
   async fetechAll(){
     return this.currentAffairsService.getAllCurrentAffairs()
   }
-  @Get("/:id")
-  async fetechById(@Body('id') id: number){
-    return this.currentAffairsService.getCurrentAffairById(id)
-  }
+@Get("/:id")
+async fetechById(@Param('id') id: string){   
+    return this.currentAffairsService.getCurrentAffairById(Number(id))
+}
+
 }

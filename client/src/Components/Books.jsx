@@ -673,7 +673,8 @@ import { FaEdit, FaTrash, FaExpand, FaCompress } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { FiMenu } from "react-icons/fi";
 import { confirmDelete } from "../utils/confirmDelete";
-
+import JoditEditor from "jodit-react";
+import { useRef } from "react";
 import {
   fetchBooks,
   uploadBook,
@@ -739,7 +740,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   source: "",
   link: "",
   });
-
+const editor = useRef(null);
 
   useEffect(() => {
     async function loadBooks() {
@@ -1368,7 +1369,7 @@ currentFormData.append("category", formData.newsCategory || ""); // 🧠 "Scienc
                     />
 
                     {/* 🔹 Description */}
-                    <textarea
+                    {/* <textarea
                       placeholder="Description or Summary"
                       className="w-full border border-gray-300 p-2 rounded text-sm"
                       onChange={(e) =>
@@ -1378,7 +1379,42 @@ currentFormData.append("category", formData.newsCategory || ""); // 🧠 "Scienc
                         }))
                       }
 
-                    />
+                    /> */}
+                    {/* 🔹 Description Editor */}
+<div>
+  <label className="text-sm font-medium text-white">Full Description</label>
+
+ <JoditEditor
+  ref={editor}
+  value={formData.description}
+  config={{
+    readonly: false,
+    height: 300,
+    textIcons: true,      
+    useSearch: true,      
+    enter: "P",
+    toolbar: true,
+    buttons: [
+      "bold", "italic", "underline", "|",
+      "ul", "ol", "|",
+      "paragraph", "fontsize", "brush", "|",
+      "h1", "h2", "h3", "|",
+      "table", "link", "image", "|",
+      "align", "undo", "redo"
+    ],
+
+    pastePlain: false
+  }}
+  onChange={(newContent) =>
+    setFormData((prev) => ({
+      ...prev,
+      description: newContent
+    }))
+  }
+/>
+
+</div>
+
 
                     {/* 🔹 Category Selection */}
                     <div>
