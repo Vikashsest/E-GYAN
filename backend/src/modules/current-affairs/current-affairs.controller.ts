@@ -38,4 +38,8 @@ export class CurrentAffairsController {
   async fetechAll(){
     return this.currentAffairsService.getAllCurrentAffairs()
   }
+  @Get("/:id")
+  async fetechById(@Body('id') id: number){
+    return this.currentAffairsService.getCurrentAffairById(id)
+  }
 }

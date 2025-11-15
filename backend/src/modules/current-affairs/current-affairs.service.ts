@@ -33,12 +33,12 @@ async createCurrentAffair(
     let imageLink: string | undefined = undefined;
 
     if (file) {
-      // 1️⃣ Nextcloud me file upload
+
       const remotePath = `current_affairs/${Date.now()}_${file.originalname}`; // aapke folder ke under
       await this.nextcloudService.uploadBuffer(file.buffer, remotePath);
 
-      // 2️⃣ Public link generate karo
-      imageLink = await generatePublicLink(remotePath); // ye link DB me save hoga
+     
+      imageLink = await generatePublicLink(remotePath); 
     }
 
     const newAffair = this.currentAffairRepository.create({
