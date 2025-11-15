@@ -66,6 +66,10 @@ const CurrentAffairs = () => {
       (!selectedDate || new Date(n.date).toDateString() === selectedDate.toDateString()) &&
       n.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
+const truncateText = (text, limit = 150) => {
+  if (!text) return "";
+  return text.length > limit ? text.substring(0, limit) + "..." : text;
+};
 
   const categories = ["All", ...new Set(newsList.map(item => item.category).filter(Boolean))];
   return (
@@ -243,9 +247,10 @@ const CurrentAffairs = () => {
                   <h3 className="text-xl font-semibold text-white mb-2 hover:text-blue-400 transition-all">
                     {news.title}
                   </h3>
-                  <p className="text-gray-300 text-sm leading-relaxed">
-                    {news.description}
-                  </p>
+                 <p className="text-gray-300 text-sm leading-relaxed">
+  {truncateText(news.description, 150)}
+</p>
+
                 </div>
 
                 <button
