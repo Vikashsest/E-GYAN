@@ -254,7 +254,8 @@ const truncateText = (text, limit = 150) => {
                 </div>
 
                 <button
-                  onClick={() => setSelectedNews(news.id)  || navigate(`${news.id}`)  }
+                  onClick={() => navigate(`/current-affairs/${news.id}`)}
+
               
                   className="flex items-center gap-2 text-blue-400 hover:text-blue-300 mt-4 font-semibold"
                 >

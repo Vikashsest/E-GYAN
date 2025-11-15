@@ -296,3 +296,9 @@ export async function fetchCurrentAffairs() {
     throw error;
   }
 }
+
+export const fetchCurrentAffairById = async (id) => {
+  const res = await fetch(`${API_URL}/current-affairs/${id}`);
+  const data = await res.json();
+  return data;
+};
