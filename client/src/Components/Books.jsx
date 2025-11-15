@@ -1753,13 +1753,8 @@ import { FaEdit, FaTrash, FaExpand, FaCompress } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { FiMenu } from "react-icons/fi";
 import { confirmDelete } from "../utils/confirmDelete";
-<<<<<<< HEAD
-import JoditEditor from "jodit-react";
-import { useRef } from "react";
-=======
 import { getRepository } from "../apiServices/apiRepository";
 
->>>>>>> tusar_dev
 import {
   fetchBooks,
   uploadBook,
@@ -1825,14 +1820,10 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
     source: "",
     link: "",
   });
-<<<<<<< HEAD
-const editor = useRef(null);
-=======
   const [subjects, setSubjects] = useState([]);
   const [languages, setLanguages] = useState([]);
   const [educationLevels, setEducationLevels] = useState([]);
 
->>>>>>> tusar_dev
 
   useEffect(() => {
     const loadCategories = async () => {
