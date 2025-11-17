@@ -1754,8 +1754,6 @@ import { toast } from "react-toastify";
 import { FiMenu } from "react-icons/fi";
 import { confirmDelete } from "../utils/confirmDelete";
 import { getRepository } from "../apiServices/apiRepository";
-import JoditEditor from "jodit-react";
-import { useRef } from "react";
 
 import {
   fetchBooks,
@@ -1767,7 +1765,7 @@ import { useNavigate } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-
+// Convert local or Nextcloud URLs into proxy URLs
 const getProxiedUrl = (url) => {
   if (!url) return null;
   if (url.includes("/index.php/s/")) {
@@ -1799,8 +1797,8 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   const [bookList, setBookList] = useState([]);
   const [editData, setEditData] = useState(null);
   const [selectedChapter, setSelectedChapter] = useState(null);
-  const [classes, setClasses] = useState([]); // <-- API se classes
-  const [selectedClass, setSelectedClass] = useState(""); // <-- filter state
+  const [classes, setClasses] = useState([]); 
+  const [selectedClass, setSelectedClass] = useState(""); 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(getItemsPerPage());
@@ -1826,14 +1824,13 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   const [languages, setLanguages] = useState([]);
   const [educationLevels, setEducationLevels] = useState([]);
 
-const editor = useRef(null);
 
   useEffect(() => {
     const loadCategories = async () => {
       try {
         const data = await getRepository(); 
         if (data && data[0] && data[0].Categories) {
-          setCategories(data[0].Categories.split(",")); // assuming CSV from API
+          setCategories(data[0].Categories.split(",")); 
         }
       } catch (err) {
         console.error("Failed to load categories:", err);
@@ -1843,28 +1840,30 @@ const editor = useRef(null);
     loadCategories();
   }, []);
 
- useEffect(() => {
-  const loadFormOptions = async () => {
-    try {
-      const data = await getRepository(); 
+  useEffect(() => {
+    const loadFormOptions = async () => {
+      try {
+        const data = await getRepository(); 
 
-      const schoolData = data.find(item => item.Categories.includes("School Education"));
+        const schoolData = data.find(item => item.Categories.includes("School Education"));
 
-      if (schoolData) {
-        setSubjects(schoolData.Subjects.split(',').map(s => s.trim()));
-        setLanguages(schoolData.Languages.split(',').map(l => l.trim()));
-        setEducationLevels(schoolData.EducationLevels.split(',').map(e => e.trim()));
+        if (schoolData) {
+          setSubjects(schoolData.Subjects.split(',').map(s => s.trim()));
+          console.log(schoolData.Subjects.split(',').map(s => s.trim()));
+          setLanguages(schoolData.Languages.split(',').map(l => l.trim()));
+          console.log(schoolData.Languages.split(',').map(l => l.trim()))
+          setEducationLevels(schoolData.EducationLevels.split(',').map(e => e.trim()));
+        }
+      } catch (err) {
+        console.error("Failed to load form options:", err);
+        setSubjects([]);
+        setLanguages([]);
+        setEducationLevels([]);
       }
-    } catch (err) {
-      console.error("Failed to load form options:", err);
-      setSubjects([]);
-      setLanguages([]);
-      setEducationLevels([]);
-    }
-  };
+    };
 
-  loadFormOptions();
-}, []);
+    loadFormOptions();
+  }, []);
 
   useEffect(() => {
     async function loadBooks() {
@@ -1880,7 +1879,7 @@ const editor = useRef(null);
         if (Array.isArray(data)) {
           setClasses(data);
         } else {
-         
+          // fallback agar API array na de toh manually 1-12
           setClasses(Array.from({ length: 12 }, (_, i) => `Class ${i + 1}`));
         }
       } catch (err) {
@@ -2063,13 +2062,33 @@ const editor = useRef(null);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // const filteredBooks = bookList.filter((b) => {
+  //   // CLASS FILTER
+  //   const classMatch = selectedClass
+  //     ? Number(b.educationLevel) === Number(selectedClass)
+  //     : true;
+
+  //   // SEARCH FILTER  
+  //   const text = `${b.bookName} ${b.subject} ${b.educationLevel}`.toLowerCase();
+  //   const searchMatch = text.includes(searchTerm.toLowerCase());
+
+  //   return classMatch && searchMatch;
+  // });
+
   const filteredBooks = bookList.filter((b) => {
-    // CLASS FILTER
-    const classMatch = selectedClass
-      ? Number(b.educationLevel) === Number(selectedClass)
+
+    const selectedClassNumber = selectedClass
+      ? parseInt(selectedClass)
+      : null;
+
+    const bookClassNumber = b.educationLevel
+      ? parseInt(b.educationLevel.toString().replace(/\D/g, ""))
+      : null;
+
+    const classMatch = selectedClassNumber
+      ? bookClassNumber === selectedClassNumber
       : true;
 
-    // SEARCH FILTER  
     const text = `${b.bookName} ${b.subject} ${b.educationLevel}`.toLowerCase();
     const searchMatch = text.includes(searchTerm.toLowerCase());
 
@@ -2129,19 +2148,19 @@ const editor = useRef(null);
           >
             <option value="">All Classes</option>
             {classes.map((cls, idx) => (
-              <option key={idx} value={cls}>
+              // <option key={idx} value={cls}>
+              //   {cls}
+              // </option>
+              <option key={idx} value={cls.replace(/\D/g, "")}>
                 {cls}
               </option>
+
             ))}
           </select>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           {paginatedBooks
-            .filter((b) =>
-              selectedClass ? String(b.educationLevel) === selectedClass : true
-            )
-
             .map((b) => (
               <div
                 key={b.id}
@@ -2336,7 +2355,7 @@ const editor = useRef(null);
                       >
                         <option value="">Select Subject</option>
                         {subjects.map((subj, idx) => (
-                          <option key={idx} value={subj}>{subj.Subjects}</option>
+                          <option key={idx} value={subj}>{subj}</option>
                         ))}
                       </select>
                     </div>
@@ -2463,7 +2482,7 @@ const editor = useRef(null);
                     />
 
                     {/* 🔹 Description */}
-                    {/* <textarea
+                    <textarea
                       placeholder="Description or Summary"
                       className="w-full border border-gray-300 p-2 rounded text-sm"
                       onChange={(e) =>
@@ -2473,42 +2492,7 @@ const editor = useRef(null);
                         }))
                       }
 
-                    /> */}
-                    {/* 🔹 Description Editor */}
-<div>
-  <label className="text-sm font-medium text-white">Full Description</label>
-
- <JoditEditor
-  ref={editor}
-  value={formData.description}
-  config={{
-    readonly: false,
-    height: 300,
-    textIcons: true,      
-    useSearch: true,      
-    enter: "P",
-    toolbar: true,
-    buttons: [
-      "bold", "italic", "underline", "|",
-      "ul", "ol", "|",
-      "paragraph", "fontsize", "brush", "|",
-      "h1", "h2", "h3", "|",
-      "table", "link", "image", "|",
-      "align", "undo", "redo"
-    ],
-
-    pastePlain: false
-  }}
-  onChange={(newContent) =>
-    setFormData((prev) => ({
-      ...prev,
-      description: newContent
-    }))
-  }
-/>
-
-</div>
-
+                    />
 
                     {/* 🔹 Category Selection */}
                     <div>
