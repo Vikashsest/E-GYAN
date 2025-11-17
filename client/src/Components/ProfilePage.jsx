@@ -66,7 +66,7 @@ export default function ProfilePage({ user }) {
             height={100}
             className="rounded-full border-4 border-blue-500"
           />
-          <h2 className="text-2xl font-bold mt-4">{formData?.username}</h2>
+          <h2 className="text-2xl font-bold mt-4">{formData?.profile?.username}</h2>
         </div>
 
         {/* Detail Rows */}

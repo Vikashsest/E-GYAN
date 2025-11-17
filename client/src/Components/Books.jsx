@@ -1754,6 +1754,8 @@ import { toast } from "react-toastify";
 import { FiMenu } from "react-icons/fi";
 import { confirmDelete } from "../utils/confirmDelete";
 import { getRepository } from "../apiServices/apiRepository";
+import JoditEditor from "jodit-react";
+import { useRef } from "react";
 
 import {
   fetchBooks,
@@ -1765,7 +1767,7 @@ import { useNavigate } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-// Convert local or Nextcloud URLs into proxy URLs
+
 const getProxiedUrl = (url) => {
   if (!url) return null;
   if (url.includes("/index.php/s/")) {
@@ -1824,11 +1826,12 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   const [languages, setLanguages] = useState([]);
   const [educationLevels, setEducationLevels] = useState([]);
 
+const editor = useRef(null);
 
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const data = await getRepository(); // call your API
+        const data = await getRepository(); 
         if (data && data[0] && data[0].Categories) {
           setCategories(data[0].Categories.split(",")); // assuming CSV from API
         }
@@ -1843,9 +1846,8 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
  useEffect(() => {
   const loadFormOptions = async () => {
     try {
-      const data = await getRepository(); // call your api helper
+      const data = await getRepository(); 
 
-      // Filter for School Education category
       const schoolData = data.find(item => item.Categories.includes("School Education"));
 
       if (schoolData) {
@@ -1878,7 +1880,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
         if (Array.isArray(data)) {
           setClasses(data);
         } else {
-          // fallback agar API array na de toh manually 1-12
+         
           setClasses(Array.from({ length: 12 }, (_, i) => `Class ${i + 1}`));
         }
       } catch (err) {

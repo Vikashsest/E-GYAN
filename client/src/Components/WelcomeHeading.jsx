@@ -28,7 +28,7 @@ const API_URL = import.meta.env.VITE_API_URL;
     <div>
         {
             userData &&
-            <h1 className="text-white text-3xl font-bold ">Hi, Welcome Mr. {userData.profile.name}</h1>
+            <h1 className="text-white text-3xl font-bold ">Hi, Welcome Mr. {userData.profile.username}</h1>
         }
     </div>
   )
