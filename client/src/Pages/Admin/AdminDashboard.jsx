@@ -488,7 +488,7 @@ export default function FileManagerDashboard() {
             <div className="text-sm">
               <p className="text-gray-400">
                 📦 <span className="text-white font-semibold">Version:</span>{" "}
-                <span className="text-blue-400">v1.2.0</span>
+                <span className="text-blue-400">v0.0.0</span>
               </p>
               <p className="text-gray-400">
                 🗓️ Last Updated: <span className="text-green-400">12 November 2025</span>
@@ -507,7 +507,7 @@ export default function FileManagerDashboard() {
               <p className="text-gray-400">
                 ⚙️ Developed by{" "}
                 {/* <span className="text-blue-400 font-medium">SEST INFOTECH PVT LTD</span> */}
-                <span className="text-blue-400 font-medium cursor-pointer"><a href="https://sestinfotech.com" target="_blank">SEST INFOTECH PVT LTD</a></span>
+                <span className="text-blue-400 font-medium cursor-pointer"><a href="https://sestinfotech.com" target="_blank"> SEST INFOTECH PVT LTD</a></span>
               </p>
               <p className="text-gray-500 text-xs">
                 © {new Date().getFullYear()} All rights reserved

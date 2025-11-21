@@ -378,13 +378,157 @@
 
 
 
+// import { useEffect, useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import StudentNavbar from "./StudentNavbar";
+// import StudentSidebar from "./StudentSidebar";
+// import { fetchCategories } from "../../apiServices/booksApi";
+// import { FaBookReader, FaSpinner } from "react-icons/fa";
+// import { FiMenu } from "react-icons/fi";
+
+// const Books = () => {
+//   const [categories, setCategories] = useState([]);
+//   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+//   const [loading, setLoading] = useState(false);
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     async function loadCategories() {
+//       setLoading(true);
+//       try {
+//         const bookData = await fetchCategories();
+//         console.log(bookData);
+
+//         // API se unique categories extract
+//         // const uniqueCategories = [
+//         //   ...new Set(bookData.map((book) => book.category))
+//         // ];
+//         const uniqueCategories = [...new Set(bookData)];
+//         setCategories(uniqueCategories);
+//       } catch (error) {
+//         console.error("Failed to load categories:", error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     }
+
+//     loadCategories();
+//   }, []);
+
+//   return (
+//     <div className="flex min-h-screen bg-[#1e1f2b] text-white relative">
+//       {/* Sidebar */}
+//       <StudentSidebar
+//         isOpen={isSidebarOpen}
+//         onClose={() => setIsSidebarOpen(false)}
+//       />
+
+//       {/* Overlay for mobile when sidebar open */}
+//       {isSidebarOpen && (
+//         <div
+//           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+//           onClick={() => setIsSidebarOpen(false)}
+//         ></div>
+//       )}
+
+//       {/* Main Content */}
+//       <main className="flex-1 lg:pl-[280px] py-6 px-4 sm:px-6 w-full">
+//         {/* Mobile Menu Icon */}
+//         <div className="lg:hidden mb-4 flex items-center">
+//           <button
+//             onClick={() => setIsSidebarOpen(true)}
+//             className="text-white focus:outline-none"
+//           >
+//             <FiMenu size={28} />
+//           </button>
+//         </div>
+
+//         <StudentNavbar />
+
+//         <h2 className="text-2xl font-bold mb-6">📚 Category</h2>
+
+//         {categories.length > 0 ? (
+//           <div
+//             className="grid
+//       grid-cols-1 
+//       md:grid-cols-2
+//       lg:grid-cols-4
+//       gap-4 sm:gap-6"
+//           >
+//             {/* Normal API se aayi categories */}
+//             {categories.map((cat, index) => (
+//               <div
+//                 key={index}
+//                 onClick={() => navigate(`/classes?category=${cat}`)}
+//                 className="p-5 sm:p-6 rounded-2xl shadow-lg border border-gray-300 
+//           bg-[#3b3c4e] text-white flex flex-col items-center justify-center 
+//           hover:scale-105 transform transition-all duration-300 cursor-pointer"
+//               >
+//                 <FaBookReader className="text-blue-400 text-4xl sm:text-5xl mb-3 sm:mb-4 drop-shadow-lg" />
+//                 <h3 className="text-base sm:text-lg md:text-xl font-bold text-center">
+//                   {cat}
+//                 </h3>
+//               </div>
+//             ))}
+
+//             <div
+//               onClick={() => {
+//                 navigate(`/simulation-subjects`);
+//               }}
+//               className="p-5 sm:p-6 rounded-2xl shadow-lg border border-gray-300 
+//         bg-[#2e2f42] text-white flex flex-col items-center justify-center 
+//         hover:scale-105 transform transition-all duration-300 cursor-pointer"
+//             >
+//               <FaBookReader className="text-green-400 text-4xl sm:text-5xl mb-3 sm:mb-4 drop-shadow-lg" />
+//               <h3 className="text-base sm:text-lg md:text-xl font-bold text-center">
+//                 Simulation
+//               </h3>
+
+//             </div>
+
+//             <div
+//               onClick={() => {
+//                 navigate(`/current-affairs`);
+//               }}
+//               className="p-5 sm:p-6 rounded-2xl shadow-lg border border-gray-300 
+//   bg-[#2f3e46] text-white flex flex-col items-center justify-center 
+//   hover:scale-105 transform transition-all duration-300 cursor-pointer"
+//             >
+//               <FaBookReader className="text-yellow-400 text-4xl sm:text-5xl mb-3 sm:mb-4 drop-shadow-lg" />
+//               <h3 className="text-base sm:text-lg md:text-xl font-bold text-center">
+//                 Current Affairs
+//               </h3>
+//             </div>
+
+//           </div>
+
+
+//         ) : (
+//           loading && (
+//             <div className="flex flex-col items-center h-screen space-y-4">
+//               <FaSpinner className="animate-spin text-blue-500 text-6xl" />
+//               <p className="text-gray-600 font-semibold">
+//                 Loading, please wait...
+//               </p>
+//             </div>
+//           )
+//         )}
+//       </main>
+//     </div>
+//   );
+// };
+
+// export default Books;
+
+
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import StudentNavbar from "./StudentNavbar";
 import StudentSidebar from "./StudentSidebar";
-import { fetchCategories } from "../../apiServices/booksApi";
 import { FaBookReader, FaSpinner } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
+import { getRepository } from "../../apiServices/apiRepository";
 
 const Books = () => {
   const [categories, setCategories] = useState([]);
@@ -396,44 +540,47 @@ const Books = () => {
     async function loadCategories() {
       setLoading(true);
       try {
-        const bookData = await fetchCategories();
-        console.log(bookData);
-
-        // API se unique categories extract
-        // const uniqueCategories = [
-        //   ...new Set(bookData.map((book) => book.category))
-        // ];
-        const uniqueCategories = [...new Set(bookData)];
-        setCategories(uniqueCategories);
+        const bookData = await getRepository();
+       
+        const categoryArray = bookData[0].Categories.split(",");
+        console.log(categoryArray);
+        
+        setCategories(categoryArray);
       } catch (error) {
         console.error("Failed to load categories:", error);
       } finally {
         setLoading(false);
       }
     }
-
     loadCategories();
   }, []);
 
+  const getCategoryRoute = (cat) => {
+    switch(cat.trim()) {
+      case "Simulation":
+        return "/simulation-subjects";
+      case "Current Affairs":
+        return "/current-affairs";
+      default:
+        return `/classes?category=${cat}`;
+    }
+  };
+
   return (
     <div className="flex min-h-screen bg-[#1e1f2b] text-white relative">
-      {/* Sidebar */}
       <StudentSidebar
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
       />
 
-      {/* Overlay for mobile when sidebar open */}
       {isSidebarOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
           onClick={() => setIsSidebarOpen(false)}
-        ></div>
+        />
       )}
 
-      {/* Main Content */}
       <main className="flex-1 lg:pl-[280px] py-6 px-4 sm:px-6 w-full">
-        {/* Mobile Menu Icon */}
         <div className="lg:hidden mb-4 flex items-center">
           <button
             onClick={() => setIsSidebarOpen(true)}
@@ -447,22 +594,22 @@ const Books = () => {
 
         <h2 className="text-2xl font-bold mb-6">📚 Category</h2>
 
-        {categories.length > 0 ? (
-          <div
-            className="grid
-      grid-cols-1 
-      md:grid-cols-2
-      lg:grid-cols-4
-      gap-4 sm:gap-6"
-          >
-            {/* Normal API se aayi categories */}
+        {loading ? (
+          <div className="flex flex-col items-center h-screen space-y-4">
+            <FaSpinner className="animate-spin text-blue-500 text-6xl" />
+            <p className="text-gray-600 font-semibold">
+              Loading, please wait...
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {categories.map((cat, index) => (
               <div
                 key={index}
-                onClick={() => navigate(`/classes?category=${cat}`)}
+                onClick={() => navigate(getCategoryRoute(cat))}
                 className="p-5 sm:p-6 rounded-2xl shadow-lg border border-gray-300 
-          bg-[#3b3c4e] text-white flex flex-col items-center justify-center 
-          hover:scale-105 transform transition-all duration-300 cursor-pointer"
+                bg-[#3b3c4e] text-white flex flex-col items-center justify-center 
+                hover:scale-105 transform transition-all duration-300 cursor-pointer"
               >
                 <FaBookReader className="text-blue-400 text-4xl sm:text-5xl mb-3 sm:mb-4 drop-shadow-lg" />
                 <h3 className="text-base sm:text-lg md:text-xl font-bold text-center">
@@ -470,48 +617,7 @@ const Books = () => {
                 </h3>
               </div>
             ))}
-
-            <div
-              onClick={() => {
-                navigate(`/simulation-subjects`);
-              }}
-              className="p-5 sm:p-6 rounded-2xl shadow-lg border border-gray-300 
-        bg-[#2e2f42] text-white flex flex-col items-center justify-center 
-        hover:scale-105 transform transition-all duration-300 cursor-pointer"
-            >
-              <FaBookReader className="text-green-400 text-4xl sm:text-5xl mb-3 sm:mb-4 drop-shadow-lg" />
-              <h3 className="text-base sm:text-lg md:text-xl font-bold text-center">
-                Simulation
-              </h3>
-
-            </div>
-
-            <div
-              onClick={() => {
-                navigate(`/current-affairs`);
-              }}
-              className="p-5 sm:p-6 rounded-2xl shadow-lg border border-gray-300 
-  bg-[#2f3e46] text-white flex flex-col items-center justify-center 
-  hover:scale-105 transform transition-all duration-300 cursor-pointer"
-            >
-              <FaBookReader className="text-yellow-400 text-4xl sm:text-5xl mb-3 sm:mb-4 drop-shadow-lg" />
-              <h3 className="text-base sm:text-lg md:text-xl font-bold text-center">
-                Current Affairs
-              </h3>
-            </div>
-
           </div>
-
-
-        ) : (
-          loading && (
-            <div className="flex flex-col items-center h-screen space-y-4">
-              <FaSpinner className="animate-spin text-blue-500 text-6xl" />
-              <p className="text-gray-600 font-semibold">
-                Loading, please wait...
-              </p>
-            </div>
-          )
         )}
       </main>
     </div>
@@ -519,5 +625,3 @@ const Books = () => {
 };
 
 export default Books;
-
-
