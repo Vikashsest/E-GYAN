@@ -1,5 +1,4 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import Login from "./Pages/Auth/Login";
 import ForgotPassword from "./Pages/Auth/ForgotPassword";
 
 import ProfilePage from "./Components/ProfilePage";
@@ -10,13 +9,14 @@ import  {principalRouteList } from "./routes/PrincipalRoutes";
 import  {teacherRouteList } from "./routes/TeacherRoutes";
 import {studentRouteList}  from "./routes/StudentRoutes";
 import UploadChapter from "./Components/UploadChapter";
+import LoginPage from "./Pages/Auth/Login";
 
 function Page() {
   return (
     <Routes>
       {/* Public Routes */}
       <Route path="/" element={<Navigate to="/login" replace />} />
-      <Route path="/login" element={<Login />} />
+      <Route path="/login" element={<LoginPage />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/concerns-list" element={<ViewConcerns />} />
       <Route path="/profilepage" element={<ProfilePage />} />

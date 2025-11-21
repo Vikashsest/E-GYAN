@@ -332,7 +332,7 @@
 // }
 
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import StudentSidebar from "./StudentSidebar";
 import StudentNavbar from "./StudentNavbar";
 import { FiMenu, FiChevronDown, FiChevronUp } from "react-icons/fi";

@@ -152,8 +152,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa'; // 👈 added icons
 import { toast } from "react-toastify";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { login } from '../../apiServices/authApi';
 
 export default function LoginPage() {
   const [data, setData] = useState({ username: '', password: '' });
@@ -172,16 +171,8 @@ export default function LoginPage() {
   async function handlesubmit(e) {
     e.preventDefault();
     try {
-      const res = await fetch(`${API_URL}/auth/login`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      const result = await res.json();
-
-      if (res.ok) {
+      const result = await login(data)
+      
         localStorage.setItem("role", result.role);
         toast.success("Login successful ✅");
 
@@ -205,9 +196,7 @@ export default function LoginPage() {
               navigate("/login");
           }
         }, 1000);
-      } else {
-        toast.error(result.message || "Login failed ❌");
-      }
+      
     } catch (error) {
       toast.error("Something went wrong ❗");
       console.error("Login error:", error);

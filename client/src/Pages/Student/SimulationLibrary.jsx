@@ -171,7 +171,7 @@
 //           )}
 //         </div>
 
-        
+
 //         <SimulationModal
 //           url={openSimulation}
 //           onClose={() => setOpenSimulation(null)}
@@ -209,6 +209,10 @@ export default function SimulationLibrary() {
   const [categories, setCategories] = useState([]);
   const [gradeLevels, setGradeLevels] = useState([]);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(8);
+
+
   const toggleCollapse = (key) => {
     setCollapsed((prev) => ({ ...prev, [key]: !prev[key] }));
   };
@@ -224,6 +228,26 @@ export default function SimulationLibrary() {
       prev.includes(grade) ? prev.filter((g) => g !== grade) : [...prev, grade]
     );
   };
+
+
+  // Select/Deselect all subjects (all topics)
+  const handleAllSubjectsToggle = () => {
+    if (selectedTopics.length === categories.flatMap(c => c.topics).length) {
+      setSelectedTopics([]); // uncheck all
+    } else {
+      setSelectedTopics(categories.flatMap(c => c.topics)); // check all
+    }
+  };
+
+  // Select/Deselect all grades
+  const handleAllGradesToggle = () => {
+    if (selectedGrades.length === gradeLevels.length) {
+      setSelectedGrades([]); // uncheck all
+    } else {
+      setSelectedGrades(gradeLevels); // check all
+    }
+  };
+
 
   // ✅ Fetch API and dynamically build filters
   useEffect(() => {
@@ -265,6 +289,22 @@ export default function SimulationLibrary() {
     loadBooks();
   }, []);
 
+
+  // Responsive Pagination Settings
+  useEffect(() => {
+    const updateItems = () => {
+      if (window.innerWidth >= 1024) setItemsPerPage(12);
+      else if (window.innerWidth >= 640) setItemsPerPage(9);
+      else setItemsPerPage(6);
+    };
+
+    updateItems();
+    window.addEventListener("resize", updateItems);
+
+    return () => window.removeEventListener("resize", updateItems);
+  }, []);
+
+
   // ✅ Filter books
   const filteredBooks = books.filter((book) => {
     const matchTopic =
@@ -280,33 +320,41 @@ export default function SimulationLibrary() {
   if (sortOrder === "Z-A")
     sortedBooks.sort((a, b) => b.title.localeCompare(a.title));
 
-  return (
-        <div className="flex min-h-screen bg-[#1e1f2b] text-white relative">
-          {/* Sidebar */}
-          <StudentSidebar
-            isOpen={isSidebarOpen}
-            onClose={() => setIsSidebarOpen(false)}
-          />
-    
-          {/* Overlay for mobile when sidebar open */}
-          {isSidebarOpen && (
-            <div
-              className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-              onClick={() => setIsSidebarOpen(false)}
-            ></div>
-          )}
+  // Pagination Logic
+  const indexOfLastBook = currentPage * itemsPerPage;
+  const indexOfFirstBook = indexOfLastBook - itemsPerPage;
+  const currentBooks = sortedBooks.slice(indexOfFirstBook, indexOfLastBook);
 
-           {/* Main Content */}
-          <main className="flex-1 lg:pl-[280px] py-6 px-4 sm:px-6 w-full">
-            {/* Mobile Menu Icon */}
-            <div className="lg:hidden mb-2 flex items-center">
-              <button
-                onClick={() => setIsSidebarOpen(true)}
-                className="text-white focus:outline-none"
-              >
-                <FiMenu size={28} />
-              </button>
-            </div>
+  const totalPages = Math.ceil(sortedBooks.length / itemsPerPage);
+
+
+  return (
+    <div className="flex min-h-screen bg-[#1e1f2b] text-white relative">
+      {/* Sidebar */}
+      <StudentSidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
+
+      {/* Overlay for mobile when sidebar open */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        ></div>
+      )}
+
+      {/* Main Content */}
+      <main className="flex-1 lg:pl-[280px] py-6 px-4 sm:px-6 w-full">
+        {/* Mobile Menu Icon */}
+        <div className="lg:hidden mb-2 flex items-center">
+          <button
+            onClick={() => setIsSidebarOpen(true)}
+            className="text-white focus:outline-none"
+          >
+            <FiMenu size={28} />
+          </button>
+        </div>
 
 
 
@@ -327,17 +375,15 @@ export default function SimulationLibrary() {
             <div className="flex space-x-2">
               <button
                 onClick={() => setSelectedView("grid")}
-                className={`p-2 rounded ${
-                  selectedView === "grid" ? "bg-gray-700" : "bg-gray-800"
-                }`}
+                className={`p-2 rounded ${selectedView === "grid" ? "bg-gray-700" : "bg-gray-800"
+                  }`}
               >
                 <FaTh />
               </button>
               <button
                 onClick={() => setSelectedView("list")}
-                className={`p-2 rounded ${
-                  selectedView === "list" ? "bg-gray-700" : "bg-gray-800"
-                }`}
+                className={`p-2 rounded ${selectedView === "list" ? "bg-gray-700" : "bg-gray-800"
+                  }`}
               >
                 <FaList />
               </button>
@@ -353,33 +399,30 @@ export default function SimulationLibrary() {
 
         {/* Books Grid/List */}
         <div
-          className={`p-6 grid gap-6 ${
-            selectedView === "grid"
-              ? "sm:grid-cols-2 lg:grid-cols-4"
-              : "grid-cols-1"
-          }`}
+          className={`p-6 grid gap-6 ${selectedView === "grid"
+            ? " grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
+            : "grid-cols-1"
+            }`}
         >
           {loading ? (
             <p>Loading simulations...</p>
-          ) : sortedBooks.length === 0 ? (
+          ) : currentBooks.length === 0 ? (
             <p>No simulations found.</p>
           ) : (
-            sortedBooks.map((book) => (
+            currentBooks.map((book) => (
               <div
                 key={book.id}
                 onClick={() => setOpenSimulation(book.link)}
-                className={`bg-gray-800 rounded-lg shadow hover:shadow-xl hover:bg-gray-700 transition cursor-pointer ${
-                  selectedView === "list" ? "flex items-center p-4" : ""
-                }`}
+                className={`bg-gray-800 rounded-lg shadow hover:shadow-xl hover:bg-gray-700 transition cursor-pointer ${selectedView === "list" ? "flex items-center p-4" : ""
+                  }`}
               >
                 <img
                   src={book.image}
                   alt={book.title}
-                  className={`${
-                    selectedView === "list"
-                      ? "w-24 h-16 rounded"
-                      : "w-full h-40 rounded-t-lg"
-                  } object-cover`}
+                  className={`${selectedView === "list"
+                    ? "w-24 h-16 rounded"
+                    : "w-full h-40 rounded-t-lg"
+                    } object-cover`}
                 />
                 <div className={`${selectedView === "list" ? "ml-4" : "p-4"}`}>
                   <h3 className="font-semibold text-gray-100">{book.title}</h3>
@@ -389,11 +432,173 @@ export default function SimulationLibrary() {
           )}
         </div>
 
+        {/* Responsive Pagination */}
+        {sortedBooks.length > 0 && (
+          <div className="flex justify-center items-center space-x-2 mt-6 mb-10">
+
+            {/* DESKTOP (Full Pagination) */}
+            <div className="hidden lg:flex items-center space-x-2">
+              {/* FIRST */}
+              <button
+                onClick={() => setCurrentPage(1)}
+                disabled={currentPage === 1}
+                className="px-3 py-1 bg-gray-700 rounded disabled:opacity-40"
+              >
+                ⏮ First
+              </button>
+
+              {/* PREV */}
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                disabled={currentPage === 1}
+                className="px-3 py-1 bg-gray-700 rounded disabled:opacity-40"
+              >
+                Prev
+              </button>
+
+              {/* Page Numbers FULL */}
+              {[...Array(totalPages)].map((_, index) => {
+                const page = index + 1;
+                return (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`px-3 py-1 rounded ${currentPage === page ? "bg-blue-600" : "bg-gray-700"
+                      }`}
+                  >
+                    {page}
+                  </button>
+                );
+              })}
+
+              {/* NEXT */}
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1 bg-gray-700 rounded disabled:opacity-40"
+              >
+                Next
+              </button>
+
+              {/* LAST */}
+              <button
+                onClick={() => setCurrentPage(totalPages)}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1 bg-gray-700 rounded disabled:opacity-40"
+              >
+                Last ⏭
+              </button>
+            </div>
+
+
+            {/* TABLET VIEW (max 5 page numbers) */}
+            <div className="hidden sm:flex lg:hidden items-center space-x-2">
+              {/* FIRST */}
+              <button
+                onClick={() => setCurrentPage(1)}
+                disabled={currentPage === 1}
+                className="px-3 py-1 bg-gray-700 rounded disabled:opacity-40"
+              >
+                ⏮ First
+              </button>
+
+              {/* PREV */}
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                disabled={currentPage === 1}
+                className="px-3 py-1 bg-gray-700 rounded disabled:opacity-40"
+              >
+                Prev
+              </button>
+
+              {/* SHOW ONLY 5 PAGES */}
+              {Array.from({ length: totalPages })
+                .slice(Math.max(0, currentPage - 3), currentPage + 2)
+                .map((_, idx) => {
+                  const page = Math.max(1, currentPage - 2) + idx;
+                  if (page > totalPages) return null;
+
+                  return (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`px-3 py-1 rounded ${currentPage === page ? "bg-blue-600" : "bg-gray-700"
+                        }`}
+                    >
+                      {page}
+                    </button>
+                  );
+                })}
+
+              {/* NEXT */}
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1 bg-gray-700 rounded disabled:opacity-40"
+              >
+                Next
+              </button>
+
+              {/* LAST */}
+              <button
+                onClick={() => setCurrentPage(totalPages)}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1 bg-gray-700 rounded disabled:opacity-40"
+              >
+                Last ⏭
+              </button>
+            </div>
+
+
+            {/* MOBILE VIEW (very small) */}
+            <div className="flex sm:hidden items-center space-x-2">
+              {/* FIRST */}
+              <button
+                onClick={() => setCurrentPage(1)}
+                disabled={currentPage === 1}
+                className="px-3 py-1 bg-gray-700 rounded disabled:opacity-40"
+              >
+                ⏮ First
+              </button>
+
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                disabled={currentPage === 1}
+                className="px-2 py-1 bg-gray-700 rounded disabled:opacity-40 text-sm"
+              >
+                Prev
+              </button>
+
+              <span className="px-3 py-1 bg-gray-800 rounded text-sm">
+                {currentPage} / {totalPages}
+              </span>
+
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className="px-2 py-1 bg-gray-700 rounded disabled:opacity-40 text-sm"
+              >
+                Next
+              </button>
+
+              {/* LAST */}
+              <button
+                onClick={() => setCurrentPage(totalPages)}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1 bg-gray-700 rounded disabled:opacity-40"
+              >
+                Last ⏭
+              </button>
+            </div>
+          </div>
+        )}
+
+
+
         {/* Right Filter Sidebar */}
         <div
-          className={`fixed top-0 right-0 h-full w-72 bg-gray-800 border-l border-gray-700 transform ${
-            filterSidebarOpen ? "translate-x-0" : "translate-x-full"
-          } transition-transform duration-300 ease-in-out z-30`}
+          className={`fixed top-0 right-0 h-full w-72 bg-gray-800 border-l border-gray-700 transform ${filterSidebarOpen ? "translate-x-0" : "translate-x-full"
+            } transition-transform duration-300 ease-in-out z-30`}
         >
           <div className="flex justify-between items-center p-4 border-b border-gray-700">
             <h2 className="font-bold text-lg">Filters</h2>
@@ -406,38 +611,82 @@ export default function SimulationLibrary() {
           </div>
 
           <div className="p-4 overflow-y-auto h-[calc(100%-3rem)]">
+
             {/* Subjects */}
             <div className="mb-4 border-b border-gray-700 pb-3">
+              {/* Subjects Main Header */}
               <button
                 onClick={() => toggleCollapse("subjects")}
                 className="w-full flex justify-between items-center font-semibold text-gray-200"
               >
-                <span>Subjects</span>
-                <span className="text-xl">
-                  {collapsed["subjects"] ? "+" : "–"}
-                </span>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    className="form-checkbox text-blue-500"
+                    checked={
+                      selectedTopics.length === categories.flatMap(c => c.topics).length &&
+                      selectedTopics.length !== 0
+                    }
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedTopics(categories.flatMap(c => c.topics));
+                      } else {
+                        setSelectedTopics([]);
+                      }
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                  <span>Subjects</span>
+                </div>
+
+                <span className="text-xl">{collapsed["subjects"] ? "+" : "–"}</span>
               </button>
 
+              {/* Subjects Inner List */}
               {!collapsed["subjects"] &&
                 categories.map((cat) => (
                   <div key={cat.subject} className="mb-3">
+
+                    {/* Subject Sub Header */}
                     <button
                       onClick={() => toggleCollapse(cat.subject)}
-                      className="w-full flex justify-between items-center font-semibold text-gray-300 ml-1 mt-1"
+                      className="w-full flex justify-between items-center font-semibold text-gray-300 ml-1 mt-2"
                     >
-                      {cat.subject}
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          className="form-checkbox text-blue-500"
+                          checked={
+                            cat.topics.every(t => selectedTopics.includes(t)) &&
+                            cat.topics.length > 0
+                          }
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedTopics((prev) => [
+                                ...new Set([...prev, ...cat.topics])
+                              ]);
+                            } else {
+                              setSelectedTopics((prev) =>
+                                prev.filter(t => !cat.topics.includes(t))
+                              );
+                            }
+                          }}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+
+                        <span>{cat.subject}</span>
+                      </div>
+
                       <span className="text-sm">
                         {collapsed[cat.subject] ? "+" : "–"}
                       </span>
                     </button>
 
+                    {/* Topics */}
                     {!collapsed[cat.subject] && (
-                      <div className="ml-3 mt-2 space-y-1">
+                      <div className="ml-6 mt-2 space-y-1">
                         {cat.topics.map((topic) => (
-                          <label
-                            key={topic}
-                            className="flex items-center space-x-2 text-gray-400"
-                          >
+                          <label key={topic} className="flex items-center space-x-2 text-gray-400">
                             <input
                               type="checkbox"
                               className="form-checkbox text-blue-500"
@@ -449,6 +698,7 @@ export default function SimulationLibrary() {
                         ))}
                       </div>
                     )}
+
                   </div>
                 ))}
             </div>
@@ -459,17 +709,36 @@ export default function SimulationLibrary() {
                 onClick={() => toggleCollapse("grades")}
                 className="w-full flex justify-between items-center font-semibold text-gray-200"
               >
-                <span>Grade Level</span>
-                <span className="text-xl">{collapsed["grades"] ? "+" : "–"}</span>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    className="form-checkbox text-green-500"
+                    checked={
+                      selectedGrades.length === gradeLevels.length &&
+                      gradeLevels.length > 0
+                    }
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedGrades(gradeLevels);
+                      } else {
+                        setSelectedGrades([]);
+                      }
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+
+                  <span>Grade Level</span>
+                </div>
+
+                <span className="text-xl">
+                  {collapsed["grades"] ? "+" : "–"}
+                </span>
               </button>
 
               {!collapsed["grades"] && (
-                <div className="mt-3 space-y-1">
+                <div className="mt-3 space-y-1 ml-4">
                   {gradeLevels.map((grade) => (
-                    <label
-                      key={grade}
-                      className="flex items-center space-x-2 text-gray-400"
-                    >
+                    <label key={grade} className="flex items-center space-x-2 text-gray-400">
                       <input
                         type="checkbox"
                         className="form-checkbox text-green-500"
@@ -482,6 +751,8 @@ export default function SimulationLibrary() {
                 </div>
               )}
             </div>
+
+
           </div>
         </div>
 
