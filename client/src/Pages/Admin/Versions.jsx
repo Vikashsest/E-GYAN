@@ -8,7 +8,7 @@ export default function LatestVersions() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const updates = [
     {
-      version: "2.1",
+      version: "0.0",
       date: "Nov 25, 2023",
       improvements: ["Added a new page with a changelog"],
       bugfixes: [
@@ -18,10 +18,10 @@ export default function LatestVersions() {
       gradient: "from-purple-400/30 to-blue-400/30",
     },
     {
-      version: "2.0",
-      date: "Aug 6, 2023",
+      version: "0.0.1",
+      date: "Nov 6, 2025",
       improvements: [
-        "Added the ability to flexibly configure subscription management",
+        "Fix buges on manage book",
       ],
       bugfixes: ["Reduced data loading and updating time"],
       gradient: "from-pink-400/30 to-indigo-400/30",

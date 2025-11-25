@@ -1754,7 +1754,8 @@ import { toast } from "react-toastify";
 import { FiMenu } from "react-icons/fi";
 import { confirmDelete } from "../utils/confirmDelete";
 import { getRepository } from "../apiServices/apiRepository";
-
+import JoditEditor from "jodit-react";
+import { useRef } from "react";
 import {
   fetchBooks,
   uploadBook,
@@ -1823,7 +1824,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   const [subjects, setSubjects] = useState([]);
   const [languages, setLanguages] = useState([]);
   const [educationLevels, setEducationLevels] = useState([]);
-
+const editor = useRef(null);
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -2481,18 +2482,36 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
 
                     />
 
-                    {/* 🔹 Description */}
-                    <textarea
-                      placeholder="Description or Summary"
-                      className="w-full border border-gray-300 p-2 rounded text-sm"
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          description: e.target.value,
-                        }))
-                      }
+              
+<div>
+  <label className="text-sm font-medium text-white">Full Description</label>
 
-                    />
+  <JoditEditor
+    ref={editor}
+    value={formData.description}
+    config={{
+      readonly: false,
+      height: 300,
+      toolbar: true,
+      buttons: [
+        "bold", "italic", "underline", "|",
+        "ul", "ol", "|",
+        "paragraph", "fontsize", "brush", "|",
+        "h1", "h2", "h3", "|",
+        "table", "link", "image", "|",
+        "align", "undo", "redo"
+      ],
+      pastePlain: false, // IMPORTANT — Google Docs/Word formatting auto aa jayega
+    }}
+    onChange={(newContent) =>
+      setFormData((prev) => ({
+        ...prev,
+        description: newContent
+      }))
+    }
+  />
+</div>
+
 
                     {/* 🔹 Category Selection */}
                     <div>

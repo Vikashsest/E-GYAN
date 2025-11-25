@@ -59,7 +59,7 @@ export default async function fetechSubjects(className){
  */
 export async function subjectWiseBooks({ className, subject, category } = {}) {
   try {
-    // Build query params
+    
     const params = new URLSearchParams();
     if (className) params.append("class", className);
     if (subject) params.append("subject", subject);

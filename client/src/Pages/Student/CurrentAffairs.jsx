@@ -13,6 +13,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
 import { fetchCurrentAffairs } from "../../apiServices/booksApi";
+
 const menuLinks = [
   { name: "All", url: "" },
   { name: "Science & Technology", url: "" },
