@@ -46,8 +46,7 @@ export class Analytics {
   isFavorite?: boolean;
 
   @Column({ nullable: true })
-  serverId?: string; // unique server identifier for offline sync
-
+  serverId?: string; 
   @CreateDateColumn()
   createdAt: Date;
 

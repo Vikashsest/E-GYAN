@@ -13,6 +13,8 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { ForgotPasswordDto } from '../user/dto/ForgotPasswordDto';
+import { VerifyOtpDto } from '../user/dto/verify-otp.dto';
+import { ResetPasswordDto } from '../user/dto/ResetPassword.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -53,8 +55,23 @@ getMe(@Req() req: Request) {
   async logout(@Res() res: Response): Promise<void> {
     return this.authService.logout(res);
   }
-  @Post('forgot-password')
-  async forgotPassword(@Body() dto: ForgotPasswordDto) {
-    return this.authService.forgotPassword(dto);
+  // @Post('forgot-password')
+  // async forgotPassword(@Body() dto: ForgotPasswordDto) {
+  //   return this.authService.forgotPassword(dto);
+  // }
+    @Post('forgot-password')
+  sendOtp(@Body() dto: ForgotPasswordDto) {
+    console.log(dto)
+    return this.authService.sendOtp(dto);
+  }
+
+  @Post('verify-otp')
+  verifyOtp(@Body() dto: VerifyOtpDto) {
+    return this.authService.verifyOtp(dto);
+  }
+
+  @Post('reset-password')
+  resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto);
   }
 }

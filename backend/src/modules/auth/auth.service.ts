@@ -8,6 +8,9 @@ import * as jwt from 'jsonwebtoken';
 import * as dotenv from 'dotenv';
 import { ForgotPasswordDto } from '../user/dto/ForgotPasswordDto';
 
+import * as nodemailer from 'nodemailer';
+import { ResetPasswordDto } from '../user/dto/ResetPassword.dto';
+import { VerifyOtpDto } from '../user/dto/verify-otp.dto';
 dotenv.config();
 
 @Injectable()
@@ -146,28 +149,28 @@ export class AuthService {
   }
 
 
-async forgotPassword(dto: ForgotPasswordDto) {
-  const { email, dob, newPassword, confirmPassword } = dto;
- console.log("dto is",dto);
+// async forgotPassword(dto: ForgotPasswordDto) {
+//   const { email, dob, newPassword, confirmPassword } = dto;
+//  console.log("dto is",dto);
  
-  if (newPassword !== confirmPassword) { 
-    throw new BadRequestException('Passwords do not match');
-  }
+//   if (newPassword !== confirmPassword) { 
+//     throw new BadRequestException('Passwords do not match');
+//   }
 
-  const user = await this.userRepository.findOne({ where: { email, dob: new Date(dob), } });
+//   const user = await this.userRepository.findOne({ where: { email, dob: new Date(dob), } });
 
 
-  if (!user) {
-    throw new NotFoundException('User not found with provided email and DOB');
-  }
+//   if (!user) {
+//     throw new NotFoundException('User not found with provided email and DOB');
+//   }
 
-  const hashed = await bcrypt.hash(newPassword, 10);
-  user.password = hashed;
+//   const hashed = await bcrypt.hash(newPassword, 10);
+//   user.password = hashed;
 
-  await this.userRepository.save(user);
+//   await this.userRepository.save(user);
 
-  return { message: 'Password reset successful' };
-}
+//   return { message: 'Password reset successful' };
+// }
 
   private handleError(error: any): void {
     console.error(error);
@@ -179,4 +182,79 @@ async forgotPassword(dto: ForgotPasswordDto) {
       HttpStatus.INTERNAL_SERVER_ERROR,
     );
   }
+
+
+async sendOtp(dto:ForgotPasswordDto) {
+  const { email } = dto;
+
+  const user = await this.userRepository.findOne({ where: { email } });
+  if (!user) {
+    throw new NotFoundException('User not found');
+  }
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+  user.resetOtp = otp;
+  user.otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
+  await this.userRepository.save(user);
+
+  const transporter = nodemailer.createTransport({
+    host: 'sg2plzcpnl506692.prod.sin2.secureserver.net',
+    port: 465,
+    secure: true,
+    auth: {
+      user: 'egyan@pentagontech.in',
+      pass: '8TF&~rVu4z7*',
+    },
+  });
+
+  await transporter.sendMail({
+    from: '"Egyan Library" <egyan@pentagontech.in>',
+    to: email,
+    subject: 'Egyan Library - Password Reset OTP',
+    text: `Your OTP for password reset is: ${otp}. It will expire in 5 minutes.`,
+  });
+
+  return { message: 'OTP sent to email' };
+}
+  async verifyOtp(dto: VerifyOtpDto) {
+    const { email, otp } = dto;
+
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) throw new NotFoundException('User not found');
+
+    if (user.resetOtp !== otp || !user.otpExpiry || user.otpExpiry < new Date()) {
+      throw new BadRequestException('Invalid or expired OTP');
+    }
+
+    user.otpVerified = true;
+    await this.userRepository.save(user);
+
+    return { message: 'OTP verified successfully' };
+  }
+
+
+async resetPassword(dto: ResetPasswordDto) {
+  const { email,otp,newPassword, confirmPassword } = dto;
+
+  if (newPassword !== confirmPassword) {
+    throw new BadRequestException('Passwords do not match');
+  }
+
+  const user = await this.userRepository.findOne({ where: { email } });
+  if (!user) throw new NotFoundException('User not found');
+
+  if (user.resetOtp !== otp || !user.otpExpiry || user.otpExpiry < new Date()) {
+    throw new BadRequestException('Invalid or expired OTP');
+  }
+
+  const hashed = await bcrypt.hash(newPassword, 10);
+  user.password = hashed;
+  // user.resetOtp=null,
+  // user.otpExpiry=null
+  await this.userRepository.save(user);
+
+  return { message: 'Password reset successful' };
+}
+
 }

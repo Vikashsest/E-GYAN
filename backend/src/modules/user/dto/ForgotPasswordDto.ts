@@ -1,16 +1,9 @@
-import { IsDateString, IsEmail, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty } from "class-validator";
 
 export class ForgotPasswordDto {
   @IsEmail()
+  @IsNotEmpty()
   email: string;
-
-   @IsDateString() 
-  dob: string;
-
-  @IsString()
-  newPassword: string;
-
-  @IsString()
-  confirmPassword: string;
 }
+
  

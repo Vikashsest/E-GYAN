@@ -255,7 +255,7 @@ async importUsersFromFile(filePath: string) {
 
 
 async studentProgress() {
-  // 1️⃣ Pehle saare students lao
+  
   const students = await this.userRepo.find({
     where: { role: UserRole.STUDENT },
     select: ['id', 'username'],

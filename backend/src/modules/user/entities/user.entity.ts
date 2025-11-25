@@ -72,5 +72,12 @@ quizzes: Quiz[];
 @OneToMany(() => Request, (request) => request.user)
 requests: Request[];
 
+  @Column({ nullable: true })
+  resetOtp?: string;
+
+  @Column({ nullable: true })
+  otpExpiry?: Date;
+  @Column({ default: false })
+otpVerified?: boolean;
 
 }
