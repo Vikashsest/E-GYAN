@@ -7,10 +7,10 @@ import ToastProvider from './Components/ToastProvider.jsx'
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
-  <StrictMode>
+
     <App />
   <ToastProvider />
-  </StrictMode>
+
   </BrowserRouter>
 )
 

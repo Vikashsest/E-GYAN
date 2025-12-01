@@ -476,7 +476,6 @@ export default function TeacherDashboard() {
 
   const [recentUploads, setRecentUploads] = useState([]);
 
-  // ----------------- API FETCH FUNCTIONS -----------------
   const fetchDashboardStats = async () => {
     try {
       const res = await fetch(`${API_URL}/dashboard/teacher`, {
@@ -539,69 +538,11 @@ export default function TeacherDashboard() {
           <OverviewCard title="My Upload Books" icon={<FaBook />} value={overview.teacherUploadBooks} bg="bg-orange-500" />
           <OverviewCard title="Total Books" icon={<FaBook />} value={overview.totalBooks} bg="bg-yellow-500" />
         </div>
-
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 p-6">
-          <Card
-            title="📋 Assessment"
-            description="Create and assign new Assessment to your students."
-            icon={<FaClipboardList size={36} />}
-            link="/teacher/assignment"
-            bg="bg-gradient-to-br from-blue-600 to-blue-800"
-          />
-          <Card
-            title="❓ Quizzes"
-            description="Design quizzes to test your students' knowledge."
-            icon={<FaQuestionCircle size={36} />}
-            link="/teacher/quiz"
-            bg="bg-gradient-to-br from-purple-600 to-purple-800"
-          />
-        </div>
-
- <div className="p-6 screen rounded-2xl shadow-lg bg-gradient-to-br from-green-600 to-green-800 flex flex-col gap-4 hover:scale-105 transition-transform duration-300">
-    <div className="flex items-center gap-4">
-      <FaBook size={36} />
-      <h3 className="text-xl font-bold">📑 Upload Question Bank</h3>
-    </div>
-    <p className="text-gray-200">Upload your question bank in PDF or Excel format.</p>
-    <input
-      type="file"
-      accept=".pdf,.xls,.xlsx"
-      className="mt-3 block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4
-        file:rounded-lg file:border-0
-        file:text-sm file:font-semibold
-        file:bg-white file:text-black
-        hover:file:bg-gray-200"
-      onChange={(e) => {
-        if (e.target.files.length > 0) {
-          toast.success(`📂 ${e.target.files[0].name} selected`);
-        }
-      }}
-    />
-    <button className="mt-4 px-4 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition">
-      Upload
-    </button>
-  </div>
-        {/* Recent Uploads */}
-        {/* <div className="bg-[#2a2b3c] rounded-2xl p-6 shadow-md mt-6">
-          <h3 className="text-lg font-bold mb-4 text-white">📘 Recent Uploads</h3>
-          <ul className="space-y-3">
-            {recentUploads.length > 0 ? (
-              recentUploads.map((item, idx) => (
-                <li key={idx} className="border-b border-gray-600 pb-2 text-sm text-gray-300">
-                  ✅ {item.title || item.name || JSON.stringify(item)}
-                </li>
-              ))
-            ) : (
-              <li className="text-gray-400">No recent uploads</li>
-            )}
-          </ul>
-        </div> */}
       </main>
     </div>
   );
 }
 
-// Overview Card Component
 function OverviewCard({ icon, title, value, bg }) {
   return (
     <div className={`rounded-2xl p-5 shadow-sm ${bg} flex items-center justify-start gap-4 min-h-[100px]`}>
@@ -616,7 +557,6 @@ function OverviewCard({ icon, title, value, bg }) {
   );
 }
 
-// Card Component for Assignments & Quizzes
 function Card({ title, description, icon, link, bg }) {
   return (
     <Link to={link}>
