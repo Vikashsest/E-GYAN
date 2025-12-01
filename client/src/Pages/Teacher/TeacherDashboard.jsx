@@ -456,17 +456,210 @@
 
 // TeacherDashboard.jsx
 
+
+
+
+// import { useEffect, useState } from "react";
+// import TeacherSidebar from "./TeacherSidebar";
+// import TeacherNavbar from "./TeacherNavbar";
+// import { FaUserGraduate, FaChalkboardTeacher, FaBook, FaClipboardList, FaQuestionCircle } from "react-icons/fa";
+// import WelcomeHeading from "../../Components/WelcomeHeading";
+// import { toast } from "react-toastify";
+// import { Link } from "react-router-dom";
+
+// const API_URL = import.meta.env.VITE_API_URL;
+
+// export default function TeacherDashboard() {
+//   const [overview, setOverview] = useState({
+//     totalStudents: 0,
+//     totalSubjects: 0,
+//     teacherUploadBooks: 0,
+//     totalBooks: 0,
+//   });
+
+//   const [recentUploads, setRecentUploads] = useState([]);
+
+//   // ----------------- API FETCH FUNCTIONS -----------------
+//   const fetchDashboardStats = async () => {
+//     try {
+//       const res = await fetch(`${API_URL}/dashboard/teacher`, {
+//         credentials: "include",
+//       });
+//       if (!res.ok) throw new Error("Failed to fetch dashboard stats");
+
+//       const data = await res.json();
+//       setOverview({
+//         totalStudents: data.totalStudents || 0,
+//         totalSubjects: data.totalSubjects || 0,
+//         teacherUploadBooks: data.teacherUploadBooks || 0,
+//         totalBooks: data.totalBooks || 0,
+//       });
+//       const allUploads = Object.values(data.subjectWiseUploads || {}).flat();
+//       setRecentUploads(allUploads);
+
+//       toast.success("📊 Dashboard loaded");
+//     } catch (err) {
+//       console.error("Error fetching dashboard stats:", err);
+//       toast.error("❌ Failed to load dashboard");
+//     }
+//   };
+
+//   const fetchRecentUploads = async () => {
+//     try {
+//       const res = await fetch(`${API_URL}/dashboard/recent-upload`, {
+//         credentials: "include",
+//       });
+//       if (!res.ok) throw new Error("Failed to fetch recent uploads");
+
+//       const data = await res.json();
+//       const uploads = Array.isArray(data) ? data : data.uploads || [];
+//       setRecentUploads(uploads);
+//       toast.success("📘 Recent uploads loaded");
+//     } catch (err) {
+//       console.error("Error fetching recent uploads:", err);
+//       toast.error("❌ Failed to load recent uploads");
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchDashboardStats();
+//     fetchRecentUploads();
+//   }, []);
+
+//   return (
+//     <div className="flex min-h-screen bg-[#1e1f2b] text-white">
+//       <TeacherSidebar />
+//       <main className="flex-1 pl-[280px] pr-5 py-6">
+//         <TeacherNavbar />
+//         <div className="p-4">
+//           <WelcomeHeading />
+//         </div>
+
+//         {/* Overview Cards */}
+//         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
+//           <OverviewCard title="Total Students" icon={<FaUserGraduate />} value={overview.totalStudents} bg="bg-blue-500" />
+//           <OverviewCard title="Total Subjects" icon={<FaChalkboardTeacher />} value={overview.totalSubjects} bg="bg-green-500" />
+//           <OverviewCard title="My Upload Books" icon={<FaBook />} value={overview.teacherUploadBooks} bg="bg-orange-500" />
+//           <OverviewCard title="Total Books" icon={<FaBook />} value={overview.totalBooks} bg="bg-yellow-500" />
+//         </div>
+
+//   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 p-6">
+//           <Card
+//             title="📋 Assessment"
+//             description="Create and assign new Assessment to your students."
+//             icon={<FaClipboardList size={36} />}
+//             link="/teacher/assignment"
+//             bg="bg-gradient-to-br from-blue-600 to-blue-800"
+//           />
+//           <Card
+//             title="❓ Quizzes"
+//             description="Design quizzes to test your students' knowledge."
+//             icon={<FaQuestionCircle size={36} />}
+//             link="/teacher/quiz"
+//             bg="bg-gradient-to-br from-purple-600 to-purple-800"
+//           />
+//         </div>
+
+//  <div className="p-6 screen rounded-2xl shadow-lg bg-gradient-to-br from-green-600 to-green-800 flex flex-col gap-4 hover:scale-105 transition-transform duration-300">
+//     <div className="flex items-center gap-4">
+//       <FaBook size={36} />
+//       <h3 className="text-xl font-bold">📑 Upload Question Bank</h3>
+//     </div>
+//     <p className="text-gray-200">Upload your question bank in PDF or Excel format.</p>
+//     <input
+//       type="file"
+//       accept=".pdf,.xls,.xlsx"
+//       className="mt-3 block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4
+//         file:rounded-lg file:border-0
+//         file:text-sm file:font-semibold
+//         file:bg-white file:text-black
+//         hover:file:bg-gray-200"
+//       onChange={(e) => {
+//         if (e.target.files.length > 0) {
+//           toast.success(`📂 ${e.target.files[0].name} selected`);
+//         }
+//       }}
+//     />
+//     <button className="mt-4 px-4 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition">
+//       Upload
+//     </button>
+//   </div>
+//         {/* Recent Uploads */}
+//         {/* <div className="bg-[#2a2b3c] rounded-2xl p-6 shadow-md mt-6">
+//           <h3 className="text-lg font-bold mb-4 text-white">📘 Recent Uploads</h3>
+//           <ul className="space-y-3">
+//             {recentUploads.length > 0 ? (
+//               recentUploads.map((item, idx) => (
+//                 <li key={idx} className="border-b border-gray-600 pb-2 text-sm text-gray-300">
+//                   ✅ {item.title || item.name || JSON.stringify(item)}
+//                 </li>
+//               ))
+//             ) : (
+//               <li className="text-gray-400">No recent uploads</li>
+//             )}
+//           </ul>
+//         </div> */}
+//       </main>
+//     </div>
+//   );
+// }
+
+// // Overview Card Component
+// function OverviewCard({ icon, title, value, bg }) {
+//   return (
+//     <div className={`rounded-2xl p-5 shadow-sm ${bg} flex items-center justify-start gap-4 min-h-[100px]`}>
+//       <div className="w-12 h-12 flex items-center justify-center rounded-full bg-[#1e1f2b] shadow-inner text-white">
+//         {icon}
+//       </div>
+//       <div className="flex flex-col justify-center">
+//         <h2 className="text-sm font-medium text-gray-200">{title}</h2>
+//         <p className="text-2xl font-bold text-white">{value}</p>
+//       </div>
+//     </div>
+//   );
+// }
+
+// // Card Component for Assignments & Quizzes
+// function Card({ title, description, icon, link, bg }) {
+//   return (
+//     <Link to={link}>
+//       <div className={`p-6 rounded-2xl shadow-lg flex flex-col justify-between gap-4 hover:scale-105 transition-transform duration-300 ${bg}`}>
+//         <div className="flex items-center gap-4">{icon}</div>
+//         <div>
+//           <h3 className="text-xl font-bold">{title}</h3>
+//           <p className="text-gray-200 mt-2">{description}</p>
+//         </div>
+//         <button className="mt-4 px-4 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition">
+//           Start
+//         </button>
+//       </div>
+//     </Link>
+//   );
+// }
+
+
+
+
+
+
+
+
+
 import { useEffect, useState } from "react";
 import TeacherSidebar from "./TeacherSidebar";
 import TeacherNavbar from "./TeacherNavbar";
-import { FaUserGraduate, FaChalkboardTeacher, FaBook, FaClipboardList, FaQuestionCircle } from "react-icons/fa";
+import { FaUserGraduate, FaChalkboardTeacher, FaBook, FaClipboardList } from "react-icons/fa";
+import { FaPoll, FaTasks, FaFileSignature } from "react-icons/fa";
+import { MdOutlineQuiz, MdOutlineSummarize } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 import WelcomeHeading from "../../Components/WelcomeHeading";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function TeacherDashboard() {
+
+
   const [overview, setOverview] = useState({
     totalStudents: 0,
     totalSubjects: 0,
@@ -474,53 +667,23 @@ export default function TeacherDashboard() {
     totalBooks: 0,
   });
 
-  const [recentUploads, setRecentUploads] = useState([]);
-
-  // ----------------- API FETCH FUNCTIONS -----------------
   const fetchDashboardStats = async () => {
     try {
       const res = await fetch(`${API_URL}/dashboard/teacher`, {
         credentials: "include",
       });
-      if (!res.ok) throw new Error("Failed to fetch dashboard stats");
+
+      if (!res.ok) throw new Error("Failed to fetch stats");
 
       const data = await res.json();
-      setOverview({
-        totalStudents: data.totalStudents || 0,
-        totalSubjects: data.totalSubjects || 0,
-        teacherUploadBooks: data.teacherUploadBooks || 0,
-        totalBooks: data.totalBooks || 0,
-      });
-      const allUploads = Object.values(data.subjectWiseUploads || {}).flat();
-      setRecentUploads(allUploads);
-
-      toast.success("📊 Dashboard loaded");
+      setOverview(data);
     } catch (err) {
-      console.error("Error fetching dashboard stats:", err);
-      toast.error("❌ Failed to load dashboard");
-    }
-  };
-
-  const fetchRecentUploads = async () => {
-    try {
-      const res = await fetch(`${API_URL}/dashboard/recent-upload`, {
-        credentials: "include",
-      });
-      if (!res.ok) throw new Error("Failed to fetch recent uploads");
-
-      const data = await res.json();
-      const uploads = Array.isArray(data) ? data : data.uploads || [];
-      setRecentUploads(uploads);
-      toast.success("📘 Recent uploads loaded");
-    } catch (err) {
-      console.error("Error fetching recent uploads:", err);
-      toast.error("❌ Failed to load recent uploads");
+      toast.error("❌ Failed to load dashboard",err);
     }
   };
 
   useEffect(() => {
     fetchDashboardStats();
-    fetchRecentUploads();
   }, []);
 
   return (
@@ -528,9 +691,7 @@ export default function TeacherDashboard() {
       <TeacherSidebar />
       <main className="flex-1 pl-[280px] pr-5 py-6">
         <TeacherNavbar />
-        <div className="p-4">
-          <WelcomeHeading />
-        </div>
+        <WelcomeHeading />
 
         {/* Overview Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
@@ -540,62 +701,23 @@ export default function TeacherDashboard() {
           <OverviewCard title="Total Books" icon={<FaBook />} value={overview.totalBooks} bg="bg-yellow-500" />
         </div>
 
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 p-6">
-          <Card
-            title="📋 Assessment"
-            description="Create and assign new Assessment to your students."
-            icon={<FaClipboardList size={36} />}
-            link="/teacher/assignment"
-            bg="bg-gradient-to-br from-blue-600 to-blue-800"
-          />
-          <Card
-            title="❓ Quizzes"
-            description="Design quizzes to test your students' knowledge."
-            icon={<FaQuestionCircle size={36} />}
-            link="/teacher/quiz"
-            bg="bg-gradient-to-br from-purple-600 to-purple-800"
-          />
-        </div>
+        {/* 🔥 Action Section */}
+        <div className="text-center mt-6">
+          <div className="bg-gradient-to-r from-purple-500 to-purple-700 text-white px-10 py-4 rounded-full inline-block text-2xl font-bold shadow-lg">
+            WHAT DO YOU WANT TO DO?
+          </div>
 
- <div className="p-6 screen rounded-2xl shadow-lg bg-gradient-to-br from-green-600 to-green-800 flex flex-col gap-4 hover:scale-105 transition-transform duration-300">
-    <div className="flex items-center gap-4">
-      <FaBook size={36} />
-      <h3 className="text-xl font-bold">📑 Upload Question Bank</h3>
-    </div>
-    <p className="text-gray-200">Upload your question bank in PDF or Excel format.</p>
-    <input
-      type="file"
-      accept=".pdf,.xls,.xlsx"
-      className="mt-3 block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4
-        file:rounded-lg file:border-0
-        file:text-sm file:font-semibold
-        file:bg-white file:text-black
-        hover:file:bg-gray-200"
-      onChange={(e) => {
-        if (e.target.files.length > 0) {
-          toast.success(`📂 ${e.target.files[0].name} selected`);
-        }
-      }}
-    />
-    <button className="mt-4 px-4 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition">
-      Upload
-    </button>
-  </div>
-        {/* Recent Uploads */}
-        {/* <div className="bg-[#2a2b3c] rounded-2xl p-6 shadow-md mt-6">
-          <h3 className="text-lg font-bold mb-4 text-white">📘 Recent Uploads</h3>
-          <ul className="space-y-3">
-            {recentUploads.length > 0 ? (
-              recentUploads.map((item, idx) => (
-                <li key={idx} className="border-b border-gray-600 pb-2 text-sm text-gray-300">
-                  ✅ {item.title || item.name || JSON.stringify(item)}
-                </li>
-              ))
-            ) : (
-              <li className="text-gray-400">No recent uploads</li>
-            )}
-          </ul>
-        </div> */}
+          {/* Action Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-8">
+            <ActionCard icon={<MdOutlineQuiz size={30} />} title="Assign Test" path="/teacher/form/assign-test" />
+            <ActionCard icon={<MdOutlineSummarize size={30} />} title="Summarize Report" path="/teacher/form/summarize-report" />
+            <ActionCard icon={<FaClipboardList size={28} />} title="Create Quiz" path="/teacher/form/create-quiz" />
+            {/* <ActionCard icon={<FaClipboardList size={28} />} title="Schedule Class" path="/teacher/form/schedule-class" /> */}
+            <ActionCard icon={<FaFileSignature size={28} />} title="Create Notice" path="/teacher/form/notice" />
+            <ActionCard icon={<FaTasks size={28} />} title="Manage Homework" path="/teacher/form/homework" />
+            <ActionCard icon={<FaPoll size={28} />} title="Create Poll" path="/teacher/form/poll" />
+          </div>
+        </div>
       </main>
     </div>
   );
@@ -604,32 +726,31 @@ export default function TeacherDashboard() {
 // Overview Card Component
 function OverviewCard({ icon, title, value, bg }) {
   return (
-    <div className={`rounded-2xl p-5 shadow-sm ${bg} flex items-center justify-start gap-4 min-h-[100px]`}>
-      <div className="w-12 h-12 flex items-center justify-center rounded-full bg-[#1e1f2b] shadow-inner text-white">
+    <div className={`rounded-2xl p-5 shadow-sm ${bg} flex items-center gap-4`}>
+      <div className="w-12 h-12 flex items-center justify-center rounded-full bg-black text-white text-lg">
         {icon}
       </div>
-      <div className="flex flex-col justify-center">
-        <h2 className="text-sm font-medium text-gray-200">{title}</h2>
+      <div>
+        <h2 className="text-sm text-gray-200">{title}</h2>
         <p className="text-2xl font-bold text-white">{value}</p>
       </div>
     </div>
   );
 }
 
-// Card Component for Assignments & Quizzes
-function Card({ title, description, icon, link, bg }) {
+// Action Card Component
+function ActionCard({ icon, title, path }) {
+  const navigate = useNavigate();
+  
   return (
-    <Link to={link}>
-      <div className={`p-6 rounded-2xl shadow-lg flex flex-col justify-between gap-4 hover:scale-105 transition-transform duration-300 ${bg}`}>
-        <div className="flex items-center gap-4">{icon}</div>
-        <div>
-          <h3 className="text-xl font-bold">{title}</h3>
-          <p className="text-gray-200 mt-2">{description}</p>
-        </div>
-        <button className="mt-4 px-4 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition">
-          Start
-        </button>
+    <div
+      onClick={() => navigate(path)}
+      className="bg-[#0f1020] hover:bg-[#26273c] transition-all duration-200 rounded-2xl shadow-lg p-6 flex flex-col items-center gap-3 cursor-pointer border border-transparent hover:border-purple-500"
+    >
+      <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center text-purple-600 shadow-md">
+        {icon}
       </div>
-    </Link>
+      <h4 className="text-lg font-semibold">{title}</h4>
+    </div>
   );
 }
