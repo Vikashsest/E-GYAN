@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, ILike } from 'typeorm';
 import { Student } from './entities/student.entity';
@@ -36,16 +40,26 @@ export class StudentService {
     @InjectRepository(Chapter)
     private readonly chapterRepo: Repository<Chapter>,
     @InjectRepository(Announcement)
-    private readonly announcementRepo: Repository<Announcement>
-
-  ) { }
+    private readonly announcementRepo: Repository<Announcement>,
+  ) {}
 
   async studentMetrice(userId: number) {
-    const [totalTimeSpent, booksCompleted, recentActivityCount, favoriteBooksCount] = await Promise.all([
+    const [
+      totalTimeSpent,
+      booksCompleted,
+      recentActivityCount,
+      favoriteBooksCount,
+    ] = await Promise.all([
       StudentStatsHelper.getTotalTimeSpent(this.studentActivityRepo, userId),
       StudentStatsHelper.getBooksCompleted(this.studentActivityRepo, userId),
-      StudentStatsHelper.getRecentActivityCount(this.studentActivityRepo, userId),
-      StudentStatsHelper.getFavoriteBooksCount(this.studentActivityRepo, userId),
+      StudentStatsHelper.getRecentActivityCount(
+        this.studentActivityRepo,
+        userId,
+      ),
+      StudentStatsHelper.getFavoriteBooksCount(
+        this.studentActivityRepo,
+        userId,
+      ),
     ]);
 
     return {
@@ -54,7 +68,6 @@ export class StudentService {
       recentActivityCount,
       favoriteBooksCount,
     };
-
   }
 
   async markBookAsCompleted(userId: number, bookId: number) {
@@ -78,14 +91,13 @@ export class StudentService {
   }
 
   async raiseConcern(userId: number, dto: CreateConcernDto) {
-
-    const user = await this.userRepo.findOne({ where: { id: userId } })
+    const user = await this.userRepo.findOne({ where: { id: userId } });
 
     if (!user) {
-      throw new NotFoundException("User not found")
+      throw new NotFoundException('User not found');
     }
-    const concern = this.concernRepo.create({ ...dto, student: user })
-    return await this.concernRepo.save(concern)
+    const concern = this.concernRepo.create({ ...dto, student: user });
+    return await this.concernRepo.save(concern);
   }
 
   async previousConcern(userId: number) {
@@ -93,14 +105,16 @@ export class StudentService {
       .createQueryBuilder('concern')
       .leftJoinAndSelect('concern.student', 'student')
       .where('student.id = :userId', { userId })
-      .orderBy(`
+      .orderBy(
+        `
       CASE 
         WHEN concern.status = 'resolved' THEN 0
         WHEN concern.status = 'pending' THEN 1
         WHEN concern.status = 'rejected' THEN 2
         ELSE 3
       END
-    `)
+    `,
+      )
       .addOrderBy('concern.id', 'DESC')
       .getMany();
   }
@@ -115,7 +129,7 @@ export class StudentService {
     });
   }
   // async getStudentProgress(userId: number) {
-  //   const activities = await this.studentActivityRepo.find({ 
+  //   const activities = await this.studentActivityRepo.find({
   //     where: { user: { id: userId } },
   //     relations: ['book'],
   //   });
@@ -189,7 +203,7 @@ export class StudentService {
   //     return latest;
   //   }, null);
   // const recentActivity = activities
-  //   .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()) 
+  //   .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
   //   .slice(0, 5)
   //   .map((a) => ({
   //     type: a.resourceType,
@@ -327,209 +341,227 @@ export class StudentService {
   //     subjectWiseProgress: finalSubjectProgress,
   //   };
   // }
-// async getStudentProgress(userId: number) {
-//     const activities = await this.studentActivityRepo.find({
-//       where: { user: { id: userId } },
-//       relations: ['book', 'chapter'],
-//     });
-//     const booksInProgress = activities.filter((a) => {
-//       const totalPages = a.chapter?.totalPages ?? a.book?.totalPages ?? 0;
-//       const pagesRead = a.pageNumber ?? 0;
-//       return totalPages > 0 && pagesRead > 0 && pagesRead < totalPages && !a.isCompleted;
-//     }).length;
-//     const avgSessionSeconds = activities.length
-//       ? Math.round(activities.reduce((sum, a) => sum + a.timeSpent, 0) / activities.length)
-//       : 0;
-//     const avgSessionTime = this.formatTime(avgSessionSeconds);
-//     const latestActivity = activities.reduce((latest: any, current) =>
-//       !latest || current.updatedAt > latest.updatedAt ? current : latest,
-//       null
-//     );
+  // async getStudentProgress(userId: number) {
+  //     const activities = await this.studentActivityRepo.find({
+  //       where: { user: { id: userId } },
+  //       relations: ['book', 'chapter'],
+  //     });
+  //     const booksInProgress = activities.filter((a) => {
+  //       const totalPages = a.chapter?.totalPages ?? a.book?.totalPages ?? 0;
+  //       const pagesRead = a.pageNumber ?? 0;
+  //       return totalPages > 0 && pagesRead > 0 && pagesRead < totalPages && !a.isCompleted;
+  //     }).length;
+  //     const avgSessionSeconds = activities.length
+  //       ? Math.round(activities.reduce((sum, a) => sum + a.timeSpent, 0) / activities.length)
+  //       : 0;
+  //     const avgSessionTime = this.formatTime(avgSessionSeconds);
+  //     const latestActivity = activities.reduce((latest: any, current) =>
+  //       !latest || current.updatedAt > latest.updatedAt ? current : latest,
+  //       null
+  //     );
 
-//     const recentActivity = activities
-//       .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
-//       .slice(0, 5)
-//       .map((a) => ({
-//         type: a.resourceType,
-//         title: a.chapter?.chapterName || a.book?.bookName || 'Unknown',
-//         time: a.updatedAt,
-//       }));
-//     const subjectWiseProgress: Record<string, { completed: number; total: number; progressSum: number }> = {};
-//     activities.forEach((act) => {
-//       const book = act.book;
-//       if (!book) return;
+  //     const recentActivity = activities
+  //       .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
+  //       .slice(0, 5)
+  //       .map((a) => ({
+  //         type: a.resourceType,
+  //         title: a.chapter?.chapterName || a.book?.bookName || 'Unknown',
+  //         time: a.updatedAt,
+  //       }));
+  //     const subjectWiseProgress: Record<string, { completed: number; total: number; progressSum: number }> = {};
+  //     activities.forEach((act) => {
+  //       const book = act.book;
+  //       if (!book) return;
 
-//       const subject = book.subject?.trim() || 'General';
-//       if (!subjectWiseProgress[subject]) {
-//         subjectWiseProgress[subject] = { completed: 0, total: 0, progressSum: 0 };
-//       }
-//       subjectWiseProgress[subject].total += 1;
-//       const totalPages = act.chapter?.totalPages ?? book.totalPages ?? 0;
-//       const pagesRead = act.pageNumber ?? 0;
+  //       const subject = book.subject?.trim() || 'General';
+  //       if (!subjectWiseProgress[subject]) {
+  //         subjectWiseProgress[subject] = { completed: 0, total: 0, progressSum: 0 };
+  //       }
+  //       subjectWiseProgress[subject].total += 1;
+  //       const totalPages = act.chapter?.totalPages ?? book.totalPages ?? 0;
+  //       const pagesRead = act.pageNumber ?? 0;
 
-//       let progressPercent = 0;
-//       if (totalPages > 0) {
-//         progressPercent = Math.min(100, (pagesRead / totalPages) * 100);
-//       } else if (act.isCompleted) {
-//         progressPercent = 100;
-//       }
+  //       let progressPercent = 0;
+  //       if (totalPages > 0) {
+  //         progressPercent = Math.min(100, (pagesRead / totalPages) * 100);
+  //       } else if (act.isCompleted) {
+  //         progressPercent = 100;
+  //       }
 
-//       subjectWiseProgress[subject].progressSum += progressPercent;
+  //       subjectWiseProgress[subject].progressSum += progressPercent;
 
-//       if (act.isCompleted) {
-//         subjectWiseProgress[subject].completed += 1;
-//       }
-//     });
-//     const finalSubjectProgress: Record<string, { completed: number; total: number; percentage: number }> = {};
-//     for (const subject in subjectWiseProgress) {
-//       const data = subjectWiseProgress[subject];
-//       const avgProgress = data.progressSum / data.total;
-//       finalSubjectProgress[subject] = {
-//         completed: data.completed,
-//         total: data.total,
-//         percentage: Math.round(avgProgress),
-//       };
-//     }
+  //       if (act.isCompleted) {
+  //         subjectWiseProgress[subject].completed += 1;
+  //       }
+  //     });
+  //     const finalSubjectProgress: Record<string, { completed: number; total: number; percentage: number }> = {};
+  //     for (const subject in subjectWiseProgress) {
+  //       const data = subjectWiseProgress[subject];
+  //       const avgProgress = data.progressSum / data.total;
+  //       finalSubjectProgress[subject] = {
+  //         completed: data.completed,
+  //         total: data.total,
+  //         percentage: Math.round(avgProgress),
+  //       };
+  //     }
 
-//     return {
-//       booksInProgress,
-//       avgSessionTime,
-//       lastActivity: latestActivity?.updatedAt,
-//       recentActivity,
-//       subjectWiseProgress: finalSubjectProgress,
-//     };
-//   }
+  //     return {
+  //       booksInProgress,
+  //       avgSessionTime,
+  //       lastActivity: latestActivity?.updatedAt,
+  //       recentActivity,
+  //       subjectWiseProgress: finalSubjectProgress,
+  //     };
+  //   }
 
+  async getStudentProgress(userId: number) {
+    const activities = await this.studentActivityRepo.find({
+      where: { user: { id: userId } },
+      relations: ['book', 'chapter'],
+    });
 
-async getStudentProgress(userId: number) {
-  const activities = await this.studentActivityRepo.find({
-    where: { user: { id: userId } },
-    relations: ['book', 'chapter'],
-  });
+    const booksInProgress = activities.filter((a) => {
+      const totalPages = a.chapter?.totalPages ?? a.book?.totalPages ?? 0;
+      const pagesRead = a.pageNumber ?? 0;
+      return (
+        totalPages > 0 &&
+        pagesRead > 0 &&
+        pagesRead < totalPages &&
+        !a.isCompleted
+      );
+    }).length;
 
-  const booksInProgress = activities.filter((a) => {
-    const totalPages = a.chapter?.totalPages ?? a.book?.totalPages ?? 0;
-    const pagesRead = a.pageNumber ?? 0;
-    return totalPages > 0 && pagesRead > 0 && pagesRead < totalPages && !a.isCompleted;
-  }).length;
+    const avgSessionSeconds = activities.length
+      ? Math.round(
+          activities.reduce((sum, a) => sum + a.timeSpent, 0) /
+            activities.length,
+        )
+      : 0;
+    const avgSessionTime = this.formatTime(avgSessionSeconds);
 
-  const avgSessionSeconds = activities.length
-    ? Math.round(activities.reduce((sum, a) => sum + a.timeSpent, 0) / activities.length)
-    : 0;
-  const avgSessionTime = this.formatTime(avgSessionSeconds);
+    const latestActivity = activities.reduce(
+      (latest: any, current) =>
+        !latest || current.updatedAt > latest.updatedAt ? current : latest,
+      null,
+    );
 
-  const latestActivity = activities.reduce((latest: any, current) =>
-    !latest || current.updatedAt > latest.updatedAt ? current : latest,
-    null
-  );
+    // Recent activity
+    const recentActivity = activities
+      .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
+      .slice(0, 5)
+      .map((a) => ({
+        type: a.resourceType,
+        title: a.chapter?.chapterName || a.book?.bookName || 'Unknown',
+        time: a.updatedAt,
+        bookClass: a.book?.educationLevel || 'Unknown',
+      }));
 
-  // Recent activity
-  const recentActivity = activities
-    .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
-    .slice(0, 5)
-    .map((a) => ({
-      type: a.resourceType,
-      title: a.chapter?.chapterName || a.book?.bookName || 'Unknown',
-      time: a.updatedAt,
-      bookClass: a.book?.educationLevel || 'Unknown',
-    }));
+    // Subject-wise progress
+    const subjectWiseProgress: Record<
+      string,
+      {
+        completed: number;
+        total: number;
+        progressSum: number;
+        classes: Set<string>;
+        booksMap: Map<
+          string,
+          { title: string; class: string; percentage: number }
+        >;
+      }
+    > = {};
 
-  // Subject-wise progress
-  const subjectWiseProgress: Record<
-    string,
-    {
-      completed: number;
-      total: number;
-      progressSum: number;
-      classes: Set<string>;
-      booksMap: Map<string, { title: string; class: string; percentage: number }>;
-    }
-  > = {};
+    activities.forEach((act) => {
+      const book = act.book;
+      if (!book) return;
 
-  activities.forEach((act) => {
-    const book = act.book;
-    if (!book) return;
+      const subject = book.subject?.trim() || 'General';
+      const bookClass = book.educationLevel?.trim() || 'Unknown';
 
-    const subject = book.subject?.trim() || 'General';
-    const bookClass = book.educationLevel?.trim() || 'Unknown';
+      if (!subjectWiseProgress[subject]) {
+        subjectWiseProgress[subject] = {
+          completed: 0,
+          total: 0,
+          progressSum: 0,
+          classes: new Set(),
+          booksMap: new Map(),
+        };
+      }
 
-    if (!subjectWiseProgress[subject]) {
-      subjectWiseProgress[subject] = {
-        completed: 0,
-        total: 0,
-        progressSum: 0,
-        classes: new Set(),
-        booksMap: new Map(),
+      subjectWiseProgress[subject].total += 1;
+      subjectWiseProgress[subject].classes.add(bookClass);
+
+      const totalPages = act.chapter?.totalPages ?? book.totalPages ?? 0;
+      const pagesRead = act.pageNumber ?? 0;
+      let progressPercent = 0;
+      if (totalPages > 0) {
+        progressPercent = Math.min(100, (pagesRead / totalPages) * 100);
+      } else if (act.isCompleted) {
+        progressPercent = 100;
+      }
+
+      subjectWiseProgress[subject].progressSum += progressPercent;
+
+      if (act.isCompleted) {
+        subjectWiseProgress[subject].completed += 1;
+      }
+
+      // Add or update book in Map (unique per book + class)
+      const bookKey = `${book.id}-${bookClass}`;
+      const booksMap = subjectWiseProgress[subject].booksMap;
+      if (!booksMap.has(bookKey)) {
+        booksMap.set(bookKey, {
+          title: book.bookName,
+          class: bookClass,
+          percentage: Math.round(progressPercent),
+        });
+      } else {
+        const existing = booksMap.get(bookKey)!;
+        existing.percentage = Math.max(
+          existing.percentage,
+          Math.round(progressPercent),
+        );
+      }
+    });
+
+    // Prepare final subject progress
+    const finalSubjectProgress: Record<
+      string,
+      {
+        completed: number;
+        total: number;
+        percentage: number;
+        classes: string[];
+        books: any[];
+      }
+    > = {};
+
+    for (const subject in subjectWiseProgress) {
+      const data = subjectWiseProgress[subject];
+      const avgProgress = data.progressSum / data.total;
+
+      finalSubjectProgress[subject] = {
+        completed: data.completed,
+        total: data.total,
+        percentage: Math.round(avgProgress),
+        classes: Array.from(data.classes).sort(),
+        books: Array.from(data.booksMap.values()),
       };
     }
 
-    subjectWiseProgress[subject].total += 1;
-    subjectWiseProgress[subject].classes.add(bookClass);
-
-    const totalPages = act.chapter?.totalPages ?? book.totalPages ?? 0;
-    const pagesRead = act.pageNumber ?? 0;
-    let progressPercent = 0;
-    if (totalPages > 0) {
-      progressPercent = Math.min(100, (pagesRead / totalPages) * 100);
-    } else if (act.isCompleted) {
-      progressPercent = 100;
-    }
-
-    subjectWiseProgress[subject].progressSum += progressPercent;
-
-    if (act.isCompleted) {
-      subjectWiseProgress[subject].completed += 1;
-    }
-
-    // Add or update book in Map (unique per book + class)
-    const bookKey = `${book.id}-${bookClass}`;
-    const booksMap = subjectWiseProgress[subject].booksMap;
-    if (!booksMap.has(bookKey)) {
-      booksMap.set(bookKey, {
-        title: book.bookName,
-        class: bookClass,
-        percentage: Math.round(progressPercent),
-      });
-    } else {
-      const existing = booksMap.get(bookKey)!;
-      existing.percentage = Math.max(existing.percentage, Math.round(progressPercent));
-    }
-  });
-
-  // Prepare final subject progress
-  const finalSubjectProgress: Record<
-    string,
-    { completed: number; total: number; percentage: number; classes: string[]; books: any[] }
-  > = {};
-
-  for (const subject in subjectWiseProgress) {
-    const data = subjectWiseProgress[subject];
-    const avgProgress = data.progressSum / data.total;
-
-    finalSubjectProgress[subject] = {
-      completed: data.completed,
-      total: data.total,
-      percentage: Math.round(avgProgress),
-      classes: Array.from(data.classes).sort(),
-      books: Array.from(data.booksMap.values()),
+    return {
+      booksInProgress,
+      avgSessionTime,
+      lastActivity: latestActivity?.updatedAt,
+      recentActivity,
+      subjectWiseProgress: finalSubjectProgress,
     };
   }
-
-  return {
-    booksInProgress,
-    avgSessionTime,
-    lastActivity: latestActivity?.updatedAt,
-    recentActivity,
-    subjectWiseProgress: finalSubjectProgress,
-  };
-}
-
-
 
   // async getStudentProgress(userId: number) {
   //   const activities = await this.studentActivityRepo.find({
   //     where: { user: { id: userId } },
-  //     relations: ['book', 'chapter'], 
+  //     relations: ['book', 'chapter'],
   //   });
 
   //   const booksInProgress = activities.filter((a) => {
@@ -609,46 +641,44 @@ async getStudentProgress(userId: number) {
   //   };
   // }
 
-
-
   private formatTime(seconds: number): string {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
     return `${h}h ${m}m`;
   }
 
-async getRecentBooks(userId: number) {
-  const activities = await this.studentActivityRepo.find({
-    where: { user: { id: userId } },
-    relations: ["book", "chapter"],
-    loadEagerRelations: true,
-  });
+  async getRecentBooks(userId: number) {
+    const activities = await this.studentActivityRepo.find({
+      where: { user: { id: userId } },
+      relations: ['book', 'chapter'],
+      loadEagerRelations: true,
+    });
 
-  const recentBookActivities = activities
-    .filter((a) => a.book)
-    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-    .slice(0, 5);
+    const recentBookActivities = activities
+      .filter((a) => a.book)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice(0, 5);
 
-  return recentBookActivities.map((a) => {
-    const totalPages = a.chapter?.totalPages ?? a.book?.totalPages ?? 0;
-    const pagesRead = a.pageNumber ?? 0;
+    return recentBookActivities.map((a) => {
+      const totalPages = a.chapter?.totalPages ?? a.book?.totalPages ?? 0;
+      const pagesRead = a.pageNumber ?? 0;
 
-    // progress % nikalna per book basis pe
-    const progress =
-      totalPages > 0 ? Math.min(100, Math.round((pagesRead / totalPages) * 100)) : 0;
+      // progress % nikalna per book basis pe
+      const progress =
+        totalPages > 0
+          ? Math.min(100, Math.round((pagesRead / totalPages) * 100))
+          : 0;
 
-    return {
-      id: a.book?.id,
-      bookName: a.resourceTitle,
-      subject: a.book?.subject,
-      type: a.resourceType,
-      lastAccessed: a.createdAt,
-      progress, // ab har book ka apna % aayega
-    };
-  });
-}
-
-
+      return {
+        id: a.book?.id,
+        bookName: a.resourceTitle,
+        subject: a.book?.subject,
+        type: a.resourceType,
+        lastAccessed: a.createdAt,
+        progress,
+      };
+    });
+  }
 
   async getFavoriteBooksList(userId: number) {
     const favoriteActivities = await this.studentActivityRepo.find({
@@ -656,7 +686,7 @@ async getRecentBooks(userId: number) {
         user: { id: userId },
         isFavorite: true,
       },
-      relations: ['book','chapter'],
+      relations: ['book', 'chapter'],
     });
 
     return favoriteActivities.map((act) => ({
@@ -666,7 +696,6 @@ async getRecentBooks(userId: number) {
       type: act.resourceType,
     }));
   }
-
 
   async getFavoriteBooks(userId: number) {
     return this.studentActivityRepo
@@ -683,12 +712,12 @@ async getRecentBooks(userId: number) {
       ])
       .getMany();
   }
-async toggleFavoriteStatus(userId: number, bookId: number) {
+  async toggleFavoriteStatus(userId: number, bookId: number) {
     const activityRepo = this.studentActivityRepo;
 
     const existing = await activityRepo.findOne({
       where: { user: { id: userId }, book: { id: bookId } },
-      relations: ['book', 'user','chapter'],
+      relations: ['book', 'user', 'chapter'],
     });
 
     if (existing) {
@@ -696,7 +725,7 @@ async toggleFavoriteStatus(userId: number, bookId: number) {
       return await activityRepo.save(existing);
     } else {
       // const book = await this.bookRepo.findOne({ where: { id: bookId } });
-      
+
       // if (!book || !chapter.resourceType) {
       //   throw new NotFoundException('Book not found or missing resourceType');
       // }
@@ -716,41 +745,39 @@ async toggleFavoriteStatus(userId: number, bookId: number) {
       // });
       // return await activityRepo.save(newActivity);
       const book = await this.bookRepo.findOne({
-  where: { id: bookId },
-  relations: ['chapters'],
-});
+        where: { id: bookId },
+        relations: ['chapters'],
+      });
 
-if (!book || !book.chapters || book.chapters.length === 0) {
-  throw new NotFoundException('Book or chapters not found');
-}
+      if (!book || !book.chapters || book.chapters.length === 0) {
+        throw new NotFoundException('Book or chapters not found');
+      }
 
-// Default to first chapter
-const chapter = book.chapters[0];
+      // Default to first chapter
+      const chapter = book.chapters[0];
 
-if (!chapter.resourceType) {
-  throw new BadRequestException('Chapter missing resourceType');
-}
+      if (!chapter.resourceType) {
+        throw new BadRequestException('Chapter missing resourceType');
+      }
 
-const resourceType = chapter.resourceType.toUpperCase();
-if (!Object.values(ResourceType).includes(resourceType as ResourceType)) {
-  throw new BadRequestException(`Invalid resourceType: ${resourceType}`);
-}
+      const resourceType = chapter.resourceType.toUpperCase();
+      if (!Object.values(ResourceType).includes(resourceType as ResourceType)) {
+        throw new BadRequestException(`Invalid resourceType: ${resourceType}`);
+      }
 
-const newActivity = this.studentActivityRepo.create({
-  user: { id: userId },
-  book: { id: bookId },
-  chapter: { id: chapter.id }, // ✅ chapter relation bhi add karo
-  activityType: ActivityType.FAVORITE,
-  resourceTitle: book.bookName,
-  isFavorite: true,
-  resourceType: resourceType as ResourceType,
-});
+      const newActivity = this.studentActivityRepo.create({
+        user: { id: userId },
+        book: { id: bookId },
+        chapter: { id: chapter.id }, // ✅ chapter relation bhi add karo
+        activityType: ActivityType.FAVORITE,
+        resourceTitle: book.bookName,
+        isFavorite: true,
+        resourceType: resourceType as ResourceType,
+      });
 
-return await activityRepo.save(newActivity);
-
+      return await activityRepo.save(newActivity);
     }
   }
-
 
   // async logActivity(userId: number, { bookId, timeSpent, isCompleted }: LogActivityDto) {
   //   const existing = await this.studentActivityRepo.findOne({
@@ -760,7 +787,6 @@ return await activityRepo.save(newActivity);
   //   if (existing) {
   //     existing.timeSpent += timeSpent ?? 0;
   // existing.isCompleted = existing.isCompleted || (isCompleted ?? false);
-
 
   //     return this.studentActivityRepo.save(existing);
   //   }
@@ -777,7 +803,6 @@ return await activityRepo.save(newActivity);
   //   throw new BadRequestException(`Invalid resourceType: ${resourceType}`);
   // }
 
-
   //   const activity = this.studentActivityRepo.create({
   //     user: { id: userId },
   //     book,
@@ -790,7 +815,6 @@ return await activityRepo.save(newActivity);
 
   //   return this.studentActivityRepo.save(activity);
   // }
-
 
   // async logActivity(userId: number, dto: LogActivityDto) {
   //   const { bookId, timeSpent, isCompleted, activityType, pageNumber } = dto;
@@ -853,7 +877,6 @@ return await activityRepo.save(newActivity);
   //   console.log('Incoming DTO:', dto);
   // console.log('pageNumber type:', typeof dto.pageNumber);
 
-
   //   const newActivity = this.studentActivityRepo.create({
   //     user: { id: userId } as User,
   //     book: book as Book,
@@ -874,7 +897,6 @@ return await activityRepo.save(newActivity);
   //   return this.studentActivityRepo.save(newActivity);
   // }
 
-  
   async logActivity(userId: number, dto: LogActivityDto) {
     const {
       bookId,
@@ -891,25 +913,34 @@ return await activityRepo.save(newActivity);
 
     let chapter: Chapter | undefined = undefined;
     if (chapterId) {
-      chapter = (await this.chapterRepo.findOne({ where: { id: chapterId } })) || undefined;
-      if (!chapter) throw new NotFoundException(`Chapter with ID ${chapterId} not found`);
+      chapter =
+        (await this.chapterRepo.findOne({ where: { id: chapterId } })) ||
+        undefined;
+      if (!chapter)
+        throw new NotFoundException(`Chapter with ID ${chapterId} not found`);
     }
     const parsedPageNumber =
-      pageNumber !== undefined && pageNumber !== null ? Number(pageNumber) : undefined;
+      pageNumber !== undefined && pageNumber !== null
+        ? Number(pageNumber)
+        : undefined;
 
     let existing = await this.studentActivityRepo.findOne({
       where: chapter
-        ? { user: { id: userId }, book: { id: bookId }, chapter: { id: chapter.id } }
+        ? {
+            user: { id: userId },
+            book: { id: bookId },
+            chapter: { id: chapter.id },
+          }
         : { user: { id: userId }, book: { id: bookId }, chapter: undefined },
     });
 
     const totalPages = chapter?.totalPages ?? book.totalPages ?? 0;
-    const estimatedReadTime = totalPages * 30; 
+    const estimatedReadTime = totalPages * 30;
     const checkCompletion = (
       parsedPageNumber?: number,
       totalPages?: number,
       timeSpent?: number,
-      isCompletedFlag?: boolean
+      isCompletedFlag?: boolean,
     ) => {
       if (isCompletedFlag) return true;
       if (parsedPageNumber !== undefined && totalPages) {
@@ -923,7 +954,7 @@ return await activityRepo.save(newActivity);
     if (existing) {
       existing.timeSpent += timeSpent ?? 0;
       if (parsedPageNumber !== undefined && !isNaN(parsedPageNumber)) {
-        existing.pageNumber = parsedPageNumber; 
+        existing.pageNumber = parsedPageNumber;
       }
       if (chapter) existing.chapter = chapter;
 
@@ -931,28 +962,36 @@ return await activityRepo.save(newActivity);
         parsedPageNumber,
         totalPages,
         existing.timeSpent,
-        isCompleted
+        isCompleted,
       );
 
       existing.activityType = existing.isCompleted
         ? ActivityType.COMPLETED
-        : activityType ?? existing.activityType;
+        : (activityType ?? existing.activityType);
 
       existing.updatedAt = new Date();
       return this.studentActivityRepo.save(existing);
     }
-    const completed = checkCompletion(parsedPageNumber, totalPages, timeSpent, isCompleted);
+    const completed = checkCompletion(
+      parsedPageNumber,
+      totalPages,
+      timeSpent,
+      isCompleted,
+    );
     const newActivity = this.studentActivityRepo.create({
       user: { id: userId } as User,
       book,
       chapter: chapter ?? undefined,
       timeSpent: timeSpent ?? 0,
-      pageNumber: parsedPageNumber ?? undefined, 
+      pageNumber: parsedPageNumber ?? undefined,
       isCompleted: completed,
-      activityType: completed ? ActivityType.COMPLETED : activityType ?? ActivityType.OPENED,
+      activityType: completed
+        ? ActivityType.COMPLETED
+        : (activityType ?? ActivityType.OPENED),
       resourceType,
       resourceTitle:
-        chapter?.chapterName ?? (chapter ? `Chapter ${chapter.chapterNumber}` : book.bookName),
+        chapter?.chapterName ??
+        (chapter ? `Chapter ${chapter.chapterNumber}` : book.bookName),
       updatedAt: new Date(),
     });
     return this.studentActivityRepo.save(newActivity);
@@ -972,14 +1011,14 @@ return await activityRepo.save(newActivity);
     }));
   }
 
+  async deleteConcern(id: number) {
+    const concern = await this.concernRepo.findOne({ where: { id } });
 
-async deleteConcern(id: number) {
-  const concern = await this.concernRepo.findOne({ where: { id } });
-  if (!concern) {
-    throw new NotFoundException(`Concern with ID ${id} not found`);
+    if (!concern) {
+      throw new NotFoundException(`Concern with ID ${id} not found`);
+    }
+
+    await this.concernRepo.delete(id);
+    return { message: 'Concern deleted successfully' };
   }
-  await this.concernRepo.delete(id);
-  return { message: 'Concern deleted successfully' };
-}
-
 }
