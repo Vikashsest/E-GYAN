@@ -55,6 +55,7 @@ import TeacherUploadedBooks from "../Pages/Teacher/TeacherUploadBooks";
 import UploadChapter from "../Components/UploadChapter";
 import CreateQuiz from "../Pages/Teacher/CreateQuiz";
 import CreateAssignment from "../Pages/Teacher/CreateAssignment";
+import TeacherForms from "../Pages/Teacher/DashboardForm";
 
 export const teacherRouteList = [
   {
@@ -104,7 +105,16 @@ export const teacherRouteList = [
       <UploadChapter />
     </ProtectedRoute>
   ),
+},
+{
+  path: "/teacher/form/:formType",
+  element: (
+    <ProtectedRoute allowedRoles={["teacher", "admin", "principal"]}>
+      <TeacherForms />
+    </ProtectedRoute>
+  ),
 }
+
 
 
 ];
