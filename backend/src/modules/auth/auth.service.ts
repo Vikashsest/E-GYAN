@@ -199,13 +199,13 @@ async sendOtp(dto:ForgotPasswordDto) {
   await this.userRepository.save(user);
 
   const transporter = nodemailer.createTransport({
-    host: 'sg2plzcpnl506692.prod.sin2.secureserver.net',
-    port: 465,
+    host:process.env.HOST,
+    port: process.env.SMTP_PORT,
     secure: true,
     auth: {
-      user: 'egyan@pentagontech.in',
-      pass: '8TF&~rVu4z7*',
-    },
+      user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS,
+    }
   });
 
   await transporter.sendMail({

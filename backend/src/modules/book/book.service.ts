@@ -271,7 +271,7 @@ async updateBook(id: number, updateBookDto: UpdateBookDto, file?: Express.Multer
     throw new NotFoundException(`Book with ID ${id} not found`);
   }
   if (file) {
-    updateBookDto.fileUrl = `uploads/${file.filename}`;
+    updateBookDto.fileUrl = file.filename;
     updateBookDto.fileType = file.mimetype;
   }
   const updatedBook = Object.assign(book, updateBookDto);
@@ -325,11 +325,7 @@ async deleteChapter(chapterId: number): Promise<{ message: string }> {
       relations: ['book'],
     });
     if (!chapter) throw new NotFoundException(`Chapter with ID ${chapterId} not found`);
-
-    // Step 1: Delete all student activities for this chapter
     await this.studentActivityRepo.delete({ chapter: { id: chapterId } });
-
-    // Step 2: Remove chapter
     await this.chapterRepo.remove(chapter);
 
     return { message: `Chapter ${chapter.chapterNumber} of book "${chapter.book.bookName}" deleted successfully` };
