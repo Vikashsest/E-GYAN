@@ -663,7 +663,6 @@ export class StudentService {
       const totalPages = a.chapter?.totalPages ?? a.book?.totalPages ?? 0;
       const pagesRead = a.pageNumber ?? 0;
 
-      // progress % nikalna per book basis pe
       const progress =
         totalPages > 0
           ? Math.min(100, Math.round((pagesRead / totalPages) * 100))
