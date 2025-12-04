@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaEnvelope, FaUserShield, FaEdit } from "react-icons/fa";
@@ -11,12 +10,32 @@ export default function ProfilePage({ user }) {
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState(user || {});
   const [requestMessage, setRequestMessage] = useState("");
-
+  const [sessions, setSessions] = useState([]);
   const isStudent = user?.role?.toLowerCase() === "student";
 
   useEffect(() => {
     if (user) setFormData(user);
   }, [user]);
+  useEffect(() => {
+    if (user) {
+      setFormData(user);
+      fetchSessions();
+    }
+  }, [user]);
+
+  const fetchSessions = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/auth/active-sessions", {
+        credentials: "include",
+      });
+
+      const data = await res.json(); // <-- convert to JSON
+
+      setSessions(data); // <-- set actual array
+    } catch (err) {
+      console.error("Error fetching sessions", err);
+    }
+  };
 
   const handleDashboardRedirect = () => {
     const role = user?.role?.toLowerCase().trim();
@@ -56,7 +75,6 @@ export default function ProfilePage({ user }) {
   return (
     <div className="min-h-screen bg-[#1e1f2b] text-white p-6">
       <div className="max-w-3xl mx-auto bg-[#2a2b39] rounded-xl shadow-md p-8">
-        
         {/* Profile Info */}
         <div className="flex flex-col items-center text-center">
           <img
@@ -66,18 +84,61 @@ export default function ProfilePage({ user }) {
             height={100}
             className="rounded-full border-4 border-blue-500"
           />
-          <h2 className="text-2xl font-bold mt-4">{formData?.profile?.username}</h2>
+          <h2 className="text-2xl font-bold mt-4">
+            {formData?.profile?.username}
+          </h2>
         </div>
 
         {/* Detail Rows */}
         <div className="mt-8 space-y-4 text-sm">
-          <ProfileRow icon={<FaEnvelope />} label="Email" value={formData?.email} />
-          <ProfileRow icon={<FaUserShield />} label="Role" value={formData?.role} />
+          <ProfileRow
+            icon={<FaEnvelope />}
+            label="Email"
+            value={formData?.email}
+          />
+          <ProfileRow
+            icon={<FaUserShield />}
+            label="Role"
+            value={formData?.role}
+          />
+        </div>
+
+        <div className="mt-10 bg-[#2f3042] p-4 rounded-lg">
+          <h3 className="text-lg font-semibold mb-3">🔐 Logged-in Devices</h3>
+
+          {sessions.length === 0 ? (
+            <p className="text-gray-400 text-sm">No active sessions</p>
+          ) : (
+            <div className="space-y-3">
+              {sessions.map((session) => (
+                <div
+                  key={session.id}
+                  className="bg-[#3a3b4f] p-3 rounded border border-gray-700"
+                >
+                  <p>
+                    📱 <b>Device:</b>{" "}
+                    <span className="text-blue-300">{session.device}</span>
+                  </p>
+                  <p>
+                    🌐 <b>IP:</b>{" "}
+                    <span className="text-blue-300">{session.ip}</span>
+                  </p>
+                  <p>
+                    ⏳ <b>Login Time:</b>{" "}
+                    <span className="text-blue-300">
+                      {new Date(session.createdAt).toLocaleString("en-IN", {
+                        timeZone: "Asia/Kolkata",
+                      })}
+                    </span>
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Buttons Section */}
         <div className="mt-10 flex justify-center gap-6 flex-wrap">
-
           {/* Go to Dashboard */}
           <button
             onClick={handleDashboardRedirect}
@@ -110,7 +171,7 @@ export default function ProfilePage({ user }) {
         <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg w-full max-w-md text-black">
             <h3 className="text-lg font-semibold mb-4">✏️ User Request</h3>
-            
+
             <form className="space-y-4" onSubmit={handleRequestSubmit}>
               <input
                 type="text"
