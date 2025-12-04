@@ -4,6 +4,7 @@ import {
   Column,
   ManyToOne,
   CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { User } from 'src/modules/user/entities/user.entity';
 
@@ -12,18 +13,21 @@ export class UserSession {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
   user: User;
 
   @Column()
   token: string;
 
-  @Column({ nullable: true })
+  @Column()
   deviceInfo: string;
 
-  @Column({ nullable: true })
+  @Column()
   ipAddress: string;
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

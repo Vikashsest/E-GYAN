@@ -5,7 +5,9 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  Req,
   Res,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity';
@@ -19,6 +21,8 @@ import { UserSession } from '../auth-session-module/entities/auth-session-module
 import * as nodemailer from 'nodemailer';
 import { ResetPasswordDto } from '../user/dto/ResetPassword.dto';
 import { VerifyOtpDto } from '../user/dto/verify-otp.dto';
+import { Request } from 'express';
+const UAParser = require('ua-parser-js');
 
 dotenv.config();
 
@@ -88,74 +92,6 @@ export class AuthService {
   //   }
   // }
 
-  async login(
-    username: string,
-    password: string,
-    @Res({ passthrough: true }) res: Response,
-  ): Promise<void> {
-    try {
-      const user = await this.userRepository.findOne({
-        where: { username },
-      });
-      if (!user) {
-        return this.throwError(
-          'Invalid username or password',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (!isPasswordValid) {
-        return this.throwError(
-          'Invalid username or password',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      const max_session = 4;
-      const activeSesion = await this.userSession.find({
-        where: { user: { id: user?.id } },
-        order: { createdAt: 'ASC' },
-      });
-      // if (activeSesion.length >= max_session) {
-      //   await this.userSession.delete(activeSesion[0]);
-      // }
-      if (activeSesion.length >= max_session) {
-        // Already logged in somewhere
-        return this.throwError(
-          'You are already logged in on another device. Logout first to login here.',
-          HttpStatus.FORBIDDEN,
-        );
-      }
-
-      const access_token = this.generateToken(user);
-      await this.userSession.save({
-        user,
-        token: access_token,
-        deviceInfo: 'Chrome-Windows',
-        ipAddress: '127.0.0.1',
-      });
-      res.cookie('access_token', access_token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'none',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
-      //   res.cookie('access_token', access_token, {
-      //   httpOnly: true,
-      //   secure: false,         // ✅ required for HTTP/IP
-      //   sameSite: 'lax',       // ✅ works without HTTPS
-      //   maxAge: 7 * 24 * 60 * 60 * 1000,
-      //    path: '/'
-      // });
-
-      res.status(HttpStatus.OK).json({
-        status: 'Login successful',
-        access_token,
-        role: user.role,
-      });
-    } catch (error) {
-      this.handleError(error);
-    }
-  }
   // async logout(res: Response): Promise<void> {
   //   try {
   //     res.clearCookie('access_token', {
@@ -169,25 +105,6 @@ export class AuthService {
   //     this.handleError(error);
   //   }
   // }
-  async logout(req: CustomRequest, res: Response): Promise<void> {
-    try {
-      const sessionToken = req.cookies?.['access_token'];
-
-      if (sessionToken) {
-        await this.userSession.delete({ token: sessionToken });
-      }
-
-      res.clearCookie('access_token', {
-        httpOnly: true,
-        sameSite: 'none',
-        secure: true,
-      });
-
-      res.status(200).json({ message: 'logout successful' });
-    } catch (error) {
-      throw new InternalServerErrorException(error.message);
-    }
-  }
 
   async getProfile(id: number) {
     const user = await this.userRepository.findOne({
@@ -313,5 +230,88 @@ export class AuthService {
     await this.userRepository.save(user);
 
     return { message: 'Password reset successful' };
+  }
+
+  async login(username: string, password: string, req: Request, res: Response) {
+    try {
+      const user = await this.userRepository.findOne({ where: { username } });
+      if (!user) {
+        throw new HttpException('Invalid username or password', 400);
+      }
+
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid) {
+        throw new HttpException('Invalid username or password', 400);
+      }
+
+      const maxSessions = 4;
+
+      const activeSessions = await this.userSession.find({
+        where: { user: { id: user.id } },
+        order: { createdAt: 'ASC' },
+      });
+
+      if (activeSessions.length >= maxSessions) {
+        throw new HttpException(
+          'You are already logged in on another device.',
+          403,
+        );
+      }
+
+      const ip =
+        req.headers['x-forwarded-for']?.toString().split(',')[0] ||
+        req.socket.remoteAddress ||
+        req.ip ||
+        'UNKNOWN_IP';
+
+      const parser = new UAParser(req.get('user-agent'));
+      const browser = parser.getBrowser().name || 'Unknown';
+      const deviceInfo = browser;
+
+      const token = this.generateToken(user);
+      const now = new Date();
+
+      await this.userSession.save({
+        user,
+        token,
+        ipAddress: ip,
+        deviceInfo,
+        createdAt: now,
+      });
+
+      res.cookie('access_token', token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
+      return { message: 'Login successful', role: user.role };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async logout(req: any, res: any) {
+    const sessionId = req.cookies?.sessionId;
+    if (!sessionId) return { message: 'Already logged out' };
+
+    await this.userSession.delete(sessionId);
+    res.clearCookie('sessionId');
+
+    return { message: 'Logout successful' };
+  }
+
+  async getActiveSessions(userId: number) {
+    const sessions = await this.userSession.find({
+      where: { user: { id: userId } },
+      order: { createdAt: 'DESC' },
+    });
+
+    return sessions.map((s) => ({
+      device: s.deviceInfo,
+      ip: s.ipAddress,
+      createdAt: s.createdAt.toISOString(),
+    }));
   }
 }

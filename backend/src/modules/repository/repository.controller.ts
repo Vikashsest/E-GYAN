@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { RepositoryService } from './repository.service';
 import { CreateRepositoryDto } from './dto/create-repository.dto';
 import { UpdateRepositoryDto } from './dto/update-repository.dto';
@@ -16,7 +24,8 @@ export class RepositoryController {
   findAll() {
     return this.repositoryService.findAll();
   }
- 
-
-
+  @Delete(':id')
+  deleteRepo(@Param('id') id: number) {
+    return this.repositoryService.deleteRepository(id);
+  }
 }

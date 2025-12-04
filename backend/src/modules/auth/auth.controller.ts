@@ -7,6 +7,9 @@ import {
   Get,
   Req,
   BadRequestException,
+  ConsoleLogger,
+  UnauthorizedException,
+  Delete,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { AuthService } from './auth.service';
@@ -15,6 +18,7 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 import { ForgotPasswordDto } from '../user/dto/ForgotPasswordDto';
 import { VerifyOtpDto } from '../user/dto/verify-otp.dto';
 import { ResetPasswordDto } from '../user/dto/ResetPassword.dto';
+import { User } from '../user/entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -27,14 +31,14 @@ export class AuthController {
   // ) {
   //   return this.authService.login(loginDTO.username, loginDTO.password, res);
   // }
-  @Post('login')
-  async login(@Body() loginDTO: CreateUserDto, @Res() res: Response) {
-    if (!loginDTO.username || !loginDTO.password) {
-      throw new BadRequestException('Username and password are required');
-    }
+  // @Post('login')
+  // async login(@Body() loginDTO: CreateUserDto, @Res() res: Response) {
+  //   if (!loginDTO.username || !loginDTO.password) {
+  //     throw new BadRequestException('Username and password are required');
+  //   }
 
-    return this.authService.login(loginDTO.username, loginDTO.password, res);
-  }
+  //   return this.authService.login(loginDTO.username, loginDTO.password, res);
+  // }
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
@@ -43,10 +47,11 @@ export class AuthController {
     return this.authService.getProfile(user['id']);
   }
 
-  @Post('logout')
-  async logout(@Req() req, @Res() res: Response): Promise<void> {
-    return this.authService.logout(req, res);
-  }
+  // @Post('logout')
+  // async logout(@Req() req, @Res() res: Response): Promise<void> {
+  //   console.log(req.cookies);
+  //   return this.authService.logout(req, res);
+  // }
 
   // @Post('forgot-password')
   // async forgotPassword(@Body() dto: ForgotPasswordDto) {
@@ -54,7 +59,6 @@ export class AuthController {
   // }
   @Post('forgot-password')
   sendOtp(@Body() dto: ForgotPasswordDto) {
-    console.log(dto);
     return this.authService.sendOtp(dto);
   }
 
@@ -66,5 +70,27 @@ export class AuthController {
   @Post('reset-password')
   resetPassword(@Body() dto: ResetPasswordDto) {
     return this.authService.resetPassword(dto);
+  }
+
+  @Post('login')
+  async login(
+    @Body('username') username: string,
+    @Body('password') password: string,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.authService.login(username, password, req, res);
+  }
+
+  @Get('active-sessions')
+  async getSessions(@Req() req: any) {
+    const userId = req.user.id;
+    return this.authService.getActiveSessions(userId);
+  }
+
+  @Post('logout')
+  async logout(@Req() req: any, @Res({ passthrough: true }) res: Response) {
+    const token = req.cookies.access_token;
+    return this.authService.logout(token, res);
   }
 }
