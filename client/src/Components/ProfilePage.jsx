@@ -13,6 +13,7 @@ export default function ProfilePage({ user }) {
   const [sessions, setSessions] = useState([]);
   const isStudent = user?.role?.toLowerCase() === "student";
 
+  const API_URL = import.meta.env.VITE_API_URL;
   useEffect(() => {
     if (user) setFormData(user);
   }, [user]);
@@ -25,7 +26,7 @@ export default function ProfilePage({ user }) {
 
   const fetchSessions = async () => {
     try {
-      const res = await fetch("http://localhost:5000/auth/active-sessions", {
+      const res = await fetch(`${API_URL}/auth/active-sessions`, {
         credentials: "include",
       });
 
