@@ -110,7 +110,7 @@ export class AuthService {
           HttpStatus.BAD_REQUEST,
         );
       }
-      const max_session = 1;
+      const max_session = 4;
       const activeSesion = await this.userSession.find({
         where: { user: { id: user?.id } },
         order: { createdAt: 'ASC' },
