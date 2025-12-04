@@ -21,7 +21,7 @@ import { Analytics } from 'src/modules/analytics/entities/analytics.entity';
 import { Simulation } from 'src/modules/book/entities/simulation';
 import { CurrentAffair } from 'src/modules/current-affairs/entities/current-affair.entity';
 import { Request } from 'src/modules/user/entities/user.request.entity';
-
+import { UserSession } from 'src/modules/auth-session-module/entities/auth-session-module.entity';
 
 dotenv.config();
 
@@ -46,12 +46,33 @@ dotenv.config();
 
 export const databaseConfig: TypeOrmModuleOptions = {
   type: 'postgres',
-  url:'postgresql://neondb_owner:npg_VUoArT49ZSDk@ep-silent-river-a1if9gjk-pooler.ap-southeast-1.aws.neon.tech/egyan?sslmode=require&channel_binding=require',
+  url: 'postgresql://neondb_owner:npg_VUoArT49ZSDk@ep-silent-river-a1if9gjk-pooler.ap-southeast-1.aws.neon.tech/egyan?sslmode=require&channel_binding=require',
   ssl: { rejectUnauthorized: false },
-  entities: [User, Book, Student, StudentActivity, Concern, BookProgress, Announcement, Chapter,Repositories,Assessment,AssessmentQuestion,AssessmentAttempt,Quiz,QuizAttempt,QuizQuestion,Analytics,Simulation,CurrentAffair,Request],
- synchronize: true,
+  entities: [
+    User,
+    Book,
+    Student,
+    StudentActivity,
+    Concern,
+    BookProgress,
+    Announcement,
+    Chapter,
+    Repositories,
+    Assessment,
+    AssessmentQuestion,
+    AssessmentAttempt,
+    Quiz,
+    QuizAttempt,
+    QuizQuestion,
+    Analytics,
+    Simulation,
+    CurrentAffair,
+    Request,
+    UserSession,
+  ],
+  synchronize: true,
   extra: {
     connectionTimeoutMillis: 30000,
   },
 };
-console.log("DATABASE_URL:", process.env.DATABASE_URL);
+console.log('DATABASE_URL:', process.env.DATABASE_URL);

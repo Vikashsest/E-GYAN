@@ -92,6 +92,7 @@ import { QuizzesModule } from './modules/quizzes/quizzes.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { CurrentAffairsModule } from './modules/current-affairs/current-affairs.module';
 import { AiModule } from './modules/ai/ai.module';
+import { AuthSessionModuleModule } from './modules/auth-session-module/auth-session-module.module';
 
 @Module({
   imports: [
@@ -118,7 +119,8 @@ import { AiModule } from './modules/ai/ai.module';
     QuizzesModule,
   ChatModule,
   CurrentAffairsModule,
-  AiModule
+  AiModule,
+  AuthSessionModuleModule
   ],
   controllers: [AuthController],
   providers: [

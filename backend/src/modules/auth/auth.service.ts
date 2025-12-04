@@ -1,4 +1,12 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException, Res } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  Res,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -7,18 +15,25 @@ import { Response } from 'express';
 import * as jwt from 'jsonwebtoken';
 import * as dotenv from 'dotenv';
 import { ForgotPasswordDto } from '../user/dto/ForgotPasswordDto';
-
+import { UserSession } from '../auth-session-module/entities/auth-session-module.entity';
 import * as nodemailer from 'nodemailer';
 import { ResetPasswordDto } from '../user/dto/ResetPassword.dto';
 import { VerifyOtpDto } from '../user/dto/verify-otp.dto';
+
 dotenv.config();
+
+interface CustomRequest extends Request {
+  cookies: any;
+}
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) { }
+    @InjectRepository(UserSession)
+    private readonly userSession: Repository<UserSession>,
+  ) {}
 
   private throwError(message: string, status: number): void {
     throw new HttpException(message, status);
@@ -27,7 +42,9 @@ export class AuthService {
   private generateToken(user: User): string {
     const JWT_SECRET = process.env.JWT_ACCESS_SECRET;
     if (!JWT_SECRET) {
-      throw new Error('JWT_ACCESS_SECRET is not defined in environment variables');
+      throw new Error(
+        'JWT_ACCESS_SECRET is not defined in environment variables',
+      );
     }
     const payload = {
       id: user.id,
@@ -41,9 +58,6 @@ export class AuthService {
 
     return jwt.sign(payload, JWT_SECRET, options);
   }
-
-
-
 
   // async registerUser(createUserDto: CreateUserDto, res: Response): Promise<void> {
   //   try {
@@ -74,8 +88,11 @@ export class AuthService {
   //   }
   // }
 
-
-  async login(username: string, password: string, @Res({ passthrough: true }) res: Response): Promise<void> {
+  async login(
+    username: string,
+    password: string,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<void> {
     try {
       const user = await this.userRepository.findOne({
         where: { username },
@@ -93,84 +110,119 @@ export class AuthService {
           HttpStatus.BAD_REQUEST,
         );
       }
-      const access_token = this.generateToken(user);
-  
-   res.cookie('access_token', access_token, {
-      httpOnly: true,
-      secure: true, 
-      sameSite: 'none', 
-       maxAge: 7 * 24 * 60 * 60 * 1000, 
-    });
-//   res.cookie('access_token', access_token, {
-//   httpOnly: true,
-//   secure: false,         // ✅ required for HTTP/IP
-//   sameSite: 'lax',       // ✅ works without HTTPS
-//   maxAge: 7 * 24 * 60 * 60 * 1000,
-//    path: '/'
-// });
+      const max_session = 1;
+      const activeSesion = await this.userSession.find({
+        where: { user: { id: user?.id } },
+        order: { createdAt: 'ASC' },
+      });
+      // if (activeSesion.length >= max_session) {
+      //   await this.userSession.delete(activeSesion[0]);
+      // }
+      if (activeSesion.length >= max_session) {
+        // Already logged in somewhere
+        return this.throwError(
+          'You are already logged in on another device. Logout first to login here.',
+          HttpStatus.FORBIDDEN,
+        );
+      }
 
-      
+      const access_token = this.generateToken(user);
+      await this.userSession.save({
+        user,
+        token: access_token,
+        deviceInfo: 'Chrome-Windows',
+        ipAddress: '127.0.0.1',
+      });
+      res.cookie('access_token', access_token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+      //   res.cookie('access_token', access_token, {
+      //   httpOnly: true,
+      //   secure: false,         // ✅ required for HTTP/IP
+      //   sameSite: 'lax',       // ✅ works without HTTPS
+      //   maxAge: 7 * 24 * 60 * 60 * 1000,
+      //    path: '/'
+      // });
+
       res.status(HttpStatus.OK).json({
         status: 'Login successful',
         access_token,
-        role: user.role
+        role: user.role,
       });
     } catch (error) {
       this.handleError(error);
     }
   }
-  async logout(res: Response): Promise<void> {
+  // async logout(res: Response): Promise<void> {
+  //   try {
+  //     res.clearCookie('access_token', {
+  //       httpOnly: true,
+  //       sameSite: 'none',
+  //       secure: true,
+  //     });
+
+  //     res.status(HttpStatus.OK).json({ messgae: 'logout successfully' });
+  //   } catch (error) {
+  //     this.handleError(error);
+  //   }
+  // }
+  async logout(req: CustomRequest, res: Response): Promise<void> {
     try {
-   res.clearCookie('access_token', {
-  httpOnly: true,
-  sameSite: 'none',
-  secure: true
-}); 
- 
-      res.status(HttpStatus.OK).json({ messgae: "logout successfully" })
+      const sessionToken = req.cookies?.['access_token'];
+
+      if (sessionToken) {
+        await this.userSession.delete({ token: sessionToken });
+      }
+
+      res.clearCookie('access_token', {
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true,
+      });
+
+      res.status(200).json({ message: 'logout successful' });
     } catch (error) {
-      this.handleError(error)
+      throw new InternalServerErrorException(error.message);
     }
   }
-  async getProfile(id: number) {
-    const user = await this.userRepository.findOne(
-      {
-        where: {
-          id
-        },
-        select: ['id', 'email', 'username', 'role'],
 
-      })
+  async getProfile(id: number) {
+    const user = await this.userRepository.findOne({
+      where: {
+        id,
+      },
+      select: ['id', 'email', 'username', 'role'],
+    });
     return {
       status: 'success',
       profile: user,
     };
-
   }
 
+  // async forgotPassword(dto: ForgotPasswordDto) {
+  //   const { email, dob, newPassword, confirmPassword } = dto;
+  //  console.log("dto is",dto);
 
-// async forgotPassword(dto: ForgotPasswordDto) {
-//   const { email, dob, newPassword, confirmPassword } = dto;
-//  console.log("dto is",dto);
- 
-//   if (newPassword !== confirmPassword) { 
-//     throw new BadRequestException('Passwords do not match');
-//   }
+  //   if (newPassword !== confirmPassword) {
+  //     throw new BadRequestException('Passwords do not match');
+  //   }
 
-//   const user = await this.userRepository.findOne({ where: { email, dob: new Date(dob), } });
+  //   const user = await this.userRepository.findOne({ where: { email, dob: new Date(dob), } });
 
+  //   if (!user) {
+  //     throw new NotFoundException('User not found with provided email and DOB');
+  //   }
 
-//   if (!user) {
-//     throw new NotFoundException('User not found with provided email and DOB');
-//   }
+  //   const hashed = await bcrypt.hash(newPassword, 10);
+  //   user.password = hashed;
 
-//   const hashed = await bcrypt.hash(newPassword, 10);
-//   user.password = hashed;
+  //   await this.userRepository.save(user);
 
-//   await this.userRepository.save(user);
-
-//   return { message: 'Password reset successful' };
-// }
+  //   return { message: 'Password reset successful' };
+  // }
 
   private handleError(error: any): void {
     console.error(error);
@@ -183,47 +235,50 @@ export class AuthService {
     );
   }
 
+  async sendOtp(dto: ForgotPasswordDto) {
+    const { email } = dto;
 
-async sendOtp(dto:ForgotPasswordDto) {
-  const { email } = dto;
-
-  const user = await this.userRepository.findOne({ where: { email } });
-  if (!user) {
-    throw new NotFoundException('User not found');
-  }
-
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-  user.resetOtp = otp;
-  user.otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
-  await this.userRepository.save(user);
-
-  const transporter = nodemailer.createTransport({
-    host:process.env.HOST,
-    port: process.env.SMTP_PORT,
-    secure: true,
-    auth: {
-      user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS,
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
-  });
 
-  await transporter.sendMail({
-    from: '"Egyan Library" <egyan@pentagontech.in>',
-    to: email,
-    subject: 'Egyan Library - Password Reset OTP',
-    text: `Your OTP for password reset is: ${otp}. It will expire in 5 minutes.`,
-  });
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-  return { message: 'OTP sent to email' };
-}
+    user.resetOtp = otp;
+    user.otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
+    await this.userRepository.save(user);
+
+    const transporter = nodemailer.createTransport({
+      host: process.env.HOST,
+      port: process.env.SMTP_PORT,
+      secure: true,
+      auth: {
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      from: '"Egyan Library" <egyan@pentagontech.in>',
+      to: email,
+      subject: 'Egyan Library - Password Reset OTP',
+      text: `Your OTP for password reset is: ${otp}. It will expire in 5 minutes.`,
+    });
+
+    return { message: 'OTP sent to email' };
+  }
   async verifyOtp(dto: VerifyOtpDto) {
     const { email, otp } = dto;
 
     const user = await this.userRepository.findOne({ where: { email } });
     if (!user) throw new NotFoundException('User not found');
 
-    if (user.resetOtp !== otp || !user.otpExpiry || user.otpExpiry < new Date()) {
+    if (
+      user.resetOtp !== otp ||
+      !user.otpExpiry ||
+      user.otpExpiry < new Date()
+    ) {
       throw new BadRequestException('Invalid or expired OTP');
     }
 
@@ -233,28 +288,30 @@ async sendOtp(dto:ForgotPasswordDto) {
     return { message: 'OTP verified successfully' };
   }
 
+  async resetPassword(dto: ResetPasswordDto) {
+    const { email, otp, newPassword, confirmPassword } = dto;
 
-async resetPassword(dto: ResetPasswordDto) {
-  const { email,otp,newPassword, confirmPassword } = dto;
+    if (newPassword !== confirmPassword) {
+      throw new BadRequestException('Passwords do not match');
+    }
 
-  if (newPassword !== confirmPassword) {
-    throw new BadRequestException('Passwords do not match');
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) throw new NotFoundException('User not found');
+
+    if (
+      user.resetOtp !== otp ||
+      !user.otpExpiry ||
+      user.otpExpiry < new Date()
+    ) {
+      throw new BadRequestException('Invalid or expired OTP');
+    }
+
+    const hashed = await bcrypt.hash(newPassword, 10);
+    user.password = hashed;
+    // user.resetOtp=null,
+    // user.otpExpiry=null
+    await this.userRepository.save(user);
+
+    return { message: 'Password reset successful' };
   }
-
-  const user = await this.userRepository.findOne({ where: { email } });
-  if (!user) throw new NotFoundException('User not found');
-
-  if (user.resetOtp !== otp || !user.otpExpiry || user.otpExpiry < new Date()) {
-    throw new BadRequestException('Invalid or expired OTP');
-  }
-
-  const hashed = await bcrypt.hash(newPassword, 10);
-  user.password = hashed;
-  // user.resetOtp=null,
-  // user.otpExpiry=null
-  await this.userRepository.save(user);
-
-  return { message: 'Password reset successful' };
-}
-
 }

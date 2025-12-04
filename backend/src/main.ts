@@ -69,7 +69,7 @@
 // //     const allowedOrigins = [
 // //       'https://egyan.ptgn.in',
 // //       'http://localhost:5173'
-    
+
 // //     ];
 
 // //     if (!origin || allowedOrigins.includes(origin)) {
@@ -88,8 +88,6 @@
 //   },
 //   credentials: true,
 // });
-
-
 
 //   app.useGlobalPipes(
 //     new ValidationPipe({
@@ -217,7 +215,6 @@
 
 // // bootstrap();
 
-
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -232,11 +229,7 @@ import * as mime from 'mime-types';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
-  // ✅ Cookie Parser
   app.use(cookieParser());
-
-  // ✅ Global ValidationPipe
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -245,13 +238,12 @@ async function bootstrap() {
     }),
   );
 
-  // ✅ CORS setup (multi-origin)
   app.enableCors({
     origin: (origin, callback) => {
       const allowedOrigins = [
         'https://egyan.ptgn.in',
         'http://localhost:5173',
-         'http://localhost:5000',
+        'http://localhost:5000',
         'http://172.16.0.19:5173',
       ];
       if (!origin || allowedOrigins.includes(origin)) callback(null, true);
@@ -260,7 +252,6 @@ async function bootstrap() {
     credentials: true,
   });
 
-  // ✅ Serve uploads folder with correct headers
   app.use(
     '/uploads',
     express.static(join(__dirname, '..', 'uploads'), {
@@ -278,25 +269,27 @@ async function bootstrap() {
 
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Access-Control-Allow-Headers', 'Range');
-        res.setHeader('Access-Control-Expose-Headers', 'Accept-Ranges, Content-Encoding, Content-Length, Content-Range');
+        res.setHeader(
+          'Access-Control-Expose-Headers',
+          'Accept-Ranges, Content-Encoding, Content-Length, Content-Range',
+        );
         res.setHeader('Accept-Ranges', 'bytes');
       },
     }),
   );
 
-  // ✅ Swagger setup
   const config = new DocumentBuilder()
     .setTitle('eGyan API Docs')
     .setDescription('Complete API documentation for eGyan backend system')
     .setVersion('1.0')
     .addTag('eGyan')
-    .addBearerAuth() 
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document, {
     swaggerOptions: {
-      persistAuthorization: true, 
+      persistAuthorization: true,
     },
   });
 
