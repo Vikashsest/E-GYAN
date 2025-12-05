@@ -1,261 +1,232 @@
 import { useRef, useState, useEffect } from "react";
-import {
-  FaPencilAlt,
-  FaEraser,
-  FaFont,
-  FaTimes,
-  FaUpload,
-} from "react-icons/fa";
+import { ReactSketchCanvas } from "react-sketch-canvas";
+import { FaPencilAlt, FaEraser, FaTimes, FaUpload, FaPlus, FaArrowLeft, FaArrowRight, FaMinus } from "react-icons/fa";
 
 export default function Whiteboard() {
   const canvasRef = useRef(null);
-  const ctxRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [lineColor, setLineColor] = useState("#000000");
-  const [lineWidth, setLineWidth] = useState(4);
-  const [tool, setTool] = useState("pencil");
-  const [undoStack, setUndoStack] = useState([]);
-  const [redoStack, setRedoStack] = useState([]);
-  const [objects, setObjects] = useState([]);
-  const [visible, setIsVisible] = useState(true);
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    ctxRef.current = ctx;
-  }, []);
-  useEffect(() => {
-    if (!ctxRef.current) return;
-    ctxRef.current.strokeStyle = lineColor;
-  }, [lineColor]);
+  const [color, setColor] = useState("#000000");
+  const [size, setSize] = useState(4);
+  const [pages, setPages] = useState([""]);
+  const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
-    if (!ctxRef.current) return;
-    ctxRef.current.lineWidth = lineWidth;
-  }, [lineWidth]);
-
-  useEffect(() => {
-    if (!canvasRef.current) return;
-    if (tool === "pencil") canvasRef.current.style.cursor = "crosshair";
-    else if (tool === "eraser") canvasRef.current.style.cursor = "pointer";
-    else canvasRef.current.style.cursor = "text";
-  }, [tool]);
-
-  const hideButton = () => {
-    visible(true);
-  };
-  const saveState = () => {
-    const canvas = canvasRef.current;
-    const dataURL = canvas.toDataURL();
-    setUndoStack((prev) => [...prev, dataURL]);
-  };
-
-  const startDrawing = (e) => {
-    const ctx = ctxRef.current;
-    const x = e.nativeEvent.offsetX;
-    const y = e.nativeEvent.offsetY;
-
-    saveState();
-
-    if (tool === "text") {
-      const input = document.createElement("input");
-      input.type = "text";
-      input.style.position = "absolute";
-      input.style.left = `${x}px`;
-      input.style.top = `${y}px`;
-      input.style.font = `${lineWidth * 4}px sans-serif`;
-      input.style.color = lineColor;
-      input.style.border = "1px dashed gray";
-      document.body.appendChild(input);
-      input.focus();
-
-      input.onblur = () => {
-        const val = input.value;
-        if (val) {
-          setObjects((prev) => [
-            ...prev,
-            {
-              type: "text",
-              x,
-              y,
-              text: val,
-              color: lineColor,
-              fontSize: lineWidth * 4,
-            },
-          ]);
-          redrawCanvas();
-        }
-        document.body.removeChild(input);
-      };
-      return;
+    if (canvasRef.current) {
+      canvasRef.current.eraseMode(false);
+      canvasRef.current._strokeColor = color;
     }
+  }, [color]);
 
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    setIsDrawing(true);
+  const savePageData = async () => {
+    const data = await canvasRef.current.exportPaths();
+    const updatedPages = [...pages];
+    updatedPages[currentPage] = JSON.stringify(data);
+    setPages(updatedPages);
   };
 
-  const draw = (e) => {
-    if (!isDrawing) return;
-    const ctx = ctxRef.current;
-    const x = e.nativeEvent.offsetX;
-    const y = e.nativeEvent.offsetY;
+  const loadPageData = () => {
+    const data = pages[currentPage];
+    canvasRef.current.resetCanvas();
+    if (data) canvasRef.current.loadPaths(JSON.parse(data));
+  };
 
-    if (tool === "pencil") {
-      ctx.strokeStyle = lineColor;
-      ctx.lineWidth = lineWidth;
-      ctx.lineTo(x, y);
-      ctx.stroke();
-    } else if (tool === "eraser") {
-      ctx.strokeStyle = "#ffffff";
-      ctx.lineWidth = 25;
-      ctx.lineTo(x, y);
-      ctx.stroke();
+  const addNewPage = async () => {
+    await savePageData();
+    setPages([...pages, ""]);
+    setCurrentPage(pages.length);
+    setTimeout(loadPageData, 200);
+  };
+
+  const nextPage = async () => {
+    if (currentPage < pages.length - 1) {
+      await savePageData();
+      setCurrentPage(currentPage + 1);
+      setTimeout(loadPageData, 200);
     }
   };
 
-  const stopDrawing = () => {
-    const ctx = ctxRef.current;
-    ctx.closePath();
-    setIsDrawing(false);
+  const prevPage = async () => {
+    if (currentPage > 0) {
+      await savePageData();
+      setCurrentPage(currentPage - 1);
+      setTimeout(loadPageData, 200);
+    }
   };
 
-  const redrawCanvas = () => {
-    const ctx = ctxRef.current;
-    const canvas = canvasRef.current;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    objects.forEach((obj) => {
-      if (obj.type === "text") {
-        ctx.font = `${obj.fontSize}px sans-serif`;
-        ctx.fillStyle = obj.color || "#000";
-        ctx.fillText(obj.text, obj.x, obj.y + obj.fontSize);
-      }
-    });
-  };
-
-  const handleUpload = (e) => {
+  const uploadImage = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
     const reader = new FileReader();
-    reader.onload = (ev) => {
-      const img = new Image();
-      img.src = ev.target.result;
-      img.onload = () => {
-        const ctx = ctxRef.current;
-        ctx.drawImage(img, 50, 50, img.width / 2, img.height / 2);
-      };
+    reader.onload = (event) => {
+      canvasRef.current.addImage(event.target.result);
     };
     reader.readAsDataURL(file);
   };
 
   return (
-    <div className="w-full h-full flex flex-col bg-white text-black rounded-lg overflow-hidden relative">
-      <div className="absolute top-4 left-4 z-50">
-        <button
-          onClick={() => {
-            // User-defined back action
-            console.log("Back clicked");
-            // Example: hide whiteboard
+    <div className="w-full h-full bg-white text-black rounded-lg relative overflow-hidden">
 
-            setIsVisible(false);
-          }}
-          className="bg-red-600 text-white p-2 rounded-full shadow hover:scale-110 transition-all"
-          title="Back / Cut"
-        >
-          <FaTimes size={18} />
-        </button>
-      </div>
+      {/* Close Button */}
+      <button
+        onClick={() => window.history.back()}
+        className="absolute top-4 left-4 z-50 bg-red-600 text-white p-2 rounded-full hover:scale-110 shadow"
+      >
+        <FaTimes />
+      </button>
 
       {/* Canvas */}
-      <canvas
+      <ReactSketchCanvas
         ref={canvasRef}
-        className="flex-1 bg-white cursor-crosshair"
-        onMouseDown={startDrawing}
-        onMouseMove={draw}
-        onMouseUp={stopDrawing}
-        onMouseLeave={stopDrawing}
+        strokeColor={color}
+        strokeWidth={size}
+        canvasColor="white"
+        className="w-full h-[100vh]"
       />
 
+      {/* Pages Indicator */}
+      <div className="absolute top-4 right-6 bg-black text-white px-4 py-2 rounded-full shadow-lg font-bold">
+        Page {currentPage + 1} / {pages.length}
+      </div>
+
       {/* Bottom Toolbar */}
-      <div
-        className="absolute bottom-4 left-1/2 transform -translate-x-1/2
-       flex items-center gap-4 bg-gray-200 rounded-full p-3 shadow-lg z-50"
-      >
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-xl p-4 rounded-full flex gap-4 shadow-2xl z-50 border border-gray-300 flex-wrap">
+
         {/* Pencil */}
-        <div
-          className="cursor-pointer hover:scale-110 transition-all"
-          onClick={() => setTool("pencil")}
+        <button
+          onClick={() => { setColor("#000000"); canvasRef.current.eraseMode(false); }}
+          className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center hover:scale-110"
           title="Pencil"
         >
-          <FaPencilAlt size={20} />
-        </div>
+          <FaPencilAlt size={18} />
+        </button>
 
         {/* Eraser */}
-        <div
-          className="cursor-pointer hover:scale-110 transition-all"
-          onClick={() => setTool("eraser")}
+        <button
+          onClick={() => { setColor("white"); canvasRef.current.eraseMode(true); }}
+          className="w-10 h-10 bg-red-500 text-white rounded-full flex items-center justify-center hover:scale-110"
           title="Eraser"
         >
-          <FaEraser size={20} />
-        </div>
-
-        {/* Text */}
-        <div
-          className="cursor-pointer hover:scale-110 transition-all"
-          onClick={() => setTool("text")}
-          title="Text"
-        >
-          <FaFont size={20} />
-        </div>
+          <FaEraser size={18} />
+        </button>
 
         {/* Color Picker */}
         <input
           type="color"
-          value={lineColor}
-          onChange={(e) => setLineColor(e.target.value)}
-          className="w-8 h-8 cursor-pointer rounded-full border"
-          title="Pick Color"
+          value={color}
+          onChange={(e) => setColor(e.target.value)}
+          className="w-10 h-10 rounded-full border-2 border-black cursor-pointer"
+          title="Choose Color"
         />
 
         {/* Brush Size */}
-        <div className="flex items-center gap-2 bg-white px-2 py-1 rounded-full">
-          <button
-            onClick={() => setLineWidth((prev) => Math.max(1, prev - 1))}
-            className="px-2 text-lg font-bold"
-          >
-            -
-          </button>
-
-          <span className="text-sm w-6 text-center">{lineWidth}</span>
-
-          <button
-            onClick={() => setLineWidth((prev) => prev + 1)}
-            className="px-2 text-lg font-bold"
-          >
-            +
-          </button>
+        <div className="flex items-center gap-2 bg-purple-500 text-white px-3 py-2 rounded-full text-sm">
+          <button onClick={() => setSize((s) => Math.max(1, s - 1))}>-</button>
+          <span>{size}</span>
+          <button onClick={() => setSize((s) => s + 1)}>+</button>
         </div>
+
+        {/* Undo */}
+        <button
+          onClick={() => canvasRef.current.undo()}
+          className="bg-yellow-400 px-3 py-2 rounded-full hover:scale-110 font-bold"
+        >
+          Undo
+        </button>
+
+        {/* Clear */}
+        <button
+          onClick={() => canvasRef.current.clearCanvas()}
+          className="bg-red-600 px-3 py-2 rounded-full text-white hover:scale-110"
+        >
+          Clear
+        </button>
 
         {/* Upload Image */}
-        <input
-          type="file"
-          ref={fileInputRef}
-          className="hidden"
-          onChange={handleUpload}
-        />
-        <div
-          className="cursor-pointer hover:scale-110 transition-all"
+        <button
           onClick={() => fileInputRef.current.click()}
+          className="bg-teal-500 text-white px-3 py-2 rounded-full hover:scale-110"
           title="Upload Image"
         >
-          <FaUpload size={20} />
-        </div>
+          <FaUpload size={16} />
+        </button>
+        <input type="file" ref={fileInputRef} onChange={uploadImage} className="hidden" />
+
+        {/* Delete Page */}
+        <button
+          onClick={async () => {
+            if (pages.length <= 1) {
+              alert("At least one page is required!");
+              return;
+            }
+
+            await savePageData();
+
+            const updated = pages.filter((_, i) => i !== currentPage);
+            const newPageIndex = Math.max(0, currentPage - 1);
+
+            setPages(updated);
+            setCurrentPage(newPageIndex);
+
+            setTimeout(loadPageData, 200);
+          }}
+          className="bg-red-700 text-white px-3 py-2 rounded-full hover:scale-110 font-bold"
+          title="Delete Page"
+        >
+          <FaMinus />
+        </button>
+
+
+        {/* Previous Page */}
+        <button
+          disabled={currentPage === 0}
+          onClick={prevPage}
+          className="bg-gray-500 text-white px-3 py-2 rounded-full hover:scale-110 disabled:opacity-30"
+        >
+          <FaArrowLeft />
+        </button>
+
+        {/* Add Page */}
+        <button
+          onClick={addNewPage}
+          className="bg-green-500 text-white px-3 py-2 rounded-full hover:scale-110"
+        >
+          <FaPlus />
+        </button>
+
+        {/* Next Page */}
+        <button
+          disabled={currentPage === pages.length - 1}
+          onClick={nextPage}
+          className="bg-gray-500 text-white px-3 py-2 rounded-full hover:scale-110 disabled:opacity-30"
+        >
+          <FaArrowRight />
+        </button>
+
+        {/* Save Whiteboard */}
+        <button
+          onClick={async () => {
+            if (!canvasRef.current) return;
+            try {
+              const dataUrl = await canvasRef.current.exportImage("png");
+              const link = document.createElement("a");
+              link.href = dataUrl;
+              link.download = "whiteboard.png";
+              link.click();
+            } catch (error) {
+              console.error("Export Error: ", error);
+            }
+          }}
+          className="bg-green-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:scale-110 relative group"
+        >
+          Save
+          <span className="absolute bottom-12 bg-black text-white px-2 py-1 text-xs rounded opacity-0 group-hover:opacity-100 transition">
+            Save as Image
+          </span>
+        </button>
+
+
       </div>
     </div>
   );
