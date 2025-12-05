@@ -231,15 +231,26 @@ export class AuthService {
 
     return { message: 'Password reset successful' };
   }
-  async login(username: string, password: string) {
+  async login(username: string, password: string, res: Response) {
     const user = await this.userRepository.findOne({ where: { username } });
-    if (!user) throw new HttpException('Invalid username or password', 400);
+    if (!user) {
+      throw new HttpException('Invalid username or password', 400);
+    }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid)
+    if (!isPasswordValid) {
       throw new HttpException('Invalid username or password', 400);
+    }
 
     const token = this.generateToken(user);
+
+    // COOKIE SET HERE
+    res.cookie('access_token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
 
     return {
       message: 'Login successful',

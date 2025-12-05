@@ -32,12 +32,18 @@ export class AuthController {
   //   return this.authService.login(loginDTO.username, loginDTO.password, res);
   // }
   @Post('login')
-  async login(@Body() loginDTO: CreateUserDto) {
+  async login(@Body() loginDTO: CreateUserDto, @Res() res: Response) {
     if (!loginDTO.username || !loginDTO.password) {
       throw new BadRequestException('Username and password are required');
     }
 
-    return this.authService.login(loginDTO.username, loginDTO.password);
+    const result = await this.authService.login(
+      loginDTO.username,
+      loginDTO.password,
+      res,
+    );
+
+    return res.json(result); // IMPORTANT
   }
 
   @UseGuards(JwtAuthGuard)
