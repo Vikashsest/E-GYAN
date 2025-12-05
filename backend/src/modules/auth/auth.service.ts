@@ -232,7 +232,7 @@ export class AuthService {
     return { message: 'Password reset successful' };
   }
 
-  async login(username: string, password: string, req: Request, res: Response) {
+  async login(username: string, password: string, res: Response) {
     try {
       const user = await this.userRepository.findOne({ where: { username } });
       if (!user) {
@@ -244,40 +244,40 @@ export class AuthService {
         throw new HttpException('Invalid username or password', 400);
       }
 
-      const maxSessions = 4;
+      // const maxSessions = 4;
 
-      const activeSessions = await this.userSession.find({
-        where: { user: { id: user.id } },
-        order: { createdAt: 'ASC' },
-      });
+      // const activeSessions = await this.userSession.find({
+      //   where: { user: { id: user.id } },
+      //   order: { createdAt: 'ASC' },
+      // });
 
-      if (activeSessions.length >= maxSessions) {
-        throw new HttpException(
-          'You are already logged in on another device.',
-          403,
-        );
-      }
+      // if (activeSessions.length >= maxSessions) {
+      //   throw new HttpException(
+      //     'You are already logged in on another device.',
+      //     403,
+      //   );
+      // }
 
-      const ip =
-        req.headers['x-forwarded-for']?.toString().split(',')[0] ||
-        req.socket.remoteAddress ||
-        req.ip ||
-        'UNKNOWN_IP';
+      // const ip =
+      //   req.headers['x-forwarded-for']?.toString().split(',')[0] ||
+      //   req.socket.remoteAddress ||
+      //   req.ip ||
+      //   'UNKNOWN_IP';
 
-      const parser = new UAParser(req.get('user-agent'));
-      const browser = parser.getBrowser().name || 'Unknown';
-      const deviceInfo = browser;
+      // const parser = new UAParser(req.get('user-agent'));
+      // const browser = parser.getBrowser().name || 'Unknown';
+      // const deviceInfo = browser;
 
       const token = this.generateToken(user);
-      const now = new Date();
+      // const now = new Date();
 
-      await this.userSession.save({
-        user,
-        token,
-        ipAddress: ip,
-        deviceInfo,
-        createdAt: now,
-      });
+      // await this.userSession.save({
+      //   user,
+      //   token,
+      //   ipAddress: ip,
+      //   deviceInfo,
+      //   createdAt: now,
+      // });
 
       res.cookie('access_token', token, {
         httpOnly: true,
@@ -302,16 +302,16 @@ export class AuthService {
     return { message: 'Logout successful' };
   }
 
-  async getActiveSessions(userId: number) {
-    const sessions = await this.userSession.find({
-      where: { user: { id: userId } },
-      order: { createdAt: 'DESC' },
-    });
+  // async getActiveSessions(userId: number) {
+  //   const sessions = await this.userSession.find({
+  //     where: { user: { id: userId } },
+  //     order: { createdAt: 'DESC' },
+  //   });
 
-    return sessions.map((s) => ({
-      device: s.deviceInfo,
-      ip: s.ipAddress,
-      createdAt: s.createdAt.toISOString(),
-    }));
-  }
+  //   return sessions.map((s) => ({
+  //     device: s.deviceInfo,
+  //     ip: s.ipAddress,
+  //     createdAt: s.createdAt.toISOString(),
+  //   }));
+  // }
 }
