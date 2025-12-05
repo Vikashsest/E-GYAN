@@ -69,7 +69,7 @@ export default function Sidebar({ isOpen, onClose }) {
                <Link className="flex items-center space-x-2" to="/admin-books">
                 <li className="flex items-center space-x-2 text-gray-300">
                   <FaBook />
-                  <span> Manage Books</span>
+                  <span> Manage Content</span>
                 </li>
               </Link>
               {/* <Link

@@ -335,19 +335,10 @@ export default function DashboardMetrics() {
           🧑‍🏫
         </div>
 
-        {/* Whiteboard Popup */}
         {showWhiteboard && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-[9999]">
             <div className="bg-white w-[90%] h-[90%] rounded-xl shadow-2xl relative z-[10000]">
-              {/* Close */}
-              <button
-                onClick={() => setShowWhiteboard(false)}
-                className="absolute top-3 right-3 text-black text-2xl"
-              >
-                ✖
-              </button>
-
-              <Whiteboard />
+             <Whiteboard onClose={() => setShowWhiteboard(false)} />
             </div>
           </div>
         )}

@@ -1798,8 +1798,8 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   const [bookList, setBookList] = useState([]);
   const [editData, setEditData] = useState(null);
   const [selectedChapter, setSelectedChapter] = useState(null);
-  const [classes, setClasses] = useState([]); 
-  const [selectedClass, setSelectedClass] = useState(""); 
+  const [classes, setClasses] = useState([]);
+  const [selectedClass, setSelectedClass] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(getItemsPerPage());
@@ -1824,14 +1824,14 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   const [subjects, setSubjects] = useState([]);
   const [languages, setLanguages] = useState([]);
   const [educationLevels, setEducationLevels] = useState([]);
-const editor = useRef(null);
+  const editor = useRef(null);
 
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const data = await getRepository(); 
+        const data = await getRepository();
         if (data && data[0] && data[0].Categories) {
-          setCategories(data[0].Categories.split(",")); 
+          setCategories(data[0].Categories.split(","));
         }
       } catch (err) {
         console.error("Failed to load categories:", err);
@@ -1844,7 +1844,7 @@ const editor = useRef(null);
   useEffect(() => {
     const loadFormOptions = async () => {
       try {
-        const data = await getRepository(); 
+        const data = await getRepository();
 
         const schoolData = data.find(item => item.Categories.includes("School Education"));
 
@@ -2133,7 +2133,7 @@ const editor = useRef(null);
             searchTerm={searchTerm}
             onSearchChange={setSearchTerm}
             onAdd={() => setShowUploadModal(true)}
-            buttonLabel="+ Upload Book"
+            buttonLabel="+ Upload Content"
             searchPlaceholder="Search Books..."
           />
         )}
@@ -2307,7 +2307,7 @@ const editor = useRef(null);
               </h2>
 
               {/* CATEGORY DROPDOWN */}
-              <div className="mb-4">
+              {/* <div className="mb-4">
                 <label className="text-sm font-medium block mb-1">Select Category</label>
                 <select
                   value={formData.category}
@@ -2315,16 +2315,44 @@ const editor = useRef(null);
                     setFormData((prev) => ({ ...prev, category: e.target.value }))
                   }
                   className="w-full border border-gray-300 p-2 rounded text-sm"
+                > */}
+
+              <div className="mb-4">
+                <label className="text-sm font-medium block mb-1">Select Category</label>
+                <select
+                  value={formData.category}
+                  onChange={(e) => {
+                    const selectedCategory = e.target.value;
+
+                    // Default to School Education if category is not in predefined list
+                    const predefinedCategories = ["School Education", "Current Affairs", "Simulation"];
+                    const categoryToSet = predefinedCategories.includes(selectedCategory)
+                      ? selectedCategory
+                      : "School Education";
+
+                    setFormData((prev) => ({ ...prev, category: categoryToSet }));
+
+                    // Optional: Reset other form fields when category changes
+                    setFormData((prev) => ({
+                      ...prev,
+                      category: categoryToSet,
+                      level: "",
+                      subject: "",
+                      resourceType: "",
+                      language: "",
+                    }));
+                  }}
+                  className="w-full border border-gray-300 p-2 rounded text-sm"
                 >
                   <option value="">-- Choose Category --</option>
                   {categories.map((cat, idx) => (
                     <option key={idx} value={cat}>
                       {cat === "School Education"
-                        ? "📘 " + cat
+                        ?  cat
                         : cat === "Current Affairs"
-                          ? "📰 " + cat
+                          ? cat
                           : cat === "Simulation"
-                            ? "🧠 " + cat
+                            ? cat
                             : cat}
                     </option>
                   ))}
@@ -2335,32 +2363,6 @@ const editor = useRef(null);
                 {/* === BOOK UPLOAD FORM === */}
                 {formData.category === "School Education" && (
                   <>
-                    <input
-                      type="text"
-                      name="bookName"
-                      placeholder="Book Name"
-                      className="w-full border border-gray-300 p-2 rounded text-sm"
-                      onChange={(e) =>
-                        setFormData((prev) => ({ ...prev, bookName: e.target.value }))
-                      }
-                    />
-
-                    <div>
-                      <label className="text-sm font-medium">Subject</label>
-                      <select
-                        value={formData.subject}
-                        onChange={(e) =>
-                          setFormData((prev) => ({ ...prev, subject: e.target.value }))
-                        }
-                        className="w-full border border-gray-300 p-2 rounded text-sm text-black"
-                      >
-                        <option value="">Select Subject</option>
-                        {subjects.map((subj, idx) => (
-                          <option key={idx} value={subj}>{subj}</option>
-                        ))}
-                      </select>
-                    </div>
-
                     <div>
                       <label className="text-sm font-medium">Education Level</label>
                       <select
@@ -2376,6 +2378,42 @@ const editor = useRef(null);
                         ))}
                       </select>
                     </div>
+
+                    <input
+                      type="text"
+                      name="subject"
+                      placeholder="Select Subject"
+                      className="w-full border border-gray-300 p-2 rounded text-sm"
+                      onChange={(e) =>
+                        setFormData((prev) => ({ ...prev, subject: e.target.value }))
+                      }
+                    />
+
+                    <input
+                      type="text"
+                      name="bookName"
+                      placeholder="Book Name"
+                      className="w-full border border-gray-300 p-2 rounded text-sm"
+                      onChange={(e) =>
+                        setFormData((prev) => ({ ...prev, bookName: e.target.value }))
+                      }
+                    />
+
+                    {/* <div>
+                      <label className="text-sm font-medium">Subject</label>
+                      <select
+                        value={formData.subject}
+                        onChange={(e) =>
+                          setFormData((prev) => ({ ...prev, subject: e.target.value }))
+                        }
+                        className="w-full border border-gray-300 p-2 rounded text-sm text-black"
+                      >
+                        <option value="">Select Subject</option>
+                        {subjects.map((subj, idx) => (
+                          <option key={idx} value={subj}>{subj}</option>
+                        ))}
+                      </select>
+                    </div> */}
 
                     <div>
                       <label className="text-sm font-medium">Language</label>
@@ -2482,40 +2520,40 @@ const editor = useRef(null);
 
                     />
 
-              
-<div>
-  <label className="text-sm font-medium text-white">Full Description</label>
 
-  <JoditEditor
-    ref={editor}
-    value={formData.description}
-    config={{
-      readonly: false,
-      height: 300,
-      toolbar: true,
-      buttons: [
-        "bold", "italic", "underline", "|",
-        "ul", "ol", "|",
-        "paragraph", "fontsize", "brush", "|",
-        "h1", "h2", "h3", "|",
-        "table", "link", "image", "|",
-        "align", "undo", "redo"
-      ],
-      pastePlain: false, // IMPORTANT — Google Docs/Word formatting auto aa jayega
-    }}
-    onChange={(newContent) =>
-      setFormData((prev) => ({
-        ...prev,
-        description: newContent
-      }))
-    }
-  />
-</div>
+                    <div>
+                      <label className="text-sm font-medium text-white">Full Description</label>
+
+                      <JoditEditor
+                        ref={editor}
+                        value={formData.description}
+                        config={{
+                          readonly: false,
+                          height: 300,
+                          toolbar: true,
+                          buttons: [
+                            "bold", "italic", "underline", "|",
+                            "ul", "ol", "|",
+                            "paragraph", "fontsize", "brush", "|",
+                            "h1", "h2", "h3", "|",
+                            "table", "link", "image", "|",
+                            "align", "undo", "redo"
+                          ],
+                          pastePlain: false, // IMPORTANT — Google Docs/Word formatting auto aa jayega
+                        }}
+                        onChange={(newContent) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            description: newContent
+                          }))
+                        }
+                      />
+                    </div>
 
 
                     {/* 🔹 Category Selection */}
                     <div>
-                      <label className="text-sm font-medium">Category</label>
+                      <label className="text-sm font-medium">Category Type</label>
                       <select
                         className="w-full border border-gray-300 p-2 rounded text-sm"
                         onChange={(e) =>
