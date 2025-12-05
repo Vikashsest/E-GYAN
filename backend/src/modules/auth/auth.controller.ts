@@ -31,14 +31,14 @@ export class AuthController {
   // ) {
   //   return this.authService.login(loginDTO.username, loginDTO.password, res);
   // }
-  // @Post('login')
-  // async login(@Body() loginDTO: CreateUserDto, @Res() res: Response) {
-  //   if (!loginDTO.username || !loginDTO.password) {
-  //     throw new BadRequestException('Username and password are required');
-  //   }
+  @Post('login')
+  async login(@Body() loginDTO: CreateUserDto) {
+    if (!loginDTO.username || !loginDTO.password) {
+      throw new BadRequestException('Username and password are required');
+    }
 
-  //   return this.authService.login(loginDTO.username, loginDTO.password, res);
-  // }
+    return this.authService.login(loginDTO.username, loginDTO.password);
+  }
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
@@ -72,15 +72,15 @@ export class AuthController {
     return this.authService.resetPassword(dto);
   }
 
-  @Post('login')
-  async login(
-    @Body('username') username: string,
-    @Body('password') password: string,
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    return this.authService.login(username, password, req, res);
-  }
+  // @Post('login')
+  // async login(
+  //   @Body('username') username: string,
+  //   @Body('password') password: string,
+  //   @Req() req: Request,
+  //   @Res({ passthrough: true }) res: Response,
+  // ) {
+  //   return this.authService.login(username, password, req, res);
+  // }
 
   @Get('active-sessions')
   async getSessions(@Req() req: any) {
