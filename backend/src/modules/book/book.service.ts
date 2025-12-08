@@ -463,7 +463,12 @@ export class BookService {
       parentChapter,
     });
 
-    return this.chapterRepo.save(chapter);
+    const savedChapter = await this.chapterRepo.save(chapter);
+    const displayName = parentChapter
+      ? `Chapter ${parentChapter.chapterNumber} Part ${chapter.chapterNumber}`
+      : `Chapter ${chapter.chapterNumber}`;
+
+    return { ...savedChapter, displayName };
   }
 
   async getChaptersMeta(bookId: number) {
