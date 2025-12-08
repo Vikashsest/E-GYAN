@@ -107,7 +107,7 @@ const NewsPage = () => {
       : `${newsItem.imageUrl}/download`
   }
           alt={newsItem.title}
-          className="w-full h-80 object-cover"
+          className="w-full h-[448px] object-fit"
         />
 
         <div className="p-6 space-y-4">

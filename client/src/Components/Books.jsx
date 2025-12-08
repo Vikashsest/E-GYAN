@@ -1901,7 +1901,8 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   }, []);
 
   const handleDelete = async (id) => {
-    const ok = await confirmDelete("This book will be permanently deleted!");
+    const ok = await confirmDelete();
+
 
     if (!ok) return;
 

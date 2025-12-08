@@ -56,6 +56,8 @@ import UploadChapter from "../Components/UploadChapter";
 import CreateQuiz from "../Pages/Teacher/CreateQuiz";
 import CreateAssignment from "../Pages/Teacher/CreateAssignment";
 import TeacherForms from "../Pages/Teacher/DashboardForm";
+import QuizStartUI from "../Pages/Teacher/ContentGenrator/QuizUI";
+import { questions } from "../utils/questions";
 
 export const teacherRouteList = [
   {
@@ -111,6 +113,14 @@ export const teacherRouteList = [
   element: (
     <ProtectedRoute allowedRoles={["teacher", "admin", "principal"]}>
       <TeacherForms />
+    </ProtectedRoute>
+  ),
+},
+{
+  path: "start-quiz",
+  element: (
+    <ProtectedRoute allowedRoles={["teacher", "admin", "principal"]}>
+      <QuizStartUI questions={questions} />
     </ProtectedRoute>
   ),
 }

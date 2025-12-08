@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const TeacherForms = () => {
   const { formType } = useParams();
@@ -60,15 +61,78 @@ const TeacherForms = () => {
           {/* Create Quiz */}
           {formType === "create-quiz" && (
             <>
-              <SelectInput label="Class" name="class" onChange={handleChange} options={["6th", "7th", "8th", "9th"]} />
-              <SelectInput label="Subject" name="subject" onChange={handleChange} options={["Math", "Science", "English", "Hindi"]} />
+              {/* Quiz Title */}
+              <FormInput
+                label="Quiz Title"
+                name="quizTitle"
+                onChange={handleChange}
+                placeholder="Enter quiz name"
+        
+              />
 
-              <FormInput label="Quiz Title" name="quizTitle" onChange={handleChange} />
-              <FormInput label="Total Questions" name="questions" type="number" onChange={handleChange} />
+              {/* Select Chapter */}
+              <SelectInput
+                label="Select Chapter"
+                name="chapter"
+                onChange={handleChange}
+                options={[
+                  "Chapter 1",
+                  "Chapter 2",
+                  "Chapter 3",
+                  "Chapter 4",
+                  "Chapter 5",
+                ]}
+        
+              />
 
+              {/* Number of Questions */}
+              <FormInput
+                label="Number of Questions"
+                name="totalQuestions"
+                type="number"
+                min="1"
+                onChange={handleChange}
+                placeholder="Enter question count"
+        
+              />
+
+              {/* Question Type */}
+              <SelectInput
+                label="Question Type"
+                name="questionType"
+                onChange={handleChange}
+                options={[
+                  "MCQ",
+                  "Yes/No",
+                  "Fill in the Blanks",
+                  "Mixed"
+                ]}
+        
+              />
+
+              {/* Difficulty Level */}
+              <SelectInput
+                label="Difficulty Level"
+                name="difficulty"
+                onChange={handleChange}
+                options={["Easy", "Medium", "Hard"]}
+        
+              />
+
+              {/* Language */}
+              <SelectInput
+                label="Language"
+                name="language"
+                onChange={handleChange}
+                options={["English", "Hindi"]}
+        
+              />
+               <Link to = "/start-quiz">
               <SubmitBtn text="Create Quiz" />
+              </Link>
             </>
           )}
+
 
           {/* Notice Form */}
           {formType === "notice" && (
@@ -119,7 +183,7 @@ function FormInput({ label, type = "text", name, onChange }) {
         onChange={onChange}
         className="w-full mt-1 p-3 rounded-lg bg-[#222338] border border-purple-500/30 text-white 
         focus:border-purple-500 focus:ring focus:ring-purple-600/40 outline-none"
-        required
+
       />
     </div>
   );
@@ -134,7 +198,7 @@ function SelectInput({ label, name, options, onChange }) {
         className="w-full mt-1 p-3 rounded-lg bg-[#222338] border border-purple-500/30 text-white
         focus:border-purple-500 focus:ring focus:ring-purple-600/40 outline-none"
         onChange={onChange}
-        required
+
       >
         <option value="">Select {label}</option>
         {options.map((opt, i) => <option key={i} value={opt}>{opt}</option>)}
@@ -167,7 +231,7 @@ function FormTextarea({ label, name, onChange }) {
         onChange={onChange}
         className="w-full mt-1 p-3 rounded-lg bg-[#222338] border border-purple-500/30 text-white
         focus:border-purple-500 focus:ring focus:ring-purple-600/40 outline-none"
-        required
+
       ></textarea>
     </div>
   );

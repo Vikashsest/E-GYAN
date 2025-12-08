@@ -40,22 +40,42 @@ export const addRepositoryValue = async (type, value) => {
 };
 
 /**
- * Create a new repository
- * @param {Object} data - repository data { name, resourceType, subject, level, language, category }
+ * Update a repository value
+ * @param {string} id - Value ID to update
+ * @param {string} value - New updated value
  * @returns {Promise<Object>}
  */
-export const createRepository = async (data) => {
+export const updateRepositoryValue = async (id, value) => {
   try {
-    const res = await fetch(`${API_URL}/repository/create`, {
-      method: "POST",
+    const res = await fetch(`${API_URL}/repository/${id}`, {
+      method: "PUT",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify(data),
+      body: JSON.stringify({ value }),
     });
-    if (!res.ok) throw new Error("Failed to create repository");
+    if (!res.ok) throw new Error("Failed to update value");
     return await res.json();
   } catch (err) {
-    console.error("createRepository error:", err);
+    console.error("updateRepositoryValue error:", err);
+    throw err;
+  }
+};
+
+/**
+ * Delete a repository value
+ * @param {string} id - Value ID to delete
+ * @returns {Promise<Object>}
+ */
+export const deleteRepositoryValue = async (id) => {
+  try {
+    const res = await fetch(`${API_URL}/repository/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to delete value");
+    return await res.json();
+  } catch (err) {
+    console.error("deleteRepositoryValue error:", err);
     throw err;
   }
 };
