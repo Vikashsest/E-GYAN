@@ -24,7 +24,6 @@
 // //   return getProxiedUrl(chapter.fileUrl);
 // // }, [chapter]);
 
-
 // const getBookResourceType = (book) =>
 //   book.chapters?.[0]?.resourceType || "pdf";
 
@@ -49,7 +48,6 @@
 //     file: null,
 //     thumbnail: null,
 //   });
-
 
 //   useEffect(() => {
 //     async function loadBooks() {
@@ -76,7 +74,6 @@
 //     loadClasses();
 //   }, []);
 
-
 //   useEffect(() => {
 //     async function loadBooks() {
 //       const books = await fetchBooks();
@@ -95,7 +92,6 @@
 //       console.error("Delete error:", err);
 //     }
 //   };
-
 
 // const handleUpload = async (e) => {
 //   e.preventDefault();
@@ -130,7 +126,6 @@
 //       });
 // navigate(`/books/${result.id}/chapters`);
 
-
 //       toast.success("Book uploaded successfully ✅");
 //     } else {
 //       toast.error("Upload failed ❌");
@@ -140,7 +135,6 @@
 //     console.error("Upload Error:", error);
 //   }
 // };
-
 
 //   const getViewLabel = (type) => {
 //     switch (type?.toLowerCase()) {
@@ -284,8 +278,6 @@
 //             ))}
 //         </div>
 
-
-
 //         {showUploadModal && (
 //   <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center">
 //     <div className="bg-white text-black rounded-lg w-[95%] max-w-xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-lg">
@@ -387,7 +379,6 @@
 //           </select>
 //         </div>
 
-
 //         <div>
 //           <label className="text-sm font-medium">Category</label>
 //           <select
@@ -444,7 +435,6 @@
 //   </div>
 // )}
 
-
 //         {editData && (
 //           <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center">
 //             <div className="bg-white text-black rounded-lg w-[95%] max-w-xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-lg">
@@ -466,9 +456,9 @@
 //     // "stateBoard",
 //     "resourceType",
 //     // "chapter",
-//     "file",       
-//     "thumbnail",  
-//     "totalPages"  
+//     "file",
+//     "thumbnail",
+//     "totalPages"
 //   ];
 
 //   const fd = new FormData();
@@ -583,9 +573,6 @@
 //           </div>
 //         )}
 
-
-
-
 //         {/* View Modal */}
 //         {viewData && selectedChapter && (
 //           <div className="fixed inset-0 z-50 bg-black bg-opacity-60 flex justify-center items-center">
@@ -659,14 +646,6 @@
 //   );
 // }
 
-
-
-
-
-
-
-
-
 // import { useEffect, useState } from "react";
 // import FlipbookPDFViewer from "./FlipbookPDFViewer";
 // import { FaEdit, FaTrash, FaExpand, FaCompress } from "react-icons/fa";
@@ -696,7 +675,6 @@
 // //   if (!chapter) return null;
 // //   return getProxiedUrl(chapter.fileUrl);
 // // }, [chapter]);
-
 
 // const getBookResourceType = (book) =>
 //   book.chapters?.[0]?.resourceType || "pdf";
@@ -731,7 +709,7 @@
 //     file: null,
 //     thumbnail: null,
 
-//     //current affairs 
+//     //current affairs
 //   title: "",
 //   description: "",
 //   newsCategory: "",
@@ -739,7 +717,6 @@
 //   source: "",
 //   link: "",
 //   });
-
 
 //   useEffect(() => {
 //     async function loadBooks() {
@@ -766,7 +743,6 @@
 //     loadClasses();
 //   }, []);
 
-
 //   useEffect(() => {
 //     async function loadBooks() {
 //       const books = await fetchBooks();
@@ -789,7 +765,6 @@
 //       console.error("Delete error:", err);
 //     }
 //   };
-
 
 //   // const handleUpload = async (e) => {
 //   //   e.preventDefault();
@@ -824,7 +799,6 @@
 //   //       });
 //   //       navigate(`/books/${result.id}/chapters`);
 
-
 //   //       toast.success("Book uploaded successfully ✅");
 //   //     } else {
 //   //       toast.error("Upload failed ❌");
@@ -834,7 +808,6 @@
 //   //     console.error("Upload Error:", error);
 //   //   }
 //   // };
-
 
 // const handleUpload = async (e) => {
 //   e.preventDefault();
@@ -904,8 +877,6 @@
 //   }
 // };
 
-
-
 //   const getViewLabel = (type) => {
 //     switch (type?.toLowerCase()) {
 //       case "pdf":
@@ -944,13 +915,12 @@
 //     ? Number(b.educationLevel) === Number(selectedClass)
 //     : true;
 
-//   // SEARCH FILTER  
+//   // SEARCH FILTER
 //   const text = `${b.bookName} ${b.subject} ${b.educationLevel}`.toLowerCase();
 //   const searchMatch = text.includes(searchTerm.toLowerCase());
 
 //   return classMatch && searchMatch;
 // });
-
 
 //   const totalPages = Math.ceil(filteredBooks.length / itemsPerPage);
 //   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -971,8 +941,6 @@
 //     }
 //     return pages;
 //   };
-
-
 
 //   return (
 //     <div className="flex min-h-screen bg-[#1e1f2b] text-white">
@@ -1125,7 +1093,7 @@
 //               <button
 //                 key={num}
 //                 onClick={() => setCurrentPage(num)}
-//                 className={`px-3 py-1 border rounded 
+//                 className={`px-3 py-1 border rounded
 //           ${num === currentPage ? "bg-blue-500 text-white" : "bg-white/10"}
 //         `}
 //               >
@@ -1152,7 +1120,6 @@
 //             </button>
 //           </div>
 //         )}
-
 
 //         {showUploadModal && (
 //           <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center">
@@ -1349,7 +1316,6 @@
 //                   </>
 //                 )}
 
-
 //                 {/* === CURRENT AFFAIRS FORM === */}
 //                 {formData.category === "Current Affairs" && (
 //                   <>
@@ -1521,8 +1487,6 @@
 //           </div>
 //         )}
 
-
-
 //         {editData && (
 //           <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center">
 //             <div className="bg-white text-black rounded-lg w-[95%] max-w-xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-lg">
@@ -1660,9 +1624,6 @@
 //           </div>
 //         )}
 
-
-
-
 //         {/* View Modal */}
 //         {viewData && selectedChapter && (
 //           <div className="fixed inset-0 z-50 bg-black bg-opacity-60 flex justify-center items-center">
@@ -1736,17 +1697,6 @@
 //   );
 // }
 
-
-
-
-
-
-
-
-
-
-
-
 import { useEffect, useState } from "react";
 import FlipbookPDFViewer from "./FlipbookPDFViewer";
 import { FaEdit, FaTrash, FaExpand, FaCompress } from "react-icons/fa";
@@ -1760,7 +1710,7 @@ import {
   fetchBooks,
   uploadBook,
   deleteBook,
-  addCurrentAffairs
+  addCurrentAffairs,
 } from "../apiServices/booksApi";
 import { useNavigate } from "react-router-dom";
 
@@ -1779,9 +1729,7 @@ const getProxiedUrl = (url) => {
 //   return getProxiedUrl(chapter.fileUrl);
 // }, [chapter]);
 
-
-const getBookResourceType = (book) =>
-  book.chapters?.[0]?.resourceType || "pdf";
+const getBookResourceType = (book) => book.chapters?.[0]?.resourceType || "pdf";
 
 const getItemsPerPage = () => {
   if (window.innerWidth < 640) return 4;
@@ -1813,7 +1761,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
     file: null,
     thumbnail: null,
 
-    //current affairs 
+    //current affairs
     title: "",
     description: "",
     newsCategory: "",
@@ -1829,10 +1777,12 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const data = await getRepository();
-        if (data && data[0] && data[0].Categories) {
-          setCategories(data[0].Categories.split(","));
-        }
+        const data = await getRepository("category"); // <--- only categories
+
+        // data = [ {id:1,type:'category',text:'School Education'}, ... ]
+        const categoryList = data.map((item) => item.text);
+
+        setCategories(categoryList);
       } catch (err) {
         console.error("Failed to load categories:", err);
       }
@@ -1846,14 +1796,18 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
       try {
         const data = await getRepository();
 
-        const schoolData = data.find(item => item.Categories.includes("School Education"));
+        const schoolData = data.find((item) =>
+          item.Categories.includes("School Education")
+        );
 
         if (schoolData) {
-          setSubjects(schoolData.Subjects.split(',').map(s => s.trim()));
-          console.log(schoolData.Subjects.split(',').map(s => s.trim()));
-          setLanguages(schoolData.Languages.split(',').map(l => l.trim()));
-          console.log(schoolData.Languages.split(',').map(l => l.trim()))
-          setEducationLevels(schoolData.EducationLevels.split(',').map(e => e.trim()));
+          setSubjects(schoolData.Subjects.split(",").map((s) => s.trim()));
+          console.log(schoolData.Subjects.split(",").map((s) => s.trim()));
+          setLanguages(schoolData.Languages.split(",").map((l) => l.trim()));
+          console.log(schoolData.Languages.split(",").map((l) => l.trim()));
+          setEducationLevels(
+            schoolData.EducationLevels.split(",").map((e) => e.trim())
+          );
         }
       } catch (err) {
         console.error("Failed to load form options:", err);
@@ -1875,7 +1829,9 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
 
     async function loadClasses() {
       try {
-        const res = await fetch(`${API_URL}/classes`, { credentials: "include" });
+        const res = await fetch(`${API_URL}/classes`, {
+          credentials: "include",
+        });
         const data = await res.json();
         if (Array.isArray(data)) {
           setClasses(data);
@@ -1891,7 +1847,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
     loadClasses();
   }, []);
 
-
   useEffect(() => {
     async function loadBooks() {
       const books = await fetchBooks();
@@ -1902,7 +1857,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
 
   const handleDelete = async (id) => {
     const ok = await confirmDelete();
-
 
     if (!ok) return;
 
@@ -1915,7 +1869,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
       console.error("Delete error:", err);
     }
   };
-
 
   // const handleUpload = async (e) => {
   //   e.preventDefault();
@@ -1950,7 +1903,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   //       });
   //       navigate(`/books/${result.id}/chapters`);
 
-
   //       toast.success("Book uploaded successfully ✅");
   //     } else {
   //       toast.error("Upload failed ❌");
@@ -1960,7 +1912,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   //     console.error("Upload Error:", error);
   //   }
   // };
-
 
   const handleUpload = async (e) => {
     e.preventDefault();
@@ -1973,13 +1924,18 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
         currentFormData.append("mainCategory", formData.category || ""); // 📰 "Current Affairs"
         currentFormData.append("category", formData.newsCategory || ""); // 🧠 "Science & Technology"
 
-        currentFormData.append("description", formData.description?.trim() || "");
+        currentFormData.append(
+          "description",
+          formData.description?.trim() || ""
+        );
         currentFormData.append("date", formData.date || "");
         currentFormData.append("source", formData.source?.trim() || "");
         if (formData.file) currentFormData.append("file", formData.file);
         if (formData.link) currentFormData.append("link", formData.link);
 
-        console.log("📦 Sending FormData entries:", [...currentFormData.entries()]);
+        console.log("📦 Sending FormData entries:", [
+          ...currentFormData.entries(),
+        ]);
 
         const result = await addCurrentAffairs(null, currentFormData);
         if (result) {
@@ -2012,7 +1968,8 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
         uploadData.append("educationLevel", formData.educationLevel);
         uploadData.append("language", formData.language);
         if (formData.file) uploadData.append("file", formData.file);
-        if (formData.thumbnail) uploadData.append("thumbnail", formData.thumbnail);
+        if (formData.thumbnail)
+          uploadData.append("thumbnail", formData.thumbnail);
 
         const result = await uploadBook(uploadData);
         if (result && result.id) {
@@ -2029,8 +1986,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
       toast.error("⚠️ Something went wrong during upload");
     }
   };
-
-
 
   const getViewLabel = (type) => {
     switch (type?.toLowerCase()) {
@@ -2070,7 +2025,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   //     ? Number(b.educationLevel) === Number(selectedClass)
   //     : true;
 
-  //   // SEARCH FILTER  
+  //   // SEARCH FILTER
   //   const text = `${b.bookName} ${b.subject} ${b.educationLevel}`.toLowerCase();
   //   const searchMatch = text.includes(searchTerm.toLowerCase());
 
@@ -2078,10 +2033,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   // });
 
   const filteredBooks = bookList.filter((b) => {
-
-    const selectedClassNumber = selectedClass
-      ? parseInt(selectedClass)
-      : null;
+    const selectedClassNumber = selectedClass ? parseInt(selectedClass) : null;
 
     const bookClassNumber = b.educationLevel
       ? parseInt(b.educationLevel.toString().replace(/\D/g, ""))
@@ -2097,10 +2049,12 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
     return classMatch && searchMatch;
   });
 
-
   const totalPages = Math.ceil(filteredBooks.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedBooks = filteredBooks.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedBooks = filteredBooks.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
 
   // PAGINATION NUMBERS (max 5 visible)
   const getPageNumbers = () => {
@@ -2118,11 +2072,14 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
     return pages;
   };
 
-
-
   return (
     <div className="flex min-h-screen bg-[#1e1f2b] text-white">
-      {Sidebar && <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />}
+      {Sidebar && (
+        <Sidebar
+          isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
+        />
+      )}
       <main className="flex-1 lg:pl-[280px] py-6 px-5 w-full">
         <div className="lg:hidden px-4 mb-4">
           <button onClick={() => setIsSidebarOpen(true)} className="text-white">
@@ -2156,98 +2113,97 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
               <option key={idx} value={cls.replace(/\D/g, "")}>
                 {cls}
               </option>
-
             ))}
           </select>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-          {paginatedBooks
-            .map((b) => (
-              <div
-                key={b.id}
-                className="bg-white/10 border border-white/20 rounded-2xl shadow-md p-4 flex flex-col hover:shadow-xl hover:scale-105 transition-all duration-300"
-              >
-                <div className="flex flex-col items-center gap-3">
-                  {/* Thumbnail */}
-                  <div className="relative w-full h-36 lg:h-44 bg-black/10 rounded-lg overflow-hidden">
-                    <img
-                      src={getProxiedUrl(b.thumbnail)}
-                      alt={b.bookName}
-                      className="w-full h-full object-contain p-2"
-                    />
-                    <span className="absolute top-2 right-2 bg-white/20 text-xs px-2 py-1 rounded-full text-white border border-white/30 backdrop-blur-sm">
-                      {getViewLabel(getBookResourceType(b))}
-                    </span>
-                  </div>
-
-                  {/* Text Section */}
-                  <div className="text-center w-full break-words">
-                    <h3 className="text-base text-md lg:text-lg font-bold mb-1">
-                      {b.bookName}
-                    </h3>
-                    <p className="text-sm sm:text-base text-gray-300 mb-1">
-                      {b.subject}
-                    </p>
-                    <p className="text-xs sm:text-sm text-gray-400">
-                      🎓 {b.educationLevel}
-                    </p>
-                  </div>
+          {paginatedBooks.map((b) => (
+            <div
+              key={b.id}
+              className="bg-white/10 border border-white/20 rounded-2xl shadow-md p-4 flex flex-col hover:shadow-xl hover:scale-105 transition-all duration-300"
+            >
+              <div className="flex flex-col items-center gap-3">
+                {/* Thumbnail */}
+                <div className="relative w-full h-36 lg:h-44 bg-black/10 rounded-lg overflow-hidden">
+                  <img
+                    src={getProxiedUrl(b.thumbnail)}
+                    alt={b.bookName}
+                    className="w-full h-full object-contain p-2"
+                  />
+                  <span className="absolute top-2 right-2 bg-white/20 text-xs px-2 py-1 rounded-full text-white border border-white/30 backdrop-blur-sm">
+                    {getViewLabel(getBookResourceType(b))}
+                  </span>
                 </div>
 
-                {/* Actions */}
-                <div className="flex flex-col mt-auto pt-2 border-t border-white/20">
-                  <button
-                    onClick={() => {
-                      setViewData(b);
-                      fetch(`${API_URL}/books/${b.id}/chapters/meta`, { credentials: "include" })
-                        .then(res => res.json())
-                        .then(data => {
-                          if (data.length > 0) {
-                            setSelectedChapter(data[0]); // pehla chapter open karo
-                          } else {
-                            setSelectedChapter(null);
-                          }
-                        });
-                      // setSelectedChapter(b.chapters?.[0] || null);
-                    }}
-                    className="w-full text-sm sm:text-base text-blue-400 hover:text-blue-300 font-semibold"
-                  >
-                    {getViewLabel(getBookResourceType(b))}
-                  </button>
-
-                  {role === "admin" && (
-                    <div className="flex justify-between mt-2">
-                      <button
-                        onClick={() => setEditData(b)}
-                        className="text-yellow-400 hover:text-yellow-300 text-lg"
-                      >
-                        <FaEdit />
-                      </button>
-                      <button
-                        onClick={() => navigate(`/books/${b.id}/chapters`)}
-                        className="text-green-400 hover:text-green-300 text-lg"
-                        title="Manage Chapters"
-                      >
-                        📚
-                      </button>
-                      <button
-                        onClick={() => handleDelete(b.id)}
-                        className="text-red-500 hover:text-red-400 text-lg"
-                      >
-                        <FaTrash />
-                      </button>
-                    </div>
-                  )}
+                {/* Text Section */}
+                <div className="text-center w-full break-words">
+                  <h3 className="text-base text-md lg:text-lg font-bold mb-1">
+                    {b.bookName}
+                  </h3>
+                  <p className="text-sm sm:text-base text-gray-300 mb-1">
+                    {b.subject}
+                  </p>
+                  <p className="text-xs sm:text-sm text-gray-400">
+                    🎓 {b.educationLevel}
+                  </p>
                 </div>
               </div>
-            ))}
+
+              {/* Actions */}
+              <div className="flex flex-col mt-auto pt-2 border-t border-white/20">
+                <button
+                  onClick={() => {
+                    setViewData(b);
+                    fetch(`${API_URL}/books/${b.id}/chapters/meta`, {
+                      credentials: "include",
+                    })
+                      .then((res) => res.json())
+                      .then((data) => {
+                        if (data.length > 0) {
+                          setSelectedChapter(data[0]); // pehla chapter open karo
+                        } else {
+                          setSelectedChapter(null);
+                        }
+                      });
+                    // setSelectedChapter(b.chapters?.[0] || null);
+                  }}
+                  className="w-full text-sm sm:text-base text-blue-400 hover:text-blue-300 font-semibold"
+                >
+                  {getViewLabel(getBookResourceType(b))}
+                </button>
+
+                {role === "admin" && (
+                  <div className="flex justify-between mt-2">
+                    <button
+                      onClick={() => setEditData(b)}
+                      className="text-yellow-400 hover:text-yellow-300 text-lg"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => navigate(`/books/${b.id}/chapters`)}
+                      className="text-green-400 hover:text-green-300 text-lg"
+                      title="Manage Chapters"
+                    >
+                      📚
+                    </button>
+                    <button
+                      onClick={() => handleDelete(b.id)}
+                      className="text-red-500 hover:text-red-400 text-lg"
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex justify-center mt-6 gap-2 flex-wrap">
-
             {/* First Page */}
             <button
               onClick={() => setCurrentPage(1)}
@@ -2299,7 +2255,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
           </div>
         )}
 
-
         {showUploadModal && (
           <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center">
             <div className="bg-white text-black rounded-lg w-[95%] max-w-xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-lg">
@@ -2319,19 +2274,30 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                 > */}
 
               <div className="mb-4">
-                <label className="text-sm font-medium block mb-1">Select Category</label>
+                <label className="text-sm font-medium block mb-1">
+                  Select Category
+                </label>
                 <select
                   value={formData.category}
                   onChange={(e) => {
                     const selectedCategory = e.target.value;
 
                     // Default to School Education if category is not in predefined list
-                    const predefinedCategories = ["School Education", "Current Affairs", "Simulation"];
-                    const categoryToSet = predefinedCategories.includes(selectedCategory)
+                    const predefinedCategories = [
+                      "School Education",
+                      "Current Affairs",
+                      "Simulation",
+                    ];
+                    const categoryToSet = predefinedCategories.includes(
+                      selectedCategory
+                    )
                       ? selectedCategory
                       : "School Education";
 
-                    setFormData((prev) => ({ ...prev, category: categoryToSet }));
+                    setFormData((prev) => ({
+                      ...prev,
+                      category: categoryToSet,
+                    }));
 
                     // Optional: Reset other form fields when category changes
                     setFormData((prev) => ({
@@ -2349,12 +2315,12 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                   {categories.map((cat, idx) => (
                     <option key={idx} value={cat}>
                       {cat === "School Education"
-                        ?  cat
+                        ? cat
                         : cat === "Current Affairs"
-                          ? cat
-                          : cat === "Simulation"
-                            ? cat
-                            : cat}
+                        ? cat
+                        : cat === "Simulation"
+                        ? cat
+                        : cat}
                     </option>
                   ))}
                 </select>
@@ -2365,17 +2331,24 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                 {formData.category === "School Education" && (
                   <>
                     <div>
-                      <label className="text-sm font-medium">Education Level</label>
+                      <label className="text-sm font-medium">
+                        Education Level
+                      </label>
                       <select
                         value={formData.educationLevel}
                         onChange={(e) =>
-                          setFormData((prev) => ({ ...prev, educationLevel: e.target.value }))
+                          setFormData((prev) => ({
+                            ...prev,
+                            educationLevel: e.target.value,
+                          }))
                         }
                         className="border border-gray-400 rounded px-2 py-1 text-black w-full"
                       >
                         <option value="">Select Class</option>
                         {educationLevels.map((level, idx) => (
-                          <option key={idx} value={level}>{level}</option>
+                          <option key={idx} value={level}>
+                            {level}
+                          </option>
                         ))}
                       </select>
                     </div>
@@ -2386,7 +2359,10 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                       placeholder="Select Subject"
                       className="w-full border border-gray-300 p-2 rounded text-sm"
                       onChange={(e) =>
-                        setFormData((prev) => ({ ...prev, subject: e.target.value }))
+                        setFormData((prev) => ({
+                          ...prev,
+                          subject: e.target.value,
+                        }))
                       }
                     />
 
@@ -2396,7 +2372,10 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                       placeholder="Book Name"
                       className="w-full border border-gray-300 p-2 rounded text-sm"
                       onChange={(e) =>
-                        setFormData((prev) => ({ ...prev, bookName: e.target.value }))
+                        setFormData((prev) => ({
+                          ...prev,
+                          bookName: e.target.value,
+                        }))
                       }
                     />
 
@@ -2421,13 +2400,18 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                       <select
                         value={formData.language}
                         onChange={(e) =>
-                          setFormData((prev) => ({ ...prev, language: e.target.value }))
+                          setFormData((prev) => ({
+                            ...prev,
+                            language: e.target.value,
+                          }))
                         }
                         className="w-full border border-gray-300 p-2 rounded text-sm"
                       >
                         <option value="">Select Language</option>
                         {languages.map((lang, idx) => (
-                          <option key={idx} value={lang}>{lang}</option>
+                          <option key={idx} value={lang}>
+                            {lang}
+                          </option>
                         ))}
                       </select>
                     </div>
@@ -2440,18 +2424,33 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                       type="text"
                       placeholder="Simulation Title"
                       value={formData.bookName}
-                      onChange={(e) => setFormData(prev => ({ ...prev, bookName: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          bookName: e.target.value,
+                        }))
+                      }
                     />
 
                     <textarea
                       placeholder="Simulation Description"
                       value={formData.subject}
-                      onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          subject: e.target.value,
+                        }))
+                      }
                     />
 
                     <select
                       value={formData.grade}
-                      onChange={(e) => setFormData(prev => ({ ...prev, grade: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          grade: e.target.value,
+                        }))
+                      }
                     >
                       <option value="">Select Grade</option>
                       <option value="6">6</option>
@@ -2461,7 +2460,12 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
 
                     <select
                       value={formData.difficulty}
-                      onChange={(e) => setFormData(prev => ({ ...prev, difficulty: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          difficulty: e.target.value,
+                        }))
+                      }
                     >
                       <option value="">Select Difficulty</option>
                       <option value="Beginner">Beginner</option>
@@ -2473,25 +2477,45 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                       type="text"
                       placeholder="Topics (comma separated)"
                       value={formData.topic}
-                      onChange={(e) => setFormData(prev => ({ ...prev, topic: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          topic: e.target.value,
+                        }))
+                      }
                     />
 
                     <input
                       type="file"
                       accept=".zip,.exe,.html"
-                      onChange={(e) => setFormData(prev => ({ ...prev, file: e.target.files[0] }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          file: e.target.files[0],
+                        }))
+                      }
                     />
 
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => setFormData(prev => ({ ...prev, thumbnail: e.target.files[0] }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          thumbnail: e.target.files[0],
+                        }))
+                      }
                     />
 
                     <textarea
                       placeholder="Prerequisites"
                       value={formData.prerequisites}
-                      onChange={(e) => setFormData(prev => ({ ...prev, prerequisites: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          prerequisites: e.target.value,
+                        }))
+                      }
                     />
 
                     {/* <input
@@ -2502,7 +2526,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                     /> */}
                   </>
                 )}
-
 
                 {/* === CURRENT AFFAIRS FORM === */}
                 {formData.category === "Current Affairs" && (
@@ -2518,12 +2541,12 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                           title: e.target.value,
                         }))
                       }
-
                     />
 
-
                     <div>
-                      <label className="text-sm font-medium text-white">Full Description</label>
+                      <label className="text-sm font-medium text-white">
+                        Full Description
+                      </label>
 
                       <JoditEditor
                         ref={editor}
@@ -2533,28 +2556,45 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                           height: 300,
                           toolbar: true,
                           buttons: [
-                            "bold", "italic", "underline", "|",
-                            "ul", "ol", "|",
-                            "paragraph", "fontsize", "brush", "|",
-                            "h1", "h2", "h3", "|",
-                            "table", "link", "image", "|",
-                            "align", "undo", "redo"
+                            "bold",
+                            "italic",
+                            "underline",
+                            "|",
+                            "ul",
+                            "ol",
+                            "|",
+                            "paragraph",
+                            "fontsize",
+                            "brush",
+                            "|",
+                            "h1",
+                            "h2",
+                            "h3",
+                            "|",
+                            "table",
+                            "link",
+                            "image",
+                            "|",
+                            "align",
+                            "undo",
+                            "redo",
                           ],
                           pastePlain: false, // IMPORTANT — Google Docs/Word formatting auto aa jayega
                         }}
                         onChange={(newContent) =>
                           setFormData((prev) => ({
                             ...prev,
-                            description: newContent
+                            description: newContent,
                           }))
                         }
                       />
                     </div>
 
-
                     {/* 🔹 Category Selection */}
                     <div>
-                      <label className="text-sm font-medium">Category Type</label>
+                      <label className="text-sm font-medium">
+                        Category Type
+                      </label>
                       <select
                         className="w-full border border-gray-300 p-2 rounded text-sm"
                         onChange={(e) =>
@@ -2563,14 +2603,17 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                             newsCategory: e.target.value,
                           }))
                         }
-
                       >
                         <option value="">Select Category</option>
-                        <option value="Science & Technology">Science & Technology</option>
+                        <option value="Science & Technology">
+                          Science & Technology
+                        </option>
                         <option value="Economy">Economy</option>
                         <option value="Environment">Environment</option>
                         <option value="Sports">Sports</option>
-                        <option value="Daily Current Affairs">Daily Current Affairs</option>
+                        <option value="Daily Current Affairs">
+                          Daily Current Affairs
+                        </option>
                       </select>
                     </div>
 
@@ -2586,13 +2629,14 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                             date: e.target.value,
                           }))
                         }
-
                       />
                     </div>
 
                     {/* 🔹 Author / Source */}
                     <div>
-                      <label className="text-sm font-medium">Source / Author</label>
+                      <label className="text-sm font-medium">
+                        Source / Author
+                      </label>
                       <input
                         type="text"
                         placeholder="e.g. PIB, The Hindu, Times of India"
@@ -2640,7 +2684,9 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
 
                     {/* 🔹 Full News File (Optional PDF or Image) */}
                     <div>
-                      <label className="text-sm font-medium">Upload File (PDF / Image)</label>
+                      <label className="text-sm font-medium">
+                        Upload File (PDF / Image)
+                      </label>
                       <input
                         type="file"
                         accept=".pdf,image/*"
@@ -2656,7 +2702,9 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
 
                     {/* 🔹 External Link (optional) */}
                     <div>
-                      <label className="text-sm font-medium">External News Link</label>
+                      <label className="text-sm font-medium">
+                        External News Link
+                      </label>
                       <input
                         type="url"
                         placeholder="https://example.com/news-article"
@@ -2693,8 +2741,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
           </div>
         )}
 
-
-
         {editData && (
           <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center">
             <div className="bg-white text-black rounded-lg w-[95%] max-w-xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-lg">
@@ -2718,7 +2764,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                     // "chapter",
                     "file",
                     "thumbnail",
-                    "totalPages"
+                    "totalPages",
                   ];
 
                   const fd = new FormData();
@@ -2753,7 +2799,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                     toast.error("Something went wrong ❗");
                   }
                 }}
-
               >
                 {[
                   "bookName",
@@ -2832,9 +2877,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
           </div>
         )}
 
-
-
-
         {/* View Modal */}
         {viewData && selectedChapter && (
           <div className="fixed inset-0 z-50 bg-black bg-opacity-60 flex justify-center items-center">
@@ -2847,14 +2889,14 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                   <div className="flex items-center gap-4">
                     {(getBookResourceType(viewData) === "pdf" ||
                       getBookResourceType(viewData) === "audio") && (
-                        <button
-                          onClick={handleFullscreenToggle}
-                          className="text-white text-xl hover:text-green-400"
-                          title="Toggle Fullscreen"
-                        >
-                          {isFullscreen ? <FaCompress /> : <FaExpand />}
-                        </button>
-                      )}
+                      <button
+                        onClick={handleFullscreenToggle}
+                        className="text-white text-xl hover:text-green-400"
+                        title="Toggle Fullscreen"
+                      >
+                        {isFullscreen ? <FaCompress /> : <FaExpand />}
+                      </button>
+                    )}
                     <button
                       onClick={() => setViewData(null)}
                       className="text-white text-2xl hover:text-red-500"
@@ -2865,12 +2907,13 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                 </div>
 
                 <div className="flex-1 overflow-hidden bg-black">
-                  {getBookResourceType(viewData) === "pdf" && selectedChapter && (
-                    <FlipbookPDFViewer
-                      chapter={selectedChapter}
-                      bookId={viewData.id}
-                    />
-                  )}
+                  {getBookResourceType(viewData) === "pdf" &&
+                    selectedChapter && (
+                      <FlipbookPDFViewer
+                        chapter={selectedChapter}
+                        bookId={viewData.id}
+                      />
+                    )}
 
                   {getBookResourceType(viewData) === "video" && (
                     <video controls className="w-full h-full object-contain">
@@ -2907,4 +2950,3 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
     </div>
   );
 }
-

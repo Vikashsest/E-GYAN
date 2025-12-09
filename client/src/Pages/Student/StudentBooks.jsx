@@ -236,8 +236,6 @@
 
 // export default EpathshalaBooks;
 
-
-
 // import { useEffect, useState } from "react";
 // import { useNavigate } from "react-router-dom";
 // import StudentNavbar from "./StudentNavbar";
@@ -276,8 +274,6 @@
 //   //   loadCategories();
 //   // }, []);
 
-
-
 //   useEffect(() => {
 //   async function loadCategories() {
 //     setLoading(true);
@@ -294,7 +290,7 @@
 //       setCategories(finalCategories);
 //     } catch (error) {
 //       console.error("Failed to load categories:", error);
-//       setCategories(["Simulation"]); 
+//       setCategories(["Simulation"]);
 //     } finally {
 //       setLoading(false);
 //     }
@@ -302,8 +298,6 @@
 
 //   loadCategories();
 // }, []);
-
-
 
 //   return (
 //     <div className="flex min-h-screen bg-[#1e1f2b] text-white relative">
@@ -339,18 +333,18 @@
 
 //         {categories.length > 0 ? (
 //           <div
-//             className="grid 
-//               grid-cols-1  
-//               md:grid-col-2 
-//               lg:grid-cols-4 
+//             className="grid
+//               grid-cols-1
+//               md:grid-col-2
+//               lg:grid-cols-4
 //               gap-4 sm:gap-6"
 //           >
 //             {categories.map((cat, index) => (
 //               <div
 //                 key={index}
 //                 onClick={() => navigate(`/classes?category=${cat}`)}
-//                 className="p-5 sm:p-6 rounded-2xl shadow-lg border border-gray-300 
-//                 bg-[#3b3c4e] text-white flex flex-col items-center justify-center 
+//                 className="p-5 sm:p-6 rounded-2xl shadow-lg border border-gray-300
+//                 bg-[#3b3c4e] text-white flex flex-col items-center justify-center
 //                 hover:scale-105 transform transition-all duration-300 cursor-pointer"
 //               >
 //                 <FaBookReader className="text-blue-400 text-4xl sm:text-5xl mb-3 sm:mb-4 drop-shadow-lg" />
@@ -372,11 +366,6 @@
 // };
 
 // export default Books;
-
-
-
-
-
 
 // import { useEffect, useState } from "react";
 // import { useNavigate } from "react-router-dom";
@@ -450,7 +439,7 @@
 //         {categories.length > 0 ? (
 //           <div
 //             className="grid
-//       grid-cols-1 
+//       grid-cols-1
 //       md:grid-cols-2
 //       lg:grid-cols-4
 //       gap-4 sm:gap-6"
@@ -460,8 +449,8 @@
 //               <div
 //                 key={index}
 //                 onClick={() => navigate(`/classes?category=${cat}`)}
-//                 className="p-5 sm:p-6 rounded-2xl shadow-lg border border-gray-300 
-//           bg-[#3b3c4e] text-white flex flex-col items-center justify-center 
+//                 className="p-5 sm:p-6 rounded-2xl shadow-lg border border-gray-300
+//           bg-[#3b3c4e] text-white flex flex-col items-center justify-center
 //           hover:scale-105 transform transition-all duration-300 cursor-pointer"
 //               >
 //                 <FaBookReader className="text-blue-400 text-4xl sm:text-5xl mb-3 sm:mb-4 drop-shadow-lg" />
@@ -475,8 +464,8 @@
 //               onClick={() => {
 //                 navigate(`/simulation-subjects`);
 //               }}
-//               className="p-5 sm:p-6 rounded-2xl shadow-lg border border-gray-300 
-//         bg-[#2e2f42] text-white flex flex-col items-center justify-center 
+//               className="p-5 sm:p-6 rounded-2xl shadow-lg border border-gray-300
+//         bg-[#2e2f42] text-white flex flex-col items-center justify-center
 //         hover:scale-105 transform transition-all duration-300 cursor-pointer"
 //             >
 //               <FaBookReader className="text-green-400 text-4xl sm:text-5xl mb-3 sm:mb-4 drop-shadow-lg" />
@@ -490,8 +479,8 @@
 //               onClick={() => {
 //                 navigate(`/current-affairs`);
 //               }}
-//               className="p-5 sm:p-6 rounded-2xl shadow-lg border border-gray-300 
-//   bg-[#2f3e46] text-white flex flex-col items-center justify-center 
+//               className="p-5 sm:p-6 rounded-2xl shadow-lg border border-gray-300
+//   bg-[#2f3e46] text-white flex flex-col items-center justify-center
 //   hover:scale-105 transform transition-all duration-300 cursor-pointer"
 //             >
 //               <FaBookReader className="text-yellow-400 text-4xl sm:text-5xl mb-3 sm:mb-4 drop-shadow-lg" />
@@ -501,7 +490,6 @@
 //             </div>
 
 //           </div>
-
 
 //         ) : (
 //           loading && (
@@ -520,8 +508,6 @@
 
 // export default Books;
 
-
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import StudentNavbar from "./StudentNavbar";
@@ -536,27 +522,44 @@ const Books = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // useEffect(() => {
+  //   async function loadCategories() {
+  //     setLoading(true);
+  //     try {
+  //       const bookData = await getRepository();
+
+  //       const categoryArray = bookData[0].Categories.split(",");
+  //       console.log(categoryArray);
+
+  //       setCategories(categoryArray);
+  //     } catch (error) {
+  //       console.error("Failed to load categories:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }
+  //   loadCategories();
+  // }, []);
   useEffect(() => {
-    async function loadCategories() {
+    const loadCategories = async () => {
       setLoading(true);
       try {
-        const bookData = await getRepository();
-       
-        const categoryArray = bookData[0].Categories.split(",");
-        console.log(categoryArray);
-        
-        setCategories(categoryArray);
-      } catch (error) {
-        console.error("Failed to load categories:", error);
+        const data = await getRepository("category"); // fetch only category
+
+        const categoryList = data.map((item) => item.text);
+        setCategories(categoryList);
+      } catch (err) {
+        console.error("Failed to load categories:", err);
       } finally {
-        setLoading(false);
+        setLoading(false); // <-- FIX
       }
-    }
+    };
+
     loadCategories();
   }, []);
 
   const getCategoryRoute = (cat) => {
-    switch(cat.trim()) {
+    switch (cat.trim()) {
       case "Simulation":
         return "/simulation-subjects";
       case "Current Affairs":
