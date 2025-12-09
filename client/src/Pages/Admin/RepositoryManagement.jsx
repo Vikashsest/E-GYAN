@@ -382,19 +382,11 @@ export default function RepositoryManagement() {
       getRepository("language"),
     ])
       .then(([categories, levels, subjects, resources, languages]) => {
-        const uniqueCategories = [...new Set(categories.map((c) => c.text))];
-        const uniqueLevels = [...new Set(levels.map((l) => l.text))];
-        const uniqueSubjects = [...new Set(subjects.map((s) => s.text))];
-        const uniqueResources = [...new Set(resources.map((r) => r.text))];
-        const uniqueLanguages = [
-          ...new Set(languages.map((lang) => lang.text)),
-        ];
-
-        setTexts(uniqueCategories);
-        setLevels(uniqueLevels);
-        setSubjects(uniqueSubjects);
-        setResourceTypes(uniqueResources);
-        setLanguages(uniqueLanguages);
+        setTexts(categories);
+        setLevels(levels);
+        setSubjects(subjects);
+        setResourceTypes(resources);
+        setLanguages(languages);
       })
       .finally(() => setLoading(false));
   }, []);
