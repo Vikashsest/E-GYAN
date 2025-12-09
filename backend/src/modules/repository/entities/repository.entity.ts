@@ -1,17 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-@Entity() 
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+@Entity()
 export class Repositories {
-     @PrimaryGeneratedColumn()
-     id: number;
-     @Column()
-     Subjects:string
-     @Column()
-     EducationLevels:string
-     @Column()
-     Languages:string
-     @Column()
-     Categories:string
-     @Column()
-     ResourceTypes:string
+  @PrimaryGeneratedColumn()
+  id: number;
+  @Column()
+  type: string;
+  @Column()
+  text: string;
 }
-

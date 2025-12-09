@@ -15,59 +15,70 @@ export class RepositoryService {
     @InjectRepository(Repositories)
     private readonly repository: Repository<Repositories>,
   ) {}
+  // async create(createRepositoryDto: CreateRepositoryDto) {
+  //   const { type, value } = createRepositoryDto;
+  //   if (!type || !value) {
+  //     throw new BadRequestException('Type and value are required');
+  //   }
+
+  //   let repo = await this.repository.findOne({ where: { id: 1 } });
+  //   if (!repo) {
+  //     repo = this.repository.create({
+  //       Subjects: '',
+  //       EducationLevels: '',
+  //       Languages: '',
+  //       Categories: '',
+  //       ResourceTypes: '',
+  //     });
+  //   }
+
+  //   if (type === 'resource') {
+  //     repo.ResourceTypes = [repo.ResourceTypes, value]
+  //       .filter(Boolean)
+  //       .join(',');
+  //   }
+  //   if (type === 'subject') {
+  //     repo.Subjects = [repo.Subjects, value].filter(Boolean).join(',');
+  //   }
+  //   if (type === 'level') {
+  //     repo.EducationLevels = [repo.EducationLevels, value]
+  //       .filter(Boolean)
+  //       .join(',');
+  //   }
+  //   if (type === 'language') {
+  //     repo.Languages = [repo.Languages, value].filter(Boolean).join(',');
+  //   }
+  //   if (type === 'category') {
+  //     repo.Categories = [repo.Categories, value].filter(Boolean).join(',');
+  //   }
+
+  //   return this.repository.save(repo);
+  // }
+
   async create(createRepositoryDto: CreateRepositoryDto) {
-    const { type, value } = createRepositoryDto;
-    if (!type || !value) {
-      throw new BadRequestException('Type and value are required');
-    }
+    const { text, type } = createRepositoryDto;
+    if (!text || !type) throw new NotFoundException('Text or type missing');
 
-    let repo = await this.repository.findOne({ where: { id: 1 } });
-    if (!repo) {
-      repo = this.repository.create({
-        Subjects: '',
-        EducationLevels: '',
-        Languages: '',
-        Categories: '',
-        ResourceTypes: '',
-      });
+    const repo = this.repository.create({ text, type });
+    return await this.repository.save(repo);
+  }
+  async findAll(type?: string) {
+    if (type) {
+      return await this.repository.find({ where: { type } });
     }
-
-    if (type === 'resource') {
-      repo.ResourceTypes = [repo.ResourceTypes, value]
-        .filter(Boolean)
-        .join(',');
-    }
-    if (type === 'subject') {
-      repo.Subjects = [repo.Subjects, value].filter(Boolean).join(',');
-    }
-    if (type === 'level') {
-      repo.EducationLevels = [repo.EducationLevels, value]
-        .filter(Boolean)
-        .join(',');
-    }
-    if (type === 'language') {
-      repo.Languages = [repo.Languages, value].filter(Boolean).join(',');
-    }
-    if (type === 'category') {
-      repo.Categories = [repo.Categories, value].filter(Boolean).join(',');
-    }
-
-    return this.repository.save(repo);
+    return await this.repository.find();
   }
 
-  async findAll() {
-    return this.repository.find();
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} repository`;
+  async update(id: number, value: string) {
+    const repo = await this.repository.findOne({ where: { id } });
+    if (!repo) throw new NotFoundException(`Repository ${id} not found`);
+    repo.text = value;
+    return await this.repository.save(repo);
   }
 
   async deleteRepository(id: number) {
-    const repoId = await this.repository.find({ where: { id } });
-    if (!repoId) {
-      throw new NotFoundException(`Repository with ID ${id} not found`);
-    }
-    return await this.repository.delete(repoId);
+    const repo = await this.repository.findOne({ where: { id } });
+    if (!repo) throw new NotFoundException(`Repository ${id} not found`);
+    return await this.repository.delete(id);
   }
 }

@@ -1,9 +1,11 @@
-import { IsString } from "class-validator";
+import { IsString, IsNotEmpty } from 'class-validator';
 
 export class CreateRepositoryDto {
-   @IsString()
-  type: string;
+  @IsString()
+  @IsNotEmpty()
+  text: string;
 
   @IsString()
-  value: string;
+  @IsNotEmpty()
+  type: string;
 }
