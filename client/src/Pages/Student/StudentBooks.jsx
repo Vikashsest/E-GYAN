@@ -544,7 +544,7 @@ const Books = () => {
     const loadCategories = async () => {
       setLoading(true);
       try {
-        const data = await getRepository("category"); // fetch only category
+        const data = await getRepository("category");
 
         const categoryList = data.map((item) => item.text);
         setCategories(categoryList);

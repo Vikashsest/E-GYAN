@@ -1794,23 +1794,21 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   useEffect(() => {
     const loadFormOptions = async () => {
       try {
-        const data = await getRepository();
+        const [categories, subjects, languages, levels] = await Promise.all([
+          getRepository("category"),
+          getRepository("subject"),
+          getRepository("language"),
+          getRepository("level"),
+        ]);
 
-        const schoolData = data.find((item) =>
-          item.Categories.includes("School Education")
-        );
-
-        if (schoolData) {
-          setSubjects(schoolData.Subjects.split(",").map((s) => s.trim()));
-          console.log(schoolData.Subjects.split(",").map((s) => s.trim()));
-          setLanguages(schoolData.Languages.split(",").map((l) => l.trim()));
-          console.log(schoolData.Languages.split(",").map((l) => l.trim()));
-          setEducationLevels(
-            schoolData.EducationLevels.split(",").map((e) => e.trim())
-          );
-        }
+        setCategories(categories.map((c) => c.text));
+        setSubjects(subjects.map((s) => s.text));
+        setLanguages(languages.map((l) => l.text));
+        setEducationLevels(levels.map((e) => e.text));
       } catch (err) {
         console.error("Failed to load form options:", err);
+
+        setCategories([]);
         setSubjects([]);
         setLanguages([]);
         setEducationLevels([]);
