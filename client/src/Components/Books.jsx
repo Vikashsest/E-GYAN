@@ -1777,10 +1777,9 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const data = await getRepository("category"); // <--- only categories
+        const data = await getRepository("category");
 
-        // data = [ {id:1,type:'category',text:'School Education'}, ... ]
-        const categoryList = data.map((item) => item.text);
+        const categoryList = [...new Set(data.map((item) => item.text))];
 
         setCategories(categoryList);
       } catch (err) {
