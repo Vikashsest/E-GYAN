@@ -1,11 +1,15 @@
-
 // import { useEffect, useState, useRef } from "react";
 // import Sidebar from "./AdminSidebar";
 // import AdminNavbar from "./AdminNavbar";
 // import { FiMenu } from "react-icons/fi";
 // import { MdDelete } from "react-icons/md";
 // import { FaEdit } from "react-icons/fa";
-// import { getRepository, addRepositoryValue} from '../../apiServices/apiRepository';
+// import {
+//   getRepository,
+//   addRepositoryValue,
+//   updateRepositoryValue,
+//   deleteRepositoryValue,
+// } from "../../apiServices/apiRepository";
 
 // export default function RepositoryManagement() {
 //   const [resourceTypes, setResourceTypes] = useState([]);
@@ -14,49 +18,68 @@
 //   const [languages, setLanguages] = useState([]);
 //   const [categories, setCategories] = useState([]);
 //   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+//   const [texts, setTexts] = useState([]);
+//   const [loading, setLoading] = useState(false);
 //   const [repoName, setRepoName] = useState("");
-//   const [selected, setSelected] = useState({
-//     resourceType: "",
-//     subject: "",
-//     level: "",
-//     language: "",
-//     category: "",
-//   });
+//   // const [selected, setSelected] = useState({
+//   //   resourceType: "",
+//   //   subject: "",
+//   //   level: "",
+//   //   language: "",
+//   //   category: "",
+//   // });
 
 //   const [newValue, setNewValue] = useState("");
 //   const [activeField, setActiveField] = useState("");
-
 //   useEffect(() => {
-//     getRepository()
-//       .then(data => {
-//         const repo = data[0];
-//         setResourceTypes(repo.ResourceTypes?.split(",") || []);
-//         setSubjects(repo.Subjects?.split(",") || []);
-//         setLevels(repo.EducationLevels?.split(",") || []);
-//         setLanguages(repo.Languages?.split(",") || []);
-//         setCategories(repo.Categories?.split(",") || []);
-//       })
-//       .catch(err => console.error(err));
+//     setLoading(true);
+//     getRepository().then((data) => {
+//       setTexts(data); // full list with id + text
+//       setLoading(false);
+//     });
 //   }, []);
+//   // useEffect(() => {
+//   //   // getRepository()
+//   //   //   .then((data) => {
+//   //   //     const repo = data[0];
+//   //   //     setResourceTypes(repo.ResourceTypes?.split(",") || []);
+//   //   //     setSubjects(repo.Subjects?.split(",") || []);
+//   //   //     setLevels(repo.EducationLevels?.split(",") || []);
+//   //   //     setLanguages(repo.Languages?.split(",") || []);
+//   //   //     setCategories(repo.Categories?.split(",") || []);
+//   //   //   })
+//   //   //   .catch((err) => console.error(err));
+
+//   // }, []);
 
 //   // Add new value
-//   const addValue = async (type) => {
-//     if (!newValue.trim()) return alert("Enter a value!");
+//   const addValue = async () => {
+//     if (!newValue.trim()) return alert("Enter a value first!");
+
 //     try {
-//       const data = await addRepositoryValue(type, newValue);
-//       setResourceTypes(data.ResourceTypes?.split(",") || []);
-//       setSubjects(data.Subjects?.split(",") || []);
-//       setLevels(data.EducationLevels?.split(",") || []);
-//       setLanguages(data.Languages?.split(",") || []);
-//       setCategories(data.Categories?.split(",") || []);
+//       const newItem = await addRepositoryValue(newValue);
+//       setTexts((prev) => [...prev, newItem]);
 //       setNewValue("");
 //       alert("Added successfully!");
 //     } catch (err) {
 //       alert("Failed to add value");
 //     }
 //   };
-
+//   // const addValue = async (type) => {
+//   //   if (!newValue.trim()) return alert("Enter a value!");
+//   //   try {
+//   //     const data = await addRepositoryValue(type, newValue);
+//   //     setResourceTypes(data.ResourceTypes?.split(",") || []);
+//   //     setSubjects(data.Subjects?.split(",") || []);
+//   //     setLevels(data.EducationLevels?.split(",") || []);
+//   //     setLanguages(data.Languages?.split(",") || []);
+//   //     setCategories(data.Categories?.split(",") || []);
+//   //     setNewValue("");
+//   //     alert("Added successfully!");
+//   //   } catch (err) {
+//   //     alert("Failed to add value");
+//   //   }
+//   // };
 
 //   return (
 //     <div className="flex min-h-screen bg-[#1e1f2b] text-white">
@@ -77,18 +100,18 @@
 //         <h1 className="text-3xl font-bold mb-8">📘 Create Repository</h1>
 
 //         <div className="bg-[#1e1f29] p-6 rounded-xl shadow-lg space-y-5 max-w-6xl">
-
 //           {/* Dropdowns in one grid */}
 //           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-
 //             {/* 1️⃣ Category */}
 //             <DropdownWithAdd
 //               title="Category"
-//               items={categories}
-//               value={selected.category}
+//               items={texts}
+//               value={selected.texts}
 //               onChange={(v) => setSelected({ ...selected, category: v })}
-//               onAdd={() => addValue("category")}
-//               onDelete={(item) => setCategories(prev => prev.filter(i => i !== item))}
+//               onAdd={() => addValue("texts")}
+//               onDelete={(item) =>
+//                 setCategories((prev) => prev.filter((i) => i !== item))
+//               }
 //               placeholder="Add new category"
 //               newValue={newValue}
 //               setNewValue={setNewValue}
@@ -99,11 +122,13 @@
 //             {/* 2️⃣ Education Level (Disabled if no category selected) */}
 //             <DropdownWithAdd
 //               title="Education Level"
-//               items={levels}
-//               value={selected.level}
+//               items={texts}
+//               value={selected.texts}
 //               onChange={(v) => setSelected({ ...selected, level: v })}
 //               onAdd={() => addValue("level")}
-//               onDelete={(item) => setLevels(prev => prev.filter(i => i !== item))}
+//               onDelete={(item) =>
+//                 setLevels((prev) => prev.filter((i) => i !== item))
+//               }
 //               placeholder="Add new level"
 //               newValue={newValue}
 //               setNewValue={setNewValue}
@@ -131,11 +156,13 @@
 //             {/* 4️⃣ Resource Type */}
 //             <DropdownWithAdd
 //               title="Resource Type"
-//               items={resourceTypes}
-//               value={selected.resourceType}
+//               items={texts}
+//               value={selected.texts}
 //               onChange={(v) => setSelected({ ...selected, resourceType: v })}
 //               onAdd={() => addValue("resource")}
-//               onDelete={(item) => setResourceTypes(prev => prev.filter(i => i !== item))}
+//               onDelete={(item) =>
+//                 setResourceTypes((prev) => prev.filter((i) => i !== item))
+//               }
 //               placeholder="Add new type"
 //               newValue={newValue}
 //               setNewValue={setNewValue}
@@ -146,26 +173,25 @@
 //             {/* 5️⃣ Language */}
 //             <DropdownWithAdd
 //               title="Language"
-//               items={languages}
-//               value={selected.language}
+//               items={texts}
+//               value={selected.texts}
 //               onChange={(v) => setSelected({ ...selected, language: v })}
 //               onAdd={() => addValue("language")}
-//               onDelete={(item) => setLanguages(prev => prev.filter(i => i !== item))}
+//               onDelete={(item) =>
+//                 setLanguages((prev) => prev.filter((i) => i !== item))
+//               }
 //               placeholder="Add new language"
 //               newValue={newValue}
 //               setNewValue={setNewValue}
 //               activeField={activeField}
 //               setActiveField={setActiveField}
 //             />
-
 //           </div>
 //         </div>
 //       </main>
 //     </div>
 //   );
 // }
-
-
 
 // export function DropdownWithAdd({
 //   title,
@@ -196,20 +222,26 @@
 //     return () => document.removeEventListener("mousedown", handleClickOutside);
 //   }, []);
 
-//   const handleAddOrUpdate = () => {
+//   const handleAddOrUpdate = async () => {
 //     if (!newValue.trim()) return alert("Please enter a value!");
 
-//     if (editIndex !== null) {
-//       const updated = [...items];
-//       updated[editIndex] = newValue;
-//       onChange(updated[editIndex]);
-//       setEditIndex(null);
-//       alert("Updated successfully!");
-//     } else {
-//       onAdd();
-//     }
+//     try {
+//       if (editIndex !== null) {
+//         await updateRepositoryValue(items[editIndex], newValue);
 
-//     setNewValue("");
+//         const updated = [...items];
+//         updated[editIndex] = newValue;
+//         onChange(newValue);
+//         alert("Updated successfully!");
+//         setEditIndex(null);
+//       } else {
+//         await onAdd();
+//       }
+
+//       setNewValue("");
+//     } catch (err) {
+//       alert("Failed to update value");
+//     }
 //   };
 
 //   return (
@@ -217,8 +249,12 @@
 //       <label className="block mb-2 font-semibold text-gray-300">{title}</label>
 
 //       <div
-//         className={`p-3 rounded-lg cursor-pointer flex justify-between items-center shadow-lg 
-//         ${disabled ? "bg-gray-700 cursor-not-allowed" : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition-colors"}`}
+//         className={`p-3 rounded-lg cursor-pointer flex justify-between items-center shadow-lg
+//         ${
+//           disabled
+//             ? "bg-gray-700 cursor-not-allowed"
+//             : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition-colors"
+//         }`}
 //         onClick={() => !disabled && setIsOpen(!isOpen)}
 //       >
 //         <span className={`${value ? "text-white" : "text-gray-300"}`}>
@@ -256,9 +292,17 @@
 //                   />
 //                   <MdDelete
 //                     className="text-red-500 rounded-lg text-2xl hover:text-red-600"
-//                     onClick={(e) => {
+//                     onClick={async (e) => {
 //                       e.stopPropagation();
-//                       onDelete(item);
+//                       if (confirm(`Delete "${item}" ?`)) {
+//                         try {
+//                           await deleteRepositoryValue(item);
+//                           onDelete(item);
+//                           alert("Deleted Successfully!");
+//                         } catch {
+//                           alert("Failed to delete!");
+//                         }
+//                       }
 //                     }}
 //                   />
 //                 </div>
@@ -293,22 +337,18 @@
 //   );
 // }
 
-
-
-
-
-
-
-
-
-
 import { useEffect, useState, useRef } from "react";
 import Sidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
 import { FiMenu } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
-import { getRepository, addRepositoryValue, updateRepositoryValue, deleteRepositoryValue } from '../../apiServices/apiRepository';
+import {
+  getRepository,
+  addRepositoryValue,
+  updateRepositoryValue,
+  deleteRepositoryValue,
+} from "../../apiServices/apiRepository";
 
 export default function RepositoryManagement() {
   const [resourceTypes, setResourceTypes] = useState([]);
@@ -316,9 +356,10 @@ export default function RepositoryManagement() {
   const [levels, setLevels] = useState([]);
   const [languages, setLanguages] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [texts, setTexts] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const [repoName, setRepoName] = useState("");
   const [selected, setSelected] = useState({
     resourceType: "",
     subject: "",
@@ -331,44 +372,86 @@ export default function RepositoryManagement() {
   const [activeField, setActiveField] = useState("");
 
   useEffect(() => {
-    getRepository()
-      .then(data => {
-        const repo = data[0];
-        setResourceTypes(repo.ResourceTypes?.split(",") || []);
-        setSubjects(repo.Subjects?.split(",") || []);
-        setLevels(repo.EducationLevels?.split(",") || []);
-        setLanguages(repo.Languages?.split(",") || []);
-        setCategories(repo.Categories?.split(",") || []);
+    setLoading(true);
+
+    Promise.all([
+      getRepository("category"),
+      getRepository("level"),
+      getRepository("subject"),
+      getRepository("resource"),
+      getRepository("language"),
+    ])
+      .then(([categories, levels, subjects, resources, languages]) => {
+        setTexts(categories);
+        setLevels(levels);
+        setSubjects(subjects);
+        setResourceTypes(resources);
+        setLanguages(languages);
       })
-      .catch(err => console.error(err));
+      .finally(() => setLoading(false));
   }, []);
 
-  // Add new value
-  const addValue = async (type) => {
-    if (!newValue.trim()) return alert("Enter a value!");
+  const addValue = async (field) => {
+    if (!newValue.trim()) return alert("Enter a value first!");
     try {
-      const data = await addRepositoryValue(type, newValue);
-      setResourceTypes(data.ResourceTypes?.split(",") || []);
-      setSubjects(data.Subjects?.split(",") || []);
-      setLevels(data.EducationLevels?.split(",") || []);
-      setLanguages(data.Languages?.split(",") || []);
-      setCategories(data.Categories?.split(",") || []);
+      const newItem = await addRepositoryValue(newValue, field); // send type
+      switch (field) {
+        case "category":
+          setTexts((prev) => [...prev, newItem]);
+          break;
+        case "level":
+          setLevels((prev) => [...prev, newItem]);
+          break;
+        case "subject":
+          setSubjects((prev) => [...prev, newItem]);
+          break;
+        case "resource":
+          setResourceTypes((prev) => [...prev, newItem]);
+          break;
+        case "language":
+          setLanguages((prev) => [...prev, newItem]);
+          break;
+      }
       setNewValue("");
       alert("Added successfully!");
     } catch (err) {
+      console.error(err);
       alert("Failed to add value");
     }
   };
 
+  const deleteValue = async (field, id) => {
+    if (!confirm(`Delete this item?`)) return;
+    try {
+      await deleteRepositoryValue(id);
+      switch (field) {
+        case "category":
+          setTexts((prev) => prev.filter((i) => i.id !== id));
+          break;
+        case "level":
+          setLevels((prev) => prev.filter((i) => i.id !== id));
+          break;
+        case "subject":
+          setSubjects((prev) => prev.filter((i) => i.id !== id));
+          break;
+        case "resource":
+          setResourceTypes((prev) => prev.filter((i) => i.id !== id));
+          break;
+        case "language":
+          setLanguages((prev) => prev.filter((i) => i.id !== id));
+          break;
+      }
+      alert("Deleted successfully!");
+    } catch {
+      alert("Failed to delete!");
+    }
+  };
 
   return (
     <div className="flex min-h-screen bg-[#1e1f2b] text-white">
-      {/* Sidebar */}
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
-      {/* Main Content */}
       <main className="flex-1 lg:pl-[280px] py-6 px-5 w-full">
-        {/* Mobile Menu Icon */}
         <div className="lg:hidden px-4 mb-4">
           <button onClick={() => setIsSidebarOpen(true)} className="text-white">
             <FiMenu size={28} />
@@ -380,18 +463,15 @@ export default function RepositoryManagement() {
         <h1 className="text-3xl font-bold mb-8">📘 Create Repository</h1>
 
         <div className="bg-[#1e1f29] p-6 rounded-xl shadow-lg space-y-5 max-w-6xl">
-
-          {/* Dropdowns in one grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-            {/* 1️⃣ Category */}
+            {/* Category */}
             <DropdownWithAdd
               title="Category"
-              items={categories}
+              items={texts}
               value={selected.category}
               onChange={(v) => setSelected({ ...selected, category: v })}
               onAdd={() => addValue("category")}
-              onDelete={(item) => setCategories(prev => prev.filter(i => i !== item))}
+              onDelete={(item) => deleteValue("category", item)}
               placeholder="Add new category"
               newValue={newValue}
               setNewValue={setNewValue}
@@ -399,46 +479,46 @@ export default function RepositoryManagement() {
               setActiveField={setActiveField}
             />
 
-            {/* 2️⃣ Education Level (Disabled if no category selected) */}
+            {/* Education Level */}
             <DropdownWithAdd
               title="Education Level"
               items={levels}
               value={selected.level}
               onChange={(v) => setSelected({ ...selected, level: v })}
               onAdd={() => addValue("level")}
-              onDelete={(item) => setLevels(prev => prev.filter(i => i !== item))}
+              onDelete={(item) => deleteValue("level", item)}
               placeholder="Add new level"
               newValue={newValue}
               setNewValue={setNewValue}
               activeField={activeField}
               setActiveField={setActiveField}
-              disabled={!selected.category} // 🔹 disable if category not selected
+              disabled={!selected.category}
             />
 
-            {/* 3️⃣ Subject (Disabled if no education level selected) */}
-            {/* <DropdownWithAdd
+            {/* Subject */}
+            <DropdownWithAdd
               title="Subject"
               items={subjects}
               value={selected.subject}
               onChange={(v) => setSelected({ ...selected, subject: v })}
               onAdd={() => addValue("subject")}
-              onDelete={(item) => setSubjects(prev => prev.filter(i => i !== item))}
+              onDelete={(item) => deleteValue("subject", item)}
               placeholder="Add new subject"
               newValue={newValue}
               setNewValue={setNewValue}
               activeField={activeField}
               setActiveField={setActiveField}
-              disabled={!selected.level} // 🔹 disable if level not selected
-            /> */}
+              disabled={!selected.level}
+            />
 
-            {/* 4️⃣ Resource Type */}
+            {/* Resource Type */}
             <DropdownWithAdd
               title="Resource Type"
               items={resourceTypes}
               value={selected.resourceType}
               onChange={(v) => setSelected({ ...selected, resourceType: v })}
               onAdd={() => addValue("resource")}
-              onDelete={(item) => setResourceTypes(prev => prev.filter(i => i !== item))}
+              onDelete={(item) => deleteValue("resource", item)}
               placeholder="Add new type"
               newValue={newValue}
               setNewValue={setNewValue}
@@ -446,29 +526,26 @@ export default function RepositoryManagement() {
               setActiveField={setActiveField}
             />
 
-            {/* 5️⃣ Language */}
+            {/* Language */}
             <DropdownWithAdd
               title="Language"
               items={languages}
               value={selected.language}
               onChange={(v) => setSelected({ ...selected, language: v })}
               onAdd={() => addValue("language")}
-              onDelete={(item) => setLanguages(prev => prev.filter(i => i !== item))}
+              onDelete={(item) => deleteValue("language", item)}
               placeholder="Add new language"
               newValue={newValue}
               setNewValue={setNewValue}
               activeField={activeField}
               setActiveField={setActiveField}
             />
-
           </div>
         </div>
       </main>
     </div>
   );
 }
-
-
 
 export function DropdownWithAdd({
   title,
@@ -482,7 +559,7 @@ export function DropdownWithAdd({
   activeField,
   setActiveField,
   onDelete,
-  disabled = false, // 🔹 added
+  disabled = false,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
@@ -499,35 +576,35 @@ export function DropdownWithAdd({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
- const handleAddOrUpdate = async () => {
-  if (!newValue.trim()) return alert("Please enter a value!");
-
-  try {
-    if (editIndex !== null) {
-      await updateRepositoryValue(items[editIndex], newValue); // API call
-
-      const updated = [...items];
-      updated[editIndex] = newValue;
-      onChange(newValue);
-      alert("Updated successfully!");
-      setEditIndex(null);
-    } else {
-      await onAdd();
+  const handleAddOrUpdate = async () => {
+    if (!newValue.trim()) return alert("Please enter a value!");
+    try {
+      if (editIndex !== null) {
+        await updateRepositoryValue(items[editIndex], newValue);
+        const updated = [...items];
+        updated[editIndex] = newValue;
+        onChange(newValue);
+        alert("Updated successfully!");
+        setEditIndex(null);
+      } else {
+        await onAdd();
+      }
+      setNewValue("");
+    } catch {
+      alert("Failed to update value");
     }
-
-    setNewValue("");
-  } catch (err) {
-    alert("Failed to update value");
-  }
-};
+  };
 
   return (
     <div className="relative" ref={dropdownRef}>
       <label className="block mb-2 font-semibold text-gray-300">{title}</label>
 
       <div
-        className={`p-3 rounded-lg cursor-pointer flex justify-between items-center shadow-lg 
-        ${disabled ? "bg-gray-700 cursor-not-allowed" : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition-colors"}`}
+        className={`p-3 rounded-lg cursor-pointer flex justify-between items-center shadow-lg ${
+          disabled
+            ? "bg-gray-700 cursor-not-allowed"
+            : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition-colors"
+        }`}
         onClick={() => !disabled && setIsOpen(!isOpen)}
       >
         <span className={`${value ? "text-white" : "text-gray-300"}`}>
@@ -539,46 +616,37 @@ export function DropdownWithAdd({
       {isOpen && !disabled && (
         <div className="absolute z-50 mt-1 w-full bg-gray-800 rounded-lg shadow-lg max-h-60 overflow-auto ring-1 ring-gray-600">
           {items.length > 0 ? (
-            items.map((item, i) => (
+            items.map((item) => (
               <div
-                key={i}
+                key={item.id}
                 className="flex justify-between items-center px-4 py-2 hover:bg-gray-700 cursor-pointer"
               >
                 <span
                   onClick={() => {
-                    onChange(item);
+                    onChange(item.text); // selected me sirf text rakhna
                     setIsOpen(false);
                   }}
                   className="text-white"
                 >
-                  {item}
+                  {item.text}
                 </span>
                 <div className="flex gap-3">
                   <FaEdit
                     className="text-yellow-400 text-lg hover:text-yellow-600"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setEditIndex(i);
+                      setEditIndex(item.id);
                       setActiveField(title.toLowerCase());
-                      setNewValue(item);
+                      setNewValue(item.text);
                     }}
                   />
                   <MdDelete
                     className="text-red-500 rounded-lg text-2xl hover:text-red-600"
-                    onClick={async (e) => {
+                    onClick={(e) => {
                       e.stopPropagation();
-                      if (confirm(`Delete "${item}" ?`)) {
-                        try {
-                          await deleteRepositoryValue(item); 
-                          onDelete(item);  
-                          alert("Deleted Successfully!");
-                        } catch {
-                          alert("Failed to delete!");
-                        }
-                      }
+                      onDelete(item.id); // id send to backend
                     }}
                   />
-
                 </div>
               </div>
             ))
@@ -610,26 +678,3 @@ export function DropdownWithAdd({
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
