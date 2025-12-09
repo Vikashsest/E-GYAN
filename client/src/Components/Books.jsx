@@ -2333,7 +2333,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                         Education Level
                       </label>
                       <select
-                        value={formData.educationLevel}
+                        value={formData.levels}
                         onChange={(e) =>
                           setFormData((prev) => ({
                             ...prev,
