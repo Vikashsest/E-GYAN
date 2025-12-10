@@ -13,9 +13,12 @@ export default function StudentList() {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const res = await fetch("http://localhost:5000/student-book-assign", {
-          credentials: "include",
-        });
+        const res = await fetch(
+          `{import.meta.env.VITE_API_URL/student-book-assign}`,
+          {
+            credentials: "include",
+          }
+        );
         if (!res.ok) throw new Error("Failed to fetch students");
 
         const data = await res.json();

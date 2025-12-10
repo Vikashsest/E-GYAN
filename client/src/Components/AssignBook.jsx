@@ -31,7 +31,7 @@ export default function AssignBookPage() {
       if (!selectedBook) throw new Error("Book not found");
 
       const res = await fetch(
-        "http://localhost:5000/student-book-assign/assign",
+        `{import.meta.env.VITE_API_URL/student-book-assign/assign}`,
         {
           method: "POST",
           headers: {
