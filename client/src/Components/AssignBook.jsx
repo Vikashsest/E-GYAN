@@ -10,10 +10,10 @@ export default function AssignBookPage() {
   const navigate = useNavigate();
   const [book, setBook] = useState("");
   const [books, setBooks] = useState([]);
-
+  const API_URL = import.meta.env.VITE_API_URL;
   // Fetch all books
   useEffect(() => {
-    fetch("http://localhost:5000/books")
+    fetch(`${API_URL}/books`)
       .then((res) => res.json())
       .then((data) => setBooks(data))
       .catch((err) => console.log("Books API Error:", err));
@@ -31,7 +31,7 @@ export default function AssignBookPage() {
       if (!selectedBook) throw new Error("Book not found");
 
       const res = await fetch(
-        `{import.meta.env.VITE_API_URL/student-book-assign/assign}`,
+        `${import.meta.env.VITE_API_URL}/student-book-assign/assign`,
         {
           method: "POST",
           headers: {

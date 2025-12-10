@@ -14,7 +14,7 @@ export default function StudentList() {
     const fetchStudents = async () => {
       try {
         const res = await fetch(
-          `{import.meta.env.VITE_API_URL/student-book-assign}`,
+          `${import.meta.env.VITE_API_URL}/student-book-assign`,
           {
             credentials: "include",
           }
