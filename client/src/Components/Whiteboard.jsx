@@ -114,7 +114,7 @@ export default function Whiteboard({ onClose }) {
       {/* Fullscreen Button */}
       <button
         onClick={toggleFullscreen}
-        className="absolute bottom-5 right-6 z-50 bg-blue-600 text-white p-2 rounded-full hover:scale-110 shadow"
+        className="absolute top-4 left-14 z-50 bg-blue-600 text-white p-2 rounded-full hover:scale-110 shadow"
         title="Toggle Fullscreen"
       >
         {isFullscreen ? <FaCompress /> : <FaExpand />}
