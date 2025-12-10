@@ -1697,6 +1697,10 @@
 //   );
 // }
 
+
+
+
+
 import { useEffect, useState } from "react";
 import FlipbookPDFViewer from "./FlipbookPDFViewer";
 import { FaEdit, FaTrash, FaExpand, FaCompress } from "react-icons/fa";
@@ -1769,6 +1773,15 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
     source: "",
     link: "",
   });
+
+  const handleChange = (e) => {
+  const { name, value, files } = e.target;
+
+  setFormData((prev) => ({
+    ...prev,
+    [name]: files ? files[0] : value,
+  }));
+};
   const [subjects, setSubjects] = useState([]);
   const [languages, setLanguages] = useState([]);
   const [educationLevels, setEducationLevels] = useState([]);
@@ -1913,6 +1926,11 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   const handleUpload = async (e) => {
     e.preventDefault();
 
+    if (!formData.category || formData.category === "") {
+      toast.warn("Please select a category before uploading");
+      return;
+    }
+
     try {
       if (formData.category === "Current Affairs") {
         const currentFormData = new FormData();
@@ -1953,6 +1971,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
             source: "",
             link: "",
           });
+          
         } else {
           toast.error("❌ Failed to add Current Affairs");
         }
@@ -2279,31 +2298,15 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                   onChange={(e) => {
                     const selectedCategory = e.target.value;
 
-                    // Default to School Education if category is not in predefined list
-                    const predefinedCategories = [
-                      "School Education",
-                      "Current Affairs",
-                      "Simulation",
-                    ];
-                    const categoryToSet = predefinedCategories.includes(
-                      selectedCategory
-                    )
-                      ? selectedCategory
-                      : "School Education";
-
                     setFormData((prev) => ({
                       ...prev,
-                      category: categoryToSet,
-                    }));
-
-                    // Optional: Reset other form fields when category changes
-                    setFormData((prev) => ({
-                      ...prev,
-                      category: categoryToSet,
+                      category: selectedCategory,
                       level: "",
                       subject: "",
                       resourceType: "",
                       language: "",
+                      class: "",
+                      books: "",
                     }));
                   }}
                   className="w-full border border-gray-300 p-2 rounded text-sm"
@@ -2311,17 +2314,12 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                   <option value="">-- Choose Category --</option>
                   {categories.map((cat, idx) => (
                     <option key={idx} value={cat}>
-                      {cat === "School Education"
-                        ? cat
-                        : cat === "Current Affairs"
-                        ? cat
-                        : cat === "Simulation"
-                        ? cat
-                        : cat}
+                      {cat}
                     </option>
                   ))}
                 </select>
               </div>
+
 
               <form className="grid gap-4" onSubmit={handleUpload}>
                 {/* === BOOK UPLOAD FORM === */}
@@ -2717,6 +2715,51 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                   </>
                 )}
 
+
+                {/* Custom Category Form */}
+                {formData.category &&
+                  !["School Education", "Current Affairs", "Simulation"].includes(
+                    formData.category
+                  ) && (
+                    <>
+                      <div className="mb-4">
+                        <label className="text-sm font-medium block mb-1">Class</label>
+                        <input
+                          type="text"
+                          name="class"
+                          value={formData.class || ""}
+                          onChange={handleChange}
+                          className="w-full border border-gray-300 p-2 rounded text-sm"
+                          placeholder="Enter Class"
+                        />
+                      </div>
+
+                      <div className="mb-4">
+                        <label className="text-sm font-medium block mb-1">Subject</label>
+                        <input
+                          type="text"
+                          name="subject"
+                          value={formData.subject || ""}
+                          onChange={handleChange}
+                          className="w-full border border-gray-300 p-2 rounded text-sm"
+                          placeholder="Enter Subject"
+                        />
+                      </div>
+
+                      <div className="mb-4">
+                        <label className="text-sm font-medium block mb-1">Books</label>
+                        <input
+                          type="text"
+                          name="books"
+                          value={formData.books || ""}
+                          onChange={handleChange}
+                          className="w-full border border-gray-300 p-2 rounded text-sm"
+                          placeholder="Enter Books Name"
+                        />
+                      </div>
+                    </>
+                  )}
+
                 {/* Buttons */}
                 <div className="flex justify-end gap-3 mt-4">
                   <button
@@ -2886,14 +2929,14 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                   <div className="flex items-center gap-4">
                     {(getBookResourceType(viewData) === "pdf" ||
                       getBookResourceType(viewData) === "audio") && (
-                      <button
-                        onClick={handleFullscreenToggle}
-                        className="text-white text-xl hover:text-green-400"
-                        title="Toggle Fullscreen"
-                      >
-                        {isFullscreen ? <FaCompress /> : <FaExpand />}
-                      </button>
-                    )}
+                        <button
+                          onClick={handleFullscreenToggle}
+                          className="text-white text-xl hover:text-green-400"
+                          title="Toggle Fullscreen"
+                        >
+                          {isFullscreen ? <FaCompress /> : <FaExpand />}
+                        </button>
+                      )}
                     <button
                       onClick={() => setViewData(null)}
                       className="text-white text-2xl hover:text-red-500"
@@ -2947,3 +2990,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
     </div>
   );
 }
+
+
+
