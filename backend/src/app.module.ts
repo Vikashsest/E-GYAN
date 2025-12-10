@@ -93,6 +93,7 @@ import { ChatModule } from './modules/chat/chat.module';
 import { CurrentAffairsModule } from './modules/current-affairs/current-affairs.module';
 import { AiModule } from './modules/ai/ai.module';
 import { AuthSessionModuleModule } from './modules/auth-session-module/auth-session-module.module';
+import { StudentBookAssignModule } from './modules/student-book-assign/student-book-assign.module';
 
 @Module({
   imports: [
@@ -120,7 +121,8 @@ import { AuthSessionModuleModule } from './modules/auth-session-module/auth-sess
   ChatModule,
   CurrentAffairsModule,
   AiModule,
-  AuthSessionModuleModule
+  AuthSessionModuleModule,
+  StudentBookAssignModule
   ],
   controllers: [AuthController],
   providers: [
