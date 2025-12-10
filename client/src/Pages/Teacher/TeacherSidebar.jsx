@@ -1,5 +1,5 @@
-import { FaUsers, FaBook, FaTachometerAlt,FaBookOpen } from "react-icons/fa";
-import { MdManageAccounts } from "react-icons/md";
+import { FaUsers, FaBook, FaTachometerAlt, FaBookOpen } from "react-icons/fa";
+import { MdAssignmentAdd, MdManageAccounts } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Logout from "../Auth/Logout";
 
@@ -24,7 +24,7 @@ export default function Sidebar() {
                   <span>Dashboard</span>
                 </li>
               </Link>
-              <Link
+              {/* <Link
                 className="flex items-center space-x-2"
                 to="/teacher/students"
               >
@@ -32,11 +32,17 @@ export default function Sidebar() {
                   <FaUsers />
                   <span>Manage Students</span>
                 </li>
-              </Link>
+              </Link> */}
               <Link className="flex items-center space-x-2" to="/teacher/books">
                 <li className="flex items-center space-x-2 text-gray-300">
                   <FaBook />
                   <span> Manage Books</span>
+                </li>
+              </Link>
+              <Link className="flex items-center space-x-2" to="/students">
+                <li className="flex items-center space-x-2 text-gray-300">
+                  <MdAssignmentAdd />
+                  <span>Assign Books</span>
                 </li>
               </Link>
               <Link className="flex items-center space-x-2" to="/teacher/role">
