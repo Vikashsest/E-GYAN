@@ -36,10 +36,10 @@ export const addRepositoryValue = async (text, type) => {
 export const updateRepositoryValue = async (id, text) => {
   try {
     const res = await fetch(`${API_URL}/repository/${id}`, {
-      method: "PUT",
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify({ text }),
+      body: JSON.stringify({ value: text }),
     });
 
     if (!res.ok) throw new Error("Failed to update value");

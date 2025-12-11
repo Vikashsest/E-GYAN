@@ -70,10 +70,15 @@ export class RepositoryService {
   }
 
   async update(id: number, value: string) {
-    const repo = await this.repository.findOne({ where: { id } });
-    if (!repo) throw new NotFoundException(`Repository ${id} not found`);
-    repo.text = value;
-    return await this.repository.save(repo);
+    try {
+      const repo = await this.repository.findOne({ where: { id } });
+      if (!repo) throw new NotFoundException(`Repository ${id} not found`);
+      repo.text = value;
+
+      return await this.repository.save(repo);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async deleteRepository(id: number) {

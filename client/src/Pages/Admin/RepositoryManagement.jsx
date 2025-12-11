@@ -337,10 +337,6 @@
 //   );
 // }
 
-
-
-
-
 // import { useEffect, useState, useRef } from "react";
 // import Sidebar from "./AdminSidebar";
 // import AdminNavbar from "./AdminNavbar";
@@ -683,13 +679,6 @@
 //   );
 // }
 
-
-
-
-
-
-
-
 import { useEffect, useState, useRef } from "react";
 import Sidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
@@ -740,7 +729,7 @@ export default function RepositoryManagement() {
         setTexts(categories);
         setLevels(levels);
         setSubjects(subjects);
-        setBooks(booksData);
+        // setBooks(booksData);
         setResourceTypes(resources);
         setLanguages(languages);
       })
@@ -889,7 +878,6 @@ export default function RepositoryManagement() {
               disabled={!selected.subject}
             />
 
-
             {/* Resource Type */}
             <DropdownWithAdd
               title="Resource Type"
@@ -957,19 +945,40 @@ export function DropdownWithAdd({
 
   const handleAddOrUpdate = async () => {
     if (!newValue.trim()) return alert("Please enter a value!");
+
     try {
       if (editIndex !== null) {
-        await updateRepositoryValue(items[editIndex], newValue);
-        const updated = [...items];
-        updated[editIndex] = newValue;
+        // Find the item by ID
+        const item = items.find((x) => x.id === editIndex);
+        if (!item) {
+          alert("Item not found!");
+          return;
+        }
+
+        // Call backend API
+        await updateRepositoryValue(item.id, newValue);
+
+        // Update the local list (parent state) safely
+        const updatedItems = items.map((it) =>
+          it.id === editIndex ? { ...it, text: newValue } : it
+        );
+
+        // Pass updated list back to parent
+        // onUpdateList?.(updatedItems); // optional: parent can handle updated list
+
+        // Update selected value in dropdown
         onChange(newValue);
+
         alert("Updated successfully!");
         setEditIndex(null);
       } else {
+        // Add new value
         await onAdd();
       }
+
       setNewValue("");
-    } catch {
+    } catch (err) {
+      console.error("handleAddOrUpdate error:", err);
       alert("Failed to update value");
     }
   };
@@ -979,10 +988,11 @@ export function DropdownWithAdd({
       <label className="block mb-2 font-semibold text-gray-300">{title}</label>
 
       <div
-        className={`p-3 rounded-lg cursor-pointer flex justify-between items-center shadow-lg ${disabled
+        className={`p-3 rounded-lg cursor-pointer flex justify-between items-center shadow-lg ${
+          disabled
             ? "bg-gray-700 cursor-not-allowed"
             : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition-colors"
-          }`}
+        }`}
         onClick={() => !disabled && setIsOpen(!isOpen)}
       >
         <span className={`${value ? "text-white" : "text-gray-300"}`}>

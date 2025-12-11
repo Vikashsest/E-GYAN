@@ -22,6 +22,7 @@ import { Simulation } from 'src/modules/book/entities/simulation';
 import { CurrentAffair } from 'src/modules/current-affairs/entities/current-affair.entity';
 import { Request } from 'src/modules/user/entities/user.request.entity';
 import { UserSession } from 'src/modules/auth-session-module/entities/auth-session-module.entity';
+import { StudentBookAssign } from 'src/modules/student-book-assign/entities/student-book-assign.entity';
 
 dotenv.config();
 
@@ -69,6 +70,7 @@ export const databaseConfig: TypeOrmModuleOptions = {
     CurrentAffair,
     Request,
     UserSession,
+    StudentBookAssign,
   ],
   synchronize: true,
   extra: {
