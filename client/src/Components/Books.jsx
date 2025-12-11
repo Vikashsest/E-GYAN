@@ -1775,14 +1775,15 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   });
 
   const handleChange = (e) => {
-  const { name, value, files } = e.target;
+    const { name, value, files } = e.target;
 
-  setFormData((prev) => ({
-    ...prev,
-    [name]: files ? files[0] : value,
-  }));
-};
+    setFormData((prev) => ({
+      ...prev,
+      [name]: files ? files[0] : value,
+    }));
+  };
   const [subjects, setSubjects] = useState([]);
+  const [books, setBooks] = useState([]);
   const [languages, setLanguages] = useState([]);
   const [educationLevels, setEducationLevels] = useState([]);
   const editor = useRef(null);
@@ -1809,12 +1810,14 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
         const [categories, subjects, languages, levels] = await Promise.all([
           getRepository("category"),
           getRepository("subject"),
+          getRepository("books"),
           getRepository("language"),
           getRepository("level"),
         ]);
 
         setCategories(categories.map((c) => c.text));
         setSubjects(subjects.map((s) => s.text));
+        setBooks(books.map((s) => s.text));
         setLanguages(languages.map((l) => l.text));
         setEducationLevels(levels.map((e) => e.text));
       } catch (err) {
@@ -1822,6 +1825,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
 
         setCategories([]);
         setSubjects([]);
+        setBooks([]);
         setLanguages([]);
         setEducationLevels([]);
       }
@@ -1971,7 +1975,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
             source: "",
             link: "",
           });
-          
+
         } else {
           toast.error("❌ Failed to add Current Affairs");
         }
@@ -2722,43 +2726,80 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                     formData.category
                   ) && (
                     <>
+                      {/* Class Dropdown - from educationLevels */}
                       <div className="mb-4">
-                        <label className="text-sm font-medium block mb-1">Class</label>
-                        <input
-                          type="text"
-                          name="class"
-                          value={formData.class || ""}
+                        <label className="text-sm font-medium block mb-1">Education Level</label>
+                        <select
+                          name="levels"
+                          value={formData.levels || ""}
                           onChange={handleChange}
                           className="w-full border border-gray-300 p-2 rounded text-sm"
-                          placeholder="Enter Class"
-                        />
+                        >
+                          <option value="">Select Class</option>
+                          {educationLevels.map((level, index) => (
+                            <option key={index} value={level}>
+                              {level}
+                            </option>
+                          ))}
+                        </select>
                       </div>
 
+                      {/* Subject Dropdown - from subjects */}
                       <div className="mb-4">
                         <label className="text-sm font-medium block mb-1">Subject</label>
-                        <input
-                          type="text"
+                        <select
                           name="subject"
                           value={formData.subject || ""}
                           onChange={handleChange}
                           className="w-full border border-gray-300 p-2 rounded text-sm"
-                          placeholder="Enter Subject"
-                        />
+                        >
+                          <option value="">Select Subject</option>
+                          {subjects.map((subject, index) => (
+                            <option key={index} value={subject}>
+                              {subject}
+                            </option>
+                          ))}
+                        </select>
                       </div>
 
+                      {/* Books Dropdown - from books */}
                       <div className="mb-4">
                         <label className="text-sm font-medium block mb-1">Books</label>
-                        <input
-                          type="text"
+                        <select
                           name="books"
                           value={formData.books || ""}
                           onChange={handleChange}
                           className="w-full border border-gray-300 p-2 rounded text-sm"
-                          placeholder="Enter Books Name"
-                        />
+                        >
+                          <option value="">Select Book</option>
+                          {books.map((book, index) => (
+                            <option key={index} value={book}>
+                              {book}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Language Dropdown - from languages */}
+                      <div className="mb-4">
+                        <label className="text-sm font-medium block mb-1">Language</label>
+                        <select
+                          name="language"
+                          value={formData.language || ""}
+                          onChange={handleChange}
+                          className="w-full border border-gray-300 p-2 rounded text-sm"
+                        >
+                          <option value="">Select Language</option>
+                          {languages.map((lang, index) => (
+                            <option key={index} value={lang}>
+                              {lang}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                     </>
                   )}
+
 
                 {/* Buttons */}
                 <div className="flex justify-end gap-3 mt-4">

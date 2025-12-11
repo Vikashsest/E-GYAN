@@ -675,7 +675,7 @@ export default function ChaptersList() {
                                 e.stopPropagation();
                                 setSelectedChapter(item);
                               }}
-                              className="text-left px-2 py-1 text-white  bg-gray-300 dark:bg-gray-600 rounded hover:bg-gray-400 dark:hover:bg-gray-500"
+                              className="text-left px-2 py-1 text-white  bg-gray-300 dark:bg-gray-600 border-light rounded hover:bg-gray-400 dark:hover:bg-gray-500"
                             >
                               {p}
                             </button>
