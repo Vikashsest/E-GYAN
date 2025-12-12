@@ -150,7 +150,7 @@ export class UserService {
         user.studentProfile.rollNo = +updateUserDto.rollNo;
       }
       if (updateUserDto.isActive) {
-        user.isActive = false;
+        updateUserDto.isActive = false;
       }
 
       await this.studentRepository.save(user.studentProfile);
