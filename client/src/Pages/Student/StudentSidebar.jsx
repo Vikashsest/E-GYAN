@@ -51,7 +51,15 @@ export default function StudentSidebar({ isOpen, onClose }) {
                 <span>Study Material</span>
               </Link>
             </li>
-
+            <li>
+              <Link
+                to="/assign/mybooks"
+                className="flex items-center space-x-3 text-gray-300 hover:text-white transition"
+              >
+                <FaFileAlt />
+                <span>My Books</span>
+              </Link>
+            </li>
             <li>
               <Link
                 to="/student/myprogress"
@@ -61,7 +69,6 @@ export default function StudentSidebar({ isOpen, onClose }) {
                 <span>My Progress</span>
               </Link>
             </li>
-
 
             <li>
               <Link
@@ -93,14 +100,14 @@ export default function StudentSidebar({ isOpen, onClose }) {
               </Link>
             </li>
             <li>
-  {/* <Link
+              {/* <Link
     to="/student/chat"
     className="flex items-center space-x-3 text-gray-300 hover:text-white transition"
   >
     💬
     <span>Chat</span>
   </Link> */}
-</li>
+            </li>
           </ul>
         </nav>
       </div>

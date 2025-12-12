@@ -157,7 +157,7 @@ export const teacherRouteList = [
     ),
   },
   {
-    path: "/teacher/assign-book/:username",
+    path: "/teacher/assign-book/:id",
     element: (
       <ProtectedRoute allowedRoles={["teacher", "admin", "principal"]}>
         <AssignBookPage />

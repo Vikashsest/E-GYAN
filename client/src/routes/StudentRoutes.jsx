@@ -1,4 +1,3 @@
-
 // import ProtectedRoute from "../ProtectedRoute";
 // import StudentDashboard from "../Pages/Student/StudentDashboard";
 // import StudentProfile from "../Pages/Student/StudentProfile";
@@ -11,7 +10,6 @@
 // import BooksList from "../Pages/Student/BooksList"
 // import ClassList from "../Pages/Student/ClassList";
 // import ChaptersList from "../Pages/Student/ChaptersList";
-
 
 // export const studentRouteList = [
 //   {
@@ -113,9 +111,9 @@ import Progress from "../Pages/Student/Progress";
 import RecentReadBooks from "../Pages/Student/RecentReadBooks";
 import Favorites from "../Pages/Student/Favorites";
 import RaiseConcern from "../Pages/Student/RaiseConcern";
-import StudentBooks from "../Pages/Student/StudentBooks"
-import Subjects from "../Pages/Student/Subjects"
-import BooksList from "../Pages/Student/BooksList"
+import StudentBooks from "../Pages/Student/StudentBooks";
+import Subjects from "../Pages/Student/Subjects";
+import BooksList from "../Pages/Student/BooksList";
 import ClassList from "../Pages/Student/ClassList";
 import ChaptersList from "../Pages/Student/ChaptersList";
 import QuizPage from "../Pages/Student/QuizPage";
@@ -125,49 +123,82 @@ import AssessmentStartPage from "../Pages/Student/AssessmentStartPage";
 import SimulationLibrary from "../Pages/Student/SimulationLibrary";
 import CurrentAffairs from "../Pages/Student/CurrentAffairs";
 import NewsModal from "../Pages/Student/NewsModel";
+import MyBooks from "../Components/AssignedBook";
 
 export const studentRouteList = [
   {
     path: "/student/dashboard",
-    element: <ProtectedRoute allowedRoles={["student"]}><StudentDashboard /></ProtectedRoute>
+    element: (
+      <ProtectedRoute allowedRoles={["student"]}>
+        <StudentDashboard />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/student/profile",
-    element: <ProtectedRoute allowedRoles={["student"]}><StudentProfile /></ProtectedRoute>
+    element: (
+      <ProtectedRoute allowedRoles={["student"]}>
+        <StudentProfile />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/student/myprogress",
-    element: <ProtectedRoute allowedRoles={["student"]}><Progress /></ProtectedRoute>,
+    element: (
+      <ProtectedRoute allowedRoles={["student"]}>
+        <Progress />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/student/recent-read-books",
-    element: <ProtectedRoute allowedRoles={["student"]}><RecentReadBooks /></ProtectedRoute>,
+    element: (
+      <ProtectedRoute allowedRoles={["student"]}>
+        <RecentReadBooks />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/student/favorites",
-    element: <ProtectedRoute allowedRoles={["student"]}><Favorites /></ProtectedRoute>,
+    element: (
+      <ProtectedRoute allowedRoles={["student"]}>
+        <Favorites />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/student/raise-concern",
-    element: <ProtectedRoute allowedRoles={["student"]}><RaiseConcern /></ProtectedRoute>,
+    element: (
+      <ProtectedRoute allowedRoles={["student"]}>
+        <RaiseConcern />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/students/books",
-    element: <ProtectedRoute allowedRoles={["student"]}><StudentBooks /></ProtectedRoute>,
+    element: (
+      <ProtectedRoute allowedRoles={["student"]}>
+        <StudentBooks />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/classes",
-    element: <ProtectedRoute allowedRoles={["student"]}><ClassList /></ProtectedRoute>,
+    element: (
+      <ProtectedRoute allowedRoles={["student"]}>
+        <ClassList />
+      </ProtectedRoute>
+    ),
   },
-{
-  path: "/subjects",
-  element: (
-    <ProtectedRoute allowedRoles={["student"]}>
-      <Subjects />
-    </ProtectedRoute>
-  ),
-},
- {
+  {
+    path: "/subjects",
+    element: (
+      <ProtectedRoute allowedRoles={["student"]}>
+        <Subjects />
+      </ProtectedRoute>
+    ),
+  },
+  {
     path: "/student/assessments",
     element: (
       <ProtectedRoute allowedRoles={["student"]}>
@@ -183,47 +214,55 @@ export const studentRouteList = [
       </ProtectedRoute>
     ),
   },
-// {
-//   path: "/books/:className/:subject",
-//   element: (
-//     <ProtectedRoute allowedRoles={["student"]}>
-//       <BooksList />
-//     </ProtectedRoute>
-//   ),
-// },
-{
-  path: "/student/books/:bookId/chapters",
-  element: (
-    <ProtectedRoute allowedRoles={["student"]}>
-      <ChaptersList />
-    </ProtectedRoute>
-  ),
-},
-{
-  path: "/subjects/:className",
-  element: (
-    <ProtectedRoute allowedRoles={["student"]}>
-      <Subjects />
-    </ProtectedRoute>
-  ),
-},
-{
-  path: "/books/:className/:subject",
-  element: (
-    <ProtectedRoute allowedRoles={["student"]}>
-      <BooksList />
-    </ProtectedRoute>
-  ),
-},
-{
-  path: "/books",
-  element: (
-    <ProtectedRoute allowedRoles={["student"]}>
-      <BooksList />
-    </ProtectedRoute>
-  ),
-},
- {
+  // {
+  //   path: "/books/:className/:subject",
+  //   element: (
+  //     <ProtectedRoute allowedRoles={["student"]}>
+  //       <BooksList />
+  //     </ProtectedRoute>
+  //   ),
+  // },
+  {
+    path: "/student/books/:bookId/chapters",
+    element: (
+      <ProtectedRoute allowedRoles={["student"]}>
+        <ChaptersList />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/subjects/:className",
+    element: (
+      <ProtectedRoute allowedRoles={["student"]}>
+        <Subjects />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/books/:className/:subject",
+    element: (
+      <ProtectedRoute allowedRoles={["student"]}>
+        <BooksList />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/books",
+    element: (
+      <ProtectedRoute allowedRoles={["student"]}>
+        <BooksList />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/assign/mybooks/:id",
+    element: (
+      <ProtectedRoute>
+        <MyBooks />
+      </ProtectedRoute>
+    ),
+  },
+  {
     path: "/student/books/:bookId/chapters",
     element: (
       <ProtectedRoute allowedRoles={["student"]}>
@@ -263,7 +302,7 @@ export const studentRouteList = [
       </ProtectedRoute>
     ),
   },
-   {
+  {
     path: "current-affairs/:id",
     element: (
       <ProtectedRoute allowedRoles={["student"]}>

@@ -36,10 +36,7 @@ export default function StudentList() {
 
   return (
     <div className="flex min-h-screen bg-[#1e1f2b] text-white">
-      {/* Sidebar */}
       <TeacherSidebar />
-
-      {/* Main content */}
       <main className="flex-1 pl-[280px] pr-6 py-6">
         <TeacherNavbar />
 
@@ -68,7 +65,7 @@ export default function StudentList() {
                 <div className="mt-4">
                   <button
                     onClick={() =>
-                      navigate(`/teacher/assign-book/${student.username}`)
+                      navigate(`/teacher/assign-book/${student.id}`)
                     }
                     className="w-full bg-gradient-to-r from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 transition-all text-white font-semibold py-2 px-4 rounded-xl shadow-md"
                   >

@@ -6,12 +6,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export default function AssignBookPage() {
-  const { studentId } = useParams(); // Student ID from URL
+  const { id } = useParams();
+  console.log("id is", id);
   const navigate = useNavigate();
   const [book, setBook] = useState("");
   const [books, setBooks] = useState([]);
   const API_URL = import.meta.env.VITE_API_URL;
-  // Fetch all books
+
   useEffect(() => {
     fetch(`${API_URL}/books`)
       .then((res) => res.json())
@@ -26,7 +27,6 @@ export default function AssignBookPage() {
     }
 
     try {
-      // Find the selected book object to get its ID
       const selectedBook = books.find((b) => b.bookName === book);
       if (!selectedBook) throw new Error("Book not found");
 
@@ -38,7 +38,7 @@ export default function AssignBookPage() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            studentId: Number(studentId),
+            studentId: Number(id),
             bookId: selectedBook.id,
           }),
         }
@@ -48,7 +48,7 @@ export default function AssignBookPage() {
 
       const data = await res.json();
       toast.success(data.message);
-      navigate("/teacher/students"); // Redirect to student list after assign
+      navigate("/teacher/students");
     } catch (error) {
       console.error(error);
       toast.error("Failed to assign book");
@@ -65,14 +65,11 @@ export default function AssignBookPage() {
       </h2>
 
       <div className="max-w-lg mx-auto bg-[#26273c] p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-shadow duration-300">
-        {/* Student Fixed Display */}
         <div className="mb-6">
           <p className="text-lg text-gray-300">
-            <strong>Student ID:</strong> {studentId}
+            <strong>Student ID:</strong> {id}
           </p>
         </div>
-
-        {/* Book Select */}
         <div className="mb-6">
           <label className="block text-gray-300 mb-2 font-medium">
             Select Book
@@ -94,8 +91,6 @@ export default function AssignBookPage() {
             </select>
           </div>
         </div>
-
-        {/* Assign Button */}
         <button
           onClick={handleAssign}
           className="w-full bg-gradient-to-r from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 transition-all text-white font-semibold py-3 rounded-xl shadow-md text-lg"
