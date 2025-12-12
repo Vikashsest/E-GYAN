@@ -94,6 +94,7 @@ import { CurrentAffairsModule } from './modules/current-affairs/current-affairs.
 import { AiModule } from './modules/ai/ai.module';
 import { AuthSessionModuleModule } from './modules/auth-session-module/auth-session-module.module';
 import { StudentBookAssignModule } from './modules/student-book-assign/student-book-assign.module';
+import { AnnoucementsModule } from './modules/annoucements/annoucements.module';
 
 @Module({
   imports: [
@@ -122,7 +123,8 @@ import { StudentBookAssignModule } from './modules/student-book-assign/student-b
   CurrentAffairsModule,
   AiModule,
   AuthSessionModuleModule,
-  StudentBookAssignModule
+  StudentBookAssignModule,
+  AnnoucementsModule
   ],
   controllers: [AuthController],
   providers: [

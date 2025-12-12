@@ -22,14 +22,29 @@ export class StudentBookAssignController {
     return this.studentBookAssignService.create(createStudentBookAssignDto);
   }
   @Post('assign')
-  async assignBook(@Body() body: { studentId: number; bookId: number }) {
-    const { studentId, bookId } = body;
-    return await this.studentBookAssignService.assignBook(studentId, bookId);
+  async assignBook(
+    @Body() body: { studentId: number; bookId: number; teacherId: number },
+  ) {
+    const { studentId, bookId, teacherId } = body;
+    return await this.studentBookAssignService.assignBook(
+      studentId,
+      bookId,
+      teacherId,
+    );
   }
   @Get()
   findAll() {
     return this.studentBookAssignService.getAllStudents();
   }
+  // @Get('student/:id')
+  // async getAssignedBooks(@Param('id') studentId: string) {
+  //   const id = Number(studentId);
+  //   if (isNaN(id)) {
+  //     throw new Error('Invalid student id');
+  //   }
+  //   return this.studentBookAssignService.getAssignedBooks(id);
+  // }
+
   @Get('books')
   getAllBooks() {
     return this.studentBookAssignService.getAllBooks();

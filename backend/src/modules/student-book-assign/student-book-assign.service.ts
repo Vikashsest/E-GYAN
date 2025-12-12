@@ -47,26 +47,36 @@ export class StudentBookAssignService {
       throw error;
     }
   }
-
-  async assignBook(studentId: number, bookId: number) {
-    const student = await this.studentRepository.findOneBy({ id: studentId });
-    if (!student) throw new Error('Student not found');
-
-    const book = await this.bookRepo.findOneBy({ id: bookId });
-    if (!book) throw new Error('Book not found');
-
-    const assign = this.studentBookAssign.create({
-      student,
-      book,
+  async assignBook(studentId: number, bookId: number, teacherId: number) {
+    const student = await this.userRepository.findOne({
+      where: { id: studentId },
+    });
+    const book = await this.bookRepo.findOne({ where: { id: bookId } });
+    const teacher = await this.userRepository.findOne({
+      where: { id: teacherId },
     });
 
-    await this.studentBookAssign.save(assign);
+    if (!student || !book) {
+      throw new Error('Student or Book not found');
+    }
 
-    return {
-      message: 'Book assigned successfully',
-      assignment: assign,
-    };
+    const assigned = this.studentBookAssign.create({
+      student,
+      book,
+      assignedBy: teacher,
+      status: 'assigned',
+    });
+
+    return await this.studentBookAssign.save(assigned);
   }
+
+  // async getAssignedBooks(studentId: number) {
+  //   return this.studentBookAssign.find({
+  //     where: { student: { id: studentId } },
+  //     relations: ['book', 'assignedBy'],
+  //   });
+  // }
+
   findOne(id: number) {
     return `This action returns a #${id} studentBookAssign`;
   }

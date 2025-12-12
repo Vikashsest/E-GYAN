@@ -7,7 +7,7 @@ import { Student } from 'src/modules/student/entities/student.entity';
 import { StudentActivity } from 'src/modules/student/entities/student-activity.entity';
 import { Concern } from 'src/modules/student/entities/raise-concern.entity';
 import { BookProgress } from 'src/modules/book/entities/book-progress.entity';
-import { Announcement } from 'src/modules/student/entities/announcement.entity';
+
 import { Chapter } from 'src/modules/book/entities/chapter.entity';
 import { Repositories } from 'src/modules/repository/entities/repository.entity';
 import { Assessment } from 'src/modules/assessments/entities/assessment.entity';
@@ -23,7 +23,7 @@ import { CurrentAffair } from 'src/modules/current-affairs/entities/current-affa
 import { Request } from 'src/modules/user/entities/user.request.entity';
 import { UserSession } from 'src/modules/auth-session-module/entities/auth-session-module.entity';
 import { StudentBookAssign } from 'src/modules/student-book-assign/entities/student-book-assign.entity';
-
+import { Annoucement } from 'src/modules/annoucements/entities/annoucement.entity';
 dotenv.config();
 
 // export const databaseConfig: TypeOrmModuleOptions = {
@@ -56,7 +56,6 @@ export const databaseConfig: TypeOrmModuleOptions = {
     StudentActivity,
     Concern,
     BookProgress,
-    Announcement,
     Chapter,
     Repositories,
     Assessment,
@@ -71,6 +70,7 @@ export const databaseConfig: TypeOrmModuleOptions = {
     Request,
     UserSession,
     StudentBookAssign,
+    Annoucement,
   ],
   synchronize: true,
   extra: {
