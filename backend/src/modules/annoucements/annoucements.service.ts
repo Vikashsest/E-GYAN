@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  HttpException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { CreateAnnoucementDto } from './dto/create-annoucement.dto';
 import { UpdateAnnoucementDto } from './dto/update-annoucement.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -42,7 +46,15 @@ export class AnnoucementsService {
     return `This action updates a #${id} annoucement`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} annoucement`;
+  async remove(id: number) {
+    try {
+      const fetechId = await this.annoucementRepo.findOne({ where: { id } });
+      if (!fetechId) {
+        throw new HttpException('id not found', 400);
+      }
+      return await this.annoucementRepo.delete(fetechId);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to delete announcement');
+    }
   }
 }
