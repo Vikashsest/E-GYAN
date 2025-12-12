@@ -26,11 +26,11 @@
 //       });
 
 //       const result = await res.json();
-    
+
 // // document.cookie = `access_token=${result.access_token}; path=/; max-age=86400; sameSite=lax`
 
 //       if (res.ok) {
-//          localStorage.setItem("role", result.role); 
+//          localStorage.setItem("role", result.role);
 //         toast.success("Login successful ✅");
 
 //         setData({ username: '', password: '' });
@@ -52,7 +52,7 @@
 //             default:
 //               navigate("/login");
 //           }
-//         }, 1000); 
+//         }, 1000);
 //       } else {
 //         toast.error(result.message || "Login failed ❌");
 //       }
@@ -70,7 +70,7 @@
 //   <div className="absolute inset-0 bg-black opacity-60 z-0"></div>
 
 //   <div className="w-full max-w-md z-10 bg-[#1c1d2a]/70 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl p-10 space-y-8 transition-all duration-300 text-center">
-    
+
 //     {/* 🔹 App Title */}
 //     <h2 className="text-3xl font-bold text-center text-blue-400 drop-shadow-md">
 //       Unlock Knowledge.
@@ -138,16 +138,6 @@
 //   );
 // }
 
-
-
-
-
-
-
-
-
-
-
 // import { Link, useNavigate } from 'react-router-dom';
 // import { useState } from 'react';
 // import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa'; // 👈 added icons
@@ -172,7 +162,7 @@
 //     e.preventDefault();
 //     try {
 //       const result = await login(data)
-      
+
 //         localStorage.setItem("role", result.role);
 //         toast.success("Login successful ✅");
 
@@ -196,7 +186,7 @@
 //               navigate("/login");
 //           }
 //         }, 1000);
-      
+
 //     } catch (error) {
 //       toast.error("Something went wrong ❗");
 //       console.error("Login error:", error);
@@ -241,7 +231,7 @@
 //             <input
 //               onChange={handledata}
 //               name="password"
-//               type={showPassword ? "text" : "password"} 
+//               type={showPassword ? "text" : "password"}
 //               placeholder="Password"
 //               value={data.password}
 //               required
@@ -287,30 +277,21 @@
 //   );
 // }
 
-
-
-
-
-
-
-
-
-
-import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
-import { login } from '../../apiServices/authApi';
+import { login } from "../../apiServices/authApi";
 
 export default function LoginPage() {
-  const [data, setData] = useState({ username: '', password: '' });
+  const [data, setData] = useState({ username: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   function handledata(e) {
     const { name, value } = e.target;
-    setData(prev => ({ ...prev, [name]: value }));
+    setData((prev) => ({ ...prev, [name]: value }));
   }
 
   const { mutate, isPending } = useMutation({
@@ -318,26 +299,35 @@ export default function LoginPage() {
     onSuccess: (result) => {
       localStorage.setItem("role", result.role);
       toast.success("Login successful ✅");
-      setData({ username: '', password: '' });
-      
+      setData({ username: "", password: "" });
+
       setTimeout(() => {
         switch (result.role) {
-          case "student": navigate("/student/dashboard"); break;
-          case "teacher": navigate("/teacher/dashboard"); break;
-          case "principal": navigate("/principal/dashboard"); break;
-          case "admin": navigate("/admin/dashboard"); break;
-          default: navigate("/login");
+          case "student":
+            navigate("/student/dashboard");
+            break;
+          case "teacher":
+            navigate("/teacher/dashboard");
+            break;
+          case "principal":
+            navigate("/principal/dashboard");
+            break;
+          case "admin":
+            navigate("/admin/dashboard");
+            break;
+          default:
+            navigate("/login");
         }
       }, 1000);
     },
     onError: () => {
       toast.error("Invalid username or password ❌");
-    }
+    },
   });
 
   function handlesubmit(e) {
     e.preventDefault();
-    mutate(data); 
+    mutate(data);
   }
 
   return (
@@ -348,14 +338,13 @@ export default function LoginPage() {
       <div className="absolute inset-0 bg-black opacity-60 z-0"></div>
 
       <div className="w-full max-w-md z-10 bg-[#1c1d2a]/70 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl p-10 space-y-8 transition-all duration-300 text-center">
-
         <h2 className="text-3xl font-bold text-blue-400 drop-shadow-md">
-          Unlock Knowledge.<br />
+          Unlock Knowledge.
+          <br />
           <span className="text-white">Log In.</span>
         </h2>
 
         <form className="space-y-6" onSubmit={handlesubmit}>
-
           {/* Username */}
           <div className="relative">
             <FaEnvelope className="absolute top-3.5 left-3 text-white" />
@@ -384,7 +373,7 @@ export default function LoginPage() {
             />
             <button
               type="button"
-              onClick={() => setShowPassword(prev => !prev)}
+              onClick={() => setShowPassword((prev) => !prev)}
               className="absolute top-4 right-3 text-white"
             >
               {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -402,7 +391,10 @@ export default function LoginPage() {
 
           <p className="text-sm text-gray-300">
             Forgot?{" "}
-            <Link to="/forgot-password" className="text-blue-400 hover:underline">
+            <Link
+              to="/forgot-password"
+              className="text-blue-400 hover:underline"
+            >
               Reset Password
             </Link>
           </p>
@@ -410,7 +402,7 @@ export default function LoginPage() {
 
         <div className="pt-4 border-t border-white/10">
           <a
-            href="https://drive.google.com/uc?export=download&id=1G15zrCtDwNxXApGsa3r_ZgBTO4lMC3_5"
+            href="https://drive.google.com/file/d/1qaOuvwWZbPiB5czasQdJP1TN4Tsgj4Ue/view?usp=drive_link"
             className="inline-block mt-2 px-5 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-white font-semibold shadow-md"
           >
             ⬇️ Download Android Apk
