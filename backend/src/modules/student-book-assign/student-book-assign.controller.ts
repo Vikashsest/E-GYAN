@@ -36,14 +36,14 @@ export class StudentBookAssignController {
   findAll() {
     return this.studentBookAssignService.getAllStudents();
   }
-  // @Get('student/:id')
-  // async getAssignedBooks(@Param('id') studentId: string) {
-  //   const id = Number(studentId);
-  //   if (isNaN(id)) {
-  //     throw new Error('Invalid student id');
-  //   }
-  //   return this.studentBookAssignService.getAssignedBooks(id);
-  // }
+  @Get('student/:id')
+  async getAssignedBooks(@Param('id') studentId: string) {
+    const id = Number(studentId);
+    if (isNaN(id)) {
+      throw new Error('Invalid student id');
+    }
+    return this.studentBookAssignService.getAssignedBooks(id);
+  }
 
   @Get('books')
   getAllBooks() {

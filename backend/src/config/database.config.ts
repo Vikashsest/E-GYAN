@@ -24,6 +24,7 @@ import { Request } from 'src/modules/user/entities/user.request.entity';
 import { UserSession } from 'src/modules/auth-session-module/entities/auth-session-module.entity';
 import { StudentBookAssign } from 'src/modules/student-book-assign/entities/student-book-assign.entity';
 import { Annoucement } from 'src/modules/annoucements/entities/annoucement.entity';
+import { Announcement } from 'src/modules/student/entities/announcement.entity';
 dotenv.config();
 
 // export const databaseConfig: TypeOrmModuleOptions = {
@@ -71,6 +72,7 @@ export const databaseConfig: TypeOrmModuleOptions = {
     UserSession,
     StudentBookAssign,
     Annoucement,
+    Announcement,
   ],
   synchronize: true,
   extra: {

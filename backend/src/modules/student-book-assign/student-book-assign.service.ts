@@ -70,12 +70,12 @@ export class StudentBookAssignService {
     return await this.studentBookAssign.save(assigned);
   }
 
-  // async getAssignedBooks(studentId: number) {
-  //   return this.studentBookAssign.find({
-  //     where: { student: { id: studentId } },
-  //     relations: ['book', 'assignedBy'],
-  //   });
-  // }
+  async getAssignedBooks(studentId: number) {
+    return this.studentBookAssign.find({
+      where: { student: { id: studentId } },
+      relations: ['book', 'assignedBy'],
+    });
+  }
 
   findOne(id: number) {
     return `This action returns a #${id} studentBookAssign`;
