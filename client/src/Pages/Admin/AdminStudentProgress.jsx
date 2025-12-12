@@ -161,6 +161,12 @@
 
 
 
+
+
+
+
+
+
 import { useEffect, useMemo, useState, useCallback } from "react";
 import Sidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
@@ -168,15 +174,9 @@ import { FaChevronDown, FaChevronUp, FaSearch, FaDownload } from "react-icons/fa
 import { motion, AnimatePresence } from "framer-motion";
 import { saveAs } from "file-saver";
 import { FiMenu } from "react-icons/fi";
+import { debounce } from "lodash";
 
-// debounce helper
-function debounce(fn, delay) {
-  let t;
-  return function (...args) {
-    clearTimeout(t);
-    t = setTimeout(() => fn.apply(this, args), delay);
-  };
-}
+
 
 // calculate average progress
 function avgProgress(student) {
@@ -203,14 +203,13 @@ export default function AdminStudentProgress() {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // debounce search
-  // const handleSearchDebounced = useCallback(
-  //   debounce((q) => {
-  //     setSearch(q);
-  //     setCurrentPage(1);
-  //   }, 300),
-  //   []
-  // );
+  const handleSearchDebounced = useCallback(
+    debounce((q) => {
+      setSearch(q);
+      setCurrentPage(1);
+    }, 300),
+    []
+  );
 
   // fetch students from backend
   useEffect(() => {
@@ -241,7 +240,11 @@ export default function AdminStudentProgress() {
   // Filter + sort
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    let arr = students.filter(s => q ? s.username.toLowerCase().includes(q) || s.email.toLowerCase().includes(q) : true);
+    let arr = students.filter(s => q
+      ? s.username?.toLowerCase().includes(q) || s.email?.toLowerCase().includes(q)
+      : true
+    );
+
 
     if (sortBy === "name_asc") arr.sort((a, b) => a.username.localeCompare(b.username));
     if (sortBy === "name_desc") arr.sort((a, b) => b.username.localeCompare(a.username));
@@ -361,9 +364,11 @@ export default function AdminStudentProgress() {
             <input
               placeholder="Search name or email..."
               className="bg-transparent px-3 py-2 w-full outline-none text-sm"
-            // onChange={(e) => handleSearchDebounced(e.target.value)}
+              value={search}
+              onChange={(e) => handleSearchDebounced(e.target.value)}
             />
           </div>
+
 
           <div className="flex items-center justify-end gap-2">
             <select className="px-3 py-2 rounded bg-[#2a2b39] text-sm" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>

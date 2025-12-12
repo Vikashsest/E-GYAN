@@ -38,7 +38,7 @@ export async function updateUserRole(userId, role, isActive) {
 }
 
 export async function deleteUser(userId) {
-  const res = await fetch(`${API_URL}/user/${userId}`, {
+  const res = await fetch(`${API_URL}/user/delete-role/${userId}`, {
     method: "DELETE",
     credentials: "include",
     headers: {
