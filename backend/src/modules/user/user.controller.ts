@@ -1,4 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, Req, UnauthorizedException, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Query,
+  Req,
+  UnauthorizedException,
+  ParseIntPipe,
+  ValidationPipe,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UpdateRoleDto } from './dto/update-role.dto';
@@ -15,70 +29,59 @@ import { CreateRequestDto } from './dto/create-request.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-@Post()
-async createUser(@Body() dto: CreateUserDto, @Req() req: any) {
-  return this.userService.createUser(dto, req.user);
-}
-@Post('request')
-async createRequest(@Body() dto: { message: string }, @Req() req: any) {
+  @Post()
+  async createUser(@Body() dto: CreateUserDto, @Req() req: any) {
+    return this.userService.createUser(dto, req.user);
+  }
+  @Post('request')
+  async createRequest(@Body() dto: { message: string }, @Req() req: any) {
+    const userId = req.user.id;
 
-  const userId = req.user.id;
+    return this.userService.createRequest({ ...dto, userId });
+  }
 
-  return this.userService.createRequest({ ...dto, userId });
-}
+  //ROLE MANAGEMET API
+  @Patch('update-role/:id')
+  @Roles(UserRole.ADMIN, UserRole.PRINCIPAL, UserRole.TEACHER)
+  async updateRole(
+    @Param('id') id: string,
+    @Body(
+      new ValidationPipe({
+        whitelist: true,
+        transform: true,
+      }),
+    )
+    dto: UpdateRoleDto,
+    @Req() req: Request,
+  ) {
+    const adminUser = req.user as User;
+    return this.userService.updateUserRole(+id, dto, adminUser);
+  }
 
+  //MANAGE STUDENTS,TEACHER,PRINCIPAL
 
-//ROLE MANAGEMET API 
-@Patch('update-role/:id')
-@Roles(UserRole.ADMIN,UserRole.PRINCIPAL,UserRole.TEACHER)
-async updateRole(
-  @Param('id') id: number,
-  @Body() dto: UpdateRoleDto,
-  @Req() req: Request,
-) {
-  console.log('Current Admin:', req.user);
-  if (!req.user) {
-  throw new UnauthorizedException('User not found in request');
-}
-  const adminUser = req.user as User; 
-  return this.userService.updateUserRole(+id, dto, adminUser);
-}
+  @Get('filter')
+  @Roles(UserRole.ADMIN, UserRole.PRINCIPAL, UserRole.TEACHER)
+  async getUsers(@Query('role') role: UserRole, @Req() req) {
+    return this.userService.findByRole(role);
+  }
+  //GET ALL  STUDENTS,TEACHER,STUDENTS
 
-//MANAGE STUDENTS,TEACHER,PRINCIPAL 
+  @Get()
+  @Roles(UserRole.ADMIN, UserRole.PRINCIPAL, UserRole.TEACHER)
+  getAllUsers(): Promise<User[]> {
+    return this.userService.findAll();
+  }
+  //Delete role
 
+  @Get('requests')
+  fetchRequests() {
+    return this.userService.fetchUserRequest();
+  }
 
-@Get('filter')
-@Roles(UserRole.ADMIN,UserRole.PRINCIPAL,UserRole.TEACHER)
-async getUsers(@Query('role') role: UserRole, @Req() req) {
-
-  return this.userService.findByRole(role);
-}
-//GET ALL  STUDENTS,TEACHER,STUDENTS
-
-@Get()
-@Roles(UserRole.ADMIN,UserRole.PRINCIPAL,UserRole.TEACHER)
-getAllUsers(): Promise<User[]> {
-
-  return this.userService.findAll();
-}
-//Delete role
-
-@Get('requests')
- fetchRequests(){
-  return this.userService.fetchUserRequest()
- }
-
-@Delete('delete-role/:id')
-@Roles(UserRole.ADMIN,UserRole.TEACHER,UserRole.PRINCIPAL)
-async deleteRole(
-    @Param('id') id: number){
-      return this.userService.deleteRole(id)
-    }
-  @Patch(':id')
-  async updateUser(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateUserDto: UpdateUserDto,
-  ): Promise<User> {
-    return this.userService.updateUser(id, updateUserDto);
+  @Delete('delete-role/:id')
+  @Roles(UserRole.ADMIN, UserRole.TEACHER, UserRole.PRINCIPAL)
+  async deleteRole(@Param('id') id: number) {
+    return this.userService.deleteRole(id);
   }
 }

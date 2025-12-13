@@ -16,7 +16,8 @@ import { Request } from './entities/user.request.entity';
 import { CreateRequestDto } from './dto/create-request.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Student } from '../student/entities/student.entity';
-
+import * as bcrypt from 'bcrypt';
+import { log } from 'console';
 @Injectable()
 export class UserService {
   constructor(
@@ -60,6 +61,10 @@ export class UserService {
     }
 
     user.role = dto.role;
+    if (dto.isActive !== undefined) {
+      user.isActive = dto.isActive;
+    }
+
     const updateUser = await this.userRepository.save(user);
     return instanceToPlain(updateUser);
   }
@@ -87,9 +92,11 @@ export class UserService {
   ): Promise<{ message: string }> {
     const user = await this.userRepository.findOneBy({ id });
     if (!user) throw new NotFoundException('User not found');
+
     user.role = role;
     user.isActive = isActive;
     await this.userRepository.save(user);
+    console.log('UPDATE STATUS', user.isActive);
     return { message: 'User update successfully' };
   }
   async deleteRole(id: number) {
@@ -98,63 +105,30 @@ export class UserService {
     await this.userRepository.delete(id);
     return { message: 'User deleted successfully' };
   }
-  //   async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-  //   const user = await this.userRepository.findOne({ where: { id } });
 
-  //   if (!user) {
-  //     throw new NotFoundException(`User with ID ${id} not found`);
-  //   }
-
-  //   Object.assign(user, updateUserDto);
-  //   return this.userRepository.save(user);
-  // }
-  //   async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-  //   const user = await this.userRepository.findOne({
-  //     where: { id },
-  //     relations: ['studentProfile'],
-  //   });
-
-  //   if (!user) {
-  //     throw new NotFoundException(`User with ID ${id} not found`);
-  //   }
-
-  //   Object.assign(user, updateUserDto);
-  //   if (user.studentProfile) {
-  //     if (updateUserDto.className) {
-  //       user.studentProfile.className = updateUserDto.className;
-  //     }
-  //     if (updateUserDto.rollNo) {
-  //       user.studentProfile.rollNo = +updateUserDto.rollNo;
-  //     }
-  //   }
-
-  //   return await this.userRepository.save(user);
-  // }
-  async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-    const user = await this.userRepository.findOne({
-      where: { id },
-      relations: ['studentProfile'],
-    });
-
-    if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
-    }
-
-    Object.assign(user, updateUserDto);
-
-    if (user.studentProfile) {
-      if (updateUserDto.className) {
-        user.studentProfile.className = updateUserDto.className;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    try {
+      const user = await this.userRepository.findOne({ where: { id } });
+      if (!user) {
+        throw new NotFoundException('User not found');
       }
-      if (updateUserDto.rollNo) {
-        user.studentProfile.rollNo = +updateUserDto.rollNo;
+      if (updateUserDto.password) {
+        updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
       }
+      console.log('DTO:', updateUserDto);
+      console.log('Type of isActive:', typeof updateUserDto.isActive);
 
-      await this.studentRepository.save(user.studentProfile);
+      Object.assign(user, updateUserDto);
+      const updateUser = await this.userRepository.save(user);
+      return {
+        message: 'User update successfully',
+        user: updateUser,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('Internal server error');
     }
-
-    return await this.userRepository.save(user);
   }
+
   async createRequest(dto: CreateRequestDto) {
     try {
       const user = await this.userRepository.findOne({
