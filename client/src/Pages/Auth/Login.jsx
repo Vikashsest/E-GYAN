@@ -298,6 +298,7 @@ export default function LoginPage() {
     mutationFn: login,
     onSuccess: (result) => {
       localStorage.setItem("role", result.role);
+      localStorage.setItem("userID", result.userID);
       toast.success("Login successful ✅");
       setData({ username: "", password: "" });
 

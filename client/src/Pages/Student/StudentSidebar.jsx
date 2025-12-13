@@ -10,12 +10,13 @@ import { Link } from "react-router-dom";
 import Logout from "../Auth/Logout";
 
 export default function StudentSidebar({ isOpen, onClose }) {
+  const student = JSON.parse(localStorage.getItem("userID"));
+  console.log(student);
   return (
     <aside
       className={`fixed top-0 left-0 h-screen w-64 bg-[#15161e] p-6 flex flex-col justify-between z-50 transform transition-transform duration-300
       ${isOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
     >
-      {/* Close button (only mobile/ipad) */}
       <button
         className="absolute top-4 right-4 text-white lg:hidden"
         onClick={onClose}
@@ -53,7 +54,7 @@ export default function StudentSidebar({ isOpen, onClose }) {
             </li>
             <li>
               <Link
-                to="/assign/mybooks"
+                to={`/assign/mybooks/${student}`}
                 className="flex items-center space-x-3 text-gray-300 hover:text-white transition"
               >
                 <FaFileAlt />

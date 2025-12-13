@@ -19,7 +19,6 @@ export async function login(data) {
   }
 }
 
-
 export async function logout() {
   try {
     const res = await fetch(`${API_URL}/auth/logout`, {
@@ -41,7 +40,6 @@ export async function logout() {
   }
 }
 
-
 export async function sendOtp(data) {
   try {
     const res = await fetch(`${API_URL}/auth/forgot-password`, {
@@ -58,7 +56,6 @@ export async function sendOtp(data) {
     throw error;
   }
 }
-
 
 export async function verifyOtp(data) {
   try {

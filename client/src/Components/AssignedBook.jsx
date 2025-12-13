@@ -7,7 +7,7 @@ import { FaArrowLeft, FaSpinner } from "react-icons/fa";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function MyBooks() {
-  const { id } = useParams(); // studentId
+  const { id } = useParams();
   const studentId = Number(id);
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
