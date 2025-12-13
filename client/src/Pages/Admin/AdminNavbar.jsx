@@ -102,8 +102,8 @@ function AdminNavbar({
   buttonLabel,
   uploadLabel = "Upload Credentials +",
   searchPlaceholder = "Search by name or email...",
-  notificationsCount = 0,   
-  requestCount = 0           
+  notificationsCount = 0,
+  requestCount = 0
 }) {
   const navigate = useNavigate();
 
@@ -125,7 +125,7 @@ function AdminNavbar({
         <div />
       )}
       <div className="flex items-center space-x-6 relative">
-        
+
         {/* Upload Button */}
         {onUpload && (
           <button
@@ -146,25 +146,27 @@ function AdminNavbar({
           </button>
         )}
 
-     
-        <div className="relative">
+
+        <div className="relative group">
           <FiBell
             className="text-xl text-gray-300 cursor-pointer"
             onClick={() => navigate("/concerns-list")}
           />
+
           {notificationsCount > 0 && (
             <span className="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-bold rounded-full px-1.5 py-0.5">
               {notificationsCount}
             </span>
           )}
+
+          {/* Hover Tooltip */}
+          <span className="absolute top-full mt-1 left-1/2 -translate-x-1/2 
+    text-white text-md font-semibold  px-2 py-1 rounded opacity-0 
+    group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+            Notifications
+          </span>
         </div>
-        <div className="relative">
-          {requestCount > 0 && (
-            <span className="absolute -top-2 -right-2 bg-green-600 text-white text-[10px] font-bold rounded-full px-1.5 py-0.5">
-              {requestCount}
-            </span>
-          )}
-        </div>
+
 
         {/* Avatar */}
         <div className="flex flex-col items-center">
@@ -179,7 +181,7 @@ function AdminNavbar({
               height={32}
               className="rounded-full cursor-pointer"
             />
-            <span className="absolute top-full mt-1 text-white font-bold text-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <span className="absolute top-full mt-1 text-white font-semibold text-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               Admin
             </span>
           </Link>

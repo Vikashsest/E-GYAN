@@ -38,8 +38,6 @@ function StudentNavbar({
           </button>
         )}
 
-        <FiBell className="text-xl text-gray-300" />
-
         <div className="flex flex-col items-center">
           <Link
             to="/student/profile"

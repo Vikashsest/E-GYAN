@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { fetchUsers, updateUserRole, deleteUser } from "../apiServices/roleApi";
+import { confirmDelete } from "../utils/confirmDelete";
 
 export default function RoleManagement({ currentUserRole }) {
   const [users, setUsers] = useState([]);
@@ -62,16 +63,30 @@ export default function RoleManagement({ currentUserRole }) {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this user?")) return;
+  // const handleDelete = async (id) => {
+  //   if (!window.confirm("Are you sure you want to delete this user?")) return;
 
-    try {
-      await deleteUser(id);
-      fetchUsersList();
-    } catch (err) {
-      console.error("Delete failed:", err);
-    }
-  };
+  //   try {
+  //     await deleteUser(id);
+  //     fetchUsersList();
+  //   } catch (err) {
+  //     console.error("Delete failed:", err);
+  //   }
+  // };
+  const handleDelete = async (id) => {
+  const confirmed = await confirmDelete(
+    `Are you sure you want to delete this user?`
+  );
+  if (!confirmed) return;
+
+  try {
+    await deleteUser(id);
+    fetchUsersList();
+  } catch (err) {
+    console.error("Delete failed:", err);
+  }
+};
+
 
   return (
     <div className="px-4">
