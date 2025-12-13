@@ -74,8 +74,8 @@ export default function ProfilePage({ user }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#1e1f2b] text-white p-6">
-      <div className="max-w-3xl mx-auto bg-[#2a2b39] rounded-xl shadow-md p-8">
+    <div className="min-h-screen bg-darkBg text-primaryWhite p-6">
+      <div className="max-w-3xl mx-auto bg-cardBg rounded-xl shadow-md p-8">
         {/* Profile Info */}
         <div className="flex flex-col items-center text-center">
           <img
@@ -83,9 +83,9 @@ export default function ProfilePage({ user }) {
             alt={formData?.username || "User"}
             width={100}
             height={100}
-            className="rounded-full border-4 border-blue-500"
+            className="rounded-full border-4 border-primaryBlue"
           />
-          <h2 className="text-2xl font-bold mt-4">
+          <h2 className="text-2xl font-bold mt-4 text-primaryBlue">
             {formData?.profile?.username}
           </h2>
         </div>

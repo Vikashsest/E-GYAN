@@ -5,6 +5,7 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   safelist: [
+    "text-primaryWhite",
     "text-primaryBlue",
     "text-primaryOrange",
     "text-primaryGreen",
@@ -18,6 +19,7 @@ export default {
   theme: {
     extend: {
       colors: {
+        primaryWhite:"#ffffff",
         primaryBlue: "#3b82f6",
         primaryOrange: "#f97316",
         primaryGreen: "#22c55e",
