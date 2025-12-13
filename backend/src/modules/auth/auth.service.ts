@@ -254,6 +254,7 @@ export class AuthService {
       message: 'Login successful',
       role: user.role,
       token,
+      userID: user.id,
     };
   }
 
