@@ -18,12 +18,12 @@ import Logout from "../Auth/Logout";
 export default function Sidebar({ isOpen, onClose }) {
   return (
    <aside
-      className={`fixed top-0 left-0 h-screen w-64 bg-[#15161e] p-6 flex flex-col justify-between z-50 transform transition-transform duration-300
+      className={`fixed top-0 left-0 h-screen w-64 bg-sidebarbg p-6 flex flex-col justify-between z-50 transform transition-transform duration-300
       ${isOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
     >
       {/* Close button (only mobile/ipad) */}
       <button
-        className="absolute top-4 right-4 text-white lg:hidden"
+        className="absolute top-4 right-4 text-primaryWhite lg:hidden"
         onClick={onClose}
       >
         <FiX size={26} />
@@ -32,8 +32,8 @@ export default function Sidebar({ isOpen, onClose }) {
 
       <div>
         <h1 className="text-2xl font-bold flex items-center space-x-2 mb-8">
-          <span className="bg-blue-600 w-2.5 h-2.5 rounded-sm"></span>
-          <span className="text-gray-300">Dashboard</span>
+          <span className="bg-primaryBlue w-2.5 h-2.5 rounded-sm"></span>
+          <span className="text-gray300">Dashboard</span>
         </h1>
 
         <nav className="space-y-6">
@@ -43,7 +43,7 @@ export default function Sidebar({ isOpen, onClose }) {
                 className="flex items-center space-x-2"
                 to="/admin/dashboard"
               >
-                <li className="flex items-center space-x-2 text-gray-300">
+                <li className="flex items-center space-x-2 text-gray300">
                   <FaTachometerAlt />
                   <span>Dashboard</span>
                 </li>
@@ -52,7 +52,7 @@ export default function Sidebar({ isOpen, onClose }) {
                 className="flex items-center space-x-2"
                 to="/admin/school-overview"
               >
-                <li className="flex items-center space-x-2 text-gray-300">
+                <li className="flex items-center space-x-2 text-gray300">
                   <FaSchool />
                   <span>School Overview</span>
                 </li>
@@ -61,13 +61,13 @@ export default function Sidebar({ isOpen, onClose }) {
                 className="flex items-center space-x-2"
                 to="/admin/repository"
               >
-                <li className="flex items-center space-x-2 text-gray-300">
+                <li className="flex items-center space-x-2 text-gray300">
                   <RiGitRepositoryFill />
                   <span>Repository</span>
                 </li>
               </Link>
                <Link className="flex items-center space-x-2" to="/admin-books">
-                <li className="flex items-center space-x-2 text-gray-300">
+                <li className="flex items-center space-x-2 text-gray300">
                   <FaBook />
                   <span> Manage Content</span>
                 </li>
@@ -91,19 +91,19 @@ export default function Sidebar({ isOpen, onClose }) {
                 </li>
               </Link> */}
               <Link className="flex items-center space-x-2" to="/admin/students">
-  <li className="flex items-center space-x-2 text-gray-300">
+  <li className="flex items-center space-x-2 text-gray300">
     <FaUsers />
     <span>Manage Students</span>
   </li>
 </Link>
               <Link className="flex items-center space-x-2" to="/admin/announcements">
-              <li className="flex items-center space-x-2 text-gray-300">
+              <li className="flex items-center space-x-2 text-gray300">
                 <FaBullhorn />
                 <span>Announcements</span>
               </li>
             </Link>
               <Link className="flex items-center space-x-2" to="/admin/reports">
-                <li className="flex items-center space-x-2 text-gray-300">
+                <li className="flex items-center space-x-2 text-gray300">
                   <FaFileAlt />
                   <span>Reports</span>
                 </li>
@@ -112,7 +112,7 @@ export default function Sidebar({ isOpen, onClose }) {
                 className="flex items-center space-x-2"
                 to="/admin/role"
               >
-                <li className="flex items-center space-x-2 text-gray-300">
+                <li className="flex items-center space-x-2 text-gray300">
                   <MdManageAccounts />
                   <span>Role Management</span>
                 </li>

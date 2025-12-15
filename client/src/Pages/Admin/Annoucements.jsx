@@ -50,7 +50,7 @@
 //   };
 
 //   return (
-//      <div className="flex min-h-screen bg-[#1e1f2b] text-white">
+//      <div className="flex min-h-screen bg-darkBg text-primaryWhite">
 //       {/* Sidebar */}
 //       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
@@ -58,7 +58,7 @@
 //       <main className="flex-1 lg:pl-[280px] py-6 px-5 w-full">
 //         {/* Mobile Menu Icon */}
 //         <div className="lg:hidden px-4 mb-4">
-//           <button onClick={() => setIsSidebarOpen(true)} className="text-white">
+//           <button onClick={() => setIsSidebarOpen(true)} className="text-primaryWhite">
 //             <FiMenu size={28} />
 //           </button>
 //         </div>
@@ -71,14 +71,14 @@
 //         </div>
 
 //         {/* Add Announcement */}
-//         <section className="mb-8 bg-[#2a2b39] p-5 rounded-lg shadow">
+//         <section className="mb-8 bg-cardBg p-5 rounded-lg shadow">
 //           <form onSubmit={handleAddAnnouncement} className="flex flex-col md:flex-row gap-2 md:items-center">
 //             <input
 //               type="text"
 //               value={newAnnouncement}
 //               onChange={(e) => setNewAnnouncement(e.target.value)}
 //               placeholder="Write a new announcement..."
-//               className="flex-1 p-3 rounded border border-gray-600 bg-[#1e1f2b] text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+//               className="flex-1 p-3 rounded border border-gray-600 bg-darkBg text-primaryWhite focus:outline-none focus:ring-2 focus:ring-blue-600"
 //             />
 //             <label className="flex items-center gap-2 text-gray-200 mt-2 md:mt-0">
 //               <input
@@ -91,7 +91,7 @@
 //             </label>
 //             <button
 //               type="submit"
-//               className="bg-blue-600 hover:bg-blue-700 px-5 py-3 rounded font-semibold transition"
+//               className="bg-primaryBlue hover:bg-blue-700 px-5 py-3 rounded font-semibold transition"
 //             >
 //               Add
 //             </button>
@@ -103,10 +103,10 @@
 //           {announcements.map((ann) => (
 //             <div
 //               key={ann.id}
-//               className="bg-[#2a2b39] p-5 rounded-lg shadow hover:shadow-xl transition relative"
+//               className="bg-cardBg p-5 rounded-lg shadow hover:shadow-xl transition relative"
 //             >
 //               {ann.important && (
-//                 <span className="absolute top-2 right-3 bg-blue-600 text-white px-2 py-1 text-xs rounded-full font-semibold">
+//                 <span className="absolute top-2 right-3 bg-primaryBlue text-primaryWhite px-2 py-1 text-xs rounded-full font-semibold">
 //                   IMPORTANT
 //                 </span>
 //               )}
@@ -115,13 +115,13 @@
 //               <div className="mt-3 flex gap-2">
 //                 <button
 //                   onClick={() => openEditModal(ann)}
-//                   className="bg-yellow-600 hover:bg-yellow-700 px-3 py-1 rounded text-white text-sm"
+//                   className="bg-primaryOrange hover:bg-yellow-700 px-3 py-1 rounded text-primaryWhite text-sm"
 //                 >
 //                   Edit
 //                 </button>
 //                 <button
 //                   onClick={() => handleDelete(ann.id)}
-//                   className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white text-sm"
+//                   className="bg-primaryRed hover:bg-red-700 px-3 py-1 rounded text-primaryWhite text-sm"
 //                 >
 //                   Delete
 //                 </button>
@@ -132,8 +132,8 @@
 
 //         {/* Edit Modal */}
 //         {editModal.open && (
-//           <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
-//             <div className="bg-white text-black p-6 rounded w-full max-w-md shadow-lg">
+//           <div className="fixed inset-0 bg-primaryBlack bg-opacity-60 flex justify-center items-center z-50">
+//             <div className="bg-primaryWhite text-primaryBlack p-6 rounded w-full max-w-md shadow-lg">
 //               <h3 className="text-xl font-semibold mb-4">Edit Announcement</h3>
 //               <form onSubmit={handleUpdate} className="flex flex-col gap-3">
 //                 <textarea
@@ -154,13 +154,13 @@
 //                   <button
 //                     type="button"
 //                     onClick={() => setEditModal({ open: false, id: null, text: "", important: false })}
-//                     className="border border-black px-4 py-2 rounded"
+//                     className="border border-primaryBlack px-4 py-2 rounded"
 //                   >
 //                     Cancel
 //                   </button>
 //                   <button
 //                     type="submit"
-//                     className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white"
+//                     className="bg-primaryBlue hover:bg-blue-700 px-4 py-2 rounded text-primaryWhite"
 //                   >
 //                     Update
 //                   </button>
@@ -256,12 +256,12 @@ export default function AdminAnnouncements() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#1e1f2b] text-white">
+    <div className="flex min-h-screen bg-darkBg text-primaryWhite">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <main className="flex-1 lg:pl-[280px] py-6 px-5 w-full">
 
         <div className="lg:hidden px-4 mb-4">
-          <button onClick={() => setIsSidebarOpen(true)} className="text-white">
+          <button onClick={() => setIsSidebarOpen(true)} className="text-primaryWhite">
             <FiMenu size={28} />
           </button>
         </div>
@@ -274,14 +274,14 @@ export default function AdminAnnouncements() {
         </div>
 
         {/* Add Announcement */}
-        <section className="mb-8 bg-[#2a2b39] p-5 rounded-lg shadow">
+        <section className="mb-8 bg-cardBg p-5 rounded-lg shadow">
           <form onSubmit={handleAddAnnouncement} className="flex flex-col md:flex-row gap-2 md:items-center">
             <input
               type="text"
               value={newAnnouncement}
               onChange={(e) => setNewAnnouncement(e.target.value)}
               placeholder="Write a new announcement..."
-              className="flex-1 p-3 rounded border border-gray-600 bg-[#1e1f2b] text-white"
+              className="flex-1 p-3 rounded border border-gray-600 bg-darkBg text-primaryWhite"
             />
             {/* <label className="flex items-center gap-2 text-gray-200 mt-2 md:mt-0">
               <input
@@ -292,7 +292,7 @@ export default function AdminAnnouncements() {
               />
               Important
             </label> */}
-            <button type="submit" className="bg-blue-600 hover:bg-blue-700 px-5 py-3 rounded font-semibold">
+            <button type="submit" className="bg-primaryBlue hover:bg-blue-700 px-5 py-3 rounded font-semibold">
               Add
             </button>
           </form>
@@ -301,9 +301,9 @@ export default function AdminAnnouncements() {
         {/* Announcements List */}
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {announcements.map((ann) => (
-            <div key={ann.id} className="bg-[#2a2b39] p-5 rounded-lg shadow hover:shadow-xl transition relative">
+            <div key={ann.id} className="bg-cardBg p-5 rounded-lg shadow hover:shadow-xl transition relative">
               {/* {ann.important && (
-                <span className="absolute top-2 right-3 bg-blue-600 text-white px-2 py-1 text-xs rounded-full font-semibold">
+                <span className="absolute top-2 right-3 bg-primaryBlue text-primaryWhite px-2 py-1 text-xs rounded-full font-semibold">
                   IMPORTANT
                 </span>
               )} */}
@@ -311,10 +311,10 @@ export default function AdminAnnouncements() {
               <p className="text-gray-400 text-sm">📅 {new Date(ann.createdAt).toLocaleDateString()}</p>
 
               <div className="mt-3 flex gap-2">
-                <button onClick={() => openEditModal(ann)} className="bg-yellow-600 hover:bg-yellow-700 px-3 py-1 rounded text-white text-sm">
+                <button onClick={() => openEditModal(ann)} className="bg-primaryOrange hover:bg-yellow-700 px-3 py-1 rounded text-primaryWhite text-sm">
                   Edit
                 </button>
-                <button onClick={() => handleDelete(ann.id)} className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white text-sm">
+                <button onClick={() => handleDelete(ann.id)} className="bg-primaryRed hover:bg-red-700 px-3 py-1 rounded text-primaryWhite text-sm">
                   Delete
                 </button>
               </div>
@@ -324,8 +324,8 @@ export default function AdminAnnouncements() {
 
         {/* Edit Modal */}
         {editModal.open && (
-          <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
-            <div className="bg-white text-black p-6 rounded w-full max-w-md shadow-lg">
+          <div className="fixed inset-0 bg-primaryBlack bg-opacity-60 flex justify-center items-center z-50">
+            <div className="bg-primaryWhite text-primaryBlack p-6 rounded w-full max-w-md shadow-lg">
               <h3 className="text-xl font-semibold mb-4">Edit Announcement</h3>
 
               <form onSubmit={handleUpdate} className="flex flex-col gap-3">
@@ -349,12 +349,12 @@ export default function AdminAnnouncements() {
                   <button
                     type="button"
                     onClick={() => setEditModal({ open: false, id: null, text: ""})}
-                    className="border border-black px-4 py-2 rounded"
+                    className="border border-primaryBlack px-4 py-2 rounded"
                   >
                     Cancel
                   </button>
 
-                  <button type="submit" className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white">
+                  <button type="submit" className="bg-primaryBlue hover:bg-blue-700 px-4 py-2 rounded text-primaryWhite">
                     Update
                   </button>
                 </div>

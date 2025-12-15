@@ -32,7 +32,7 @@ function StudentNavbar({
         {onAdd && (
           <button
             onClick={onAdd}
-            className="bg-blue-600 px-4 py-1 rounded text-sm font-semibold hover:bg-blue-700"
+            className="bg-blue-600 px-4 py-1 rounded text-sm font-semibold hover:bg-hoverBlue"
           >
             {buttonLabel}
           </button>

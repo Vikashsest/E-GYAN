@@ -121,23 +121,23 @@ function ConcernList() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1a1b23] p-6">
+    <div className="min-h-screen bg-darkBg p-6">
       <h1 className="text-2xl font-bold text-white mb-4">Admin Dashboard</h1>
 
       <button
         onClick={() => navigate(-1)}
-        className="mb-6 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition duration-200"
+        className="mb-6 px-4 py-2 bg-primaryBlue hover:bg-hoverBlue text-white rounded-md transition duration-200"
       >
         ← Go to Dashboard
       </button>
 
       {/* Concerns Table */}
-      <div className="mb-8 overflow-x-auto rounded-xl shadow-md bg-[#2a2b38]">
-        <h2 className="text-xl font-semibold text-white px-6 py-3">
+      <div className="mb-8 overflow-x-auto rounded-xl shadow-md bg-cardBg">
+        <h2 className="text-xl font-semibold text-primaryWhite px-6 py-3">
           Student Concerns
         </h2>
-        <table className="min-w-full text-sm text-left text-white">
-          <thead className="bg-[#383a4a] text-xs uppercase text-gray-300">
+        <table className="min-w-full text-sm text-left text-primaryWhite">
+          <thead className="bg-[#383a4a] text-xs uppercase text-gray300">
             <tr>
               <th className="px-6 py-3">Student Name</th>
               <th className="px-6 py-3">Subject</th>
@@ -150,7 +150,7 @@ function ConcernList() {
           <tbody>
             {concerns.length === 0 ? (
               <tr>
-                <td colSpan="6" className="text-center py-6 text-gray-300">
+                <td colSpan="6" className="text-center py-6 text-gray300">
                   No concerns found.
                 </td>
               </tr>
@@ -158,7 +158,7 @@ function ConcernList() {
               concerns.map((item) => (
                 <tr
                   key={item._id}
-                  className="border-b border-gray-700 hover:bg-[#343545]"
+                  className="border-b border-gray700 hover:bg-hoverGray"
                 >
                   <td className="px-6 py-4">{item.student?.name}</td>
                   <td className="px-6 py-4">{item.subject}</td>
@@ -166,10 +166,10 @@ function ConcernList() {
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${
                         item.priority === "High"
-                          ? "bg-red-600/30 text-red-400"
+                          ? "bg-red-600/30 text-lightRed"
                           : item.priority === "Medium"
-                          ? "bg-yellow-600/30 text-yellow-300"
-                          : "bg-green-600/30 text-green-300"
+                          ? "bg-yellow-600/30 text-lightYellow"
+                          : "bg-green-600/30 text-lightGreen"
                       }`}
                     >
                       {item.priority}
@@ -179,8 +179,8 @@ function ConcernList() {
                     <span
                       className={`text-sm font-medium ${
                         item.status === "Resolved"
-                          ? "text-green-400"
-                          : "text-yellow-300"
+                          ? "text-lightGreen"
+                          : "text-lightYellow"
                       }`}
                     >
                       {item.status}
@@ -192,14 +192,14 @@ function ConcernList() {
                   <td className="px-6 py-4 text-center flex justify-center items-center gap-4">
                     <button
                       onClick={() => setSelectedItem(item)}
-                      className="text-blue-400 hover:underline font-medium"
+                      className="text-primaryBlue hover:underline font-medium"
                     >
                       View
                     </button>
                     <button
                       onClick={() => handleDelete(item.id, "concern")}
                       title="Delete Concern"
-                      className="text-red-400 hover:text-red-600 text-base"
+                      className="text-lightRed hover:text-primaryRed text-base"
                     >
                       <FaTrash />
                     </button>
@@ -212,12 +212,12 @@ function ConcernList() {
       </div>
 
       {/* Requests Table */}
-      <div className="overflow-x-auto rounded-xl shadow-md bg-[#2a2b38]">
-        <h2 className="text-xl font-semibold text-white px-6 py-3">
+      <div className="overflow-x-auto rounded-xl shadow-md bg-cardBg">
+        <h2 className="text-xl font-semibold text-primaryWhite px-6 py-3">
           User Requests
         </h2>
-        <table className="min-w-full text-sm text-left text-white">
-          <thead className="bg-[#383a4a] text-xs uppercase text-gray-300">
+        <table className="min-w-full text-sm text-left text-primaryWhite">
+          <thead className="bg-[#383a4a] text-xs uppercase text-gray300">
             <tr>
               <th className="px-6 py-3">User Name</th>
               <th className="px-6 py-3">Message</th>
@@ -228,7 +228,7 @@ function ConcernList() {
           <tbody>
             {requests.length === 0 ? (
               <tr>
-                <td colSpan="4" className="text-center py-6 text-gray-300">
+                <td colSpan="4" className="text-center py-6 text-gray300">
                   No requests found.
                 </td>
               </tr>
@@ -236,7 +236,7 @@ function ConcernList() {
               requests.map((item) => (
                 <tr
                   key={item.id}
-                  className="border-b border-gray-700 hover:bg-[#343545]"
+                  className="border-b border-gray700 hover:bg-hoverGray"
                 >
                   <td className="px-6 py-4">{item.user?.username}</td>
                   <td className="px-6 py-4">{item.message}</td>
@@ -246,7 +246,7 @@ function ConcernList() {
                       onChange={(e) =>
                         handleStatusChange(item.id, e.target.value)
                       }
-                      className="bg-gray-700 text-white px-2 py-1 rounded"
+                      className="bg-gray700 text-primaryWhite px-2 py-1 rounded"
                     >
                       <option value="pending">Pending</option>
                       <option value="resolved">Resolved</option>
@@ -255,14 +255,14 @@ function ConcernList() {
                   <td className="px-6 py-4 text-center flex justify-center items-center gap-4">
                     <button
                       onClick={() => setSelectedItem(item)}
-                      className="text-blue-400 hover:underline font-medium"
+                      className="text-primaryBlue hover:underline font-medium"
                     >
                       View
                     </button>
                     <button
                       onClick={() => handleDelete(item.id, "request")}
                       title="Delete Request"
-                      className="text-red-400 hover:text-red-600 text-base"
+                      className="text-lightRed hover:text-primaryRed text-base"
                     >
                       <FaTrash />
                     </button>
@@ -277,19 +277,19 @@ function ConcernList() {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
           <div
             ref={modalRef}
-            className="relative bg-[#2a2b38] rounded-xl shadow-xl max-w-3xl w-full pb-4 pt-10 px-4"
+            className="relative bg-cardBg rounded-xl shadow-xl max-w-3xl w-full pb-4 pt-10 px-4"
           >
             <div className="absolute top-0 right-3 flex gap-3 z-50">
               <button
                 onClick={toggleFullscreen}
-                className="text-white hover:text-blue-400 text-xl"
+                className="text-PrimaryWhite hover:text-primaryBlue text-xl"
                 title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
               >
                 {isFullscreen ? <FaCompress /> : <FaExpand />}
               </button>
               <button
                 onClick={() => setSelectedItem(null)}
-                className="text-white hover:text-red-400 relative bottom-1 text-4xl"
+                className="text-primaryWhite hover:text-lightRed relative bottom-1 text-4xl"
               >
                 &times;
               </button>
@@ -299,11 +299,11 @@ function ConcernList() {
               <img
                 src={selectedItem.image}
                 alt="Proof"
-                className="w-full max-h-[80vh] object-contain rounded-lg border border-gray-600"
+                className="w-full max-h-[80vh] object-contain rounded-lg border border-gray600"
               />
             )}
             {selectedItem.message && (
-              <div className="p-4 text-white">
+              <div className="p-4 text-primaryWhite">
                 <p>
                   <strong>Message:</strong> {selectedItem.message}
                 </p>

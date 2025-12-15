@@ -121,12 +121,12 @@ export default function RepositoryManagement() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#1e1f2b] text-white">
+    <div className="flex min-h-screen bg-[#1e1f2b] text-primaryWhite">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
       <main className="flex-1 lg:pl-[280px] py-6 px-5 w-full">
         <div className="lg:hidden px-4 mb-4">
-          <button onClick={() => setIsSidebarOpen(true)} className="text-white">
+          <button onClick={() => setIsSidebarOpen(true)} className="text-primaryWhite">
             <FiMenu size={28} />
           </button>
         </div>
@@ -308,41 +308,41 @@ export function DropdownWithAdd({
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <label className="block mb-2 font-semibold text-gray-300">{title}</label>
+      <label className="block mb-2 font-semibold text-gray300">{title}</label>
 
       <div
         className={`p-3 rounded-lg cursor-pointer flex justify-between items-center shadow-lg ${disabled
-            ? "bg-gray-700 cursor-not-allowed"
-            : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition-colors"
+            ? "bg-gray700 cursor-not-allowed"
+            : "bg-gradient-to-r from-purple500 to-indigo600  transition-colors"
           }`}
         onClick={() => !disabled && setIsOpen(!isOpen)}
       >
-        <span className={`${value ? "text-white" : "text-gray-300"}`}>
+        <span className={`${value ? "text-primaryWhite" : "text-gray300"}`}>
           {value || `Select ${title}`}
         </span>
         <span className="text-gray-200">{isOpen ? "▲" : "▼"}</span>
       </div>
 
       {isOpen && !disabled && (
-        <div className="absolute z-50 mt-1 w-full bg-gray-800 rounded-lg shadow-lg max-h-60 overflow-auto ring-1 ring-gray-600">
+        <div className="absolute z-50 mt-1 w-full bg-gray800 rounded-lg shadow-lg max-h-60 overflow-auto ring-1 ring-gray-600">
           {items.length > 0 ? (
             items.map((item) => (
               <div
                 key={item.id}
-                className="flex justify-between items-center px-4 py-2 hover:bg-gray-700 cursor-pointer"
+                className="flex justify-between items-center px-4 py-2 hover:bg-gray700 cursor-pointer"
               >
                 <span
                   onClick={() => {
                     onChange(item.text); // selected me sirf text rakhna
                     setIsOpen(false);
                   }}
-                  className="text-white"
+                  className="text-primaryWhite"
                 >
                   {item.text}
                 </span>
                 <div className="flex gap-3">
                   <FaEdit
-                    className="text-yellow-400 text-lg hover:text-yellow-600"
+                    className="text-primaryYellow text-lg hover:text-primaryOrange"
                     onClick={(e) => {
                       e.stopPropagation();
                       setEditIndex(item.id);
@@ -351,7 +351,7 @@ export function DropdownWithAdd({
                     }}
                   />
                   <MdDelete
-                    className="text-red-500 rounded-lg text-2xl hover:text-red-600"
+                    className="text-primaryRed rounded-lg text-2xl hover:text-darkRed"
                     onClick={(e) => {
                       e.stopPropagation();
                       onDelete(item.id); // id send to backend
@@ -361,7 +361,7 @@ export function DropdownWithAdd({
               </div>
             ))
           ) : (
-            <div className="px-4 py-2 text-gray-400">No options available</div>
+            <div className="px-4 py-2 text-gray400">No options available</div>
           )}
 
           <div className="flex gap-2 p-3 border-t border-gray-600">
@@ -373,12 +373,12 @@ export function DropdownWithAdd({
                 setActiveField(title.toLowerCase());
                 setNewValue(e.target.value);
               }}
-              className="flex-1 p-2 rounded-lg text-black"
+              className="flex-1 p-2 rounded-lg text-primaryBlack"
             />
 
             <button
               onClick={handleAddOrUpdate}
-              className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg text-white font-semibold"
+              className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg text-primaryWhite font-semibold"
             >
               {editIndex !== null ? "Update" : "Add"}
             </button>

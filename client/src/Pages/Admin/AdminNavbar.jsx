@@ -1,4 +1,6 @@
-// import { FiSearch, FiBell } from "react-icons/fi";
+
+
+// import { FiSearch, FiBell, FiInbox } from "react-icons/fi";
 // import { Link, useNavigate } from "react-router-dom";
 
 // function AdminNavbar({
@@ -9,8 +11,8 @@
 //   buttonLabel,
 //   uploadLabel = "Upload Credentials +",
 //   searchPlaceholder = "Search by name or email...",
-//   notificationsCount = 0, 
-//    requestCount = 0  
+//   notificationsCount = 0,
+//   requestCount = 0
 // }) {
 //   const navigate = useNavigate();
 
@@ -31,9 +33,8 @@
 //       ) : (
 //         <div />
 //       )}
-
-//       {/* Right Icons */}
 //       <div className="flex items-center space-x-6 relative">
+
 //         {/* Upload Button */}
 //         {onUpload && (
 //           <button
@@ -54,20 +55,30 @@
 //           </button>
 //         )}
 
-//           <div className="relative">
+
+//         <div className="relative group">
 //           <FiBell
 //             className="text-xl text-gray-300 cursor-pointer"
 //             onClick={() => navigate("/concerns-list")}
 //           />
+
 //           {notificationsCount > 0 && (
 //             <span className="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-bold rounded-full px-1.5 py-0.5">
 //               {notificationsCount}
 //             </span>
 //           )}
+
+//           {/* Hover Tooltip */}
+//           <span className="absolute top-full mt-1 left-1/2 -translate-x-1/2 
+//     text-white text-md font-semibold  px-2 py-1 rounded opacity-0 
+//     group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+//             Notifications
+//           </span>
 //         </div>
 
+
 //         {/* Avatar */}
-//          <div className="flex flex-col items-center">
+//         <div className="flex flex-col items-center">
 //           <Link
 //             to="/admin/profile"
 //             className="flex flex-col items-center group relative"
@@ -79,17 +90,19 @@
 //               height={32}
 //               className="rounded-full cursor-pointer"
 //             />
-//             <span className="absolute top-full mt-1 text-white font-bold text-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+//             <span className="absolute top-full mt-1 text-white font-semibold text-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
 //               Admin
 //             </span>
 //           </Link>
 //         </div>
+
 //       </div>
 //     </div>
 //   );
 // }
 
 // export default AdminNavbar;
+
 
 import { FiSearch, FiBell, FiInbox } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
@@ -111,8 +124,8 @@ function AdminNavbar({
     <div className="flex justify-between items-center gap-4 mb-6">
       {/* Search Bar */}
       {onSearchChange ? (
-        <div className="flex items-center bg-[#2a2b39] px-4 py-2 rounded w-[70%] lg:w-full lg:max-w-md">
-          <FiSearch className="text-gray-400 mr-2" />
+        <div className="flex items-center bg-darkBg px-4 py-2 rounded w-[70%] lg:w-full lg:max-w-md">
+          <FiSearch className="text-gray400 mr-2" />
           <input
             type="text"
             placeholder={searchPlaceholder}
@@ -130,7 +143,7 @@ function AdminNavbar({
         {onUpload && (
           <button
             onClick={onUpload}
-            className="bg-blue-600 px-4 py-1 rounded text-sm font-semibold hover:bg-blue-700"
+            className="bg-primaryBlue px-4 py-1 rounded text-sm font-semibold hover:bg-hoverBlue"
           >
             {uploadLabel}
           </button>
@@ -140,7 +153,7 @@ function AdminNavbar({
         {onAdd && (
           <button
             onClick={onAdd}
-            className="bg-blue-600 px-4 py-1 rounded text-sm font-semibold hover:bg-blue-700"
+            className="bg-primaryBlue px-4 py-1 rounded text-sm font-semibold hover:bg-hoverBlue"
           >
             {buttonLabel}
           </button>
@@ -154,14 +167,14 @@ function AdminNavbar({
           />
 
           {notificationsCount > 0 && (
-            <span className="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-bold rounded-full px-1.5 py-0.5">
+            <span className="absolute -top-2 -right-2 bg-primaryRed text-primaryWhite text-[10px] font-bold rounded-full px-1.5 py-0.5">
               {notificationsCount}
             </span>
           )}
 
           {/* Hover Tooltip */}
           <span className="absolute top-full mt-1 left-1/2 -translate-x-1/2 
-    text-white text-md font-semibold  px-2 py-1 rounded opacity-0 
+    text-primaryWhite text-md font-semibold  px-2 py-1 rounded opacity-0 
     group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
             Notifications
           </span>
@@ -181,7 +194,7 @@ function AdminNavbar({
               height={32}
               className="rounded-full cursor-pointer"
             />
-            <span className="absolute top-full mt-1 text-white font-semibold text-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <span className="absolute top-full mt-1 text-primaryWhite font-semibold text-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               Admin
             </span>
           </Link>

@@ -86,7 +86,7 @@
 //   ];
 
 //   return (
-//      <div className="flex min-h-screen bg-[#1e1f2b] text-white">
+//      <div className="flex min-h-screen bg-darkBg text-primaryWhite">
 //       {/* Sidebar */}
 //       <AdminSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
@@ -94,7 +94,7 @@
 //       <main className="flex-1 lg:pl-[280px] py-6 px-5 w-full">
 //         {/* Mobile Menu Icon */}
 //         <div className="lg:hidden px-4 mb-4">
-//           <button onClick={() => setIsSidebarOpen(true)} className="text-white">
+//           <button onClick={() => setIsSidebarOpen(true)} className="text-primaryWhite">
 //             <FiMenu size={28} />
 //           </button>
 //         </div>
@@ -105,7 +105,7 @@
 //         <div className="p-4">
 //           <div className="mb-6">
 //             <h1 className="text-3xl font-bold">School Overview</h1>
-//             <p className="text-white/70 text-sm mt-1">
+//             <p className="text-primaryWhite/70 text-sm mt-1">
 //               Track your school’s usage and digital library sync.
 //             </p>
 //           </div>
@@ -119,23 +119,23 @@
 //                 <div className="text-3xl">{item.icon}</div>
 //                 <div>
 //                   <h3 className="font-semibold text-lg">{item.title}</h3>
-//                   <p className="text-white/90">{item.count}</p>
+//                   <p className="text-primaryWhite/90">{item.count}</p>
 //                 </div>
 //               </div>
 //             ))}
 //           </section>
 
 //           <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
-//             <div className="bg-[#2a2b39] p-6 rounded-xl shadow-lg col-span-2">
+//             <div className="bg-cardBg p-6 rounded-xl shadow-lg col-span-2">
 //               <h2 className="text-xl font-semibold mb-4">Sync Status</h2>
 //               <div className="grid grid-cols-2 gap-4">
-//                 <div className="border border-gray-600 rounded-lg p-4">
-//                   <p className="text-white/70 text-sm">Last Sync</p>
-//                   <p className="text-green-400 font-semibold">{lastSync}</p>
+//                 <div className="border border-gray600 rounded-lg p-4">
+//                   <p className="text-primaryWhite/70 text-sm">Last Sync</p>
+//                   <p className="text-lightGreen font-semibold">{lastSync}</p>
 //                 </div>
-//                 <div className="border border-gray-600 rounded-lg p-4">
-//                   <p className="text-white/70 text-sm">Pending Uploads</p>
-//                   <p className="text-yellow-400 font-semibold">
+//                 <div className="border border-gray600 rounded-lg p-4">
+//                   <p className="text-primaryWhite/70 text-sm">Pending Uploads</p>
+//                   <p className="text-lightYellow font-semibold">
 //                     {data.pendingUploads ?? 0} files
 //                   </p>
 //                 </div>
@@ -143,27 +143,27 @@
 //               <div className="mt-4 text-right">
 //                 <button
 //                   onClick={handleSync}
-//                   className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-sm transition"
+//                   className="flex items-center gap-2 bg-primaryBlue hover:bg-blue-700 px-4 py-2 rounded text-sm transition"
 //                 >
 //                   <FaSyncAlt /> Sync Now
 //                 </button>
 //               </div>
 //             </div>
 
-//             <div className="bg-[#2a2b39] p-6 rounded-xl shadow-lg">
+//             <div className="bg-cardBg p-6 rounded-xl shadow-lg">
 //               <h2 className="text-xl font-semibold mb-4">School Info</h2>
-//               <div className="space-y-3 text-white/80 text-sm">
+//               <div className="space-y-3 text-primaryWhite/80 text-sm">
 //                 <div className="flex items-center gap-2">
 //                   <FaIdCard className="text-lg" />
 //                   <span>School Code:</span>
-//                   <span className="text-white font-semibold ml-auto">
+//                   <span className="text-primaryWhite font-semibold ml-auto">
 //                     {data.schoolCode || "SCH-1023"}
 //                   </span>
 //                 </div>
 //                 <div className="flex items-center gap-2">
 //                   <FaTabletAlt className="text-lg" />
 //                   <span>Connected Devices:</span>
-//                   <span className="text-white font-semibold ml-auto">
+//                   <span className="text-primaryWhite font-semibold ml-auto">
 //                     {data.connectedDevices ?? 0}
 //                   </span>
 //                 </div>
@@ -329,14 +329,14 @@ export default function AdminSchoolOverview() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#1e1f2b] text-white">
+    <div className="flex min-h-screen bg-darkBg text-primaryWhite">
       {/* Sidebar */}
       <AdminSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
       <main className="flex-1 lg:pl-[280px] py-6 px-5 w-full">
         {/* Mobile Menu */}
         <div className="lg:hidden px-4 mb-4">
-          <button onClick={() => setIsSidebarOpen(true)} className="text-white">
+          <button onClick={() => setIsSidebarOpen(true)} className="text-primaryWhite">
             <FiMenu size={28} />
           </button>
         </div>
@@ -346,7 +346,7 @@ export default function AdminSchoolOverview() {
         <div className="p-4">
           {/* Header */}
           <h1 className="text-3xl font-bold mb-1">School Overview</h1>
-          <p className="text-white/70 mb-6">Track your school’s usage and digital performance.</p>
+          <p className="text-primaryWhite/70 mb-6">Track your school’s usage and digital performance.</p>
 
           {/* Summary Cards */}
           <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
@@ -358,7 +358,7 @@ export default function AdminSchoolOverview() {
                 <div className="text-3xl">{item.icon}</div>
                 <div>
                   <h3 className="font-semibold text-lg">{item.title}</h3>
-                  <p className="text-white/90">{item.count}</p>
+                  <p className="text-primaryWhite/90">{item.count}</p>
                 </div>
               </div>
             ))}
@@ -366,18 +366,18 @@ export default function AdminSchoolOverview() {
 
           {/* Sync Section */}
           <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
-            <div className="bg-[#2a2b39] p-6 rounded-xl shadow-lg col-span-2">
+            <div className="bg-cardBg p-6 rounded-xl shadow-lg col-span-2">
               <h2 className="text-xl font-semibold mb-4">Sync Status</h2>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="border border-gray-600 rounded p-4">
-                  <p className="text-white/70 text-sm">Last Sync</p>
-                  <p className="text-green-400 font-bold">{lastSync}</p>
+                <div className="border border-gray600 rounded p-4">
+                  <p className="text-primaryWhite/70 text-sm">Last Sync</p>
+                  <p className="text-lightGreen font-bold">{lastSync}</p>
                 </div>
 
-                <div className="border border-gray-600 rounded p-4">
-                  <p className="text-white/70 text-sm">Pending Uploads</p>
-                  <p className="text-yellow-400 font-bold">
+                <div className="border border-gray600 rounded p-4">
+                  <p className="text-primaryWhite/70 text-sm">Pending Uploads</p>
+                  <p className="text-lightYellow font-bold">
                     {data.pendingUploads ?? 0} files
                   </p>
                 </div>
@@ -386,7 +386,7 @@ export default function AdminSchoolOverview() {
               <div className="mt-4 text-right">
                 <button
                   onClick={handleSync}
-                  className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded flex items-center gap-2"
+                  className="bg-primaryBlue hover:bg-blue-700 px-4 py-2 rounded flex items-center gap-2"
                 >
                   <FaSyncAlt /> Sync Now
                 </button>
@@ -394,10 +394,10 @@ export default function AdminSchoolOverview() {
             </div>
 
             {/* School Information */}
-            <div className="bg-[#2a2b39] p-6 rounded-xl shadow-lg">
+            <div className="bg-cardBg p-6 rounded-xl shadow-lg">
               <h2 className="text-xl font-semibold mb-4">School Info</h2>
 
-              <div className="space-y-3 text-white/80 text-sm">
+              <div className="space-y-3 text-primaryWhite/80 text-sm">
                 <div className="flex items-center gap-2">
                   <FaIdCard className="text-lg" />
                   <span>School Code:</span>
@@ -422,7 +422,7 @@ export default function AdminSchoolOverview() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
             {/* Performance Chart */}
-            <div className="bg-[#2a2b39] p-5 rounded-2xl shadow">
+            <div className="bg-cardBg p-5 rounded-2xl shadow">
               <h3 className="text-lg font-semibold mb-3">Overall Performance</h3>
               <ResponsiveContainer width="100%" height={220}>
                 <AreaChart data={performance}>
@@ -442,7 +442,7 @@ export default function AdminSchoolOverview() {
             </div>
 
             {/* Subject Engagement */}
-            <div className="bg-[#2a2b39] p-5 rounded-2xl shadow">
+            <div className="bg-cardBg p-5 rounded-2xl shadow">
               <h3 className="text-lg font-semibold mb-3">Subject Engagement</h3>
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={subjectEngagement}>
@@ -456,7 +456,7 @@ export default function AdminSchoolOverview() {
             </div>
 
             {/* Student Activity */}
-            <div className="bg-[#2a2b39] p-5 rounded-2xl shadow">
+            <div className="bg-cardBg p-5 rounded-2xl shadow">
               <h3 className="text-lg font-semibold mb-3">Student Activity</h3>
               <ResponsiveContainer width="100%" height={220}>
                 <PieChart>
@@ -477,7 +477,7 @@ export default function AdminSchoolOverview() {
             </div>
 
             {/* Study Time */}
-            <div className="bg-[#2a2b39] p-5 rounded-2xl shadow">
+            <div className="bg-cardBg p-5 rounded-2xl shadow">
               <h3 className="text-lg font-semibold mb-3">Average Study Time</h3>
               <ResponsiveContainer width="100%" height={220}>
                 <LineChart data={studyTime}>
@@ -491,11 +491,11 @@ export default function AdminSchoolOverview() {
             </div>
 
             {/* Leaderboard */}
-            <div className="bg-[#2a2b39] p-5 rounded-2xl shadow md:col-span-2">
+            <div className="bg-cardBg p-5 rounded-2xl shadow md:col-span-2">
               <h3 className="text-lg font-semibold mb-4">Top Performing Students</h3>
               <table className="w-full text-left border-separate border-spacing-y-2">
                 <thead>
-                  <tr className="text-gray-300 text-sm">
+                  <tr className="text-gray300 text-sm">
                     <th>Name</th>
                     <th>Score</th>
                   </tr>
