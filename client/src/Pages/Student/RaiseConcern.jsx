@@ -95,7 +95,7 @@ export default function RaiseConcernPage() {
   };
 
   return (
-     <div className="flex min-h-screen bg-[#1e1f2b] text-white relative">
+     <div className="flex min-h-screen bg-darkBg text-primaryWhite relative">
       {/* Sidebar */}
       <StudentSidebar
         isOpen={isSidebarOpen}
@@ -116,7 +116,7 @@ export default function RaiseConcernPage() {
         <div className="lg:hidden mb-4 flex items-center">
           <button
             onClick={() => setIsSidebarOpen(true)}
-            className="text-white focus:outline-none"
+            className="text-primaryWhite focus:outline-none"
           >
             <FiMenu size={28} />
           </button>
@@ -127,10 +127,10 @@ export default function RaiseConcernPage() {
         <div className="p-4 max-w-3xl mx-auto">
           <div className="mb-6">
             <h1 className="text-3xl font-bold flex items-center gap-2">
-              <FaExclamationCircle className="text-red-500" />
+              <FaExclamationCircle className="text-primaryRed" />
               Raise a Concern
             </h1>
-            <p className="text-white/70 text-sm mt-1">
+            <p className="text-primaryWhite/70 text-sm mt-1">
               If you're facing issues with content or system access, report it below.
             </p>
           </div>
@@ -141,7 +141,7 @@ export default function RaiseConcernPage() {
             className="bg-[#2a2b39] p-6 rounded-xl shadow space-y-4"
           >
             <div>
-              <label className="block mb-1 text-white/70">Subject</label>
+              <label className="block mb-1 text-primaryWhite/70">Subject</label>
               <input
                 type="text"
                 name="subject"
@@ -149,18 +149,18 @@ export default function RaiseConcernPage() {
                 value={formData.subject}
                 onChange={handleChange}
                 required
-                className="w-full p-2 rounded bg-[#1e1f2b] border border-gray-600 text-white focus:outline-none"
+                className="w-full p-2 rounded bg-darkBg border border-gray600 text-primaryWhite focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block mb-1 text-white/70">Issue Type</label>
+              <label className="block mb-1 text-primaryWhite/70">Issue Type</label>
               <select
                 name="issueType"
                 value={formData.issueType}
                 onChange={handleChange}
                 required
-                className="w-full p-2 rounded bg-[#1e1f2b] border border-gray-600 text-white"
+                className="w-full p-2 rounded bg-darkBg border border-gray600 text-primaryWhite"
               >
                 <option value="">Select Type</option>
                 <option value="content">Content Issue</option>
@@ -171,13 +171,13 @@ export default function RaiseConcernPage() {
             </div>
 
             <div>
-              <label className="block mb-1 text-white/70">Priority</label>
+              <label className="block mb-1 text-primaryWhite/70">Priority</label>
               <select
                 name="priority"
                 value={formData.priority}
                 onChange={handleChange}
                 required
-                className="w-full p-2 rounded bg-[#1e1f2b] border border-gray-600 text-white"
+                className="w-full p-2 rounded bg-darkBg border border-gray600 text-primaryWhite"
               >
                 <option value="">Select Priority</option>
                 <option value="Low">Low</option>
@@ -187,7 +187,7 @@ export default function RaiseConcernPage() {
             </div>
 
             <div>
-              <label className="block mb-1 text-white/70">Message</label>
+              <label className="block mb-1 text-primaryWhite/70">Message</label>
               <textarea
                 name="message"
                 rows={4}
@@ -195,12 +195,12 @@ export default function RaiseConcernPage() {
                 onChange={handleChange}
                 placeholder="Describe the issue you're facing..."
                 required
-                className="w-full p-2 rounded bg-[#1e1f2b] border border-gray-600 text-white resize-none"
+                className="w-full p-2 rounded bg-darkBg border border-gray600 text-primaryWhite resize-none"
               ></textarea>
             </div>
 
             <div>
-              <label className="block mb-1 text-white/70">
+              <label className="block mb-1 text-primaryWhite/70">
                 Attach Screenshot (optional)
               </label>
               <input
@@ -208,7 +208,7 @@ export default function RaiseConcernPage() {
                 name="file"
                 onChange={handleChange}
                 accept="image/*,application/pdf"
-                className="w-full p-2 rounded bg-[#1e1f2b] border border-gray-600 text-white"
+                className="w-full p-2 rounded bg-darkBg border border-gray600 text-primaryWhite"
               />
             </div>
 
@@ -227,14 +227,14 @@ export default function RaiseConcernPage() {
             <h2 className="text-xl font-semibold mb-4">My Previous Concerns</h2>
             <div className="bg-[#2a2b39] p-4 rounded-lg shadow">
               {concerns.length === 0 ? (
-                <p className="text-white/60">No concerns raised yet.</p>
+                <p className="text-primaryWhite/60">No concerns raised yet.</p>
               ) : (
-                <ul className="divide-y divide-gray-700">
+                <ul className="divide-y divide-gray700">
                   {concerns.map((c, idx) => (
                     <li key={idx} className="py-3 flex justify-between items-center">
                       <div>
                         <h4 className="font-semibold">{c.subject}</h4>
-                       <p className="text-xs text-white/50">
+                       <p className="text-xs text-primaryWhite/50">
   {c.type} • Priority: {c.priority} • {new Date(c.createdAt).toLocaleDateString()}
 </p>
 
@@ -242,8 +242,8 @@ export default function RaiseConcernPage() {
                       <span
                         className={`text-xs px-3 py-1 rounded-full ${
                           c.status === "Resolved"
-                            ? "bg-green-600 text-white"
-                            : "bg-yellow-500 text-black"
+                            ? "bg-primaryGreen text-primaryWhite"
+                            : "bg-primaryYellow text-black"
                         }`}
                       >
                         {c.status}

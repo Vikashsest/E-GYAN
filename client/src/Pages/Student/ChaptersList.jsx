@@ -122,7 +122,7 @@
 //           <div className="absolute top-3 left-3 flex items-center gap-3 z-50">
 //             <button
 //               onClick={() => navigate(-1)}
-//               className="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 dark:text-white shadow hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+//               className="px-3 py-1 rounded bg-gray200 dark:bg-gray700 dark:text-primaryWhite shadow hover:bg-gray300 dark:hover:bg-gray600 transition"
 //             >
 //               ⬅ Back
 //             </button>
@@ -134,7 +134,7 @@
 //           <div className="absolute top-3 right-3 flex items-center gap-2 z-40 lg:hidden">
 //             <button
 //               onClick={() => setIsSidebarOpen(true)}
-//               className="p-2 rounded bg-gray-200 dark:bg-gray-700 dark:text-white shadow hover:bg-gray-300 dark:hover:bg-gray-600"
+//               className="p-2 rounded bg-gray200 dark:bg-gray700 dark:text-primaryWhite shadow hover:bg-gray300 dark:hover:bg-gray600"
 //             >
 //               <FiMenu size={20} />
 //             </button>
@@ -146,14 +146,14 @@
 //           <div
 //             ref={viewerRef}
 //             className={`flex-1 flex justify-center items-center w-full h-full p-4 relative transition-all duration-300 ${
-//               isFullscreen ? "fixed inset-0 z-50 bg-black p-2" : ""
+//               isFullscreen ? "fixed inset-0 z-50 bg-primaryBlack p-2" : ""
 //             }`}
 //           >
 //             {selectedChapter.resourceType === "pdf" && (
 //               <>
 //                 <div
-//                   className={`flex-1 flex justify-center items-center w-full h-full bg-[#d2dcf3] dark:bg-gray-700 rounded-lg shadow-md relative transition-all duration-300 ${
-//                     isFullscreen ? "w-full h-full p-0 bg-black" : "p-4"
+//                   className={`flex-1 flex justify-center items-center w-full h-full bg-[#d2dcf3] dark:bg-gray700 rounded-lg shadow-md relative transition-all duration-300 ${
+//                     isFullscreen ? "w-full h-full p-0 bg-primaryBlack" : "p-4"
 //                   }`}
 //                 >
 //                   {/* Flipbook / Scrollable PDF */}
@@ -170,7 +170,7 @@
 //                     className={`absolute bottom-3 right-3 p-2 ${
 //                       isFullscreen
 //                         ? "hidden"
-//                         : "bg-white dark:bg-gray-800 dark:text-gray-200 shadow rounded z-20"
+//                         : "bg-primaryWhite dark:bg-gray800 dark:text-gray200 shadow rounded z-20"
 //                     }`}
 //                   >
 //                     <FaExpand />
@@ -180,7 +180,7 @@
 //                 {isFullscreen && (
 //                   <button
 //                     onClick={handleFullscreen}
-//                     className="fixed bottom-4 right-4 p-3 rounded-full bg-gray-700 text-white hover:bg-gray-600 z-50 shadow-lg"
+//                     className="fixed bottom-4 right-4 p-3 rounded-full bg-gray700 text-primaryWhite hover:bg-gray600 z-50 shadow-lg"
 //                   >
 //                     <FaCompress size={15} />
 //                   </button>
@@ -198,7 +198,7 @@
 //             )}
 
 //             {selectedChapter.resourceType === "audio" && (
-//               <div className="flex flex-col items-center justify-center w-full h-full gap-4 text-white">
+//               <div className="flex flex-col items-center justify-center w-full h-full gap-4 text-primaryWhite">
 //                 <img
 //                   src={
 //                     selectedChapter.thumbnailProxyUrl ||
@@ -214,9 +214,9 @@
 //             )}
 //           </div>
 //         ) : error ? (
-//           <p className="text-red-500">{error}</p>
+//           <p className="text-primaryRed">{error}</p>
 //         ) : (
-//           <p className="text-gray-700 dark:text-gray-200"></p>
+//           <p className="text-gray700 dark:text-gray200"></p>
 //         )}
 //       </div>
 
@@ -224,7 +224,7 @@
 //       {!isFullscreen && (
 //         <>
 //           {/* Desktop Sidebar */}
-//           <div className="hidden lg:flex w-[320px] bg-white dark:bg-gray-800 p-4 flex-col shadow-lg overflow-y-auto">
+//           <div className="hidden lg:flex w-[320px] bg-primaryWhite dark:bg-gray800 p-4 flex-col shadow-lg overflow-y-auto">
 //             {/* Filter Tabs */}
 //             <div className="flex justify-between mb-4">
 //               {["PDF", "VIDEO", "AUDIO"].map((tab) => (
@@ -233,8 +233,8 @@
 //                   onClick={() => setFilter(tab)}
 //                   className={`px-5 py-1 rounded-lg text-sm font-medium ${
 //                     filter === tab
-//                       ? "bg-blue-500 text-white"
-//                       : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200"
+//                       ? "bg-primaryBlue text-primaryWhite"
+//                       : "bg-gray-100 text-gray700 dark:bg-gray700 dark:text-gray200"
 //                   }`}
 //                 >
 //                   {tab}
@@ -245,7 +245,7 @@
 //             {/* Chapter List */}
 //             <div className="flex flex-col gap-3">
 //               {filtered.length === 0 ? (
-//                 <p className="text-gray-400 text-sm dark:text-gray-300">
+//                 <p className="text-gray400 text-sm dark:text-gray300">
 //                   No {filter} content found
 //                 </p>
 //               ) : (
@@ -260,10 +260,10 @@
 //                       className={`flex items-center w-[320px] h-[60px] rounded-lg shadow-sm cursor-pointer ${
 //                         selectedChapter?.id === item.id
 //                           ? "bg-blue-200 dark:bg-blue-600"
-//                           : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+//                           : "bg-gray-100 dark:bg-gray700 hover:bg-gray200 dark:hover:bg-gray600"
 //                       }`}
 //                     >
-//                       <div className="w-14 h-14 flex items-center justify-center bg-gray-300 dark:bg-gray-600 rounded-l-lg overflow-hidden">
+//                       <div className="w-14 h-14 flex items-center justify-center bg-gray300 dark:bg-gray600 rounded-l-lg overflow-hidden">
 //                         <img
 //                           src={thumbSrc}
 //                           alt={`thumb-${item.id}`}
@@ -273,7 +273,7 @@
 //                           className="w-full h-full object-cover"
 //                         />
 //                       </div>
-//                       <p className="ml-3 text-sm font-medium text-gray-800 dark:text-gray-200">
+//                       <p className="ml-3 text-sm font-medium text-gray800 dark:text-gray200">
 //                         {item.title}
 //                       </p>
 //                     </div>
@@ -287,14 +287,14 @@
 //           {isSidebarOpen && (
 //             <div className="fixed inset-0 z-50 flex">
 //               <div
-//                 className="flex-1 bg-black/50"
+//                 className="flex-1 bg-primaryBlack/50"
 //                 onClick={() => setIsSidebarOpen(false)}
 //               ></div>
-//               <div className="w-[280px] bg-white dark:bg-gray-800 p-4 flex flex-col shadow-lg overflow-y-auto">
+//               <div className="w-[280px] bg-primaryWhite dark:bg-gray800 p-4 flex flex-col shadow-lg overflow-y-auto">
 //                 <div className="flex justify-end mb-4">
 //                   <button
 //                     onClick={() => setIsSidebarOpen(false)}
-//                     className="p-2 rounded bg-gray-200 dark:bg-gray-700 dark:text-white shadow hover:bg-gray-300 dark:hover:bg-gray-600"
+//                     className="p-2 rounded bg-gray200 dark:bg-gray700 dark:text-primaryWhite shadow hover:bg-gray300 dark:hover:bg-gray600"
 //                   >
 //                     <FiX size={20} />
 //                   </button>
@@ -306,8 +306,8 @@
 //                       onClick={() => setFilter(tab)}
 //                       className={`px-3 py-1 rounded-lg text-sm font-medium ${
 //                         filter === tab
-//                           ? "bg-blue-500 text-white"
-//                           : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200"
+//                           ? "bg-primaryBlue text-primaryWhite"
+//                           : "bg-gray-100 text-gray700 dark:bg-gray700 dark:text-gray200"
 //                       }`}
 //                     >
 //                       {tab}
@@ -317,7 +317,7 @@
 
 //                 <div className="flex flex-col gap-3">
 //                   {filtered.length === 0 ? (
-//                     <p className="text-gray-400 text-sm dark:text-gray-300">
+//                     <p className="text-gray400 text-sm dark:text-gray300">
 //                       No {filter} content found
 //                     </p>
 //                   ) : (
@@ -333,10 +333,10 @@
 //                           className={`flex items-center w-full h-[60px] rounded-lg shadow-sm cursor-pointer ${
 //                             selectedChapter?.id === item.id
 //                               ? "bg-blue-200 dark:bg-blue-600"
-//                               : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+//                               : "bg-gray-100 dark:bg-gray700 hover:bg-gray200 dark:hover:bg-gray600"
 //                           }`}
 //                         >
-//                           <div className="w-14 h-14 flex items-center justify-center bg-gray-300 dark:bg-gray-600 rounded-l-lg overflow-hidden">
+//                           <div className="w-14 h-14 flex items-center justify-center bg-gray300 dark:bg-gray600 rounded-l-lg overflow-hidden">
 //                             <img
 //                               src={thumbSrc}
 //                               alt={`thumb-${item.id}`}
@@ -346,7 +346,7 @@
 //                               className="w-full h-full object-cover"
 //                             />
 //                           </div>
-//                           <p className="ml-3 text-sm font-medium text-gray-800 dark:text-gray-200">
+//                           <p className="ml-3 text-sm font-medium text-gray800 dark:text-gray200">
 //                             {item.title}
 //                           </p>
 //                         </div>
@@ -493,7 +493,7 @@
 //           <div className="absolute top-3 left-3 flex items-center gap-3 z-50">
 //             <button
 //               onClick={() => navigate(-1)}
-//               className="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 dark:text-white shadow hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+//               className="px-3 py-1 rounded bg-gray200 dark:bg-gray700 dark:text-primaryWhite shadow hover:bg-gray300 dark:hover:bg-gray600 transition"
 //             >
 //               ⬅ Back
 //             </button>
@@ -505,7 +505,7 @@
 //           <div className="absolute top-3 right-3 flex items-center gap-2 z-40 lg:hidden">
 //             <button
 //               onClick={() => setIsSidebarOpen(true)}
-//               className="p-2 rounded bg-gray-200 dark:bg-gray-700 dark:text-white shadow hover:bg-gray-300 dark:hover:bg-gray-600"
+//               className="p-2 rounded bg-gray200 dark:bg-gray700 dark:text-primaryWhite shadow hover:bg-gray300 dark:hover:bg-gray600"
 //             >
 //               <FiMenu size={20} />
 //             </button>
@@ -516,13 +516,13 @@
 //         {selectedChapter ? (
 //           <div
 //             ref={viewerRef}
-//             className={`flex-1 flex justify-center items-center w-full h-full p-4 relative transition-all duration-300 ${isFullscreen ? "fixed inset-0 z-50 bg-black p-2" : ""
+//             className={`flex-1 flex justify-center items-center w-full h-full p-4 relative transition-all duration-300 ${isFullscreen ? "fixed inset-0 z-50 bg-primaryBlack p-2" : ""
 //               }`}
 //           >
 //             {selectedChapter.resourceType === "pdf" && (
 //               <>
 //                 <div
-//                   className={`flex-1 flex justify-center items-center w-full h-full bg-[#d2dcf3] dark:bg-gray-700 rounded-lg shadow-md relative transition-all duration-300 ${isFullscreen ? "w-full h-full p-0 bg-black" : "p-4"
+//                   className={`flex-1 flex justify-center items-center w-full h-full bg-[#d2dcf3] dark:bg-gray700 rounded-lg shadow-md relative transition-all duration-300 ${isFullscreen ? "w-full h-full p-0 bg-primaryBlack" : "p-4"
 //                     }`}
 //                 >
 //                   {/* Flipbook / Scrollable PDF */}
@@ -538,7 +538,7 @@
 //                     onClick={handleFullscreen}
 //                     className={`absolute bottom-3 right-3 p-2 ${isFullscreen
 //                       ? "hidden"
-//                       : "bg-white dark:bg-gray-800 dark:text-gray-200 shadow rounded z-20"
+//                       : "bg-primaryWhite dark:bg-gray800 dark:text-gray200 shadow rounded z-20"
 //                       }`}
 //                   >
 //                     <FaExpand />
@@ -548,7 +548,7 @@
 //                 {isFullscreen && (
 //                   <button
 //                     onClick={handleFullscreen}
-//                     className="fixed bottom-4 right-4 p-3 rounded-full bg-gray-700 text-white hover:bg-gray-600 z-50 shadow-lg"
+//                     className="fixed bottom-4 right-4 p-3 rounded-full bg-gray700 text-primaryWhite hover:bg-gray600 z-50 shadow-lg"
 //                   >
 //                     <FaCompress size={15} />
 //                   </button>
@@ -566,7 +566,7 @@
 //             )}
 
 //             {selectedChapter.resourceType === "audio" && (
-//               <div className="flex flex-col items-center justify-center w-full h-full gap-4 text-white">
+//               <div className="flex flex-col items-center justify-center w-full h-full gap-4 text-primaryWhite">
 //                 <img
 //                   src={
 //                     selectedChapter.thumbnailProxyUrl ||
@@ -582,9 +582,9 @@
 //             )}
 //           </div>
 //         ) : error ? (
-//           <p className="text-red-500">{error}</p>
+//           <p className="text-primaryRed">{error}</p>
 //         ) : (
-//           <p className="text-gray-700 dark:text-gray-200"></p>
+//           <p className="text-gray700 dark:text-gray200"></p>
 //         )}
 //       </div>
 
@@ -592,7 +592,7 @@
 //       {!isFullscreen && (
 //         <>
 //           {/* Desktop Sidebar */}
-//           <div className="hidden lg:flex w-[320px] bg-white dark:bg-gray-800 p-4 flex-col shadow-lg overflow-y-auto">
+//           <div className="hidden lg:flex w-[320px] bg-primaryWhite dark:bg-gray800 p-4 flex-col shadow-lg overflow-y-auto">
 //             {/* Filter Tabs */}
 //             <div className="flex justify-between mb-4">
 //               {["PDF", "VIDEO", "AUDIO"].map((tab) => (
@@ -600,8 +600,8 @@
 //                   key={tab}
 //                   onClick={() => setFilter(tab)}
 //                   className={`px-5 py-1 rounded-lg text-sm font-medium ${filter === tab
-//                     ? "bg-blue-500 text-white"
-//                     : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200"
+//                     ? "bg-primaryBlue text-primaryWhite"
+//                     : "bg-gray-100 text-gray700 dark:bg-gray700 dark:text-gray200"
 //                     }`}
 //                 >
 //                   {tab}
@@ -612,7 +612,7 @@
 //             {/* Chapter List */}
 //             <div className="flex flex-col gap-3">
 //               {filtered.length === 0 ? (
-//                 <p className="text-gray-400 text-sm dark:text-gray-300">
+//                 <p className="text-gray400 text-sm dark:text-gray300">
 //                   No {filter} content found
 //                 </p>
 //               ) : (
@@ -625,14 +625,14 @@
 //                       className={`flex flex-col w-[320px] rounded-lg shadow-sm cursor-pointer 
 //     ${selectedChapter?.id === item.id
 //                           ? "bg-blue-200 dark:bg-blue-600"
-//                           : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+//                           : "bg-gray-100 dark:bg-gray700 hover:bg-gray200 dark:hover:bg-gray600"
 //                         }`}
 //                     >
 
 //                       {/* Row: Image + Title + Parts button */}
 //                       <div className="flex items-center h-[60px]">
 
-//                         <div className="w-20 h-14 flex items-center justify-center bg-gray-300 dark:bg-gray-600 rounded-l-lg overflow-hidden">
+//                         <div className="w-20 h-14 flex items-center justify-center bg-gray300 dark:bg-gray600 rounded-l-lg overflow-hidden">
 //                           <img
 //                             src={thumbSrc}
 //                             alt={`thumb-${item.id}`}
@@ -645,7 +645,7 @@
 
 //                         <div className="ml-3 flex flex-col w-full">
 //                           <div className="flex justify-between items-center">
-//                             <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
+//                             <p className="text-sm font-medium text-gray800 dark:text-gray200">
 //                               {item.title}
 //                             </p>
 
@@ -655,7 +655,7 @@
 //                                   e.stopPropagation();
 //                                   setOpenPartsId(openPartsId === item.id ? null : item.id);
 //                                 }}
-//                                 className="text-xs text-white font-semibold rounded-lg px-2 py-1 bg-gray-300 dark:bg-gray-600 mr-2"
+//                                 className="text-xs text-primaryWhite font-semibold rounded-lg px-2 py-1 bg-gray300 dark:bg-gray600 mr-2"
 //                               >
 //                                 Parts ▼
 //                               </button>
@@ -667,7 +667,7 @@
 
 //                       {/* ---- DROPDOWN OUTSIDE THE ROW ---- */}
 //                       {openPartsId === item.id && item.resourceType === "video" && (
-//                         <div className="mt-2 ml-3 mb-3 flex flex-col gap-1 text-xs bg-gray-200 dark:bg-gray-700 p-2 rounded">
+//                         <div className="mt-2 ml-3 mb-3 flex flex-col gap-1 text-xs bg-gray200 dark:bg-gray700 p-2 rounded">
 //                           {["Part 1", "Part 2", "Part 3"].map((p, idx) => (
 //                             <button
 //                               key={idx}
@@ -675,7 +675,7 @@
 //                                 e.stopPropagation();
 //                                 setSelectedChapter(item);
 //                               }}
-//                               className="text-left px-2 py-1 text-white  bg-gray-300 dark:bg-gray-600 border-light rounded hover:bg-gray-400 dark:hover:bg-gray-500"
+//                               className="text-left px-2 py-1 text-primaryWhite  bg-gray300 dark:bg-gray600 border-light rounded hover:bg-gray400 dark:hover:bg-gray-500"
 //                             >
 //                               {p}
 //                             </button>
@@ -695,14 +695,14 @@
 //           {isSidebarOpen && (
 //             <div className="fixed inset-0 z-50 flex">
 //               <div
-//                 className="flex-1 bg-black/50"
+//                 className="flex-1 bg-primaryBlack/50"
 //                 onClick={() => setIsSidebarOpen(false)}
 //               ></div>
-//               <div className="w-[280px] bg-white dark:bg-gray-800 p-4 flex flex-col shadow-lg overflow-y-auto">
+//               <div className="w-[280px] bg-primaryWhite dark:bg-gray800 p-4 flex flex-col shadow-lg overflow-y-auto">
 //                 <div className="flex justify-end mb-4">
 //                   <button
 //                     onClick={() => setIsSidebarOpen(false)}
-//                     className="p-2 rounded bg-gray-200 dark:bg-gray-700 dark:text-white shadow hover:bg-gray-300 dark:hover:bg-gray-600"
+//                     className="p-2 rounded bg-gray200 dark:bg-gray700 dark:text-primaryWhite shadow hover:bg-gray300 dark:hover:bg-gray600"
 //                   >
 //                     <FiX size={20} />
 //                   </button>
@@ -713,8 +713,8 @@
 //                       key={tab}
 //                       onClick={() => setFilter(tab)}
 //                       className={`px-3 py-1 rounded-lg text-sm font-medium ${filter === tab
-//                         ? "bg-blue-500 text-white"
-//                         : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200"
+//                         ? "bg-primaryBlue text-primaryWhite"
+//                         : "bg-gray-100 text-gray700 dark:bg-gray700 dark:text-gray200"
 //                         }`}
 //                     >
 //                       {tab}
@@ -724,7 +724,7 @@
 
 //                 <div className="flex flex-col gap-3">
 //                   {filtered.length === 0 ? (
-//                     <p className="text-gray-400 text-sm dark:text-gray-300">
+//                     <p className="text-gray400 text-sm dark:text-gray300">
 //                       No {filter} content found
 //                     </p>
 //                   ) : (
@@ -739,10 +739,10 @@
 //                           }}
 //                           className={`flex items-center w-full h-[60px] rounded-lg shadow-sm cursor-pointer ${selectedChapter?.id === item.id
 //                             ? "bg-blue-200 dark:bg-blue-600"
-//                             : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+//                             : "bg-gray-100 dark:bg-gray700 hover:bg-gray200 dark:hover:bg-gray600"
 //                             }`}
 //                         >
-//                           <div className="w-14 h-14 flex items-center justify-center bg-gray-300 dark:bg-gray-600 rounded-l-lg overflow-hidden">
+//                           <div className="w-14 h-14 flex items-center justify-center bg-gray300 dark:bg-gray600 rounded-l-lg overflow-hidden">
 //                             <img
 //                               src={thumbSrc}
 //                               alt={`thumb-${item.id}`}
@@ -752,7 +752,7 @@
 //                               className="w-full h-full object-cover"
 //                             />
 //                           </div>
-//                           <p className="ml-3 text-sm font-medium text-gray-800 dark:text-gray-200">
+//                           <p className="ml-3 text-sm font-medium text-gray800 dark:text-gray200">
 //                             {item.title}
 //                           </p>
 //                         </div>
@@ -901,7 +901,7 @@ export default function ChaptersList() {
           <div className="absolute top-3 left-3 flex items-center gap-3 z-50">
             <button
               onClick={() => navigate(-1)}
-              className="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 dark:text-white shadow hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+              className="px-3 py-1 rounded bg-gray200 dark:bg-gray700 dark:text-primaryWhite shadow hover:bg-gray300 dark:hover:bg-gray600 transition"
             >
               ⬅ Back
             </button>
@@ -913,7 +913,7 @@ export default function ChaptersList() {
           <div className="absolute top-3 right-3 flex items-center gap-2 z-40 lg:hidden">
             <button
               onClick={() => setIsSidebarOpen(true)}
-              className="p-2 rounded bg-gray-200 dark:bg-gray-700 dark:text-white shadow hover:bg-gray-300 dark:hover:bg-gray-600"
+              className="p-2 rounded bg-gray200 dark:bg-gray700 dark:text-primaryWhite shadow hover:bg-gray300 dark:hover:bg-gray600"
             >
               <FiMenu size={20} />
             </button>
@@ -924,13 +924,13 @@ export default function ChaptersList() {
         {selectedChapter ? (
           <div
             ref={viewerRef}
-            className={`flex-1 flex justify-center items-center w-full h-full p-4 relative transition-all duration-300 ${isFullscreen ? "fixed inset-0 z-50 bg-black p-2" : ""
+            className={`flex-1 flex justify-center items-center w-full h-full p-4 relative transition-all duration-300 ${isFullscreen ? "fixed inset-0 z-50 bg-primaryBlack p-2" : ""
               }`}
           >
             {selectedChapter.resourceType === "pdf" && (
               <>
                 <div
-                  className={`flex-1 flex justify-center items-center w-full h-full bg-[#d2dcf3] dark:bg-gray-700 rounded-lg shadow-md relative transition-all duration-300 ${isFullscreen ? "w-full h-full p-0 bg-black" : "p-4"
+                  className={`flex-1 flex justify-center items-center w-full h-full bg-[#d2dcf3] dark:bg-gray700 rounded-lg shadow-md relative transition-all duration-300 ${isFullscreen ? "w-full h-full p-0 bg-primaryBlack" : "p-4"
                     }`}
                 >
                   {/* Flipbook / Scrollable PDF */}
@@ -946,7 +946,7 @@ export default function ChaptersList() {
                     onClick={handleFullscreen}
                     className={`absolute bottom-3 right-3 p-2 ${isFullscreen
                       ? "hidden"
-                      : "bg-white dark:bg-gray-800 dark:text-gray-200 shadow rounded z-20"
+                      : "bg-primaryWhite dark:bg-gray800 dark:text-gray200 shadow rounded z-20"
                       }`}
                   >
                     <FaExpand />
@@ -956,7 +956,7 @@ export default function ChaptersList() {
                 {isFullscreen && (
                   <button
                     onClick={handleFullscreen}
-                    className="fixed bottom-4 right-4 p-3 rounded-full bg-gray-700 text-white hover:bg-gray-600 z-50 shadow-lg"
+                    className="fixed bottom-4 right-4 p-3 rounded-full bg-gray700 text-primaryWhite hover:bg-gray600 z-50 shadow-lg"
                   >
                     <FaCompress size={15} />
                   </button>
@@ -974,7 +974,7 @@ export default function ChaptersList() {
             )}
 
             {selectedChapter.resourceType === "audio" && (
-              <div className="flex flex-col items-center justify-center w-full h-full gap-4 text-white">
+              <div className="flex flex-col items-center justify-center w-full h-full gap-4 text-primaryWhite">
                 <img
                   src={
                     selectedChapter.thumbnailProxyUrl ||
@@ -990,9 +990,9 @@ export default function ChaptersList() {
             )}
           </div>
         ) : error ? (
-          <p className="text-red-500">{error}</p>
+          <p className="text-primaryRed">{error}</p>
         ) : (
-          <p className="text-gray-700 dark:text-gray-200"></p>
+          <p className="text-gray700 dark:text-gray200"></p>
         )}
       </div>
 
@@ -1000,7 +1000,7 @@ export default function ChaptersList() {
       {!isFullscreen && (
         <>
           {/* Desktop Sidebar */}
-          <div className="hidden lg:flex w-[320px] bg-white dark:bg-gray-800 p-4 flex-col shadow-lg overflow-y-auto">
+          <div className="hidden lg:flex w-[320px] bg-primaryWhite dark:bg-gray800 p-4 flex-col shadow-lg overflow-y-auto">
             {/* Filter Tabs */}
             <div className="flex justify-between mb-4">
               {["PDF", "VIDEO", "AUDIO"].map((tab) => (
@@ -1008,8 +1008,8 @@ export default function ChaptersList() {
                   key={tab}
                   onClick={() => setFilter(tab)}
                   className={`px-5 py-1 rounded-lg text-sm font-medium ${filter === tab
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200"
+                    ? "bg-primaryBlue text-primaryWhite"
+                    : "bg-gray-100 text-gray700 dark:bg-gray700 dark:text-gray200"
                     }`}
                 >
                   {tab}
@@ -1020,7 +1020,7 @@ export default function ChaptersList() {
             {/* Chapter List */}
             <div className="flex flex-col gap-3">
               {filtered.length === 0 ? (
-                <p className="text-gray-400 text-sm dark:text-gray-300">
+                <p className="text-gray400 text-sm dark:text-gray300">
                   No {filter} content found
                 </p>
               ) : (
@@ -1033,14 +1033,14 @@ export default function ChaptersList() {
                       className={`flex flex-col w-[320px] rounded-lg shadow-sm cursor-pointer 
     ${selectedChapter?.id === item.id
                           ? "bg-blue-200 dark:bg-blue-600"
-                          : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+                          : "bg-gray-100 dark:bg-gray700 hover:bg-gray200 dark:hover:bg-gray600"
                         }`}
                     >
 
                       {/* Row: Image + Title + Parts button */}
                       <div className="flex items-center h-[60px]">
 
-                        <div className="w-20 h-14 flex items-center justify-center bg-gray-300 dark:bg-gray-600 rounded-l-lg overflow-hidden">
+                        <div className="w-20 h-14 flex items-center justify-center bg-gray300 dark:bg-gray600 rounded-l-lg overflow-hidden">
                           <img
                             src={thumbSrc}
                             alt={`thumb-${item.id}`}
@@ -1053,7 +1053,7 @@ export default function ChaptersList() {
 
                         <div className="ml-3 flex flex-col w-full">
                           <div className="flex justify-between items-center">
-                            <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                            <p className="text-sm font-medium text-gray800 dark:text-gray200">
                               {item.title}
                             </p>
 
@@ -1063,7 +1063,7 @@ export default function ChaptersList() {
                                   e.stopPropagation();
                                   setOpenPartsId(openPartsId === item.id ? null : item.id);
                                 }}
-                                className="text-xs text-white font-semibold rounded-lg px-2 py-1 bg-gray-300 dark:bg-gray-600 mr-2"
+                                className="text-xs text-primaryWhite font-semibold rounded-lg px-2 py-1 bg-gray300 dark:bg-gray600 mr-2"
                               >
                                 Parts ▼
                               </button>
@@ -1075,7 +1075,7 @@ export default function ChaptersList() {
 
                       {/* ---- DROPDOWN OUTSIDE THE ROW ---- */}
                       {openPartsId === item.id && item.resourceType === "video" && (
-                        <div className="mt-2 ml-3 mb-3 flex flex-col gap-1 text-xs bg-gray-200 dark:bg-gray-700 p-2 rounded">
+                        <div className="mt-2 ml-3 mb-3 flex flex-col gap-1 text-xs bg-gray200 dark:bg-gray700 p-2 rounded">
                           {["Part 1", "Part 2", "Part 3"].map((p, idx) => (
                             <button
                               key={idx}
@@ -1083,7 +1083,7 @@ export default function ChaptersList() {
                                 e.stopPropagation();
                                 setSelectedChapter(item);
                               }}
-                              className="text-left px-2 py-1 text-white  bg-gray-300 dark:bg-gray-600 border-light rounded hover:bg-gray-400 dark:hover:bg-gray-500"
+                              className="text-left px-2 py-1 text-primaryWhite  bg-gray300 dark:bg-gray600 border-light rounded hover:bg-gray400 dark:hover:bg-gray-500"
                             >
                               {p}
                             </button>
@@ -1103,14 +1103,14 @@ export default function ChaptersList() {
           {isSidebarOpen && (
             <div className="fixed inset-0 z-50 flex">
               <div
-                className="flex-1 bg-black/50"
+                className="flex-1 bg-primaryBlack/50"
                 onClick={() => setIsSidebarOpen(false)}
               ></div>
-              <div className="w-[280px] bg-white dark:bg-gray-800 p-4 flex flex-col shadow-lg overflow-y-auto">
+              <div className="w-[280px] bg-primaryWhite dark:bg-gray800 p-4 flex flex-col shadow-lg overflow-y-auto">
                 <div className="flex justify-end mb-4">
                   <button
                     onClick={() => setIsSidebarOpen(false)}
-                    className="p-2 rounded bg-gray-200 dark:bg-gray-700 dark:text-white shadow hover:bg-gray-300 dark:hover:bg-gray-600"
+                    className="p-2 rounded bg-gray200 dark:bg-gray700 dark:text-primaryWhite shadow hover:bg-gray300 dark:hover:bg-gray600"
                   >
                     <FiX size={20} />
                   </button>
@@ -1121,8 +1121,8 @@ export default function ChaptersList() {
                       key={tab}
                       onClick={() => setFilter(tab)}
                       className={`px-3 py-1 rounded-lg text-sm font-medium ${filter === tab
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200"
+                        ? "bg-primaryBlue text-primaryWhite"
+                        : "bg-gray-100 text-gray700 dark:bg-gray700 dark:text-gray200"
                         }`}
                     >
                       {tab}
@@ -1132,7 +1132,7 @@ export default function ChaptersList() {
 
                 <div className="flex flex-col gap-3">
                   {filtered.length === 0 ? (
-                    <p className="text-gray-400 text-sm dark:text-gray-300">
+                    <p className="text-gray400 text-sm dark:text-gray300">
                       No {filter} content found
                     </p>
                   ) : (
@@ -1147,10 +1147,10 @@ export default function ChaptersList() {
                           }}
                           className={`flex items-center w-full h-[60px] rounded-lg shadow-sm cursor-pointer ${selectedChapter?.id === item.id
                             ? "bg-blue-200 dark:bg-blue-600"
-                            : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+                            : "bg-gray-100 dark:bg-gray700 hover:bg-gray200 dark:hover:bg-gray600"
                             }`}
                         >
-                          <div className="w-14 h-14 flex items-center justify-center bg-gray-300 dark:bg-gray-600 rounded-l-lg overflow-hidden">
+                          <div className="w-14 h-14 flex items-center justify-center bg-gray300 dark:bg-gray600 rounded-l-lg overflow-hidden">
                             <img
                               src={thumbSrc}
                               alt={`thumb-${item.id}`}
@@ -1160,7 +1160,7 @@ export default function ChaptersList() {
                               className="w-full h-full object-cover"
                             />
                           </div>
-                          <p className="ml-3 text-sm font-medium text-gray-800 dark:text-gray-200">
+                          <p className="ml-3 text-sm font-medium text-gray800 dark:text-gray200">
                             {item.title}
                           </p>
                         </div>

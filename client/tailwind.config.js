@@ -83,7 +83,9 @@ export default {
         indigo600:"#4f46e5",
         darkBg: "#1e1f2b",
         cardBg: "#2a2b39",
-        darkRed:"#dc2626"
+        darkRed:"#dc2626",
+        pink500:"#ec4899"
+        
       },
     },
   },

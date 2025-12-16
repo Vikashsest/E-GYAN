@@ -1,80 +1,4 @@
-// import { useEffect, useState } from "react";
-// import { useParams, useNavigate } from "react-router-dom";
-// import StudentNavbar from "./StudentNavbar";
-// import StudentSidebar from "./StudentSidebar";
-// import { fetchBooks } from "../../apiServices/booksApi";
-// import { FaBookOpen, FaArrowLeft } from "react-icons/fa";
 
-// const ClassSubjects = () => {
-//   const { className } = useParams();
-//   const [subjects, setSubjects] = useState([]);
-//   const navigate = useNavigate();
-// console.log("classname",className)
-//   useEffect(() => {
-//     async function loadSubjects() {
-//       try {
-//         const books = await fetchBooks();
-//         const uniqueSubjects = [
-//           ...new Set(books.map((b) => b.subject).filter(Boolean)),
-//         ];
-
-//         setSubjects(uniqueSubjects);
-//       } catch (error) {
-//         console.error("Failed to load subjects:", error);
-//       }
-//     }
-//     loadSubjects();
-//   }, []);
-
-//   const handleSubjectClick = (sub) => {
-//     navigate(`/books/${className}/${encodeURIComponent(sub)}`);
-//   };
-
-//   const handleBack = () => {
-//     navigate(-1); 
-//   };
-
-//   return (
-//     <div className="flex min-h-screen bg-[#1e1f2b] text-white">
-//       <StudentSidebar />
-//       <main className="pl-[280px] py-6 pr-5 w-full">
-//         <StudentNavbar />
-
-
-//         <button
-//           onClick={handleBack}
-//           className="flex items-center gap-2 mb-6 px-4 py-2 bg-[#3b3c4e] hover:bg-[#4a4b61] text-white rounded-xl shadow-md transition"
-//         >
-//           <FaArrowLeft /> Back
-//         </button>
-
-//         <h2 className="text-2xl font-bold mb-6">📖 Subjects in {className}</h2>
-
-//         {subjects.length > 0 ? (
-//           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-//             {subjects.map((sub, index) => (
-//               <div
-//                 key={index}
-//                 onClick={() => handleSubjectClick(sub)}
-//                 className="p-6 rounded-2xl shadow-lg border-2 border-white bg-[#3b3c4e] text-white
-//                 flex flex-col items-center justify-center hover:scale-105 transform transition-all duration-300 cursor-pointer"
-//               >
-//                 <FaBookOpen className="text-yellow-400 text-4xl mb-4 drop-shadow-lg" />
-//                 <h3 className="text-lg font-bold">{sub}</h3>
-//               </div>
-//             ))}
-//           </div>
-//         ) : (
-//           <p className="text-gray-400 text-center mt-6">
-//             No subjects found for this class.
-//           </p>
-//         )}
-//       </main>
-//     </div>
-//   );
-// };
-
-// export default ClassSubjects;
 
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -117,7 +41,7 @@ const ClassSubjects = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#1e1f2b] text-white relative">
+    <div className="flex min-h-screen bg-darkBg text-primaryWhite relative">
       {/* Sidebar */}
       <StudentSidebar
         isOpen={isSidebarOpen}
@@ -125,7 +49,7 @@ const ClassSubjects = () => {
       />
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 bg-primaryBlack bg-opacity-50 z-40 lg:hidden"
           onClick={() => setIsSidebarOpen(false)}
         ></div>
       )}
@@ -136,7 +60,7 @@ const ClassSubjects = () => {
         <div className="lg:hidden mb-4 flex items-center">
           <button
             onClick={() => setIsSidebarOpen(true)}
-            className="text-white focus:outline-none"
+            className="text-primaryWhite focus:outline-none"
           >
             <FiMenu size={28} />
           </button>
@@ -146,7 +70,7 @@ const ClassSubjects = () => {
 
         <button
           onClick={handleBack}
-          className="flex items-center gap-2 mb-6 px-4 py-2 bg-[#3b3c4e] hover:bg-[#4a4b61] text-white rounded-xl shadow-md transition"
+          className="flex items-center gap-2 mb-6 px-4 py-2 bg-cardBg hover:bg-[#4a4b61] text-primaryWhite rounded-xl shadow-md transition"
         >
           <FaArrowLeft /> Back
         </button>
@@ -157,8 +81,8 @@ const ClassSubjects = () => {
 
         {loading ? (
           <div className="flex flex-col items-center h-screen space-y-4">
-            <FaSpinner className="animate-spin text-blue-500 text-6xl" />
-            <p className="text-gray-400 font-semibold">Loading subjects...</p>
+            <FaSpinner className="animate-spin text-primaryBlue text-6xl" />
+            <p className="text-gray400 font-semibold">Loading subjects...</p>
           </div>
         ) : subjects.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -166,10 +90,10 @@ const ClassSubjects = () => {
               <div
                 key={index}
                 onClick={() => handleSubjectClick(sub)}
-                className="p-6 rounded-2xl shadow-lg border-2 border-white bg-[#3b3c4e] text-white
+                className="p-6 rounded-2xl shadow-lg border-2 border-primaryWhite bg-cardBg text-primaryWhite
                 flex flex-col items-center justify-center hover:scale-105 transform transition-all duration-300 cursor-pointer"
               >
-                <FaBookOpen className="text-yellow-400 text-4xl mb-4 drop-shadow-lg" />
+                <FaBookOpen className="text-primaryYellow text-4xl mb-4 drop-shadow-lg" />
                 <h3 className="text-lg font-bold text-center break-words leading-snug">
                   {sub.trim()}
                 </h3>
@@ -177,7 +101,7 @@ const ClassSubjects = () => {
             ))}
           </div>
         ) : (
-          <p className="text-gray-400">No subjects available.</p>
+          <p className="text-gray400">No subjects available.</p>
         )}
       </main>
     </div>

@@ -29,7 +29,7 @@
 //   }, []);
 
 //   return (
-//     <div className="flex min-h-screen bg-[#1e1f2b] text-white">
+//     <div className="flex min-h-screen bg-darkBg text-primaryWhite">
 //       <StudentSidebar />
 //       <main className="pl-[280px] py-6 pr-5 w-full">
 //         <StudentNavbar />
@@ -52,10 +52,10 @@
 //                 onClick={() =>
 //                   navigate(`/subjects/${cls.name}`)
 //                 }
-//                 className="p-6 rounded-2xl shadow-lg border-2 border-white bg-[#3b3c4e] text-white flex flex-col items-center justify-center hover:scale-105 transform transition-all duration-300 cursor-pointer"
+//                 className="p-6 rounded-2xl shadow-lg border-2 border-primaryWhite bg-[#3b3c4e] text-primaryWhite flex flex-col items-center justify-center hover:scale-105 transform transition-all duration-300 cursor-pointer"
 //               >
-//                 <FaBookReader className="text-blue-400 text-5xl mb-4 drop-shadow-lg" />
-//                 <h3 className="text-lg font-bold text-white tracking-wide text-center">
+//                 <FaBookReader className="text-lightBlue text-5xl mb-4 drop-shadow-lg" />
+//                 <h3 className="text-lg font-bold text-primaryWhite tracking-wide text-center">
 //                   {cls.name}
 //                 </h3>
 //               </div>
@@ -120,7 +120,7 @@
 //   }, [category, navigate]);
 
 //   return (
-//     <div className="flex min-h-screen bg-[#1e1f2b] text-white">
+//     <div className="flex min-h-screen bg-darkBg text-primaryWhite">
 //       <StudentSidebar />
 //       <main className="pl-[280px] py-6 pr-5 w-full">
 //         <StudentNavbar />
@@ -143,10 +143,10 @@
 //                 onClick={() =>
 //                   navigate(`/subjects/${cls.name}?category=${category}`)
 //                 }
-//                 className="p-6 rounded-2xl shadow-lg border-2 border-white bg-[#3b3c4e] text-white flex flex-col items-center justify-center hover:scale-105 transform transition-all duration-300 cursor-pointer"
+//                 className="p-6 rounded-2xl shadow-lg border-2 border-primaryWhite bg-[#3b3c4e] text-primaryWhite flex flex-col items-center justify-center hover:scale-105 transform transition-all duration-300 cursor-pointer"
 //               >
-//                 <FaBookReader className="text-blue-400 text-5xl mb-4 drop-shadow-lg" />
-//                 <h3 className="text-lg font-bold text-white tracking-wide text-center">
+//                 <FaBookReader className="text-lightBlue text-5xl mb-4 drop-shadow-lg" />
+//                 <h3 className="text-lg font-bold text-primaryWhite tracking-wide text-center">
 //                   {cls.name}
 //                 </h3>
 //               </div>
@@ -238,7 +238,7 @@ const ClassList = () => {
 }, [category, navigate]);
 
   return (
-    <div className="flex min-h-screen bg-[#1e1f2b] text-white relative">
+    <div className="flex min-h-screen bg-darkBg text-primaryWhite relative">
       {/* Sidebar */}
       <StudentSidebar
         isOpen={isSidebarOpen}
@@ -248,7 +248,7 @@ const ClassList = () => {
       {/* Overlay for mobile when sidebar open */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 bg-primaryBlack bg-opacity-50 z-40 lg:hidden"
           onClick={() => setIsSidebarOpen(false)}
         ></div>
       )}
@@ -259,7 +259,7 @@ const ClassList = () => {
         <div className="lg:hidden mb-4 flex items-center">
           <button
             onClick={() => setIsSidebarOpen(true)}
-            className="text-white focus:outline-none"
+            className="text-primaryWhite focus:outline-none"
           >
             <FiMenu size={28} />
           </button>
@@ -290,10 +290,10 @@ const ClassList = () => {
                     navigate(`/subjects/${cls.name}?category=${category}`);
                   }
                 }}
-                className="p-6 rounded-2xl shadow-lg border-2 border-white bg-[#3b3c4e] text-white flex flex-col items-center justify-center hover:scale-105 transform transition-all duration-300 cursor-pointer"
+                className="p-6 rounded-2xl shadow-lg border-2 border-primaryWhite bg-[#3b3c4e] text-primaryWhite flex flex-col items-center justify-center hover:scale-105 transform transition-all duration-300 cursor-pointer"
               >
-                <FaBookReader className="text-blue-400 text-5xl mb-4 drop-shadow-lg" />
-                <h3 className="text-lg font-bold text-white tracking-wide text-center">
+                <FaBookReader className="text-lightBlue text-5xl mb-4 drop-shadow-lg" />
+                <h3 className="text-lg font-bold text-primaryWhite tracking-wide text-center">
                   {cls.name}
                 </h3>
               </div>
@@ -301,8 +301,8 @@ const ClassList = () => {
           </div>
         ) :(loading &&
                   <div className="flex flex-col items-center h-screen space-y-4">
-              <FaSpinner className="animate-spin text-blue-500 text-6xl" />
-              <p className="text-gray-600 font-semibold">Loading, please wait...</p>
+              <FaSpinner className="animate-spin text-primaryBlue text-6xl" />
+              <p className="text-gray600 font-semibold">Loading, please wait...</p>
             </div>
                 )}
       </main>
