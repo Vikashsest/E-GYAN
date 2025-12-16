@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import TeacherNavbar from "../Pages/Teacher/TeacherNavbar";
 import TeacherSidebar from "../Pages/Teacher/TeacherSidebar";
 import { FaArrowLeft, FaSpinner } from "react-icons/fa";
+import StudentSidebar from "../Pages/Student/StudentSidebar";
+import StudentNavbar from "../Pages/Student/StudentNavbar";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -38,12 +40,12 @@ export default function MyBooks() {
     <div className="flex min-h-screen bg-[#1e1f2b] text-white relative">
       {/* Sidebar */}
       <div className="w-72 flex-shrink-0">
-        <TeacherSidebar />
+        <StudentSidebar />
       </div>
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col lg:pl-0">
-        <TeacherNavbar />
+        <StudentNavbar />
 
         <div className="p-6 flex-1">
           <button
