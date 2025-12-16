@@ -123,7 +123,7 @@ import AssessmentStartPage from "../Pages/Student/AssessmentStartPage";
 import SimulationLibrary from "../Pages/Student/SimulationLibrary";
 import CurrentAffairs from "../Pages/Student/CurrentAffairs";
 import NewsModal from "../Pages/Student/NewsModel";
-import MyBooks from "../Components/AssignedBook";
+import MyBooks from "../Pages/Student/AssignedBook";
 
 export const studentRouteList = [
   {

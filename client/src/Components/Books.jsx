@@ -160,7 +160,7 @@
 //   };
 
 //   return (
-//     <div className="flex min-h-screen bg-[#1e1f2b] text-white">
+//     <div className="flex min-h-screen bg-darkBg text-primaryWhite">
 //       {Sidebar && <Sidebar />}
 //       <main className="pl-[280px] py-6 pr-5 w-full">
 //         {Navbar && (
@@ -180,7 +180,7 @@
 //           <select
 //             value={selectedClass}
 //             onChange={(e) => setSelectedClass(e.target.value)}
-//             className="border border-gray-400 rounded px-2 py-1 text-black"
+//             className="border border-gray400 rounded px-2 py-1 text-primaryBlack"
 //           >
 //             <option value="">All Classes</option>
 //             {classes.map((cls, idx) => (
@@ -200,17 +200,17 @@
 //             .map((b) => (
 //               <div
 //                 key={b.id}
-//                 className="bg-white/10 border border-white/20 rounded-2xl shadow-md p-4 flex flex-col hover:shadow-xl hover:scale-105 transition-all duration-300"
+//                 className="bg-primaryWhite/10 border border-primaryWhite/20 rounded-2xl shadow-md p-4 flex flex-col hover:shadow-xl hover:scale-105 transition-all duration-300"
 //               >
 //                 <div className="flex flex-col items-center gap-3">
 //                   {/* Thumbnail */}
-//                   <div className="relative w-full h-36 lg:h-44 bg-black/10 rounded-lg overflow-hidden">
+//                   <div className="relative w-full h-36 lg:h-44 bg-primaryBlack/10 rounded-lg overflow-hidden">
 //                     <img
 //                       src={getProxiedUrl(b.thumbnail)}
 //                       alt={b.bookName}
 //                       className="w-full h-full object-contain p-2"
 //                     />
-//                     <span className="absolute top-2 right-2 bg-white/20 text-xs px-2 py-1 rounded-full text-white border border-white/30 backdrop-blur-sm">
+//                     <span className="absolute top-2 right-2 bg-primaryWhite/20 text-xs px-2 py-1 rounded-full text-primaryWhite border border-primaryWhite/30 backdrop-blur-sm">
 //                       {getViewLabel(getBookResourceType(b))}
 //                     </span>
 //                   </div>
@@ -220,17 +220,17 @@
 //                     <h3 className="text-base text-md lg:text-lg font-bold mb-1">
 //                       {b.bookName}
 //                     </h3>
-//                     <p className="text-sm sm:text-base text-gray-300 mb-1">
+//                     <p className="text-sm sm:text-base text-gray300 mb-1">
 //                       {b.subject}
 //                     </p>
-//                     <p className="text-xs sm:text-sm text-gray-400">
+//                     <p className="text-xs sm:text-sm text-gray400">
 //                       🎓 {b.educationLevel}
 //                     </p>
 //                   </div>
 //                 </div>
 
 //                 {/* Actions */}
-//                 <div className="flex flex-col mt-auto pt-2 border-t border-white/20">
+//                 <div className="flex flex-col mt-auto pt-2 border-t border-primaryWhite/20">
 //                   <button
 //                     onClick={() => {
 //                       setViewData(b);
@@ -245,7 +245,7 @@
 //     });
 //                       // setSelectedChapter(b.chapters?.[0] || null);
 //                     }}
-//                     className="w-full text-sm sm:text-base text-blue-400 hover:text-blue-300 font-semibold"
+//                     className="w-full text-sm sm:text-base text-lightBlue hover:text-blue-300 font-semibold"
 //                   >
 //                     {getViewLabel(getBookResourceType(b))}
 //                   </button>
@@ -254,20 +254,20 @@
 //                     <div className="flex justify-between mt-2">
 //                       <button
 //                         onClick={() => setEditData(b)}
-//                         className="text-yellow-400 hover:text-yellow-300 text-lg"
+//                         className="text-lightYellow hover:text-yellow-300 text-lg"
 //                       >
 //                         <FaEdit />
 //                       </button>
 //                       <button
 //                         onClick={() => navigate(`/books/${b.id}/chapters`)}
-//                         className="text-green-400 hover:text-green-300 text-lg"
+//                         className="text-lightGreen hover:text-green-300 text-lg"
 //                         title="Manage Chapters"
 //                       >
 //                         📚
 //                       </button>
 //                       <button
 //                         onClick={() => handleDelete(b.id)}
-//                         className="text-red-500 hover:text-red-400 text-lg"
+//                         className="text-primaryRed hover:text-lightRed text-lg"
 //                       >
 //                         <FaTrash />
 //                       </button>
@@ -279,8 +279,8 @@
 //         </div>
 
 //         {showUploadModal && (
-//   <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center">
-//     <div className="bg-white text-black rounded-lg w-[95%] max-w-xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-lg">
+//   <div className="fixed inset-0 bg-primaryBlack bg-opacity-40 z-50 flex justify-center items-center">
+//     <div className="bg-primaryWhite text-primaryBlack rounded-lg w-[95%] max-w-xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-lg">
 //       <h2 className="text-2xl font-semibold mb-4 text-center">
 //         📤 Upload Book
 //       </h2>
@@ -291,7 +291,7 @@
 //           <label className="text-sm font-medium">Resource Type</label>
 //           <select
 //             name="resourceType"
-//             className="w-full border border-gray-300 p-2 rounded text-sm"
+//             className="w-full border border-gray300 p-2 rounded text-sm"
 //             onChange={(e) =>
 //               setFormData((prev) => ({
 //                 ...prev,
@@ -312,7 +312,7 @@
 //           type="text"
 //           name="bookName"
 //           placeholder="Book Name"
-//           className="w-full border border-gray-300 p-2 rounded text-sm"
+//           className="w-full border border-gray300 p-2 rounded text-sm"
 //           onChange={(e) =>
 //             setFormData((prev) => ({
 //               ...prev,
@@ -327,7 +327,7 @@
 //           type="text"
 //           name="subject"
 //           placeholder="Subject"
-//           className="w-full border border-gray-300 p-2 rounded text-sm"
+//           className="w-full border border-gray300 p-2 rounded text-sm"
 //           onChange={(e) =>
 //             setFormData((prev) => ({
 //               ...prev,
@@ -340,7 +340,7 @@
 //         <label className="text-sm font-medium">Education Level</label>
 //         <select
 //             name="educationLevel"
-//             className="w-full border border-gray-300 p-2 rounded text-sm"
+//             className="w-full border border-gray300 p-2 rounded text-sm"
 //             onChange={(e) =>
 //               setFormData((prev) => ({
 //                 ...prev,
@@ -363,7 +363,7 @@
 //           <label className="text-sm font-medium">Language</label>
 //           <select
 //             name="language"
-//             className="w-full border border-gray-300 p-2 rounded text-sm"
+//             className="w-full border border-gray300 p-2 rounded text-sm"
 //             onChange={(e) =>
 //               setFormData((prev) => ({
 //                 ...prev,
@@ -383,7 +383,7 @@
 //           <label className="text-sm font-medium">Category</label>
 //           <select
 //             name="category"
-//             className="w-full border border-gray-300 p-2 rounded text-sm"
+//             className="w-full border border-gray300 p-2 rounded text-sm"
 //             onChange={(e) =>
 //               setFormData((prev) => ({
 //                 ...prev,
@@ -425,7 +425,7 @@
 //           </button>
 //           <button
 //             type="submit"
-//             className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+//             className="px-4 py-1 bg-primaryBlue text-primaryWhite rounded hover:bg-hoverBlue"
 //           >
 //             ✅ Upload
 //           </button>
@@ -436,8 +436,8 @@
 // )}
 
 //         {editData && (
-//           <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center">
-//             <div className="bg-white text-black rounded-lg w-[95%] max-w-xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-lg">
+//           <div className="fixed inset-0 bg-primaryBlack bg-opacity-40 z-50 flex justify-center items-center">
+//             <div className="bg-primaryWhite text-primaryBlack rounded-lg w-[95%] max-w-xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-lg">
 //               <h2 className="text-2xl font-semibold mb-4 text-center">
 //                 ✏️ Edit Book
 //               </h2>
@@ -517,7 +517,7 @@
 //                       }))
 //                     }
 //                     placeholder={key}
-//                     className="w-full border border-gray-300 p-2 rounded text-sm"
+//                     className="w-full border border-gray300 p-2 rounded text-sm"
 //                     // required
 //                   />
 //                 ))}
@@ -563,7 +563,7 @@
 //                   </button>
 //                   <button
 //                     type="submit"
-//                     className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+//                     className="px-4 py-1 bg-primaryBlue text-primaryWhite rounded hover:bg-hoverBlue"
 //                   >
 //                     ✅ Update
 //                   </button>
@@ -575,11 +575,11 @@
 
 //         {/* View Modal */}
 //         {viewData && selectedChapter && (
-//           <div className="fixed inset-0 z-50 bg-black bg-opacity-60 flex justify-center items-center">
+//           <div className="fixed inset-0 z-50 bg-primaryBlack bg-opacity-60 flex justify-center items-center">
 //             <div className="relative w-full h-full flex items-center justify-center">
-//               <div className="relative bg-white/10 backdrop-blur-md shadow-2xl rounded-xl border border-white/20 w-[95%] h-[90%] max-w-6xl max-h-[95%] overflow-hidden flex flex-col view-modal-container">
-//                 <div className="flex items-center justify-between px-6 py-2 bg-white/5 border-b border-white/20">
-//                   <h3 className="text-xl font-bold text-white">
+//               <div className="relative bg-primaryWhite/10 backdrop-blur-md shadow-2xl rounded-xl border border-primaryWhite/20 w-[95%] h-[90%] max-w-6xl max-h-[95%] overflow-hidden flex flex-col view-modal-container">
+//                 <div className="flex items-center justify-between px-6 py-2 bg-primaryWhite/5 border-b border-primaryWhite/20">
+//                   <h3 className="text-xl font-bold text-primaryWhite">
 //                     {getBookResourceType(viewData)}
 //                   </h3>
 //                   <div className="flex items-center gap-4">
@@ -587,7 +587,7 @@
 //                       getBookResourceType(viewData) === "audio") && (
 //                       <button
 //                         onClick={handleFullscreenToggle}
-//                         className="text-white text-xl hover:text-green-400"
+//                         className="text-primaryWhite text-xl hover:text-lightGreen"
 //                         title="Toggle Fullscreen"
 //                       >
 //                         {isFullscreen ? <FaCompress /> : <FaExpand />}
@@ -595,14 +595,14 @@
 //                     )}
 //                     <button
 //                       onClick={() => setViewData(null)}
-//                       className="text-white text-2xl hover:text-red-500"
+//                       className="text-primaryWhite text-2xl hover:text-primaryRed"
 //                     >
 //                       ✕
 //                     </button>
 //                   </div>
 //                 </div>
 
-//                 <div className="flex-1 overflow-hidden bg-black">
+//                 <div className="flex-1 overflow-hidden bg-primaryBlack">
 //                   {getBookResourceType(viewData) === "pdf" && selectedChapter && (
 //             <FlipbookPDFViewer
 //             chapter={selectedChapter}
@@ -620,7 +620,7 @@
 //                   )}
 
 //                   {getBookResourceType(viewData) === "audio" && (
-//                     <div className="flex flex-col items-center justify-center h-full gap-4 text-white">
+//                     <div className="flex flex-col items-center justify-center h-full gap-4 text-primaryWhite">
 //                       <img
 //                         src={getProxiedUrl(
 //                           viewData.thumbnail || "default-audio-cover.jpg"
@@ -943,11 +943,11 @@
 //   };
 
 //   return (
-//     <div className="flex min-h-screen bg-[#1e1f2b] text-white">
+//     <div className="flex min-h-screen bg-darkBg text-primaryWhite">
 //       {Sidebar && <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />}
 //       <main className="flex-1 lg:pl-[280px] py-6 px-5 w-full">
 //         <div className="lg:hidden px-4 mb-4">
-//           <button onClick={() => setIsSidebarOpen(true)} className="text-white">
+//           <button onClick={() => setIsSidebarOpen(true)} className="text-primaryWhite">
 //             <FiMenu size={28} />
 //           </button>
 //         </div>
@@ -968,7 +968,7 @@
 //           <select
 //             value={selectedClass}
 //             onChange={(e) => setSelectedClass(e.target.value)}
-//             className="border border-gray-400 rounded px-2 py-1 text-black"
+//             className="border border-gray400 rounded px-2 py-1 text-primaryBlack"
 //           >
 //             <option value="">All Classes</option>
 //             {classes.map((cls, idx) => (
@@ -988,17 +988,17 @@
 //             .map((b) => (
 //               <div
 //                 key={b.id}
-//                 className="bg-white/10 border border-white/20 rounded-2xl shadow-md p-4 flex flex-col hover:shadow-xl hover:scale-105 transition-all duration-300"
+//                 className="bg-primaryWhite/10 border border-primaryWhite/20 rounded-2xl shadow-md p-4 flex flex-col hover:shadow-xl hover:scale-105 transition-all duration-300"
 //               >
 //                 <div className="flex flex-col items-center gap-3">
 //                   {/* Thumbnail */}
-//                   <div className="relative w-full h-36 lg:h-44 bg-black/10 rounded-lg overflow-hidden">
+//                   <div className="relative w-full h-36 lg:h-44 bg-primaryBlack/10 rounded-lg overflow-hidden">
 //                     <img
 //                       src={getProxiedUrl(b.thumbnail)}
 //                       alt={b.bookName}
 //                       className="w-full h-full object-contain p-2"
 //                     />
-//                     <span className="absolute top-2 right-2 bg-white/20 text-xs px-2 py-1 rounded-full text-white border border-white/30 backdrop-blur-sm">
+//                     <span className="absolute top-2 right-2 bg-primaryWhite/20 text-xs px-2 py-1 rounded-full text-primaryWhite border border-primaryWhite/30 backdrop-blur-sm">
 //                       {getViewLabel(getBookResourceType(b))}
 //                     </span>
 //                   </div>
@@ -1008,17 +1008,17 @@
 //                     <h3 className="text-base text-md lg:text-lg font-bold mb-1">
 //                       {b.bookName}
 //                     </h3>
-//                     <p className="text-sm sm:text-base text-gray-300 mb-1">
+//                     <p className="text-sm sm:text-base text-gray300 mb-1">
 //                       {b.subject}
 //                     </p>
-//                     <p className="text-xs sm:text-sm text-gray-400">
+//                     <p className="text-xs sm:text-sm text-gray400">
 //                       🎓 {b.educationLevel}
 //                     </p>
 //                   </div>
 //                 </div>
 
 //                 {/* Actions */}
-//                 <div className="flex flex-col mt-auto pt-2 border-t border-white/20">
+//                 <div className="flex flex-col mt-auto pt-2 border-t border-primaryWhite/20">
 //                   <button
 //                     onClick={() => {
 //                       setViewData(b);
@@ -1033,7 +1033,7 @@
 //                         });
 //                       // setSelectedChapter(b.chapters?.[0] || null);
 //                     }}
-//                     className="w-full text-sm sm:text-base text-blue-400 hover:text-blue-300 font-semibold"
+//                     className="w-full text-sm sm:text-base text-lightBlue hover:text-blue-300 font-semibold"
 //                   >
 //                     {getViewLabel(getBookResourceType(b))}
 //                   </button>
@@ -1042,20 +1042,20 @@
 //                     <div className="flex justify-between mt-2">
 //                       <button
 //                         onClick={() => setEditData(b)}
-//                         className="text-yellow-400 hover:text-yellow-300 text-lg"
+//                         className="text-lightYellow hover:text-yellow-300 text-lg"
 //                       >
 //                         <FaEdit />
 //                       </button>
 //                       <button
 //                         onClick={() => navigate(`/books/${b.id}/chapters`)}
-//                         className="text-green-400 hover:text-green-300 text-lg"
+//                         className="text-lightGreen hover:text-green-300 text-lg"
 //                         title="Manage Chapters"
 //                       >
 //                         📚
 //                       </button>
 //                       <button
 //                         onClick={() => handleDelete(b.id)}
-//                         className="text-red-500 hover:text-red-400 text-lg"
+//                         className="text-primaryRed hover:text-lightRed text-lg"
 //                       >
 //                         <FaTrash />
 //                       </button>
@@ -1074,7 +1074,7 @@
 //             <button
 //               onClick={() => setCurrentPage(1)}
 //               disabled={currentPage === 1}
-//               className="px-3 py-1 bg-white/10 border border-white/20 rounded disabled:opacity-50"
+//               className="px-3 py-1 bg-primaryWhite/10 border border-primaryWhite/20 rounded disabled:opacity-50"
 //             >
 //               « First
 //             </button>
@@ -1083,7 +1083,7 @@
 //             <button
 //               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
 //               disabled={currentPage === 1}
-//               className="px-3 py-1 bg-white/10 border border-white/20 rounded disabled:opacity-50"
+//               className="px-3 py-1 bg-primaryWhite/10 border border-primaryWhite/20 rounded disabled:opacity-50"
 //             >
 //               ‹ Prev
 //             </button>
@@ -1094,7 +1094,7 @@
 //                 key={num}
 //                 onClick={() => setCurrentPage(num)}
 //                 className={`px-3 py-1 border rounded
-//           ${num === currentPage ? "bg-blue-500 text-white" : "bg-white/10"}
+//           ${num === currentPage ? "bg-primaryBlue text-primaryWhite" : "bg-primaryWhite/10"}
 //         `}
 //               >
 //                 {num}
@@ -1105,7 +1105,7 @@
 //             <button
 //               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
 //               disabled={currentPage === totalPages}
-//               className="px-3 py-1 bg-white/10 border border-white/20 rounded disabled:opacity-50"
+//               className="px-3 py-1 bg-primaryWhite/10 border border-primaryWhite/20 rounded disabled:opacity-50"
 //             >
 //               Next ›
 //             </button>
@@ -1114,7 +1114,7 @@
 //             <button
 //               onClick={() => setCurrentPage(totalPages)}
 //               disabled={currentPage === totalPages}
-//               className="px-3 py-1 bg-white/10 border border-white/20 rounded disabled:opacity-50"
+//               className="px-3 py-1 bg-primaryWhite/10 border border-primaryWhite/20 rounded disabled:opacity-50"
 //             >
 //               Last »
 //             </button>
@@ -1122,8 +1122,8 @@
 //         )}
 
 //         {showUploadModal && (
-//           <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center">
-//             <div className="bg-white text-black rounded-lg w-[95%] max-w-xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-lg">
+//           <div className="fixed inset-0 bg-primaryBlack bg-opacity-40 z-50 flex justify-center items-center">
+//             <div className="bg-primaryWhite text-primaryBlack rounded-lg w-[95%] max-w-xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-lg">
 //               <h2 className="text-2xl font-semibold mb-4 text-center">
 //                 📤 Upload Resource
 //               </h2>
@@ -1139,7 +1139,7 @@
 //                       category: e.target.value,
 //                     }))
 //                   }
-//                   className="w-full border border-gray-300 p-2 rounded text-sm"
+//                   className="w-full border border-gray300 p-2 rounded text-sm"
 
 //                 >
 //                   <option value="">-- Choose Category --</option>
@@ -1157,7 +1157,7 @@
 //                       type="text"
 //                       name="bookName"
 //                       placeholder="Book Name"
-//                       className="w-full border border-gray-300 p-2 rounded text-sm"
+//                       className="w-full border border-gray300 p-2 rounded text-sm"
 //                       onChange={(e) =>
 //                         setFormData((prev) => ({
 //                           ...prev,
@@ -1171,7 +1171,7 @@
 //                       type="text"
 //                       name="subject"
 //                       placeholder="Subject"
-//                       className="w-full border border-gray-300 p-2 rounded text-sm"
+//                       className="w-full border border-gray300 p-2 rounded text-sm"
 //                       onChange={(e) =>
 //                         setFormData((prev) => ({
 //                           ...prev,
@@ -1185,7 +1185,7 @@
 //                       <select
 //                         value={selectedClass}
 //                         onChange={(e) => setSelectedClass(e.target.value)}
-//                         className="border border-gray-400 rounded px-2 py-1 text-black"
+//                         className="border border-gray400 rounded px-2 py-1 text-primaryBlack"
 //                       >
 //                         <option value="">All Classes</option>
 //                         {classes.map((cls, idx) => (
@@ -1199,7 +1199,7 @@
 //                       <label className="text-sm font-medium">Language</label>
 //                       <select
 //                         name="language"
-//                         className="w-full border border-gray-300 p-2 rounded text-sm"
+//                         className="w-full border border-gray300 p-2 rounded text-sm"
 //                         onChange={(e) =>
 //                           setFormData((prev) => ({
 //                             ...prev,
@@ -1323,7 +1323,7 @@
 //                     <input
 //                       type="text"
 //                       placeholder="News Title"
-//                       className="w-full border border-gray-300 p-2 rounded text-sm"
+//                       className="w-full border border-gray300 p-2 rounded text-sm"
 //                       onChange={(e) =>
 //                         setFormData((prev) => ({
 //                           ...prev,
@@ -1336,7 +1336,7 @@
 //                     {/* 🔹 Description */}
 //                     <textarea
 //                       placeholder="Description or Summary"
-//                       className="w-full border border-gray-300 p-2 rounded text-sm"
+//                       className="w-full border border-gray300 p-2 rounded text-sm"
 //                       onChange={(e) =>
 //                         setFormData((prev) => ({
 //                           ...prev,
@@ -1350,7 +1350,7 @@
 //                     <div>
 //                       <label className="text-sm font-medium">Category</label>
 //                       <select
-//                         className="w-full border border-gray-300 p-2 rounded text-sm"
+//                         className="w-full border border-gray300 p-2 rounded text-sm"
 //                         onChange={(e) =>
 //                           setFormData((prev) => ({
 //                             ...prev,
@@ -1373,7 +1373,7 @@
 //                       <label className="text-sm font-medium">Date</label>
 //                       <input
 //                         type="date"
-//                         className="w-full border border-gray-300 p-2 rounded text-sm"
+//                         className="w-full border border-gray300 p-2 rounded text-sm"
 //                         onChange={(e) =>
 //                           setFormData((prev) => ({
 //                             ...prev,
@@ -1390,7 +1390,7 @@
 //                       <input
 //                         type="text"
 //                         placeholder="e.g. PIB, The Hindu, Times of India"
-//                         className="w-full border border-gray-300 p-2 rounded text-sm"
+//                         className="w-full border border-gray300 p-2 rounded text-sm"
 //                         onChange={(e) =>
 //                           setFormData((prev) => ({
 //                             ...prev,
@@ -1406,7 +1406,7 @@
 //                       <input
 //                         type="text"
 //                         placeholder="e.g. economy, budget, RBI"
-//                         className="w-full border border-gray-300 p-2 rounded text-sm"
+//                         className="w-full border border-gray300 p-2 rounded text-sm"
 //                         onChange={(e) =>
 //                           setFormData((prev) => ({
 //                             ...prev,
@@ -1454,7 +1454,7 @@
 //                       <input
 //                         type="url"
 //                         placeholder="https://example.com/news-article"
-//                         className="w-full border border-gray-300 p-2 rounded text-sm"
+//                         className="w-full border border-gray300 p-2 rounded text-sm"
 //                         onChange={(e) =>
 //                           setFormData((prev) => ({
 //                             ...prev,
@@ -1477,7 +1477,7 @@
 //                   </button>
 //                   <button
 //                     type="submit"
-//                     className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+//                     className="px-4 py-1 bg-primaryBlue text-primaryWhite rounded hover:bg-hoverBlue"
 //                   >
 //                     ✅ Upload
 //                   </button>
@@ -1488,8 +1488,8 @@
 //         )}
 
 //         {editData && (
-//           <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center">
-//             <div className="bg-white text-black rounded-lg w-[95%] max-w-xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-lg">
+//           <div className="fixed inset-0 bg-primaryBlack bg-opacity-40 z-50 flex justify-center items-center">
+//             <div className="bg-primaryWhite text-primaryBlack rounded-lg w-[95%] max-w-xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-lg">
 //               <h2 className="text-2xl font-semibold mb-4 text-center">
 //                 ✏️ Edit Book
 //               </h2>
@@ -1569,7 +1569,7 @@
 //                       }))
 //                     }
 //                     placeholder={key}
-//                     className="w-full border border-gray-300 p-2 rounded text-sm"
+//                     className="w-full border border-gray300 p-2 rounded text-sm"
 //                   />
 //                 ))}
 
@@ -1614,7 +1614,7 @@
 //                   </button>
 //                   <button
 //                     type="submit"
-//                     className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+//                     className="px-4 py-1 bg-primaryBlue text-primaryWhite rounded hover:bg-hoverBlue"
 //                   >
 //                     ✅ Update
 //                   </button>
@@ -1626,11 +1626,11 @@
 
 //         {/* View Modal */}
 //         {viewData && selectedChapter && (
-//           <div className="fixed inset-0 z-50 bg-black bg-opacity-60 flex justify-center items-center">
+//           <div className="fixed inset-0 z-50 bg-primaryBlack bg-opacity-60 flex justify-center items-center">
 //             <div className="relative w-full h-full flex items-center justify-center">
-//               <div className="relative bg-white/10 backdrop-blur-md shadow-2xl rounded-xl border border-white/20 w-[95%] h-[90%] max-w-6xl max-h-[95%] overflow-hidden flex flex-col view-modal-container">
-//                 <div className="flex items-center justify-between px-6 py-2 bg-white/5 border-b border-white/20">
-//                   <h3 className="text-xl font-bold text-white">
+//               <div className="relative bg-primaryWhite/10 backdrop-blur-md shadow-2xl rounded-xl border border-primaryWhite/20 w-[95%] h-[90%] max-w-6xl max-h-[95%] overflow-hidden flex flex-col view-modal-container">
+//                 <div className="flex items-center justify-between px-6 py-2 bg-primaryWhite/5 border-b border-primaryWhite/20">
+//                   <h3 className="text-xl font-bold text-primaryWhite">
 //                     {getBookResourceType(viewData)}
 //                   </h3>
 //                   <div className="flex items-center gap-4">
@@ -1638,7 +1638,7 @@
 //                       getBookResourceType(viewData) === "audio") && (
 //                         <button
 //                           onClick={handleFullscreenToggle}
-//                           className="text-white text-xl hover:text-green-400"
+//                           className="text-primaryWhite text-xl hover:text-lightGreen"
 //                           title="Toggle Fullscreen"
 //                         >
 //                           {isFullscreen ? <FaCompress /> : <FaExpand />}
@@ -1646,14 +1646,14 @@
 //                       )}
 //                     <button
 //                       onClick={() => setViewData(null)}
-//                       className="text-white text-2xl hover:text-red-500"
+//                       className="text-primaryWhite text-2xl hover:text-primaryRed"
 //                     >
 //                       ✕
 //                     </button>
 //                   </div>
 //                 </div>
 
-//                 <div className="flex-1 overflow-hidden bg-black">
+//                 <div className="flex-1 overflow-hidden bg-primaryBlack">
 //                   {getBookResourceType(viewData) === "pdf" && selectedChapter && (
 //                     <FlipbookPDFViewer
 //                       chapter={selectedChapter}
@@ -1671,7 +1671,7 @@
 //                   )}
 
 //                   {getBookResourceType(viewData) === "audio" && (
-//                     <div className="flex flex-col items-center justify-center h-full gap-4 text-white">
+//                     <div className="flex flex-col items-center justify-center h-full gap-4 text-primaryWhite">
 //                       <img
 //                         src={getProxiedUrl(
 //                           viewData.thumbnail || "default-audio-cover.jpg"
@@ -1710,6 +1710,7 @@ import { confirmDelete } from "../utils/confirmDelete";
 import { getRepository } from "../apiServices/apiRepository";
 import JoditEditor from "jodit-react";
 import { useRef } from "react";
+import { useLoader } from "../LoaderContext";
 import {
   fetchBooks,
   uploadBook,
@@ -1742,6 +1743,7 @@ const getItemsPerPage = () => {
 };
 
 export default function ManageBooksPage({ role, Navbar, Sidebar }) {
+  const { setLoading } = useLoader();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -1835,39 +1837,30 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   }, []);
 
   useEffect(() => {
-    async function loadBooks() {
-      const books = await fetchBooks();
-      setBookList(books);
-    }
-    loadBooks();
-
-    async function loadClasses() {
+    async function loadInitialData() {
       try {
-        const res = await fetch(`${API_URL}/classes`, {
-          credentials: "include",
-        });
-        const data = await res.json();
-        if (Array.isArray(data)) {
-          setClasses(data);
-        } else {
-          // fallback agar API array na de toh manually 1-12
-          setClasses(Array.from({ length: 12 }, (_, i) => `Class ${i + 1}`));
-        }
-      } catch (err) {
-        console.error("Class fetch error:", err);
+        setLoading(true); // 🔄 START LOADER
+
+        const books = await fetchBooks();
+        setBookList(books);
+
+        // Classes load
         setClasses(Array.from({ length: 12 }, (_, i) => `Class ${i + 1}`));
+
+      } catch (err) {
+        console.error("Initial load error:", err);
+
+        // fallback classes
+        setClasses(Array.from({ length: 12 }, (_, i) => `Class ${i + 1}`));
+      } finally {
+        setLoading(false); // ✅ STOP LOADER
       }
     }
-    loadClasses();
-  }, []);
 
-  useEffect(() => {
-    async function loadBooks() {
-      const books = await fetchBooks();
-      setBookList(books);
-    }
-    loadBooks();
-  }, []);
+    loadInitialData();
+  }, [setLoading]);
+
+
 
   const handleDelete = async (id) => {
     const ok = await confirmDelete();
@@ -2093,7 +2086,8 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#1e1f2b] text-white">
+
+    <div className="flex min-h-screen bg-darkBg text-primaryWhite">
       {Sidebar && (
         <Sidebar
           isOpen={isSidebarOpen}
@@ -2102,7 +2096,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
       )}
       <main className="flex-1 lg:pl-[280px] py-6 px-5 w-full">
         <div className="lg:hidden px-4 mb-4">
-          <button onClick={() => setIsSidebarOpen(true)} className="text-white">
+          <button onClick={() => setIsSidebarOpen(true)} className="text-primaryWhite">
             <FiMenu size={28} />
           </button>
         </div>
@@ -2123,7 +2117,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
           <select
             value={selectedClass}
             onChange={(e) => setSelectedClass(e.target.value)}
-            className="border border-gray-400 rounded px-2 py-1 text-black"
+            className="border border-gray400 rounded px-2 py-1 text-primaryBlack"
           >
             <option value="">All Classes</option>
             {classes.map((cls, idx) => (
@@ -2141,17 +2135,17 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
           {paginatedBooks.map((b) => (
             <div
               key={b.id}
-              className="bg-white/10 border border-white/20 rounded-2xl shadow-md p-4 flex flex-col hover:shadow-xl hover:scale-105 transition-all duration-300"
+              className="bg-primaryWhite/10 border border-primaryWhite/20 rounded-2xl shadow-md p-4 flex flex-col hover:shadow-xl hover:scale-105 transition-all duration-300"
             >
               <div className="flex flex-col items-center gap-3">
                 {/* Thumbnail */}
-                <div className="relative w-full h-36 lg:h-44 bg-black/10 rounded-lg overflow-hidden">
+                <div className="relative w-full h-36 lg:h-44 bg-primaryBlack/10 rounded-lg overflow-hidden">
                   <img
                     src={getProxiedUrl(b.thumbnail)}
                     alt={b.bookName}
                     className="w-full h-full object-contain p-2"
                   />
-                  <span className="absolute top-2 right-2 bg-white/20 text-xs px-2 py-1 rounded-full text-white border border-white/30 backdrop-blur-sm">
+                  <span className="absolute top-2 right-2 bg-primaryWhite/20 text-xs px-2 py-1 rounded-full text-primaryWhite border border-primaryWhite/30 backdrop-blur-sm">
                     {getViewLabel(getBookResourceType(b))}
                   </span>
                 </div>
@@ -2161,17 +2155,17 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                   <h3 className="text-base text-md lg:text-lg font-bold mb-1">
                     {b.bookName}
                   </h3>
-                  <p className="text-sm sm:text-base text-gray-300 mb-1">
+                  <p className="text-sm sm:text-base text-gray300 mb-1">
                     {b.subject}
                   </p>
-                  <p className="text-xs sm:text-sm text-gray-400">
+                  <p className="text-xs sm:text-sm text-gray400">
                     🎓 {b.educationLevel}
                   </p>
                 </div>
               </div>
 
               {/* Actions */}
-              <div className="flex flex-col mt-auto pt-2 border-t border-white/20">
+              <div className="flex flex-col mt-auto pt-2 border-t border-primaryWhite/20">
                 <button
                   onClick={() => {
                     setViewData(b);
@@ -2188,7 +2182,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                       });
                     // setSelectedChapter(b.chapters?.[0] || null);
                   }}
-                  className="w-full text-sm sm:text-base text-blue-400 hover:text-blue-300 font-semibold"
+                  className="w-full text-sm sm:text-base text-lightBlue hover:text-blue-300 font-semibold"
                 >
                   {getViewLabel(getBookResourceType(b))}
                 </button>
@@ -2197,20 +2191,20 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                   <div className="flex justify-between mt-2">
                     <button
                       onClick={() => setEditData(b)}
-                      className="text-yellow-400 hover:text-yellow-300 text-lg"
+                      className="text-lightYellow hover:text-yellow-300 text-lg"
                     >
                       <FaEdit />
                     </button>
                     <button
                       onClick={() => navigate(`/books/${b.id}/chapters`)}
-                      className="text-green-400 hover:text-green-300 text-lg"
+                      className="text-lightGreen hover:text-green-300 text-lg"
                       title="Manage Chapters"
                     >
                       📚
                     </button>
                     <button
                       onClick={() => handleDelete(b.id)}
-                      className="text-red-500 hover:text-red-400 text-lg"
+                      className="text-primaryRed hover:text-lightRed text-lg"
                     >
                       <FaTrash />
                     </button>
@@ -2228,7 +2222,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
             <button
               onClick={() => setCurrentPage(1)}
               disabled={currentPage === 1}
-              className="px-3 py-1 bg-white/10 border border-white/20 rounded disabled:opacity-50"
+              className="px-3 py-1 bg-primaryWhite/10 border border-primaryWhite/20 rounded disabled:opacity-50"
             >
               « First
             </button>
@@ -2237,7 +2231,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="px-3 py-1 bg-white/10 border border-white/20 rounded disabled:opacity-50"
+              className="px-3 py-1 bg-primaryWhite/10 border border-primaryWhite/20 rounded disabled:opacity-50"
             >
               ‹ Prev
             </button>
@@ -2248,7 +2242,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                 key={num}
                 onClick={() => setCurrentPage(num)}
                 className={`px-3 py-1 border rounded 
-          ${num === currentPage ? "bg-blue-500 text-white" : "bg-white/10"}
+          ${num === currentPage ? "bg-primaryBlue text-primaryWhite" : "bg-primaryWhite/10"}
         `}
               >
                 {num}
@@ -2259,7 +2253,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="px-3 py-1 bg-white/10 border border-white/20 rounded disabled:opacity-50"
+              className="px-3 py-1 bg-primaryWhite/10 border border-primaryWhite/20 rounded disabled:opacity-50"
             >
               Next ›
             </button>
@@ -2268,7 +2262,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
             <button
               onClick={() => setCurrentPage(totalPages)}
               disabled={currentPage === totalPages}
-              className="px-3 py-1 bg-white/10 border border-white/20 rounded disabled:opacity-50"
+              className="px-3 py-1 bg-primaryWhite/10 border border-primaryWhite/20 rounded disabled:opacity-50"
             >
               Last »
             </button>
@@ -2276,8 +2270,8 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
         )}
 
         {showUploadModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center">
-            <div className="bg-white text-black rounded-lg w-[95%] max-w-xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-lg">
+          <div className="fixed inset-0 bg-primaryBlack bg-opacity-40 z-50 flex justify-center items-center">
+            <div className="bg-primaryWhite text-primaryBlack rounded-lg w-[95%] max-w-xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-lg">
               <h2 className="text-2xl font-semibold mb-4 text-center">
                 📤 Upload Resource
               </h2>
@@ -2290,7 +2284,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                   onChange={(e) =>
                     setFormData((prev) => ({ ...prev, category: e.target.value }))
                   }
-                  className="w-full border border-gray-300 p-2 rounded text-sm"
+                  className="w-full border border-gray300 p-2 rounded text-sm"
                 > */}
 
               <div className="mb-4">
@@ -2313,7 +2307,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                       books: "",
                     }));
                   }}
-                  className="w-full border border-gray-300 p-2 rounded text-sm"
+                  className="w-full border border-gray300 p-2 rounded text-sm"
                 >
                   <option value="">-- Choose Category --</option>
                   {categories.map((cat, idx) => (
@@ -2341,7 +2335,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                             educationLevel: e.target.value,
                           }))
                         }
-                        className="border border-gray-400 rounded px-2 py-1 text-black w-full"
+                        className="border border-gray400 rounded px-2 py-1 text-primaryBlack w-full"
                       >
                         <option value="">Select Class</option>
                         {educationLevels.map((level, idx) => (
@@ -2356,7 +2350,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                       type="text"
                       name="subject"
                       placeholder="Select Subject"
-                      className="w-full border border-gray-300 p-2 rounded text-sm"
+                      className="w-full border border-gray300 p-2 rounded text-sm"
                       onChange={(e) =>
                         setFormData((prev) => ({
                           ...prev,
@@ -2369,7 +2363,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                       type="text"
                       name="bookName"
                       placeholder="Book Name"
-                      className="w-full border border-gray-300 p-2 rounded text-sm"
+                      className="w-full border border-gray300 p-2 rounded text-sm"
                       onChange={(e) =>
                         setFormData((prev) => ({
                           ...prev,
@@ -2385,7 +2379,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                         onChange={(e) =>
                           setFormData((prev) => ({ ...prev, subject: e.target.value }))
                         }
-                        className="w-full border border-gray-300 p-2 rounded text-sm text-black"
+                        className="w-full border border-gray300 p-2 rounded text-sm text-primaryBlack"
                       >
                         <option value="">Select Subject</option>
                         {subjects.map((subj, idx) => (
@@ -2404,7 +2398,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                             language: e.target.value,
                           }))
                         }
-                        className="w-full border border-gray-300 p-2 rounded text-sm"
+                        className="w-full border border-gray300 p-2 rounded text-sm"
                       >
                         <option value="">Select Language</option>
                         {languages.map((lang, idx) => (
@@ -2533,7 +2527,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                     <input
                       type="text"
                       placeholder="News Title"
-                      className="w-full border border-gray-300 p-2 rounded text-sm"
+                      className="w-full border border-gray300 p-2 rounded text-sm"
                       onChange={(e) =>
                         setFormData((prev) => ({
                           ...prev,
@@ -2543,7 +2537,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                     />
 
                     <div>
-                      <label className="text-sm font-medium text-white">
+                      <label className="text-sm font-medium text-primaryWhite">
                         Full Description
                       </label>
 
@@ -2595,7 +2589,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                         Category Type
                       </label>
                       <select
-                        className="w-full border border-gray-300 p-2 rounded text-sm"
+                        className="w-full border border-gray300 p-2 rounded text-sm"
                         onChange={(e) =>
                           setFormData((prev) => ({
                             ...prev,
@@ -2621,7 +2615,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                       <label className="text-sm font-medium">Date</label>
                       <input
                         type="date"
-                        className="w-full border border-gray-300 p-2 rounded text-sm"
+                        className="w-full border border-gray300 p-2 rounded text-sm"
                         onChange={(e) =>
                           setFormData((prev) => ({
                             ...prev,
@@ -2639,7 +2633,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                       <input
                         type="text"
                         placeholder="e.g. PIB, The Hindu, Times of India"
-                        className="w-full border border-gray-300 p-2 rounded text-sm"
+                        className="w-full border border-gray300 p-2 rounded text-sm"
                         onChange={(e) =>
                           setFormData((prev) => ({
                             ...prev,
@@ -2655,7 +2649,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                       <input
                         type="text"
                         placeholder="e.g. economy, budget, RBI"
-                        className="w-full border border-gray-300 p-2 rounded text-sm"
+                        className="w-full border border-gray300 p-2 rounded text-sm"
                         onChange={(e) =>
                           setFormData((prev) => ({
                             ...prev,
@@ -2707,7 +2701,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                       <input
                         type="url"
                         placeholder="https://example.com/news-article"
-                        className="w-full border border-gray-300 p-2 rounded text-sm"
+                        className="w-full border border-gray300 p-2 rounded text-sm"
                         onChange={(e) =>
                           setFormData((prev) => ({
                             ...prev,
@@ -2733,7 +2727,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                           name="levels"
                           value={formData.levels || ""}
                           onChange={handleChange}
-                          className="w-full border border-gray-300 p-2 rounded text-sm"
+                          className="w-full border border-gray300 p-2 rounded text-sm"
                         >
                           <option value="">Select Class</option>
                           {educationLevels.map((level, index) => (
@@ -2751,7 +2745,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                           name="subject"
                           value={formData.subject || ""}
                           onChange={handleChange}
-                          className="w-full border border-gray-300 p-2 rounded text-sm"
+                          className="w-full border border-gray300 p-2 rounded text-sm"
                         >
                           <option value="">Select Subject</option>
                           {subjects.map((subject, index) => (
@@ -2769,7 +2763,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                           name="books"
                           value={formData.books || ""}
                           onChange={handleChange}
-                          className="w-full border border-gray-300 p-2 rounded text-sm"
+                          className="w-full border border-gray300 p-2 rounded text-sm"
                         >
                           <option value="">Select Book</option>
                           {books.map((book, index) => (
@@ -2787,7 +2781,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                           name="language"
                           value={formData.language || ""}
                           onChange={handleChange}
-                          className="w-full border border-gray-300 p-2 rounded text-sm"
+                          className="w-full border border-gray300 p-2 rounded text-sm"
                         >
                           <option value="">Select Language</option>
                           {languages.map((lang, index) => (
@@ -2812,7 +2806,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                    className="px-4 py-1 bg-primaryBlue text-primaryWhite rounded hover:bg-hoverBlue"
                   >
                     ✅ Upload
                   </button>
@@ -2823,8 +2817,8 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
         )}
 
         {editData && (
-          <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center">
-            <div className="bg-white text-black rounded-lg w-[95%] max-w-xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-lg">
+          <div className="fixed inset-0 bg-primaryBlack bg-opacity-40 z-50 flex justify-center items-center">
+            <div className="bg-primaryWhite text-primaryBlack rounded-lg w-[95%] max-w-xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-lg">
               <h2 className="text-2xl font-semibold mb-4 text-center">
                 ✏️ Edit Book
               </h2>
@@ -2903,7 +2897,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                       }))
                     }
                     placeholder={key}
-                    className="w-full border border-gray-300 p-2 rounded text-sm"
+                    className="w-full border border-gray300 p-2 rounded text-sm"
                   />
                 ))}
 
@@ -2948,7 +2942,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                    className="px-4 py-1 bg-primaryBlue text-primaryWhite rounded hover:bg-hoverBlue"
                   >
                     ✅ Update
                   </button>
@@ -2960,11 +2954,11 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
 
         {/* View Modal */}
         {viewData && selectedChapter && (
-          <div className="fixed inset-0 z-50 bg-black bg-opacity-60 flex justify-center items-center">
+          <div className="fixed inset-0 z-50 bg-primaryBlack bg-opacity-60 flex justify-center items-center">
             <div className="relative w-full h-full flex items-center justify-center">
-              <div className="relative bg-white/10 backdrop-blur-md shadow-2xl rounded-xl border border-white/20 w-[95%] h-[90%] max-w-6xl max-h-[95%] overflow-hidden flex flex-col view-modal-container">
-                <div className="flex items-center justify-between px-6 py-2 bg-white/5 border-b border-white/20">
-                  <h3 className="text-xl font-bold text-white">
+              <div className="relative bg-primaryWhite/10 backdrop-blur-md shadow-2xl rounded-xl border border-primaryWhite/20 w-[95%] h-[90%] max-w-6xl max-h-[95%] overflow-hidden flex flex-col view-modal-container">
+                <div className="flex items-center justify-between px-6 py-2 bg-primaryWhite/5 border-b border-primaryWhite/20">
+                  <h3 className="text-xl font-bold text-primaryWhite">
                     {getBookResourceType(viewData)}
                   </h3>
                   <div className="flex items-center gap-4">
@@ -2972,7 +2966,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                       getBookResourceType(viewData) === "audio") && (
                         <button
                           onClick={handleFullscreenToggle}
-                          className="text-white text-xl hover:text-green-400"
+                          className="text-primaryWhite text-xl hover:text-lightGreen"
                           title="Toggle Fullscreen"
                         >
                           {isFullscreen ? <FaCompress /> : <FaExpand />}
@@ -2980,14 +2974,14 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                       )}
                     <button
                       onClick={() => setViewData(null)}
-                      className="text-white text-2xl hover:text-red-500"
+                      className="text-primaryWhite text-2xl hover:text-primaryRed"
                     >
                       ✕
                     </button>
                   </div>
                 </div>
 
-                <div className="flex-1 overflow-hidden bg-black">
+                <div className="flex-1 overflow-hidden bg-primaryBlack">
                   {getBookResourceType(viewData) === "pdf" &&
                     selectedChapter && (
                       <FlipbookPDFViewer
@@ -3006,7 +3000,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                   )}
 
                   {getBookResourceType(viewData) === "audio" && (
-                    <div className="flex flex-col items-center justify-center h-full gap-4 text-white">
+                    <div className="flex flex-col items-center justify-center h-full gap-4 text-primaryWhite">
                       <img
                         src={getProxiedUrl(
                           viewData.thumbnail || "default-audio-cover.jpg"

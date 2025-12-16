@@ -55,7 +55,7 @@
 //   const handleNext = () => setCurrentPage((p) => Math.min(totalPages, p + 1));
 
 //   return (
-//     <div className="flex min-h-screen bg-[#1e1f2b] text-white">
+//     <div className="flex min-h-screen bg-darkBg text-primaryWhite">
 //       <Sidebar />
 //       <main className="pl-[280px] py-6 pr-5 w-full">
 //         <AdminNavbar notificationsCount={0} />
@@ -93,7 +93,7 @@
 //             return (
 //               <div
 //                 key={student.id}
-//                 className="bg-[#2a2b39] p-5 rounded-lg shadow-lg hover:shadow-xl transition-all"
+//                 className="bg-cardBg p-5 rounded-lg shadow-lg hover:shadow-xl transition-all"
 //               >
 //                 <div
 //                   className="flex justify-between items-center cursor-pointer"
@@ -101,10 +101,10 @@
 //                 >
 //                   <div>
 //                     <h2 className="text-xl font-semibold">{student.username}</h2>
-//                     <p className="text-gray-400">{student.email}</p>
+//                     <p className="text-gray400">{student.email}</p>
 //                     <p className="text-sm text-gray-500">{student.class}</p>
 //                   </div>
-//                   <div className="text-gray-400 text-lg">
+//                   <div className="text-gray400 text-lg">
 //                     {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
 //                   </div>
 //                 </div>
@@ -115,11 +115,11 @@
 //                       <li key={idx} className="flex flex-col">
 //                         <div className="flex justify-between items-center">
 //                           <span className="font-medium">{book.bookName}</span>
-//                           <span className="text-sm text-gray-300">
+//                           <span className="text-sm text-gray300">
 //                             {book.progressPercent}%
 //                           </span>
 //                         </div>
-//                         <div className="w-full bg-gray-700 h-3 rounded mt-1">
+//                         <div className="w-full bg-gray700 h-3 rounded mt-1">
 //                           <div
 //                             className="bg-blue-500 h-3 rounded transition-all"
 //                             style={{ width: `${book.progressPercent}%` }}
@@ -139,7 +139,7 @@
 //           <button
 //             onClick={handlePrev}
 //             disabled={currentPage === 1}
-//             className="px-4 py-2 bg-gray-700 rounded disabled:opacity-50"
+//             className="px-4 py-2 bg-gray700 rounded disabled:opacity-50"
 //           >
 //             Previous
 //           </button>
@@ -149,7 +149,7 @@
 //           <button
 //             onClick={handleNext}
 //             disabled={currentPage === totalPages}
-//             className="px-4 py-2 bg-gray-700 rounded disabled:opacity-50"
+//             className="px-4 py-2 bg-gray700 rounded disabled:opacity-50"
 //           >
 //             Next
 //           </button>
@@ -175,6 +175,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { saveAs } from "file-saver";
 import { FiMenu } from "react-icons/fi";
 import { debounce } from "lodash";
+import { useLoader } from "../../LoaderContext";
+
 
 
 
@@ -194,6 +196,7 @@ function progressColor(percent) {
 }
 
 export default function AdminStudentProgress() {
+  const { setLoading } = useLoader(); 
   const [students, setStudents] = useState([]);
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("name_asc");
@@ -215,13 +218,14 @@ export default function AdminStudentProgress() {
   useEffect(() => {
     async function fetchStudents() {
       try {
+        setLoading(true); 
         // const res = await fetch("http://localhost:5000/admin/student-progress");
         const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/student-progress`,)
         const data = await res.json();
 
         const formattedData = data.map((s, i) => ({
           ...s,
-          avatarColor: ["bg-blue-600", "bg-purple-600", "bg-indigo-500"][i % 3],
+          avatarColor: ["bg-primaryBlue", "bg-purple-600", "bg-indigo-500"][i % 3],
           progressByBook: (s.progressByBook || []).map(b => ({
             bookName: b.bookName,
             progressPercent: b.progress,
@@ -232,6 +236,9 @@ export default function AdminStudentProgress() {
       } catch (err) {
         console.error("Failed to fetch students", err);
       }
+      finally {
+      setLoading(false); // 🔴 STOP LOADER
+    }
     }
 
     fetchStudents();
@@ -279,29 +286,29 @@ export default function AdminStudentProgress() {
     const isExpanded = expandedIds.includes(student.id);
     return (
       <div className="px-2">
-        <div className="bg-[#2a2b39] p-4 rounded-lg shadow hover:shadow-xl transition-all">
+        <div className="bg-cardBg p-4 rounded-lg shadow hover:shadow-xl transition-all">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
             <div className="flex items-center gap-4 w-full md:w-auto">
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white ${student.avatarColor}`}>
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center text-primaryWhite ${student.avatarColor}`}>
                 {student.username.split(" ")[1] || student.username[0]}
               </div>
               <div>
                 <div className="font-semibold text-lg">{student.username}</div>
-                <div className="text-sm text-gray-400">{student.email}</div>
+                <div className="text-sm text-gray400">{student.email}</div>
               </div>
             </div>
 
             <div className="flex flex-col md:flex-row md:items-center gap-3 w-full md:w-auto">
               <div className="text-right md:text-right flex-1 md:flex-none">
-                <div className="text-sm text-gray-300">Avg {avgProgress(student)}%</div>
-                <div className="w-full md:w-36 bg-gray-700 h-3 rounded mt-1 overflow-hidden">
+                <div className="text-sm text-gray300">Avg {avgProgress(student)}%</div>
+                <div className="w-full md:w-36 bg-gray700 h-3 rounded mt-1 overflow-hidden">
                   <div className={`${progressColor(avgProgress(student))} h-3 rounded`} style={{ width: `${avgProgress(student)}%` }}></div>
                 </div>
               </div>
 
               <div className="flex flex-wrap gap-2">
-                <button className="px-3 py-1 bg-gray-800 rounded hover:bg-gray-700" onClick={() => setSelectedStudent(student)}>View</button>
-                <button className="px-3 py-1 bg-gray-800 rounded hover:bg-gray-700" onClick={() => toggleExpand(student.id)}>
+                <button className="px-3 py-1 bg-gray800 rounded hover:bg-gray700" onClick={() => setSelectedStudent(student)}>View</button>
+                <button className="px-3 py-1 bg-gray800 rounded hover:bg-gray700" onClick={() => toggleExpand(student.id)}>
                   {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
                 </button>
               </div>
@@ -317,9 +324,9 @@ export default function AdminStudentProgress() {
                     <div key={i} className="flex flex-col">
                       <div className="flex justify-between items-center">
                         <div className="font-medium">{b.bookName}</div>
-                        <div className="text-sm text-gray-300">{b.progressPercent}%</div>
+                        <div className="text-sm text-gray300">{b.progressPercent}%</div>
                       </div>
-                      <div className="w-full bg-gray-700 h-3 rounded mt-1 overflow-hidden">
+                      <div className="w-full bg-gray700 h-3 rounded mt-1 overflow-hidden">
                         <div className={`${progressColor(b.progressPercent)} h-3 rounded`} style={{ width: `${b.progressPercent}%` }}></div>
                       </div>
                     </div>
@@ -334,7 +341,7 @@ export default function AdminStudentProgress() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#1e1f2b] text-white">
+    <div className="flex min-h-screen bg-darkBg text-primaryWhite">
       {/* Sidebar */}
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
@@ -342,7 +349,7 @@ export default function AdminStudentProgress() {
       <main className="flex-1 lg:pl-[280px] py-6 px-5 w-full">
         {/* Mobile Menu Icon */}
         <div className="lg:hidden px-4 mb-4">
-          <button onClick={() => setIsSidebarOpen(true)} className="text-white">
+          <button onClick={() => setIsSidebarOpen(true)} className="text-primaryWhite">
             <FiMenu size={28} />
           </button>
         </div>
@@ -353,14 +360,14 @@ export default function AdminStudentProgress() {
         <div className="flex items-center justify-between  mb-6">
           <h1 className="text-3xl font-bold text-gray-100">Students Progress</h1>
           <div className="flex gap-2 items-center">
-            <button className="flex items-center gap-2 px-3 py-2 bg-blue-600 rounded hover:bg-blue-700" onClick={exportCsv}><FaDownload /> Export CSV</button>
+            <button className="flex items-center gap-2 px-3 py-2 bg-primaryBlue rounded hover:bg-blue-700" onClick={exportCsv}><FaDownload /> Export CSV</button>
           </div>
         </div>
 
         {/* Search + Sort */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          <div className="flex items-center bg-[#2a2b39] p-2 rounded">
-            <FaSearch className="ml-2 text-gray-400" />
+          <div className="flex items-center bg-cardBg p-2 rounded">
+            <FaSearch className="ml-2 text-gray400" />
             <input
               placeholder="Search name or email..."
               className="bg-transparent px-3 py-2 w-full outline-none text-sm"
@@ -371,13 +378,13 @@ export default function AdminStudentProgress() {
 
 
           <div className="flex items-center justify-end gap-2">
-            <select className="px-3 py-2 rounded bg-[#2a2b39] text-sm" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+            <select className="px-3 py-2 rounded bg-cardBg text-sm" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
               <option value="name_asc">Name A → Z</option>
               <option value="name_desc">Name Z → A</option>
               <option value="progress_desc">Progress High → Low</option>
               <option value="progress_asc">Progress Low → High</option>
             </select>
-            {/* <select className="px-3 py-2 rounded bg-[#2a2b39] text-sm" value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setCurrentPage(1); }}>
+            {/* <select className="px-3 py-2 rounded bg-cardBg text-sm" value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setCurrentPage(1); }}>
               <option value={8}>8 / page</option>
               <option value={12}>12 / page</option>
               <option value={24}>24 / page</option>
@@ -393,11 +400,11 @@ export default function AdminStudentProgress() {
 
         {/* Pagination */}
         <div className="flex justify-between items-center gap-4 mt-6">
-          <div className="text-sm text-gray-400">Showing {filtered.length} students — page {currentPage} / {totalPages}</div>
+          <div className="text-sm text-gray400">Showing {filtered.length} students — page {currentPage} / {totalPages}</div>
           <div className="flex items-center gap-2">
-            <button className="px-3 py-2 bg-gray-700 rounded disabled:opacity-50" disabled={currentPage === 1} onClick={() => setCurrentPage(p => Math.max(1, p - 1))}>Prev</button>
-            <input className="w-12 text-center rounded bg-[#2a2b39] px-2 py-1" value={currentPage} onChange={e => { const v = Number(e.target.value) || 1; setCurrentPage(Math.min(Math.max(1, v), totalPages)); }} />
-            <button className="px-3 py-2 bg-gray-700 rounded disabled:opacity-50" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}>Next</button>
+            <button className="px-3 py-2 bg-gray700 rounded disabled:opacity-50" disabled={currentPage === 1} onClick={() => setCurrentPage(p => Math.max(1, p - 1))}>Prev</button>
+            <input className="w-12 text-center rounded bg-cardBg px-2 py-1" value={currentPage} onChange={e => { const v = Number(e.target.value) || 1; setCurrentPage(Math.min(Math.max(1, v), totalPages)); }} />
+            <button className="px-3 py-2 bg-gray700 rounded disabled:opacity-50" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}>Next</button>
           </div>
         </div>
 
@@ -405,7 +412,7 @@ export default function AdminStudentProgress() {
         <AnimatePresence>
           {selectedStudent && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
-              <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }} className="bg-white text-black rounded-lg p-6 w-full max-w-2xl">
+              <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }} className="bg-primaryWhite text-black rounded-lg p-6 w-full max-w-2xl">
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-xl font-semibold">{selectedStudent.username}</h2>
                   <button className="text-sm text-gray-600" onClick={() => setSelectedStudent(null)}>Close</button>

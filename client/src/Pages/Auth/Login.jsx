@@ -64,24 +64,24 @@
 
 //   return (
 //   <main
-//   className="min-h-screen bg-cover bg-center text-white flex items-center justify-center px-6 relative overflow-hidden"
+//   className="min-h-screen bg-cover bg-center text-primaryWhite flex items-center justify-center px-6 relative overflow-hidden"
 //   style={{ backgroundImage: "url('/signup3.jpg')" }}
 // >
-//   <div className="absolute inset-0 bg-black opacity-60 z-0"></div>
+//   <div className="absolute inset-0 bg-primaryBlack opacity-60 z-0"></div>
 
-//   <div className="w-full max-w-md z-10 bg-[#1c1d2a]/70 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl p-10 space-y-8 transition-all duration-300 text-center">
+//   <div className="w-full max-w-md z-10 bg-[#1c1d2a]/70 backdrop-blur-lg border border-primaryWhite/10 shadow-2xl rounded-3xl p-10 space-y-8 transition-all duration-300 text-center">
 
 //     {/* 🔹 App Title */}
-//     <h2 className="text-3xl font-bold text-center text-blue-400 drop-shadow-md">
+//     <h2 className="text-3xl font-bold text-center text-lightBlue drop-shadow-md">
 //       Unlock Knowledge.
 //       <br />
-//       <span className="text-white">Log In.</span>
+//       <span className="text-primaryWhite">Log In.</span>
 //     </h2>
 
 //     {/* 🔹 Login Form */}
 //     <form className="space-y-6" onSubmit={handlesubmit}>
 //       <div className="relative">
-//         <FaEnvelope className="absolute top-3.5 left-3 text-white z-10" />
+//         <FaEnvelope className="absolute top-3.5 left-3 text-primaryWhite z-10" />
 //         <input
 //           onChange={handledata}
 //           name="username"
@@ -89,12 +89,12 @@
 //           placeholder="Username"
 //           value={data.username}
 //           required
-//           className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 backdrop-blur-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-white/10"
+//           className="w-full pl-10 pr-4 py-3 rounded-xl bg-primaryWhite/10 backdrop-blur-sm text-primaryWhite placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-primaryWhite/10"
 //         />
 //       </div>
 
 //       <div className="relative">
-//         <FaLock className="absolute top-3.5 left-3 text-white z-10" />
+//         <FaLock className="absolute top-3.5 left-3 text-primaryWhite z-10" />
 //         <input
 //           onChange={handledata}
 //           name="password"
@@ -102,31 +102,31 @@
 //           placeholder="Password"
 //           value={data.password}
 //           required
-//           className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 backdrop-blur-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-white/10"
+//           className="w-full pl-10 pr-4 py-3 rounded-xl bg-primaryWhite/10 backdrop-blur-sm text-primaryWhite placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-primaryWhite/10"
 //         />
 //       </div>
 
 //       <button
 //         type="submit"
-//         className="w-full bg-blue-600 hover:bg-blue-700 transition-all duration-200 text-white font-semibold py-3 rounded-xl shadow-lg"
+//         className="w-full bg-primaryBlue hover:bg-blue-700 transition-all duration-200 text-primaryWhite font-semibold py-3 rounded-xl shadow-lg"
 //       >
 //         Log In
 //       </button>
 
-//       <p className="text-sm text-center text-gray-300">
+//       <p className="text-sm text-center text-gray300">
 //         Start learning – Log In?{" "}
-//         <Link to="/forgot-password" className="text-blue-400 hover:underline">
+//         <Link to="/forgot-password" className="text-lightBlue hover:underline">
 //           Forgot Password
 //         </Link>
 //       </p>
 //     </form>
 
 //     {/* 🔹 APK Download Link */}
-//     <div className="pt-4 border-t border-white/10">
+//     <div className="pt-4 border-t border-primaryWhite/10">
 //       <a
 //   href="https://drive.google.com/uc?export=download&id=1xmTX99uooBTmYWJzMS8IYFIGpYJAeNGn"
 //   download
-//   className="inline-block mt-2 px-5 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-white font-semibold shadow-md transition-all duration-200"
+//   className="inline-block mt-2 px-5 py-2 bg-primaryGreen hover:bg-green-700 rounded-lg text-primaryWhite font-semibold shadow-md transition-all duration-200"
 // >
 //   ⬇️ Download Android Apk
 // </a>
@@ -195,25 +195,25 @@
 
 //   return (
 //     <main
-//       className="min-h-screen bg-cover bg-center text-white flex items-center justify-center px-6 relative overflow-hidden"
+//       className="min-h-screen bg-cover bg-center text-primaryWhite flex items-center justify-center px-6 relative overflow-hidden"
 //       style={{ backgroundImage: "url('/signup3.jpg')" }}
 //     >
-//       <div className="absolute inset-0 bg-black opacity-60 z-0"></div>
+//       <div className="absolute inset-0 bg-primaryBlack opacity-60 z-0"></div>
 
-//       <div className="w-full max-w-md z-10 bg-[#1c1d2a]/70 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl p-10 space-y-8 transition-all duration-300 text-center">
+//       <div className="w-full max-w-md z-10 bg-[#1c1d2a]/70 backdrop-blur-lg border border-primaryWhite/10 shadow-2xl rounded-3xl p-10 space-y-8 transition-all duration-300 text-center">
 
 //         {/* 🔹 App Title */}
-//         <h2 className="text-3xl font-bold text-center text-blue-400 drop-shadow-md">
+//         <h2 className="text-3xl font-bold text-center text-lightBlue drop-shadow-md">
 //           Unlock Knowledge.
 //           <br />
-//           <span className="text-white">Log In.</span>
+//           <span className="text-primaryWhite">Log In.</span>
 //         </h2>
 
 //         {/* 🔹 Login Form */}
 //         <form className="space-y-6" onSubmit={handlesubmit}>
 //           {/* Username */}
 //           <div className="relative">
-//             <FaEnvelope className="absolute top-3.5 left-3 text-white z-10" />
+//             <FaEnvelope className="absolute top-3.5 left-3 text-primaryWhite z-10" />
 //             <input
 //               onChange={handledata}
 //               name="username"
@@ -221,13 +221,13 @@
 //               placeholder="Username"
 //               value={data.username}
 //               required
-//               className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 backdrop-blur-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-white/10"
+//               className="w-full pl-10 pr-4 py-3 rounded-xl bg-primaryWhite/10 backdrop-blur-sm text-primaryWhite placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-primaryWhite/10"
 //             />
 //           </div>
 
 //           {/* Password with Eye Icon */}
 //           <div className="relative">
-//             <FaLock className="absolute top-3.5 left-3 text-white z-10" />
+//             <FaLock className="absolute top-3.5 left-3 text-primaryWhite z-10" />
 //             <input
 //               onChange={handledata}
 //               name="password"
@@ -235,13 +235,13 @@
 //               placeholder="Password"
 //               value={data.password}
 //               required
-//               className="w-full pl-10 pr-10 py-3 rounded-xl bg-white/10 backdrop-blur-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-white/10"
+//               className="w-full pl-10 pr-10 py-3 rounded-xl bg-primaryWhite/10 backdrop-blur-sm text-primaryWhite placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-primaryWhite/10"
 //             />
 //             {/* 👁️ Toggle Button */}
 //             <button
 //               type="button"
 //               onClick={togglePassword}
-//               className="absolute top-4 right-3 text-white focus:outline-none"
+//               className="absolute top-4 right-3 text-primaryWhite focus:outline-none"
 //             >
 //               {showPassword ? <FaEyeSlash /> : <FaEye />}
 //             </button>
@@ -249,25 +249,25 @@
 
 //           <button
 //             type="submit"
-//             className="w-full bg-blue-600 hover:bg-blue-700 transition-all duration-200 text-white font-semibold py-3 rounded-xl shadow-lg"
+//             className="w-full bg-primaryBlue hover:bg-blue-700 transition-all duration-200 text-primaryWhite font-semibold py-3 rounded-xl shadow-lg"
 //           >
 //             Log In
 //           </button>
 
-//           <p className="text-sm text-center text-gray-300">
+//           <p className="text-sm text-center text-gray300">
 //             Start learning – Log In?{" "}
-//             <Link to="/forgot-password" className="text-blue-400 hover:underline">
+//             <Link to="/forgot-password" className="text-lightBlue hover:underline">
 //               Forgot Password
 //             </Link>
 //           </p>
 //         </form>
 
 //         {/* 🔹 APK Download Link */}
-//         <div className="pt-4 border-t border-white/10">
+//         <div className="pt-4 border-t border-primaryWhite/10">
 //           <a
 //             href="https://drive.google.com/uc?export=download&id=1G15zrCtDwNxXApGsa3r_ZgBTO4lMC3_5"
 //             download
-//             className="inline-block mt-2 px-5 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-white font-semibold shadow-md transition-all duration-200"
+//             className="inline-block mt-2 px-5 py-2 bg-primaryGreen hover:bg-green-700 rounded-lg text-primaryWhite font-semibold shadow-md transition-all duration-200"
 //           >
 //             ⬇️ Download Android Apk
 //           </a>
@@ -333,22 +333,22 @@ export default function LoginPage() {
 
   return (
     <main
-      className="min-h-screen bg-cover bg-center text-white flex items-center justify-center px-6 relative overflow-hidden"
+      className="min-h-screen bg-cover bg-center text-primaryWhite flex items-center justify-center px-6 relative overflow-hidden"
       style={{ backgroundImage: "url('/signup3.jpg')" }}
     >
-      <div className="absolute inset-0 bg-black opacity-60 z-0"></div>
+      <div className="absolute inset-0 bg-primaryBlack opacity-60 z-0"></div>
 
-      <div className="w-full max-w-md z-10 bg-[#1c1d2a]/70 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl p-10 space-y-8 transition-all duration-300 text-center">
-        <h2 className="text-3xl font-bold text-blue-400 drop-shadow-md">
+      <div className="w-full max-w-md z-10 bg-[#1c1d2a]/70 backdrop-blur-lg border border-primaryWhite/10 shadow-2xl rounded-3xl p-10 space-y-8 transition-all duration-300 text-center">
+        <h2 className="text-3xl font-bold text-lightBlue drop-shadow-md">
           Unlock Knowledge.
           <br />
-          <span className="text-white">Log In.</span>
+          <span className="text-primaryWhite">Log In.</span>
         </h2>
 
         <form className="space-y-6" onSubmit={handlesubmit}>
           {/* Username */}
           <div className="relative">
-            <FaEnvelope className="absolute top-3.5 left-3 text-white" />
+            <FaEnvelope className="absolute top-3.5 left-3 text-primaryWhite" />
             <input
               onChange={handledata}
               name="username"
@@ -356,13 +356,13 @@ export default function LoginPage() {
               placeholder="Username"
               value={data.username}
               required
-              className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-white/10"
+              className="w-full pl-10 pr-4 py-3 rounded-xl bg-primaryWhite/10 text-primaryWhite placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-primaryWhite/10"
             />
           </div>
 
           {/* Password */}
           <div className="relative">
-            <FaLock className="absolute top-3.5 left-3 text-white" />
+            <FaLock className="absolute top-3.5 left-3 text-primaryWhite" />
             <input
               onChange={handledata}
               name="password"
@@ -370,12 +370,12 @@ export default function LoginPage() {
               placeholder="Password"
               value={data.password}
               required
-              className="w-full pl-10 pr-10 py-3 rounded-xl bg-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-white/10"
+              className="w-full pl-10 pr-10 py-3 rounded-xl bg-primaryWhite/10 text-primaryWhite placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-primaryWhite/10"
             />
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute top-4 right-3 text-white"
+              className="absolute top-4 right-3 text-primaryWhite"
             >
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </button>
@@ -385,26 +385,26 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isPending}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-900 disabled:opacity-50 transition-all duration-200 text-white font-semibold py-3 rounded-xl shadow-lg"
+            className="w-full bg-primaryBlue hover:bg-blue-700 disabled:bg-blue-900 disabled:opacity-50 transition-all duration-200 text-primaryWhite font-semibold py-3 rounded-xl shadow-lg"
           >
             {isPending ? "Logging in..." : "Log In"}
           </button>
 
-          <p className="text-sm text-gray-300">
+          <p className="text-sm text-gray300">
             Forgot?{" "}
             <Link
               to="/forgot-password"
-              className="text-blue-400 hover:underline"
+              className="text-lightBlue hover:underline"
             >
               Reset Password
             </Link>
           </p>
         </form>
 
-        <div className="pt-4 border-t border-white/10">
+        <div className="pt-4 border-t border-primaryWhite/10">
           <a
             href="https://drive.google.com/file/d/1qaOuvwWZbPiB5czasQdJP1TN4Tsgj4Ue/view?usp=drive_link"
-            className="inline-block mt-2 px-5 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-white font-semibold shadow-md"
+            className="inline-block mt-2 px-5 py-2 bg-primaryGreen hover:bg-green-700 rounded-lg text-primaryBlack font-semibold shadow-md"
           >
             ⬇️ Download Android Apk
           </a>

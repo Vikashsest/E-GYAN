@@ -10,7 +10,8 @@ import {
   FaArrowRight,
   FaMinus,
   FaExpand,
-  FaCompress
+  FaCompress,
+  FaBars,
 } from "react-icons/fa";
 
 export default function Whiteboard({ onClose }) {
@@ -23,8 +24,9 @@ export default function Whiteboard({ onClose }) {
   const [pages, setPages] = useState([""]);
   const [currentPage, setCurrentPage] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Handle Fullscreen Change Event
+  /* ---------------- FULLSCREEN ---------------- */
   useEffect(() => {
     const handler = () => {
       if (!document.fullscreenElement) setIsFullscreen(false);
@@ -43,7 +45,7 @@ export default function Whiteboard({ onClose }) {
     }
   };
 
-  // Color + Eraser Logic
+  /* ---------------- COLOR ---------------- */
   useEffect(() => {
     if (canvasRef.current) {
       canvasRef.current.eraseMode(false);
@@ -51,16 +53,17 @@ export default function Whiteboard({ onClose }) {
     }
   }, [color]);
 
+  /* ---------------- PAGES ---------------- */
   const savePageData = async () => {
     const data = await canvasRef.current.exportPaths();
-    const updatedPages = [...pages];
-    updatedPages[currentPage] = JSON.stringify(data);
-    setPages(updatedPages);
+    const updated = [...pages];
+    updated[currentPage] = JSON.stringify(data);
+    setPages(updated);
   };
 
   const loadPageData = () => {
-    const data = pages[currentPage];
     canvasRef.current.resetCanvas();
+    const data = pages[currentPage];
     if (data) canvasRef.current.loadPaths(JSON.parse(data));
   };
 
@@ -87,10 +90,10 @@ export default function Whiteboard({ onClose }) {
     }
   };
 
+  /* ---------------- IMAGE UPLOAD ---------------- */
   const uploadImage = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
     const reader = new FileReader();
     reader.onload = (event) => {
       canvasRef.current.addImage(event.target.result);
@@ -101,21 +104,20 @@ export default function Whiteboard({ onClose }) {
   return (
     <div
       ref={whiteboardRef}
-      className="w-full h-full bg-white text-black rounded-lg relative overflow-hidden"
+      className="w-full h-full bg-white rounded-lg relative overflow-hidden"
     >
-      {/* Close Button */}
+      {/* Close */}
       <button
         onClick={onClose}
-        className="absolute top-4 left-4 z-50 bg-red-600 text-white p-2 rounded-full hover:scale-110 shadow"
+        className="absolute top-4 left-4 z-50 bg-red-600 text-white p-2 rounded-full"
       >
         <FaTimes />
       </button>
 
-      {/* Fullscreen Button */}
+      {/* Fullscreen */}
       <button
         onClick={toggleFullscreen}
-        className="absolute top-4 left-14 z-50 bg-blue-600 text-white p-2 rounded-full hover:scale-110 shadow"
-        title="Toggle Fullscreen"
+        className="absolute top-4 left-14 z-50 bg-blue-600 text-white p-2 rounded-full"
       >
         {isFullscreen ? <FaCompress /> : <FaExpand />}
       </button>
@@ -129,149 +131,89 @@ export default function Whiteboard({ onClose }) {
         className="w-full h-[100vh]"
       />
 
-      {/* Page Indicator */}
-      <div className="absolute top-4 right-6 bg-black text-white px-4 py-2 rounded-full shadow-lg font-bold">
+      {/* Page Info */}
+      <div className="absolute top-4 right-6 bg-black text-white px-4 py-2 rounded-full font-bold">
         Page {currentPage + 1} / {pages.length}
       </div>
 
-      {/* Bottom Toolbar */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-xl p-4 rounded-full flex gap-4 shadow-2xl z-50 border border-gray-300">
+      {/* 📱 Mobile Menu Button */}
+      <button
+        onClick={() => setIsMobileMenuOpen((p) => !p)}
+        className="fixed bottom-12 left-8 z-50 md:hidden bg-blue-600 text-white p-3 rounded-full shadow-lg"
+      >
+        <FaBars />
+      </button>
 
-        {/* Pencil */}
-        <button
-          onClick={() => {
-            setColor("#000000");
-            canvasRef.current.eraseMode(false);
-          }}
-          className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center hover:scale-110"
-          title="Pencil"
-        >
-          <FaPencilAlt size={18} />
-        </button>
+      {/* Toolbar */}
+      <div
+        className={`
+          fixed z-40 bg-white/90 backdrop-blur-xl border border-gray-300 shadow-2xl
+          md:bottom-4 md:left-1/2 md:-translate-x-1/2 md:flex md:flex-row md:gap-4 md:rounded-full md:p-4
+          ${
+            isMobileMenuOpen
+              ? "bottom-20 left-4 flex flex-col gap-3 p-4 rounded-2xl"
+              : "hidden md:flex"
+          }
+        `}
+      >
+        <Tool onClick={() => { setColor("#000"); canvasRef.current.eraseMode(false); }} bg="bg-blue-500">
+          <FaPencilAlt />
+        </Tool>
 
-        {/* Eraser */}
-        <button
-          onClick={() => {
-            setColor("white");
-            canvasRef.current.eraseMode(true);
-          }}
-          className="w-10 h-10 bg-red-500 text-white rounded-full flex items-center justify-center hover:scale-110"
-          title="Eraser"
-        >
-          <FaEraser size={18} />
-        </button>
+        <Tool onClick={() => canvasRef.current.eraseMode(true)} bg="bg-red-500">
+          <FaEraser />
+        </Tool>
 
-        {/* Color Picker */}
         <input
           type="color"
           value={color}
           onChange={(e) => setColor(e.target.value)}
-          className="w-10 h-10 rounded-full border-2 border-black cursor-pointer"
+          className="w-10 h-10 rounded-full border"
         />
 
-        {/* Brush Size */}
-        <div className="flex items-center gap-2 bg-purple-500 text-white px-3 py-2 rounded-full text-sm">
+        <div className="flex items-center gap-2 bg-purple-500 text-white px-3 py-2 rounded-full">
           <button onClick={() => setSize((s) => Math.max(1, s - 1))}>-</button>
           <span>{size}</span>
           <button onClick={() => setSize((s) => s + 1)}>+</button>
         </div>
 
-        {/* Undo */}
-        <button
-          onClick={() => canvasRef.current.undo()}
-          className="bg-yellow-400 px-3 py-2 rounded-full hover:scale-110 font-bold"
-        >
+        <Tool onClick={() => canvasRef.current.undo()} bg="bg-yellow-400 text-black">
           Undo
-        </button>
+        </Tool>
 
-        {/* Clear */}
-        <button
-          onClick={() => canvasRef.current.clearCanvas()}
-          className="bg-red-600 px-3 py-2 rounded-full text-white hover:scale-110"
-        >
+        <Tool onClick={() => canvasRef.current.clearCanvas()} bg="bg-red-600">
           Clear
-        </button>
+        </Tool>
 
-        {/* Upload Image */}
-        <button
-          onClick={() => fileInputRef.current.click()}
-          className="bg-teal-500 text-white px-3 py-2 rounded-full hover:scale-110"
-        >
+        <Tool onClick={() => fileInputRef.current.click()} bg="bg-teal-500">
           <FaUpload />
-        </button>
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={uploadImage}
-          className="hidden"
-        />
+        </Tool>
+        <input type="file" ref={fileInputRef} hidden onChange={uploadImage} />
 
-        {/* Delete Page */}
-        <button
-          onClick={async () => {
-            if (pages.length <= 1) {
-              alert("At least one page is required!");
-              return;
-            }
-
-            await savePageData();
-            const updated = pages.filter((_, i) => i !== currentPage);
-            const newIndex = Math.max(0, currentPage - 1);
-
-            setPages(updated);
-            setCurrentPage(newIndex);
-
-            setTimeout(loadPageData, 200);
-          }}
-          className="bg-red-700 text-white px-3 py-2 rounded-full hover:scale-110 font-bold"
-        >
-          <FaMinus />
-        </button>
-
-        {/* Prev Page */}
-        <button
-          disabled={currentPage === 0}
-          onClick={prevPage}
-          className="bg-gray-500 text-white px-3 py-2 rounded-full hover:scale-110 disabled:opacity-30"
-        >
+        <Tool onClick={prevPage} bg="bg-gray-500">
           <FaArrowLeft />
-        </button>
+        </Tool>
 
-        {/* Add page */}
-        <button
-          onClick={addNewPage}
-          className="bg-green-500 text-white px-3 py-2 rounded-full hover:scale-110"
-        >
+        <Tool onClick={addNewPage} bg="bg-green-500">
           <FaPlus />
-        </button>
+        </Tool>
 
-        {/* Next Page */}
-        <button
-          disabled={currentPage === pages.length - 1}
-          onClick={nextPage}
-          className="bg-gray-500 text-white px-3 py-2 rounded-full hover:scale-110 disabled:opacity-30"
-        >
+        <Tool onClick={nextPage} bg="bg-gray-500">
           <FaArrowRight />
-        </button>
-
-        {/* Save Image */}
-        <button
-          onClick={async () => {
-            try {
-              const dataUrl = await canvasRef.current.exportImage("png");
-              const link = document.createElement("a");
-              link.href = dataUrl;
-              link.download = "whiteboard.png";
-              link.click();
-            } catch (err) {
-              console.error("Export error:", err);
-            }
-          }}
-          className="bg-green-600 text-white px-4 py-2 rounded-full hover:scale-110 text-sm"
-        >
-          Save
-        </button>
+        </Tool>
       </div>
     </div>
+  );
+}
+
+/* 🔧 Reusable Tool Button */
+function Tool({ children, onClick, bg }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`w-10 h-10 ${bg} text-white rounded-full flex items-center justify-center hover:scale-110 transition`}
+    >
+      {children}
+    </button>
   );
 }

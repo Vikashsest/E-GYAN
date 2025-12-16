@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaBook } from "react-icons/fa";
-import TeacherSidebar from "../Pages/Teacher/TeacherSidebar";
-import TeacherNavbar from "../Pages/Teacher/TeacherNavbar";
+import TeacherSidebar from "./TeacherSidebar";
+import TeacherNavbar from "./TeacherNavbar";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 

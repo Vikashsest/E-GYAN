@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { fetchUsers, updateUserRole, deleteUser } from "../apiServices/roleApi";
 import { confirmDelete } from "../utils/confirmDelete";
-
+import {useLoader} from "../LoaderContext"
 export default function RoleManagement({ currentUserRole }) {
+  const {setLoading} = useLoader()
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
@@ -15,10 +16,14 @@ export default function RoleManagement({ currentUserRole }) {
 
   const fetchUsersList = async () => {
     try {
+      setLoading(true)
       const data = await fetchUsers();
       setUsers(data);
     } catch (err) {
       console.error("Failed to fetch users:", err);
+    }
+    finally{
+      setLoading(false)
     }
   };
 
@@ -90,18 +95,18 @@ export default function RoleManagement({ currentUserRole }) {
 
   return (
     <div className="px-4">
-      <h2 className="text-2xl font-bold text-white mb-4">Manage Role</h2>
+      <h2 className="text-2xl font-bold text-primaryWhite mb-4">Manage Role</h2>
 
       <div className="flex justify-between items-center mb-4">
         <input
           type="text"
           placeholder="Search by name or email"
-          className="p-2 px-6 rounded-lg bg-[#2a2b39] text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 sm:w-72 lg:w-96"
+          className="p-2 px-6 rounded-lg bg-cardBg text-gray400 focus:outline-none focus:ring-2 focus:ring-blue-400 sm:w-72 lg:w-96"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <select
-          className="border p-2 rounded bg-white text-black"
+          className="border p-2 rounded bg-primaryWhite text-primaryBlack"
           value={roleFilter}
           onChange={(e) => setRoleFilter(e.target.value)}
         >
@@ -133,7 +138,7 @@ export default function RoleManagement({ currentUserRole }) {
       <div className="overflow-x-auto">
       <table className="w-full border text-sm">
         <thead>
-          <tr className="bg-gray-200 text-gray-900 text-left">
+          <tr className="bg-gray200 text-gray-900 text-left">
             <th className="p-2 border">#</th>
             <th className="p-2 border">Name</th>
             <th className="p-2 border">Email</th>
@@ -151,8 +156,8 @@ export default function RoleManagement({ currentUserRole }) {
               <td className="p-2 border capitalize">{u.role}</td>
               <td className="p-2 border">
                 <span
-                  className={`px-2 py-1 rounded text-white ${
-                    u.isActive ? "bg-green-500" : "bg-red-500"
+                  className={`px-2 py-1 rounded font-semibold text-primaryBlack ${
+                    u.isActive ? "bg-lightGreen" : "bg-lightRed"
                   }`}
                 >
                   {u.isActive ? "Active" : "Inactive"}
@@ -170,7 +175,7 @@ export default function RoleManagement({ currentUserRole }) {
                       (currentUserRole === "teacher" && u.role !== "student") ||
                       (currentUserRole === "principal" && u.role === "principal")
                         ? "text-gray-500 cursor-not-allowed"
-                        : "text-blue-500 hover:underline"
+                        : "text-lightBlue hover:underline"
                     }`}
                   >
                     <FaEdit /> Change Role
@@ -185,7 +190,7 @@ export default function RoleManagement({ currentUserRole }) {
                       (currentUserRole === "teacher" && u.role !== "student") ||
                       (currentUserRole === "principal" && u.role === "principal")
                         ? "text-gray-500 cursor-not-allowed"
-                        : "text-red-500 hover:underline"
+                        : "text-lightRed hover:underline"
                     }`}
                   >
                     <FaTrash /> Delete
@@ -198,13 +203,13 @@ export default function RoleManagement({ currentUserRole }) {
       </table>
       </div>
 
-      <div className="mt-4 text-sm text-gray-400">
+      <div className="mt-4 text-sm text-gray400">
         Showing {filteredUsers.length} of {users.length} users
       </div>
 
       {editData && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded max-w-md w-full text-black">
+          <div className="bg-primaryWhite p-6 rounded max-w-md w-full text-primaryBlack">
             <h2 className="text-xl font-semibold mb-4">Update Role</h2>
             <form className="space-y-4" onSubmit={handleUpdate}>
               <div>
@@ -212,7 +217,7 @@ export default function RoleManagement({ currentUserRole }) {
                 <input
                   disabled
                   value={editData.username}
-                  className="w-full border p-2 rounded bg-gray-100"
+                  className="w-full border p-2 rounded bg-gray200"
                 />
               </div>
               <div>
@@ -248,7 +253,7 @@ export default function RoleManagement({ currentUserRole }) {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                  className="px-4 py-2 bg-primaryBlue text-primaryWhite rounded hover:bg-hoverBlue"
                 >
                   ✅ Update
                 </button>

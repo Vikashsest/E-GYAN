@@ -1,175 +1,22 @@
-// import { useEffect, useState } from "react";
-// import { useParams, useNavigate } from "react-router-dom";
-// import StudentNavbar from "./StudentNavbar";
-// import StudentSidebar from "./StudentSidebar";
-// import { fetchBooks, fetchFavoriteBooks, toggleFavoriteBook } from "../../apiServices/booksApi";
-// import { FaArrowLeft, FaHeart, FaRegHeart } from "react-icons/fa";
-
-// const API_URL = import.meta.env.VITE_API_URL;
-
-// const BooksList = () => {
-//   const { className, subject } = useParams();
-//   const [books, setBooks] = useState([]);
-//   const navigate = useNavigate();
-
-//   const getCleanUrl = (path) => (path ? `${API_URL}/${path.replaceAll("\\", "/")}` : "");
-//   const normalizeClass = (name) => {
-//     if (!name) return "";
-//     return name
-//       .toLowerCase()
-//       .replace(/\s+/g, "") 
-//       .replace(/i+/g, "1") 
-//       .replace(/ii/g, "2")
-//       .replace(/iii/g, "3")
-//       .replace(/iv/g, "4")
-//       .replace(/v/g, "5");
-//   };
-
-//   useEffect(() => {
-//     async function loadBooks() {
-//       try {
-//         const [allBooks, favoriteIds] = await Promise.all([fetchBooks(), fetchFavoriteBooks()]);
-//         const decodedSubject = decodeURIComponent(subject);
-
-//         const filteredBooks = allBooks.filter((b) => {
-//           return (
-//             b.educationLevel &&
-//             b.subject &&
-//             normalizeClass(b.educationLevel) === normalizeClass(className) &&
-//             b.subject.toLowerCase() === decodedSubject.toLowerCase()
-//           );
-//         });
-
-//         // Make unique by bookName
-//         const uniqueBooksMap = {};
-//         filteredBooks.forEach(book => {
-//           const key = book.bookName.toLowerCase().trim();
-//           if (!uniqueBooksMap[key]) uniqueBooksMap[key] = book;
-//         });
-//         const uniqueBooks = Object.values(uniqueBooksMap);
-
-//         // Mark favorites
-//         const booksWithFavorites = uniqueBooks.map((b) => ({
-//           ...b,
-//           isFavorite: favoriteIds.includes(b.id),
-//         }));
-
-//         setBooks(booksWithFavorites);
-//       } catch (error) {
-//         console.error("Failed to load books or favorites:", error);
-//       }
-//     }
-//     loadBooks();
-//   }, [className, subject]);
-
-//   const handleBookClick = (bookId) => {
-//    console.log("bookId",bookId);
-
-
-//     navigate(`/student/books/${bookId}/chapters`);
-
-// };
-
-//   const toggleFavorite = async (bookId) => {
-//     try {
-//       await toggleFavoriteBook(bookId);
-//       setBooks((prevBooks) =>
-//         prevBooks.map((b) => (b.id === bookId ? { ...b, isFavorite: !b.isFavorite } : b))
-//       );
-//     } catch (err) {
-//       console.error("Failed to toggle favorite:", err);
-//     }
-//   };
-
-//   return (
-//     <div className="flex min-h-screen bg-[#1e1f2b] text-white">
-//       <StudentSidebar />
-//       <main className="pl-[280px] py-6 pr-5 w-full">
-//         <StudentNavbar />
-
-//         <button
-//           onClick={() => navigate(-1)}
-//           className="flex items-center mb-6 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg shadow-md transition"
-//         >
-//           <FaArrowLeft className="mr-2" /> Back
-//         </button>
-
-//         <h2 className="text-2xl font-bold mb-6">
-//           📚 Books for {subject} ({className})
-//         </h2>
-
-//         {books.length > 0 ? (
-//           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-//             {books.map((book) => (
-//               <div
-//                 key={book.id}
-//                 className="p-4 rounded-2xl shadow-lg border-2 border-white bg-[#3b3c4e] hover:scale-105 transform transition-all duration-300 cursor-pointer"
-//               >
-//                 <div className="relative w-full h-48 overflow-hidden rounded-lg bg-gray-700 flex items-center justify-center">
-//                   {book.thumbnail ? (
-//                     <img
-//                       src={getCleanUrl(book.thumbnail || book.fileUrl)}
-//                       alt={book.bookName}
-//                       className="w-full h-full object-cover"
-//                       onClick={() => handleBookClick(book.id)}
-//                     />
-//                   ) : (
-//                     <p className="text-gray-300">No Image</p>
-//                   )}
-//                   <button
-//                     className="absolute top-2 right-2 text-red-400 hover:text-red-600 text-lg"
-//                     onClick={() => toggleFavorite(book.id)}
-//                   >
-//                     {book.isFavorite ? <FaHeart /> : <FaRegHeart />}
-//                   </button>
-//                 </div>
-//                 <div className="mt-4 text-center">
-//                   <h3 className="text-lg font-bold">{book.bookName}</h3>
-//                 </div>
-//               </div>
-//             ))}
-//           </div>
-//         ) : (
-//           <p className="text-gray-400 text-center mt-6">
-//             No books found for this subject.
-//           </p>
-//         )}
-//       </main>
-//     </div>
-//   );
-// };
-
-// export default BooksList;
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import StudentNavbar from "./StudentNavbar";
 import StudentSidebar from "./StudentSidebar";
-import {  fetchFavoriteBooks, subjectWiseBooks, toggleFavoriteBook } from "../../apiServices/booksApi";
-import { FaArrowLeft, FaHeart, FaRegHeart,FaSpinner } from "react-icons/fa";
+import { fetchFavoriteBooks, subjectWiseBooks, toggleFavoriteBook } from "../../apiServices/booksApi";
+import { FaArrowLeft, FaHeart, FaRegHeart, FaSpinner } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
+import { useLoader } from "../../LoaderContext";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const BooksList = () => {
+  const {setLoading} = useLoader()
   const { className, subject } = useParams();
   const location = useLocation();
   const [books, setBooks] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [loading,setLoading] = useState(false)
   const navigate = useNavigate();
 
   const queryParams = new URLSearchParams(location.search);
@@ -187,38 +34,38 @@ const BooksList = () => {
       .replace(/v/g, "5");
   };
 
-useEffect(() => {
-  async function loadBooks() {
-    setLoading(true);
-    try {
-      // Call new fetchBooks with filters
-      const [allBooks, favoriteIds] = await Promise.all([
-        subjectWiseBooks({ className, subject, category }),
-        fetchFavoriteBooks(),
-      ]);
+  useEffect(() => {
+    async function loadBooks() {
+      try {
+        setLoading(true);
+        // Call new fetchBooks with filters
+        const [allBooks, favoriteIds] = await Promise.all([
+          subjectWiseBooks({ className, subject, category }),
+          fetchFavoriteBooks(),
+        ]);
 
-      // Unique books by name
-      const uniqueBooksMap = {};
-      allBooks.forEach((book) => {
-        const key = book.bookName.toLowerCase().trim();
-        if (!uniqueBooksMap[key]) uniqueBooksMap[key] = book;
-      });
+        // Unique books by name
+        const uniqueBooksMap = {};
+        allBooks.forEach((book) => {
+          const key = book.bookName.toLowerCase().trim();
+          if (!uniqueBooksMap[key]) uniqueBooksMap[key] = book;
+        });
 
-      const booksWithFavorites = Object.values(uniqueBooksMap).map((b) => ({
-        ...b,
-        isFavorite: favoriteIds.includes(b.id),
-      }));
+        const booksWithFavorites = Object.values(uniqueBooksMap).map((b) => ({
+          ...b,
+          isFavorite: favoriteIds.includes(b.id),
+        }));
 
-      setBooks(booksWithFavorites);
-    } catch (error) {
-      console.error("Failed to load books or favorites:", error);
-    } finally {
-      setLoading(false);
+        setBooks(booksWithFavorites);
+      } catch (error) {
+        console.error("Failed to load books or favorites:", error);
+      } finally {
+        setLoading(false);
+      }
     }
-  }
 
-  loadBooks();
-}, [className, subject, category]);
+    loadBooks();
+  }, [className, subject, category]);
 
 
   const handleBookClick = (bookId) => {
@@ -237,7 +84,7 @@ useEffect(() => {
   // };
 
   return (
-    <div className="flex min-h-screen bg-[#1e1f2b] text-white relative">
+    <div className="flex min-h-screen bg-darkBg text-primaryWhite relative">
       {/* Sidebar */}
       <StudentSidebar
         isOpen={isSidebarOpen}
@@ -247,7 +94,7 @@ useEffect(() => {
       {/* Overlay for mobile when sidebar open */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 bg-primaryBlack bg-opacity-50 z-40 lg:hidden"
           onClick={() => setIsSidebarOpen(false)}
         ></div>
       )}
@@ -258,7 +105,7 @@ useEffect(() => {
         <div className="lg:hidden mb-4 flex items-center">
           <button
             onClick={() => setIsSidebarOpen(true)}
-            className="text-white focus:outline-none"
+            className="text-primaryWhite focus:outline-none"
           >
             <FiMenu size={28} />
           </button>
@@ -269,7 +116,7 @@ useEffect(() => {
 
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center mb-6 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg shadow-md transition"
+          className="flex items-center mb-6 px-4 py-2 bg-gray700 hover:bg-gray600 rounded-lg shadow-md transition"
         >
           <FaArrowLeft className="mr-2" /> Back
         </button>
@@ -278,14 +125,14 @@ useEffect(() => {
           📚 {category ? `${category} Books` : `Books for ${subject} (${className})`}
         </h2>
 
-        {books.length > 0 ? (
+        {books.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {books.map((book) => (
               <div
                 key={book.id}
-                className="p-4 rounded-2xl shadow-lg border-2 border-white bg-[#3b3c4e] hover:scale-105 transform transition-all duration-300 cursor-pointer"
+                className="p-4 rounded-2xl shadow-lg border-2 border-primaryWhite bg-cardBg hover:scale-105 transform transition-all duration-300 cursor-pointer"
               >
-                <div className="relative w-full h-48 overflow-hidden rounded-lg bg-gray-700 flex items-center justify-center">
+                <div className="relative w-full h-48 overflow-hidden rounded-lg bg-gray700 flex items-center justify-center">
                   {book.thumbnail ? (
                     <img
                       src={
@@ -298,36 +145,31 @@ useEffect(() => {
                       onClick={() => handleBookClick(book.id)}
                     />
                   ) : (
-                    <p className="text-gray-300">No Image</p>
+                    <p className="text-gray300">No Image</p>
                   )}
-<div className="absolute top-2 right-2 flex items-center space-x-2">
-  {book.language && (
-    <span className="bg-black/60 text-white text-xs px-2 py-1 rounded-md">
-      {book.language}
-    </span>
-  )}
-  <button
-    className="text-red-400 hover:text-red-600 text-lg"
-    // onClick={() => toggleFavorite(book.id)}
-  >
-    {/* {book.isFavorite ? <FaHeart /> : <FaRegHeart />} */}
-  </button>
-</div>
+                  <div className="absolute top-2 right-2 flex items-center space-x-2">
+                    {book.language && (
+                      <span className="bg-primaryBlack/60 text-primaryWhite text-xs px-2 py-1 rounded-md">
+                        {book.language}
+                      </span>
+                    )}
+                    <button
+                      className="text-lightRed hover:text-darkRed text-lg"
+                    // onClick={() => toggleFavorite(book.id)}
+                    >
+                      {/* {book.isFavorite ? <FaHeart /> : <FaRegHeart />} */}
+                    </button>
+                  </div>
 
                 </div>
                 <div className="mt-4 text-center">
                   <h3 className="text-lg font-bold">{book.bookName}</h3>
-                  
+
                 </div>
               </div>
             ))}
           </div>
-        ) : (loading &&
-          <div className="flex flex-col items-center h-screen space-y-4">
-            <FaSpinner className="animate-spin text-blue-500 text-6xl" />
-            <p className="text-gray-600 font-semibold">Loading, please wait...</p>
-          </div>
-        )}
+        ) }
       </main>
     </div>
   );

@@ -13,9 +13,9 @@
 // import { FiMenu } from "react-icons/fi";
 
 // const iconMap = {
-//   PDF: <FaFilePdf className="text-red-400 text-xl" />,
-//   VIDEO: <FaVideo className="text-green-400 text-xl" />,
-//   AUDIO: <FaHeadphones className="text-yellow-400 text-xl" />,
+//   PDF: <FaFilePdf className="text-lightRed text-xl" />,
+//   VIDEO: <FaVideo className="text-lightGreen text-xl" />,
+//   AUDIO: <FaHeadphones className="text-lightYellow text-xl" />,
 // };
 
 // const buttonTextMap = {
@@ -46,7 +46,7 @@
 //   }, []);
 
 //   return (
-//     <div className="flex min-h-screen bg-[#1e1f2b] text-white relative">
+//     <div className="flex min-h-screen bg-darkBg text-primaryWhite relative">
 //       {/* Sidebar */}
 //       <StudentSidebar
 //         isOpen={isSidebarOpen}
@@ -56,7 +56,7 @@
 //       {/* Overlay for mobile when sidebar open */}
 //       {isSidebarOpen && (
 //         <div
-//           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+//           className="fixed inset-0 bg-primaryBlack bg-opacity-50 z-40 lg:hidden"
 //           onClick={() => setIsSidebarOpen(false)}
 //         ></div>
 //       )}
@@ -67,7 +67,7 @@
 //         <div className="lg:hidden mb-4 flex items-center">
 //           <button
 //             onClick={() => setIsSidebarOpen(true)}
-//             className="text-white focus:outline-none"
+//             className="text-primaryWhite focus:outline-none"
 //           >
 //             <FiMenu size={28} />
 //           </button>
@@ -78,12 +78,12 @@
 
 //         <div className="p-4">
 //           <h1 className="text-3xl font-bold mb-2">❤️ Favorite Books</h1>
-//           <p className="text-white/70 text-sm mb-6">
+//           <p className="text-primaryWhite/70 text-sm mb-6">
 //             All the learning materials you’ve marked as favorite.
 //           </p>
 
 //           {favoriteBooks.length === 0 ? (
-//             <p className="text-white/50">You have no favorite books yet.</p>
+//             <p className="text-primaryWhite/50">You have no favorite books yet.</p>
 //           ) : (
 //             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 //               {favoriteBooks.map((item) => {
@@ -103,7 +103,7 @@
 //                     </div>
 
 //                     <div className="flex justify-between text-sm mb-2">
-//                       <span className="text-white/60">{item.subject}</span>
+//                       <span className="text-primaryWhite/60">{item.subject}</span>
 //                       <span className="flex items-center gap-1">
 //                         {icon}
 //                         <span>{item.resourceType}</span>
@@ -146,11 +146,12 @@ import {
 import StudentSidebar from "./StudentSidebar";
 import StudentNavbar from "./StudentNavbar";
 import { FiMenu } from "react-icons/fi";
+import { useLoader } from "../../LoaderContext";
 
 const iconMap = {
-  PDF: <FaFilePdf className="text-red-400 text-xl" />,
-  VIDEO: <FaVideo className="text-green-400 text-xl" />,
-  AUDIO: <FaHeadphones className="text-yellow-400 text-xl" />,
+  PDF: <FaFilePdf className="text-lightRed text-xl" />,
+  VIDEO: <FaVideo className="text-lightGreen text-xl" />,
+  AUDIO: <FaHeadphones className="text-lightYellow text-xl" />,
 };
 
 const buttonTextMap = {
@@ -162,25 +163,39 @@ const buttonTextMap = {
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function StudentFavorites() {
+  const {setLoading} = useLoader()
   const [favoriteBooks, setFavoriteBooks] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetch(`${API_URL}/students/favorite-books`, {
-      credentials: "include",
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch favorite books");
-        return res.json();
-      })
-      .then((data) => setFavoriteBooks(data))
-      .catch((err) => console.error("Error fetching favorites:", err));
-  }, []);
+ useEffect(() => {
+  const fetchFavorites = async () => {
+    try {
+      setLoading(true);
+
+      const res = await fetch(`${API_URL}/students/favorite-books`, {
+        credentials: "include",
+      });
+
+      if (!res.ok) throw new Error("Failed to fetch favorite books");
+
+      const data = await res.json();
+      setFavoriteBooks(data);
+
+    } catch (err) {
+      console.error("Error fetching favorites:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchFavorites();
+}, [setLoading]);
+
 
   return (
-    <div className="flex min-h-screen bg-[#1e1f2b] text-white relative">
+    <div className="flex min-h-screen bg-darkBg text-primaryWhite relative">
       {/* Sidebar */}
       <StudentSidebar
         isOpen={isSidebarOpen}
@@ -190,7 +205,7 @@ export default function StudentFavorites() {
       {/* Overlay for mobile when sidebar open */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 bg-primaryBlack bg-opacity-50 z-40 lg:hidden"
           onClick={() => setIsSidebarOpen(false)}
         ></div>
       )}
@@ -201,7 +216,7 @@ export default function StudentFavorites() {
         <div className="lg:hidden mb-4 flex items-center">
           <button
             onClick={() => setIsSidebarOpen(true)}
-            className="text-white focus:outline-none"
+            className="text-primaryWhite focus:outline-none"
           >
             <FiMenu size={28} />
           </button>
@@ -211,12 +226,12 @@ export default function StudentFavorites() {
 
         <div className="p-4">
           <h1 className="text-3xl font-bold mb-2">❤️ Favorite Books</h1>
-          <p className="text-white/70 text-sm mb-6">
+          <p className="text-primaryWhite/70 text-sm mb-6">
             All the learning materials you’ve marked as favorite.
           </p>
 
           {favoriteBooks.length === 0 ? (
-            <p className="text-white/50">You have no favorite books yet.</p>
+            <p className="text-primaryWhite/50">You have no favorite books yet.</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {favoriteBooks.map((item) => {
@@ -231,22 +246,22 @@ export default function StudentFavorites() {
                     key={item.id}
                     className="bg-gradient-to-br from-[#2a2b39] to-[#1c1d2a] p-5 rounded-2xl
                                shadow-lg hover:shadow-2xl hover:scale-105 
-                               transition-all duration-300 border border-white/10 backdrop-blur-md"
+                               transition-all duration-300 border border-primaryWhite/10 backdrop-blur-md"
                   >
                     {/* Header */}
                     <div className="flex justify-between items-center mb-4">
-                      <h3 className="text-lg font-semibold truncate text-white">
+                      <h3 className="text-lg font-semibold truncate text-primaryWhite">
                         {item.title}
                       </h3>
-                      <FaHeart className="text-pink-500 text-lg animate-pulse" />
+                      <FaHeart className="text-pink500 text-lg animate-pulse" />
                     </div>
 
                     {/* Subject + Type */}
                     <div className="flex justify-between text-sm mb-4">
-                      <span className="text-white/60">{item.subject}</span>
-                      <span className="flex items-center gap-2 bg-white/10 px-2 py-1 rounded-full">
+                      <span className="text-primaryWhite/60">{item.subject}</span>
+                      <span className="flex items-center gap-2 bg-primaryWhite/10 px-2 py-1 rounded-full">
                         {icon}
-                        <span className="text-white/80 text-xs font-medium">
+                        <span className="text-primaryWhite/80 text-xs font-medium">
                           {item.resourceType}
                         </span>
                       </span>
@@ -258,9 +273,8 @@ export default function StudentFavorites() {
                         navigate(`/student/books/${item.id}/chapters`)
                       }
                       className="w-full mt-2 flex items-center justify-center gap-2 px-4 py-2 rounded-lg 
-                                 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 
-                                 hover:from-pink-600 hover:via-red-600 hover:to-yellow-600 
-                                 text-white text-sm font-semibold shadow-md transition-all"
+                                 bg-gradient-to-r from-pink500 via-primaryRed to-primaryYellow 
+                                 text-primaryWhite text-sm font-semibold shadow-md transition-all"
                     >
                       {buttonText}
                     </button>

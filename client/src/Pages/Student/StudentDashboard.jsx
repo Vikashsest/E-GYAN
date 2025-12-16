@@ -79,10 +79,10 @@
 //   }, []);
 
 //   const icons = {
-//     timeSpent: <FaClock className="text-orange-500 text-3xl" />,
-//     booksCompleted: <FaCheckCircle className="text-blue-500 text-3xl" />,
-//     recentActivity: <FaBookOpen className="text-green-500 text-3xl" />,
-//     favorites: <FaHeart className="text-yellow-500 text-3xl" />,
+//     timeSpent: <FaClock className="text-primaryOrange text-3xl" />,
+//     booksCompleted: <FaCheckCircle className="text-primaryBlue text-3xl" />,
+//     recentActivity: <FaBookOpen className="text-primaryGreen text-3xl" />,
+//     favorites: <FaHeart className="text-primaryYellow text-3xl" />,
 //   };
 
 //   const items = [
@@ -93,7 +93,7 @@
 //   ];
 
 //   return (
-//     <div className="flex min-h-screen bg-[#1e1f2b] text-white">
+//     <div className="flex min-h-screen bg-darkBg text-primaryWhite">
 //       {/* Sidebar */}
 //       <StudentSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
@@ -101,7 +101,7 @@
 //       <main className="flex-1 lg:pl-[280px] py-6 pr-5 w-full">
 //         {/* Mobile Menu Icon */}
 //         <div className="lg:hidden px-4 mb-4">
-//           <button onClick={() => setIsSidebarOpen(true)} className="text-white">
+//           <button onClick={() => setIsSidebarOpen(true)} className="text-primaryWhite">
 //             <FiMenu size={28} />
 //           </button>
 //         </div>
@@ -117,13 +117,13 @@
 //   {items.map((item, index) => (
 //     <div
 //       key={index}
-//       className="p-5 rounded-2xl shadow-lg flex items-center gap-4 border border-white/10
-//                  bg-gradient-to-br from-[#2e2f44] to-[#1f202f] text-white
+//       className="p-5 rounded-2xl shadow-lg flex items-center gap-4 border border-primaryWhite/10
+//                  bg-gradient-to-br from-[#2e2f44] to-[#1f202f] text-primaryWhite
 //                  hover:scale-105 hover:shadow-2xl transition-all duration-300"
 //     >
 //       {/* Icon inside glowing circle */}
 //       <div className="flex items-center justify-center w-14 h-14 rounded-full
-//                       bg-yellow-400/20 text-yellow-400 text-2xl shadow-md">
+//                       bg-lightYellow/20 text-lightYellow text-2xl shadow-md">
 //         {item.icon}
 //       </div>
 
@@ -139,8 +139,8 @@
 //         {/* Announcements */}
 //        {/* Announcements */}
 // <div className="mt-10 px-4">
-//   <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-white">
-//     <FaBullhorn className="text-yellow-400 animate-pulse" />
+//   <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-primaryWhite">
+//     <FaBullhorn className="text-lightYellow animate-pulse" />
 //     📌 Announcements
 //   </h2>
 
@@ -151,19 +151,19 @@
 //           key={i}
 //           className="relative bg-gradient-to-r from-[#2e2f44] to-[#1f202f]
 //                      p-4 rounded-xl shadow-md hover:shadow-xl hover:scale-[1.02]
-//                      transition-all duration-300 flex items-start gap-3 border border-white/10"
+//                      transition-all duration-300 flex items-start gap-3 border border-primaryWhite/10"
 //         >
 //           {/* Icon */}
 //           <div className="flex items-center justify-center w-10 h-10 rounded-full
-//                           bg-yellow-400/20 text-yellow-400 flex-shrink-0">
+//                           bg-lightYellow/20 text-lightYellow flex-shrink-0">
 //             <FaBullhorn />
 //           </div>
 
 //           {/* Text */}
 //           <div>
-//             <p className="text-sm text-gray-200">{announcement.message}</p>
-//             {/* <span className="text-xs  text-gray-400">  📅 {new Date(announcement.createdAt).toLocaleDateString()}</span> */}
-//             <span className="text-xs text-gray-400">
+//             <p className="text-sm text-gray200">{announcement.message}</p>
+//             {/* <span className="text-xs  text-gray400">  📅 {new Date(announcement.createdAt).toLocaleDateString()}</span> */}
+//             <span className="text-xs text-gray400">
 //   📅 {new Date(announcement.createdAt).toLocaleDateString("en-GB", {
 //     day: "2-digit",
 //     month: "short",
@@ -178,7 +178,7 @@
 //         </div>
 //       ))
 //     ) : (
-//       <p className="text-gray-400 text-sm">No announcements available.</p>
+//       <p className="text-gray400 text-sm">No announcements available.</p>
 //     )}
 //   </div>
 // </div>
@@ -203,7 +203,7 @@ import StudentNavbar from "./StudentNavbar";
 import StudentSidebar from "./StudentSidebar";
 import WelcomeHeading from "../../Components/WelcomeHeading";
 import { useNavigate } from "react-router-dom";
-import Whiteboard from "../../Components/Whiteboard";
+import primaryWhiteboard from "../../Components/Whiteboard";
 const API_URL = import.meta.env.VITE_API_URL;
 const access_token = getCookie("access_token");
 
@@ -223,7 +223,7 @@ export default function DashboardMetrics() {
   const navigate = useNavigate();
   const [announcements, setAnnouncements] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [showWhiteboard, setShowWhiteboard] = useState(false);
+  const [showprimaryWhiteboard, setShowprimaryWhiteboard] = useState(false);
 
   useEffect(() => {
     async function fetchMetrics() {
@@ -271,10 +271,10 @@ export default function DashboardMetrics() {
   }, []);
 
   const icons = {
-    timeSpent: <FaClock className="text-orange-500 text-3xl" />,
-    booksCompleted: <FaCheckCircle className="text-blue-500 text-3xl" />,
-    recentActivity: <FaBookOpen className="text-green-500 text-3xl" />,
-    favorites: <FaHeart className="text-yellow-500 text-3xl" />,
+    timeSpent: <FaClock className="text-primaryOrange text-3xl" />,
+    booksCompleted: <FaCheckCircle className="text-primaryBlue text-3xl" />,
+    recentActivity: <FaBookOpen className="text-primaryGreen text-3xl" />,
+    favorites: <FaHeart className="text-primaryYellow text-3xl" />,
   };
 
   const items = [
@@ -297,7 +297,7 @@ export default function DashboardMetrics() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#1e1f2b] text-white">
+    <div className="flex min-h-screen bg-darkBg text-primaryWhite">
       {/* Sidebar */}
       <StudentSidebar
         isOpen={isSidebarOpen}
@@ -308,7 +308,7 @@ export default function DashboardMetrics() {
       <main className="flex-1 lg:pl-[280px] py-6 pr-5 w-full">
         {/* Mobile Menu Icon */}
         <div className="lg:hidden px-4 mb-4">
-          <button onClick={() => setIsSidebarOpen(true)} className="text-white">
+          <button onClick={() => setIsSidebarOpen(true)} className="text-primaryWhite">
             <FiMenu size={28} />
           </button>
         </div>
@@ -319,26 +319,26 @@ export default function DashboardMetrics() {
           <WelcomeHeading />
         </div>
         <div
-          onClick={() => setShowWhiteboard(true)}
+          onClick={() => setShowprimaryWhiteboard(true)}
           className="
     fixed bottom-6 right-6 w-16 h-16 rounded-full 
-    bg-gradient-to-br from-blue-500 to-indigo-600  
+    bg-gradient-to-br from-primaryBlue to-indigo600  
     shadow-2xl cursor-pointer 
     flex items-center justify-center 
     animate-bounce 
-    text-white text-3xl 
+    text-primaryWhite text-3xl 
     hover:scale-110 transition-all duration-300
-    border border-white/40
+    border border-primaryWhite/40
     z-10
   "
         >
           🧑‍🏫
         </div>
 
-        {showWhiteboard && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-[9999]">
-            <div className="bg-white w-[90%] h-[90%] rounded-xl shadow-2xl relative z-[10000]">
-             <Whiteboard onClose={() => setShowWhiteboard(false)} />
+        {showprimaryWhiteboard && (
+          <div className="fixed inset-0 bg-primaryBlack/60 backdrop-blur-md flex items-center justify-center z-[9999]">
+            <div className="bg-primaryWhite w-[90%] h-[90%] rounded-xl shadow-2xl relative z-[10000]">
+             <primaryWhiteboard onClose={() => setShowprimaryWhiteboard(false)} />
             </div>
           </div>
         )}
@@ -348,14 +348,14 @@ export default function DashboardMetrics() {
           {items.map((item, index) => (
             <div
               key={index}
-              className="p-5 rounded-2xl shadow-lg flex items-center gap-4 border border-white/10 
-                 bg-gradient-to-br from-[#2e2f44] to-[#1f202f] text-white 
+              className="p-5 rounded-2xl shadow-lg flex items-center gap-4 border border-primaryWhite/10 
+                 bg-cardBg text-primaryWhite 
                  hover:scale-105 hover:shadow-2xl transition-all duration-300"
             >
               {/* Icon inside glowing circle */}
               <div
                 className="flex items-center justify-center w-14 h-14 rounded-full 
-                      bg-yellow-400/20 text-yellow-400 text-2xl shadow-md"
+                      bg-lightYellow/20 text-lightYellow text-2xl shadow-md"
               >
                 {item.icon}
               </div>
@@ -373,8 +373,8 @@ export default function DashboardMetrics() {
         <div className="grid grid-cols-2 md:grid-cols-4 justify-center gap-4 px-6 mt-6">
           <button
             onClick={() => navigate("/students/books")}
-            className="px-6 py-3 border-2 border-blue-600 rounded-xl 
-               text-white font-semibold shadow-md hover:scale-105 
+            className="px-6 py-3 border-2 border-primaryBlue rounded-xl 
+               text-primaryWhite font-semibold shadow-md hover:scale-105 
                hover:shadow-lg transition-all duration-300"
           >
             📚 Study Material
@@ -382,8 +382,8 @@ export default function DashboardMetrics() {
 
           <button
             onClick={() => navigate("/student/myprogress")}
-            className="px-6 py-3 border-2 border-green-600 rounded-xl 
-               text-white font-semibold shadow-md hover:scale-105 
+            className="px-6 py-3 border-2 border-primaryGreen rounded-xl 
+               text-primaryWhite font-semibold shadow-md hover:scale-105 
                hover:shadow-lg transition-all duration-300"
           >
             📈 My Progress
@@ -391,8 +391,8 @@ export default function DashboardMetrics() {
 
           <button
             onClick={() => navigate("/student/recent-read-books")}
-            className="px-6 py-3 border-2 border-yellow-500 rounded-xl 
-               text-white font-semibold shadow-md hover:scale-105 
+            className="px-6 py-3 border-2 border-primaryYellow rounded-xl 
+               text-primaryWhite font-semibold shadow-md hover:scale-105 
                hover:shadow-lg transition-all duration-300"
           >
             🕓 Recent Activity
@@ -400,8 +400,8 @@ export default function DashboardMetrics() {
 
           <button
             onClick={() => navigate("/student/favorites")}
-            className="px-6 py-3 border-2 border-pink-500 rounded-xl 
-               text-white font-semibold shadow-md hover:scale-105 
+            className="px-6 py-3 border-2 border-pink500 rounded-xl 
+               text-primaryWhite font-semibold shadow-md hover:scale-105 
                hover:shadow-lg transition-all duration-300"
           >
             ❤️ Favorites
@@ -410,8 +410,8 @@ export default function DashboardMetrics() {
 
         {/* Announcements */}
         <div className="mt-10 px-4">
-          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-white">
-            <FaBullhorn className="text-yellow-400 animate-pulse" />
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-primaryWhite">
+            <FaBullhorn className="text-lightYellow animate-pulse" />
             📌 Announcements
           </h2>
 
@@ -420,25 +420,25 @@ export default function DashboardMetrics() {
               announcements.map((announcement, i) => (
                 <div
                   key={i}
-                  className="relative bg-gradient-to-r from-[#2e2f44] to-[#1f202f] 
+                  className="relative bg-cardBg 
                      p-4 rounded-xl shadow-md hover:shadow-xl hover:scale-[1.02] 
-                     transition-all duration-300 flex items-start gap-3 border border-white/10"
+                     transition-all duration-300 flex items-start gap-3 border border-primaryWhite/10"
                 >
                   {/* Icon */}
                   <div
                     className="flex items-center justify-center w-10 h-10 rounded-full 
-                          bg-yellow-400/20 text-yellow-400 flex-shrink-0"
+                          bg-lightYellow/20 text-lightYellow flex-shrink-0"
                   >
                     <FaBullhorn />
                   </div>
 
                   {/* Text */}
                   <div>
-                    <p className="text-sm text-gray-200">
+                    <p className="text-sm text-gray200">
                       {announcement.message}
                     </p>
-                    {/* <span className="text-xs  text-gray-400">  📅 {new Date(announcement.createdAt).toLocaleDateString()}</span> */}
-                    <span className="text-xs text-gray-400">
+                    {/* <span className="text-xs  text-gray400">  📅 {new Date(announcement.createdAt).toLocaleDateString()}</span> */}
+                    <span className="text-xs text-gray400">
                       📅{" "}
                       {new Date(announcement.createdAt).toLocaleDateString(
                         "en-GB",
@@ -456,7 +456,7 @@ export default function DashboardMetrics() {
                 </div>
               ))
             ) : (
-              <p className="text-gray-400 text-sm">
+              <p className="text-gray400 text-sm">
                 No announcements available.
               </p>
             )}
@@ -465,13 +465,13 @@ export default function DashboardMetrics() {
         {/* Assessment & Quiz Section */}
         <div className="mt-12 px-6 grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Assessment Card */}
-          <div className="bg-gradient-to-br from-[#2e2f44] to-[#1f202f] p-6 rounded-xl shadow-md border border-white/10">
+          <div className="bg-cardBg p-6 rounded-xl shadow-md border border-primaryWhite/10">
             <h3 className="text-xl font-bold mb-4">📝 Assessments</h3>
             <ul className="space-y-3 text-gray-300 text-sm">
               <li className="flex justify-between items-center">
                 <span>Math Assessment 1</span>
                 <button
-                  className="px-3 py-1 text-xs bg-blue-600 rounded-lg hover:bg-blue-700"
+                  className="px-3 py-1 text-xs text-primaryBlack bg-primaryBlue rounded-lg hover:bg-hoverBlue"
                   onClick={() => navigate("/student/assessments")}
                 >
                   Start
@@ -479,28 +479,28 @@ export default function DashboardMetrics() {
               </li>
               <li className="flex justify-between items-center">
                 <span>Science Assessment 2</span>
-                <button className="px-3 py-1 text-xs bg-blue-600 rounded-lg hover:bg-blue-700">
+                <button className="px-3 py-1 text-xs  text-primaryBlack bg-primaryBlue rounded-lg hover:bg-hoverBlue">
                   Start
                 </button>
               </li>
               <li className="flex justify-between items-center">
                 <span>English Assessment</span>
-                <button className="px-3 py-1 text-xs bg-blue-600 rounded-lg hover:bg-blue-700">
+                <button className="px-3 py-1 text-xs  text-primaryBlack bg-primaryBlue rounded-lg hover:bg-hoverBlue">
                   Start
                 </button>
               </li>
             </ul>
-            {/* <button className="mt-4 text-xs text-yellow-400 hover:underline">View All Assessments →</button> */}
+            {/* <button className="mt-4 text-xs text-lightYellow hover:underline">View All Assessments →</button> */}
           </div>
 
           {/* Quiz Card */}
-          <div className="bg-gradient-to-br from-[#2e2f44] to-[#1f202f] p-6 rounded-xl shadow-md border border-white/10">
+          <div className="bg-cardBg p-6 rounded-xl shadow-md border border-primaryWhite/10">
             <h3 className="text-xl font-bold mb-4">🎯 Quizzes</h3>
             <ul className="space-y-3 text-gray-300 text-sm">
               <li className="flex justify-between items-center">
                 <span>Quiz on Algebra</span>
                 <button
-                  className="px-3 py-1 text-xs bg-green-600 rounded-lg hover:bg-green-700"
+                  className="px-3 py-1 text-xs  text-primaryBlack bg-primaryGreen rounded-lg hover:bg-green-700"
                   onClick={() => navigate("/student/quizzes")}
                 >
                   Take Quiz
@@ -508,18 +508,18 @@ export default function DashboardMetrics() {
               </li>
               <li className="flex justify-between items-center">
                 <span>Quiz on World History</span>
-                <button className="px-3 py-1 text-xs bg-green-600 rounded-lg hover:bg-green-700">
+                <button className="px-3 py-1 text-xs  text-primaryBlack bg-primaryGreen rounded-lg hover:bg-green-700">
                   Take Quiz
                 </button>
               </li>
               <li className="flex justify-between items-center">
                 <span>Quiz on Environment</span>
-                <button className="px-3 py-1 text-xs bg-green-600 rounded-lg hover:bg-green-700">
+                <button className="px-3 py-1 text-xs  text-primaryBlack bg-primaryGreen rounded-lg hover:bg-green-700">
                   Take Quiz
                 </button>
               </li>
             </ul>
-            {/* <button className="mt-4 text-xs text-yellow-400 hover:underline">View All Quizzes →</button> */}
+            {/* <button className="mt-4 text-xs text-lightYellow hover:underline">View All Quizzes →</button> */}
           </div>
         </div>
       </main>
