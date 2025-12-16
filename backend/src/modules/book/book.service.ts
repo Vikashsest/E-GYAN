@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  HttpException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -532,5 +533,80 @@ export class BookService {
     return await this.simulationRepo.find({
       order: { createdAt: 'DESC' },
     });
+  }
+
+  async addPart(
+    bookId: number,
+    parentChapterId: number,
+    body: {
+      partNumber: number;
+      chapterName?: string;
+      resourceType?: 'pdf' | 'video' | 'audio' | 'simulation';
+      videoUrl?: string;
+    },
+    file?: Express.Multer.File,
+    thumbnail?: Express.Multer.File,
+  ) {
+    const book = await this.bookrepo.findOne({ where: { id: bookId } });
+    if (!book) throw new NotFoundException('Book not found');
+
+    const parentChapter = await this.chapterRepo.findOne({
+      where: { id: parentChapterId },
+      relations: ['book'],
+    });
+
+    if (!parentChapter) throw new NotFoundException('Parent chapter not found');
+
+    if (parentChapter.book.id !== bookId)
+      throw new BadRequestException('Chapter does not belong to this book');
+
+    let fileUrl: string | undefined;
+    let totalPages: number | undefined;
+    const resourceType = body.resourceType || 'pdf';
+
+    if (resourceType === 'pdf') {
+      if (!file) throw new BadRequestException('PDF file required');
+      const ext = file.originalname.split('.').pop();
+      const remotePath = `books/${bookId}/chapters/${parentChapterId}/parts/part-${body.partNumber}.${ext}`;
+      const uploadedPath = await this.nextcloudService.uploadFile(
+        file.path,
+        remotePath,
+      );
+      fileUrl = await generatePublicLink(uploadedPath);
+      totalPages = await getPdfTotalPages(file.path);
+    }
+
+    if (resourceType === 'video' || resourceType === 'simulation') {
+      if (!body.videoUrl) throw new BadRequestException('Video URL required');
+      fileUrl = body.videoUrl;
+    }
+
+    let thumbnailUrl: string | undefined;
+    if (thumbnail) {
+      const thumbPath = `books/${bookId}/chapters/${parentChapterId}/parts/thumbnails/part-${body.partNumber}.jpg`;
+      const uploadedThumb = await this.nextcloudService.uploadFile(
+        thumbnail.path,
+        thumbPath,
+      );
+      thumbnailUrl = await generatePublicLink(uploadedThumb);
+    }
+
+    const part = this.chapterRepo.create({
+      chapterNumber: body.partNumber,
+      chapterName: body.chapterName,
+      resourceType,
+      fileUrl,
+      totalPages,
+      thumbnail: thumbnailUrl,
+      book,
+      parentChapter, // ✅ PART link
+    });
+
+    const savedPart = await this.chapterRepo.save(part);
+
+    return {
+      ...savedPart,
+      displayName: `Chapter ${parentChapter.chapterNumber} Part ${savedPart.chapterNumber}`,
+    };
   }
 }

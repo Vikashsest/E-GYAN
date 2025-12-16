@@ -393,6 +393,41 @@ export class BookController {
       files.thumbnail?.[0],
     );
   }
+  @Post(':bookId/chapters/:chapterId/parts')
+  @Roles(UserRole.ADMIN, UserRole.TEACHER, UserRole.PRINCIPAL)
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [
+        { name: 'file', maxCount: 1 },
+        { name: 'thumbnail', maxCount: 1 },
+      ],
+      multerConfig,
+    ),
+  )
+  async uploadPart(
+    @Param('bookId') bookId: string,
+    @Param('chapterId') chapterId: string,
+    @UploadedFiles()
+    files: {
+      file?: Express.Multer.File[];
+      thumbnail?: Express.Multer.File[];
+    },
+    @Body()
+    body: {
+      partNumber: number;
+      chapterName?: string;
+      resourceType?: 'pdf' | 'video' | 'audio' | 'simulation';
+      videoUrl?: string;
+    },
+  ) {
+    return this.bookService.addPart(
+      +bookId,
+      +chapterId,
+      body,
+      files.file?.[0],
+      files.thumbnail?.[0],
+    );
+  }
 
   // ✅ Update book
   @Patch(':id')
