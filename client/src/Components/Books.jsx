@@ -1710,6 +1710,7 @@ import { confirmDelete } from "../utils/confirmDelete";
 import { getRepository } from "../apiServices/apiRepository";
 import JoditEditor from "jodit-react";
 import { useRef } from "react";
+import { useLoader } from "../LoaderContext";
 import {
   fetchBooks,
   uploadBook,
@@ -1742,6 +1743,7 @@ const getItemsPerPage = () => {
 };
 
 export default function ManageBooksPage({ role, Navbar, Sidebar }) {
+  const { setLoading } = useLoader();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -1835,39 +1837,30 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   }, []);
 
   useEffect(() => {
-    async function loadBooks() {
-      const books = await fetchBooks();
-      setBookList(books);
-    }
-    loadBooks();
-
-    async function loadClasses() {
+    async function loadInitialData() {
       try {
-        const res = await fetch(`${API_URL}/classes`, {
-          credentials: "include",
-        });
-        const data = await res.json();
-        if (Array.isArray(data)) {
-          setClasses(data);
-        } else {
-          // fallback agar API array na de toh manually 1-12
-          setClasses(Array.from({ length: 12 }, (_, i) => `Class ${i + 1}`));
-        }
-      } catch (err) {
-        console.error("Class fetch error:", err);
+        setLoading(true); // 🔄 START LOADER
+
+        const books = await fetchBooks();
+        setBookList(books);
+
+        // Classes load
         setClasses(Array.from({ length: 12 }, (_, i) => `Class ${i + 1}`));
+
+      } catch (err) {
+        console.error("Initial load error:", err);
+
+        // fallback classes
+        setClasses(Array.from({ length: 12 }, (_, i) => `Class ${i + 1}`));
+      } finally {
+        setLoading(false); // ✅ STOP LOADER
       }
     }
-    loadClasses();
-  }, []);
 
-  useEffect(() => {
-    async function loadBooks() {
-      const books = await fetchBooks();
-      setBookList(books);
-    }
-    loadBooks();
-  }, []);
+    loadInitialData();
+  }, [setLoading]);
+
+
 
   const handleDelete = async (id) => {
     const ok = await confirmDelete();
@@ -2093,6 +2086,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   };
 
   return (
+
     <div className="flex min-h-screen bg-darkBg text-primaryWhite">
       {Sidebar && (
         <Sidebar

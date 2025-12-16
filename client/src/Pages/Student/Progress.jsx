@@ -112,9 +112,9 @@
 //                     <div className="space-y-4">
 //                       {Object.entries(progress.subjectWiseProgress).map(
 //                         ([subject, stats]) => {
-                          
+
 //                              const percentage = stats.percentage ?? 0;
-                       
+
 //                           return (
 //                             <div key={subject}>
 //                               <div className="flex justify-between mb-1">
@@ -336,6 +336,7 @@ import { useEffect, useState } from "react";
 import StudentSidebar from "./StudentSidebar";
 import StudentNavbar from "./StudentNavbar";
 import { FiMenu, FiChevronDown, FiChevronUp } from "react-icons/fi";
+import { useLoader } from "../../LoaderContext";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -352,6 +353,7 @@ const subjectColors = {
 };
 
 export default function StudentProgress() {
+  const { setLoading } = useLoader()
   const [progress, setProgress] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [expandedSubjects, setExpandedSubjects] = useState({});
@@ -359,6 +361,7 @@ export default function StudentProgress() {
   useEffect(() => {
     const fetchProgress = async () => {
       try {
+        setLoading(true)
         const res = await fetch(`${API_URL}/students/progress`, {
           credentials: "include",
         });
@@ -368,6 +371,9 @@ export default function StudentProgress() {
       } catch (error) {
         console.error("Error fetching progress:", error);
         setProgress({ error: true });
+      }
+      finally {
+        setLoading(false)
       }
     };
     fetchProgress();
@@ -386,6 +392,7 @@ export default function StudentProgress() {
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
       />
+
       {isSidebarOpen && (
         <div
           className="fixed inset-0 bg-primaryBlack bg-opacity-50 z-40 lg:hidden"
@@ -414,28 +421,30 @@ export default function StudentProgress() {
             </p>
           </div>
 
-          {/* Summary Cards */}
-          {progress === null ? (
+          {/* ❌ Error State */}
+          {progress && progress.error && (
             <div className="flex justify-center items-center h-48">
-              <p className="text-primaryWhite text-lg animate-pulse">Loading progress...</p>
+              <p className="text-primaryRed text-lg">
+                Failed to load progress data.
+              </p>
             </div>
-          ) : progress.error ? (
-            <div className="flex justify-center items-center h-48">
-              <p className="text-primaryRed text-lg">Failed to load progress data.</p>
-            </div>
-          ) : (
+          )}
+
+          {/* ✅ Success State */}
+          {progress && !progress.error && (
             <>
+              {/* Summary Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {[
                   {
                     icon: "📚",
                     label: "Books In Progress",
-                    value: progress.booksInProgress,
+                    value: progress.booksInProgress ?? 0,
                   },
                   {
                     icon: "⏱️",
                     label: "Avg. Session Time",
-                    value: progress.avgSessionTime,
+                    value: progress.avgSessionTime ?? "N/A",
                   },
                   {
                     icon: "🕒",
@@ -464,7 +473,7 @@ export default function StudentProgress() {
                   <div className="space-y-4 mt-6">
                     {Object.entries(progress.subjectWiseProgress).map(
                       ([subject, stats]) => {
-                        const percentage = stats.percentage ?? 0;
+                        const percentage = stats?.percentage ?? 0;
                         const subjectColor =
                           subjectColors[subject] || subjectColors.default;
                         const isExpanded = expandedSubjects[subject] || false;
@@ -479,12 +488,20 @@ export default function StudentProgress() {
                               onClick={() => toggleSubject(subject)}
                             >
                               <div className="flex items-center gap-2">
-                                <span className={`w-3 h-3 rounded-full ${subjectColor}`} />
-                                <span className="text-lg font-semibold">{subject}</span>
+                                <span
+                                  className={`w-3 h-3 rounded-full ${subjectColor}`}
+                                />
+                                <span className="text-lg font-semibold">
+                                  {subject}
+                                </span>
                               </div>
                               <div className="flex items-center gap-4">
                                 <span>{percentage}%</span>
-                                {isExpanded ? <FiChevronUp /> : <FiChevronDown />}
+                                {isExpanded ? (
+                                  <FiChevronUp />
+                                ) : (
+                                  <FiChevronDown />
+                                )}
                               </div>
                             </div>
 
@@ -493,30 +510,32 @@ export default function StudentProgress() {
                               <div
                                 className={`${subjectColor} h-2 rounded-full`}
                                 style={{ width: `${percentage}%` }}
-                              ></div>
+                              />
                             </div>
 
-                            {/* Expanded Book List */}
-                            {isExpanded && stats.books && stats.books.length > 0 && (
-                              <div className="mt-4 space-y-2">
-                                {stats.books.map((book, index) => (
-                                  <div
-                                    key={index}
-                                    className="flex justify-between items-center bg-[#1f202f] p-2 rounded hover:bg-[#272833] transition-colors"
-                                  >
-                                    <span>{book.title}</span>
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-xs bg-primaryWhite/10 px-2 py-0.5 rounded">
-                                        {book.class}
-                                      </span>
-                                      <span className="text-xs text-primaryWhite/70">
-                                        {book.percentage ?? 0}%
-                                      </span>
+                            {/* Expanded Books */}
+                            {isExpanded &&
+                              stats?.books &&
+                              stats.books.length > 0 && (
+                                <div className="mt-4 space-y-2">
+                                  {stats.books.map((book, index) => (
+                                    <div
+                                      key={index}
+                                      className="flex justify-between items-center bg-[#1f202f] p-2 rounded hover:bg-[#272833] transition-colors"
+                                    >
+                                      <span>{book.title}</span>
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-xs bg-primaryWhite/10 px-2 py-0.5 rounded">
+                                          {book.class}
+                                        </span>
+                                        <span className="text-xs text-primaryWhite/70">
+                                          {book.percentage ?? 0}%
+                                        </span>
+                                      </div>
                                     </div>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
+                                  ))}
+                                </div>
+                              )}
                           </div>
                         );
                       }
@@ -526,16 +545,22 @@ export default function StudentProgress() {
 
               {/* Recently Accessed */}
               <div className="bg-cardBg p-5 rounded-xl shadow mt-6">
-                <h2 className="text-xl font-semibold mb-4">🕒 Recently Accessed</h2>
+                <h2 className="text-xl font-semibold mb-4">
+                  🕒 Recently Accessed
+                </h2>
+
                 <ul className="text-primaryWhite/80 text-sm space-y-2">
-                  {progress.recentActivity && progress.recentActivity.length > 0 ? (
+                  {progress.recentActivity &&
+                    progress.recentActivity.length > 0 ? (
                     progress.recentActivity.map((item, index) => (
                       <li
                         key={index}
                         className="flex justify-between hover:bg-[#272833] p-2 rounded transition-colors"
                       >
                         <div>
-                          <span className="font-medium text-primaryWhite">{item.type}:</span>{" "}
+                          <span className="font-medium text-primaryWhite">
+                            {item.type}:
+                          </span>{" "}
                           {item.title}
                         </div>
                         <div className="text-primaryWhite/50">
@@ -554,5 +579,6 @@ export default function StudentProgress() {
         </div>
       </main>
     </div>
+
   );
 }

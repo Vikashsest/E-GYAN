@@ -10,9 +10,14 @@ import  {teacherRouteList } from "./routes/TeacherRoutes";
 import {studentRouteList}  from "./routes/StudentRoutes";
 import UploadChapter from "./Components/UploadChapter";
 import LoginPage from "./Pages/Auth/Login";
+import { useLoader } from "./LoaderContext";
+import GlobalLoader from "./Components/Loader";
 
 function Page() {
+  const { loading } = useLoader();
   return (
+    <>
+     {loading && <GlobalLoader />}
     <Routes>
       {/* Public Routes */}
       <Route path="/" element={<Navigate to="/login" replace />} />
@@ -43,6 +48,7 @@ function Page() {
       ))}
        <Route path="*" element={<NotFound />} />
     </Routes>
+    </>
   );
 }
 

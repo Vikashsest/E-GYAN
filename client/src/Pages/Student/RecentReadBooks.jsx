@@ -123,27 +123,40 @@ import StudentNavbar from "./StudentNavbar";
 import { FaBookReader, FaArrowRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { FiMenu } from "react-icons/fi";
+import { useLoader } from "../../LoaderContext";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function StudentRecentBooks() {
+  const {setLoading} = useLoader()
   const [recentBooks, setRecentBooks] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetch(`${API_URL}/students/recent-books`, {
-      credentials: "include",
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch recent books");
-        return res.json();
-      })
-      .then((data) => setRecentBooks(data))
-      .catch((err) => console.error("API Error:", err));
-  }, []);
+   useEffect(() => {
+    const fetchRecentBooks = async () => {
+      try {
+        setLoading(true); // ✅ loader ON
 
+        const res = await fetch(`${API_URL}/students/recent-books`, {
+          credentials: "include",
+        });
+
+        if (!res.ok) throw new Error("Failed to fetch recent books");
+
+        const data = await res.json();
+        setRecentBooks(data);
+
+      } catch (err) {
+        console.error("API Error:", err);
+      } finally {
+        setLoading(false); // ✅ loader OFF
+      }
+    };
+
+    fetchRecentBooks();
+  }, []);
   return (
     <div className="flex min-h-screen bg-darkBg text-primaryWhite relative">
       {/* Sidebar */}

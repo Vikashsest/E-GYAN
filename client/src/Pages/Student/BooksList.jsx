@@ -7,15 +7,16 @@ import StudentSidebar from "./StudentSidebar";
 import { fetchFavoriteBooks, subjectWiseBooks, toggleFavoriteBook } from "../../apiServices/booksApi";
 import { FaArrowLeft, FaHeart, FaRegHeart, FaSpinner } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
+import { useLoader } from "../../LoaderContext";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const BooksList = () => {
+  const {setLoading} = useLoader()
   const { className, subject } = useParams();
   const location = useLocation();
   const [books, setBooks] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [loading, setLoading] = useState(false)
   const navigate = useNavigate();
 
   const queryParams = new URLSearchParams(location.search);
@@ -35,8 +36,8 @@ const BooksList = () => {
 
   useEffect(() => {
     async function loadBooks() {
-      setLoading(true);
       try {
+        setLoading(true);
         // Call new fetchBooks with filters
         const [allBooks, favoriteIds] = await Promise.all([
           subjectWiseBooks({ className, subject, category }),
@@ -124,7 +125,7 @@ const BooksList = () => {
           📚 {category ? `${category} Books` : `Books for ${subject} (${className})`}
         </h2>
 
-        {books.length > 0 ? (
+        {books.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {books.map((book) => (
               <div
@@ -168,12 +169,7 @@ const BooksList = () => {
               </div>
             ))}
           </div>
-        ) : (loading &&
-          <div className="flex flex-col items-center h-screen space-y-4">
-            <FaSpinner className="animate-spin text-primaryBlue text-6xl" />
-            <p className="text-gray600 font-semibold">Loading, please wait...</p>
-          </div>
-        )}
+        ) }
       </main>
     </div>
   );

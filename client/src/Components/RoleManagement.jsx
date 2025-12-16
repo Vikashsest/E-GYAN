@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { fetchUsers, updateUserRole, deleteUser } from "../apiServices/roleApi";
 import { confirmDelete } from "../utils/confirmDelete";
-
+import {useLoader} from "../LoaderContext"
 export default function RoleManagement({ currentUserRole }) {
+  const {setLoading} = useLoader()
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
@@ -15,10 +16,14 @@ export default function RoleManagement({ currentUserRole }) {
 
   const fetchUsersList = async () => {
     try {
+      setLoading(true)
       const data = await fetchUsers();
       setUsers(data);
     } catch (err) {
       console.error("Failed to fetch users:", err);
+    }
+    finally{
+      setLoading(false)
     }
   };
 

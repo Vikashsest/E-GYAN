@@ -7,11 +7,12 @@ import StudentSidebar from "./StudentSidebar";
 import { FaBookReader, FaSpinner } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
 import { getRepository } from "../../apiServices/apiRepository";
+import { useLoader } from "../../LoaderContext";
 
 const Books = () => {
   const [categories, setCategories] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const {setLoading} = useLoader()
   const navigate = useNavigate();
 
   // useEffect(() => {
@@ -34,8 +35,8 @@ const Books = () => {
   // }, []);
   useEffect(() => {
     const loadCategories = async () => {
-      setLoading(true);
       try {
+        setLoading(true);
         const data = await getRepository("category");
 
         const categoryList = data.map((item) => item.text);
@@ -89,14 +90,7 @@ const Books = () => {
 
         <h2 className="text-2xl font-bold mb-6">📚 Category</h2>
 
-        {loading ? (
-          <div className="flex flex-col items-center h-screen space-y-4">
-            <FaSpinner className="animate-spin text-primaryBlue text-6xl" />
-            <p className="text-gray-600 font-semibold">
-              Loading, please wait...
-            </p>
-          </div>
-        ) : (
+        
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {categories.map((cat, index) => (
               <div
@@ -113,7 +107,6 @@ const Books = () => {
               </div>
             ))}
           </div>
-        )}
       </main>
     </div>
   );

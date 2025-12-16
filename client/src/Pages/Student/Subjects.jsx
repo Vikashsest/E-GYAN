@@ -4,22 +4,23 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import StudentNavbar from "./StudentNavbar";
 import StudentSidebar from "./StudentSidebar";
+import { useLoader } from "../../LoaderContext";
 
 import { FaBookOpen, FaArrowLeft, FaSpinner } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
 import fetechSubjects from "../../apiServices/booksApi";
 
 const ClassSubjects = () => {
+  const {setLoading} = useLoader()
   const { className } = useParams();
   const [subjects, setSubjects] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     async function loadSubjects() {
-      setLoading(true);
       try {
+        setLoading(true)
          const data = await fetechSubjects(className);
         setSubjects(data);
 
@@ -79,12 +80,7 @@ const ClassSubjects = () => {
           📖 Subjects in {className}
         </h2>
 
-        {loading ? (
-          <div className="flex flex-col items-center h-screen space-y-4">
-            <FaSpinner className="animate-spin text-primaryBlue text-6xl" />
-            <p className="text-gray400 font-semibold">Loading subjects...</p>
-          </div>
-        ) : subjects.length > 0 ? (
+       {subjects.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {subjects.map((sub, index) => (
               <div
@@ -100,9 +96,7 @@ const ClassSubjects = () => {
               </div>
             ))}
           </div>
-        ) : (
-          <p className="text-gray400">No subjects available.</p>
-        )}
+       )}
       </main>
     </div>
   );

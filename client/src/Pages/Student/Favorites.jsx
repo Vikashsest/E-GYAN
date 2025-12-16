@@ -146,6 +146,7 @@ import {
 import StudentSidebar from "./StudentSidebar";
 import StudentNavbar from "./StudentNavbar";
 import { FiMenu } from "react-icons/fi";
+import { useLoader } from "../../LoaderContext";
 
 const iconMap = {
   PDF: <FaFilePdf className="text-lightRed text-xl" />,
@@ -162,22 +163,36 @@ const buttonTextMap = {
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function StudentFavorites() {
+  const {setLoading} = useLoader()
   const [favoriteBooks, setFavoriteBooks] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetch(`${API_URL}/students/favorite-books`, {
-      credentials: "include",
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch favorite books");
-        return res.json();
-      })
-      .then((data) => setFavoriteBooks(data))
-      .catch((err) => console.error("Error fetching favorites:", err));
-  }, []);
+ useEffect(() => {
+  const fetchFavorites = async () => {
+    try {
+      setLoading(true);
+
+      const res = await fetch(`${API_URL}/students/favorite-books`, {
+        credentials: "include",
+      });
+
+      if (!res.ok) throw new Error("Failed to fetch favorite books");
+
+      const data = await res.json();
+      setFavoriteBooks(data);
+
+    } catch (err) {
+      console.error("Error fetching favorites:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchFavorites();
+}, [setLoading]);
+
 
   return (
     <div className="flex min-h-screen bg-darkBg text-primaryWhite relative">

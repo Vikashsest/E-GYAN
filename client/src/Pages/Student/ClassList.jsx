@@ -176,14 +176,15 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import StudentNavbar from "./StudentNavbar";
 import StudentSidebar from "./StudentSidebar";
-import { fetchBooks, fetchEducationLevels } from "../../apiServices/booksApi";
-import { FaBookReader, FaArrowLeft,FaSpinner } from "react-icons/fa";
+import { fetchEducationLevels } from "../../apiServices/booksApi";
+import { FaBookReader, FaArrowLeft } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
+import { useLoader } from "../../LoaderContext";
 
 const ClassList = () => {
+  const {setLoading} = useLoader()
   const [classes, setClasses] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [loading,setLoading] = useState(false)
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -217,9 +218,9 @@ const ClassList = () => {
   // }, [category, navigate]);
 
   useEffect(() => {
-    setLoading(true)
   async function loadClasses() {
     try {
+      setLoading(true)
       if (category === "School Education" || category === "Higher Education") {
        
         const levels = await fetchEducationLevels();
@@ -278,7 +279,7 @@ const ClassList = () => {
 
         <h2 className="text-2xl font-bold mb-6">📚 {category}</h2>
 
-        {classes.length > 0 ? (
+        {classes.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {classes.map((cls, index) => (
               <div
@@ -299,12 +300,7 @@ const ClassList = () => {
               </div>
             ))}
           </div>
-        ) :(loading &&
-                  <div className="flex flex-col items-center h-screen space-y-4">
-              <FaSpinner className="animate-spin text-primaryBlue text-6xl" />
-              <p className="text-gray600 font-semibold">Loading, please wait...</p>
-            </div>
-                )}
+        )}
       </main>
     </div>
   );

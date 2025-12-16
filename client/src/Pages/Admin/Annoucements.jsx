@@ -186,6 +186,7 @@ import { useState, useEffect } from "react";
 import Sidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
 import { FiMenu } from "react-icons/fi";
+import { useLoader } from "../../LoaderContext";
 import {
   getAnnouncements,
   addAnnouncement,
@@ -195,20 +196,28 @@ import {
 import { confirmDelete } from "../../utils/confirmDelete";
 
 export default function AdminAnnouncements() {
+  const { setLoading } = useLoader()
   const [announcements, setAnnouncements] = useState([]);
   const [newAnnouncement, setNewAnnouncement] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [editModal, setEditModal] = useState({ open: false, id: null, text: "", });
 
 
-  // 👉 Load data from API
   useEffect(() => {
     async function loadData() {
-      const data = await getAnnouncements();
-      setAnnouncements(data);
+      try {
+        setLoading(true);
+        const data = await getAnnouncements();
+        setAnnouncements(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
     }
     loadData();
   }, []);
+
 
   // 👉 Add Announcement API
   const handleAddAnnouncement = async (e) => {
@@ -223,17 +232,17 @@ export default function AdminAnnouncements() {
   };
 
   const handleDelete = async (id) => {
-  const ok = await confirmDelete("Are you sure you want to delete this announcement?");
-  if (!ok) return;
+    const ok = await confirmDelete("Are you sure you want to delete this announcement?");
+    if (!ok) return;
 
-  await deleteAnnouncement(id);
-  setAnnouncements(announcements.filter((ann) => ann.id !== id));
-};
+    await deleteAnnouncement(id);
+    setAnnouncements(announcements.filter((ann) => ann.id !== id));
+  };
 
 
   // 👉 Open Edit Modal
   const openEditModal = (ann) => {
-    setEditModal({ open: true, id: ann.id, text: ann.text});
+    setEditModal({ open: true, id: ann.id, text: ann.text });
   };
 
   // 👉 Update API
@@ -252,7 +261,7 @@ export default function AdminAnnouncements() {
       )
     );
 
-    setEditModal({ open: false, id: null, text: ""});
+    setEditModal({ open: false, id: null, text: "" });
   };
 
   return (
@@ -348,7 +357,7 @@ export default function AdminAnnouncements() {
                 <div className="flex justify-end gap-4 mt-2">
                   <button
                     type="button"
-                    onClick={() => setEditModal({ open: false, id: null, text: ""})}
+                    onClick={() => setEditModal({ open: false, id: null, text: "" })}
                     className="border border-primaryBlack px-4 py-2 rounded"
                   >
                     Cancel

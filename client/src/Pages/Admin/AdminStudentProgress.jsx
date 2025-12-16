@@ -175,6 +175,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { saveAs } from "file-saver";
 import { FiMenu } from "react-icons/fi";
 import { debounce } from "lodash";
+import { useLoader } from "../../LoaderContext";
+
 
 
 
@@ -194,6 +196,7 @@ function progressColor(percent) {
 }
 
 export default function AdminStudentProgress() {
+  const { setLoading } = useLoader(); 
   const [students, setStudents] = useState([]);
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("name_asc");
@@ -215,6 +218,7 @@ export default function AdminStudentProgress() {
   useEffect(() => {
     async function fetchStudents() {
       try {
+        setLoading(true); 
         // const res = await fetch("http://localhost:5000/admin/student-progress");
         const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/student-progress`,)
         const data = await res.json();
@@ -232,6 +236,9 @@ export default function AdminStudentProgress() {
       } catch (err) {
         console.error("Failed to fetch students", err);
       }
+      finally {
+      setLoading(false); // 🔴 STOP LOADER
+    }
     }
 
     fetchStudents();
