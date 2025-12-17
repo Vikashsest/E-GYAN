@@ -534,7 +534,6 @@ export class BookService {
       order: { createdAt: 'DESC' },
     });
   }
-
   async addPart(
     bookId: number,
     parentChapterId: number,
@@ -549,48 +548,47 @@ export class BookService {
   ) {
     const book = await this.bookrepo.findOne({ where: { id: bookId } });
     if (!book) throw new NotFoundException('Book not found');
-
     const parentChapter = await this.chapterRepo.findOne({
       where: { id: parentChapterId },
       relations: ['book'],
     });
-
     if (!parentChapter) throw new NotFoundException('Parent chapter not found');
 
     if (parentChapter.book.id !== bookId)
       throw new BadRequestException('Chapter does not belong to this book');
+    let fileUrl: string | undefined = undefined;
+    let totalPages: number | undefined = undefined;
+    let thumbnailUrl: string | undefined = undefined;
 
-    let fileUrl: string | undefined;
-    let totalPages: number | undefined;
     const resourceType = body.resourceType || 'pdf';
 
     if (resourceType === 'pdf') {
       if (!file) throw new BadRequestException('PDF file required');
+
       const ext = file.originalname.split('.').pop();
       const remotePath = `books/${bookId}/chapters/${parentChapterId}/parts/part-${body.partNumber}.${ext}`;
+
       const uploadedPath = await this.nextcloudService.uploadFile(
         file.path,
         remotePath,
       );
+
       fileUrl = await generatePublicLink(uploadedPath);
       totalPages = await getPdfTotalPages(file.path);
     }
-
-    if (resourceType === 'video' || resourceType === 'simulation') {
+    if (resourceType === 'video' || resourceType === 'pdf') {
       if (!body.videoUrl) throw new BadRequestException('Video URL required');
       fileUrl = body.videoUrl;
     }
-
-    let thumbnailUrl: string | undefined;
     if (thumbnail) {
       const thumbPath = `books/${bookId}/chapters/${parentChapterId}/parts/thumbnails/part-${body.partNumber}.jpg`;
+
       const uploadedThumb = await this.nextcloudService.uploadFile(
         thumbnail.path,
         thumbPath,
       );
       thumbnailUrl = await generatePublicLink(uploadedThumb);
     }
-
     const part = this.chapterRepo.create({
       chapterNumber: body.partNumber,
       chapterName: body.chapterName,
@@ -599,7 +597,7 @@ export class BookService {
       totalPages,
       thumbnail: thumbnailUrl,
       book,
-      parentChapter, // ✅ PART link
+      parentChapter,
     });
 
     const savedPart = await this.chapterRepo.save(part);
@@ -608,5 +606,25 @@ export class BookService {
       ...savedPart,
       displayName: `Chapter ${parentChapter.chapterNumber} Part ${savedPart.chapterNumber}`,
     };
+  }
+  async getParts(bookId: number, chapterId: number) {
+    const chapter = await this.chapterRepo.findOne({
+      where: { id: chapterId, book: { id: bookId } },
+    });
+
+    if (!chapter) throw new NotFoundException('Chapter not found');
+
+    const parts = await this.chapterRepo.find({
+      where: {
+        parentChapter: { id: chapterId },
+        book: { id: bookId },
+      },
+      order: { chapterNumber: 'ASC' },
+    });
+
+    return parts.map((part) => ({
+      ...part,
+      displayName: `Chapter ${chapter.chapterNumber} Part ${part.chapterNumber}`,
+    }));
   }
 }

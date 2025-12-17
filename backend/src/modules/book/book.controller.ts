@@ -429,6 +429,14 @@ export class BookController {
     );
   }
 
+  @Get(':bookId/chapters/:chapterId/parts')
+  getParts(
+    @Param('bookId') bookId: number,
+    @Param('chapterId') chapterId: number,
+  ) {
+    return this.bookService.getParts(+bookId, +chapterId);
+  }
+
   // ✅ Update book
   @Patch(':id')
   // @Roles(UserRole.ADMIN, UserRole.TEACHER, UserRole.PRINCIPAL)
