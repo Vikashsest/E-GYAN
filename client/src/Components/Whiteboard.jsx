@@ -147,7 +147,7 @@ export default function Whiteboard({ onClose }) {
       {/* Toolbar */}
       <div
         className={`
-          fixed z-40 bg-white/90 backdrop-blur-xl border border-gray-300 shadow-2xl
+          fixed z-40 bg-white/90  backdrop-blur-xl border-2 border-gray-400 shadow-2xl
           md:bottom-4 md:left-1/2 md:-translate-x-1/2 md:flex md:flex-row md:gap-4 md:rounded-full md:p-4
           ${
             isMobileMenuOpen
@@ -171,13 +171,13 @@ export default function Whiteboard({ onClose }) {
           className="w-10 h-10 rounded-full border"
         />
 
-        <div className="flex items-center gap-2 bg-purple-500 text-white px-3 py-2 rounded-full">
+        <div className="flex items-center gap-2 bg-purple-500 text-black px-3 py-2 rounded-full">
           <button onClick={() => setSize((s) => Math.max(1, s - 1))}>-</button>
           <span>{size}</span>
           <button onClick={() => setSize((s) => s + 1)}>+</button>
         </div>
 
-        <Tool onClick={() => canvasRef.current.undo()} bg="bg-yellow-400 text-black">
+        <Tool onClick={() => canvasRef.current.undo()} bg="bg-yellow-400" text="text-black">
           Undo
         </Tool>
 
