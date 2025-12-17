@@ -193,9 +193,7 @@ export default function StudentRecentBooks() {
             View your recently accessed digital books with reading progress.
           </p>
 
-          {recentBooks.length === 0 ? (
-            <p className="text-primaryWhite/50">No recent books found.</p>
-          ) : (
+          
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {recentBooks.map((book) => (
                 <div
@@ -252,7 +250,6 @@ export default function StudentRecentBooks() {
                 </div>
               ))}
             </div>
-          )}
         </div>
       </main>
     </div>

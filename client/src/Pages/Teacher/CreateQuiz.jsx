@@ -5,7 +5,6 @@ import {
   Sigma,
   Bold,
   Italic,
-  Underline,
   Trash2,
   Play,
   Sparkles,
@@ -14,182 +13,274 @@ import {
   Tag,
   BookOpen,
 } from "lucide-react";
+import TeacherNavbar from "./TeacherNavbar";
 
 export default function CreateQuiz() {
   const [questions, setQuestions] = useState([
-    { question: "", options: ["", "", "", "", ""], answer: "" },
+    {
+      question: "",
+      options: ["", "", "", ""],
+      correctIndex: null,
+      hideAnswer: false,
+    },
   ]);
 
+  const [activeIndex, setActiveIndex] = useState(0);
+  const current = questions[activeIndex];
+
+  const deleteQuestion = (index) => {
+    setQuestions((prev) => {
+      if (prev.length === 1) return prev; // at least 1 question rahe
+
+      const updated = prev.filter((_, i) => i !== index);
+
+      // activeIndex adjust karo
+      if (activeIndex >= updated.length) {
+        setActiveIndex(updated.length - 1);
+      } else if (activeIndex > index) {
+        setActiveIndex(activeIndex - 1);
+      }
+
+      return updated;
+    });
+  };
+
+
+  const updateQuestion = (value) => {
+    const copy = [...questions];
+    copy[0].question = value;
+    setQuestions(copy);
+  };
+
+  const updateOption = (idx, value) => {
+    const copy = [...questions];
+    copy[0].options[idx] = value;
+    setQuestions(copy);
+  };
+
+  const deleteOption = (idx) => {
+    const copy = [...questions];
+    copy[0].options.splice(idx, 1);
+    setQuestions(copy);
+  };
+
+  const addQuestion = () => {
+    setQuestions([
+      ...questions,
+      { question: "", options: ["", "", "", ""], correctIndex: null },
+    ]);
+  };
+
+  const saveQuiz = () => {
+    console.log("Saved Quiz:", questions);
+    alert("Quiz saved (check console)");
+  };
+
+  const previewQuiz = () => {
+    alert(JSON.stringify(questions, null, 2));
+  };
+
+  /* ---------------- UI ---------------- */
+
   return (
-    <div className="flex min-h-screen bg-[#121212] text-gray-300 font-sans">
-      {/* Sidebar - Left Navigation */}
-      <aside className="w-16 flex flex-col items-center py-4 bg-[#1e1e1e] border-r border-gray-800">
-        <div className="w-10 h-10 bg-green-500 rounded-lg mb-8 flex items-center justify-center text-white font-bold">
-          Q
-        </div>
-        <div className="flex flex-col gap-6">
-          <div className="w-8 h-8 rounded-full border-2 border-green-500 flex items-center justify-center text-green-500 text-sm">
-            1
+    <div className="min-h-screen bg-[#1e1f2b] text-white">
+      <TeacherNavbar />
+
+      {/* PAGE LAYOUT */}
+      <div className="flex">
+
+        {/* LEFT SIDEBAR */}
+        <aside className="w-16 flex flex-col items-center py-4 bg-[#1e1e1e] border-r border-gray-800 min-h-[calc(100vh-64px)]">
+
+          {/* QUESTION NUMBERS */}
+          <div className="flex flex-col gap-3 mb-6">
+            {questions.map((_, idx) => (
+              <div key={idx} className="relative group">
+
+                {/* QUESTION NUMBER */}
+                <button
+                  onClick={() => setActiveIndex(idx)}
+                  className={`w-8 h-8 rounded-full text-xs font-bold
+        ${activeIndex === idx
+                      ? "bg-green-500 text-white"
+                      : "bg-[#2a2a2a] text-gray-300 hover:bg-gray-700"
+                    }`}
+                >
+                  {idx + 1}
+                </button>
+
+                {/* DELETE BUTTON (hover) */}
+                {questions.length > 1 && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteQuestion(idx);
+                    }}
+                    className="absolute -top-2 -right-2 hidden group-hover:flex
+                   w-5 h-5 bg-red-600 text-white rounded-full
+                   items-center justify-center text-[10px]"
+                    title="Delete Question"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            ))}
+
           </div>
-          <button className="w-8 h-8 rounded-full border border-dashed border-gray-600 flex items-center justify-center hover:border-white">
+
+          {/* ADD QUESTION */}
+          <button
+            onClick={addQuestion}
+            className="w-8 h-8 border border-dashed rounded-full mb-6"
+            title="Add Question"
+          >
             <Plus size={16} />
           </button>
-        </div>
-        <div className="mt-auto flex flex-col gap-4">
-          <button className="p-2 hover:bg-gray-800 rounded-lg text-purple-400">
+
+          {/* AI */}
+          <button
+            onClick={() => setShowAIPanel?.(true)}
+            className="p-2 bg-purple-600 hover:bg-purple-700 rounded text-white mb-4"
+          >
             <Sparkles size={20} />
           </button>
-          <button className="p-2 hover:bg-gray-800 rounded-lg">
-            <Play size={20} />
-          </button>
-          <button className="p-2 bg-green-600 text-white rounded-lg">
-            <Save size={20} />
-          </button>
-        </div>
-      </aside>
 
-      {/* Main Content Area */}
-      <main className="flex-1 flex flex-col">
-        {/* Top Header */}
-        <header className="h-14 border-b border-gray-800 flex items-center px-6 justify-between bg-[#1e1e1e]">
-          <div className="flex items-center gap-4 flex-1">
-            <span className="text-sm">← Science-17-12-2025</span>
-            <div className="relative flex-1 max-w-xl">
-              <input
-                type="text"
-                placeholder="Higher Order Thinking Skill (HOTS)"
-                className="w-full bg-[#2a2a2a] border-none rounded-full py-1.5 px-10 text-sm focus:ring-1 ring-purple-500"
-              />
-              <BookOpen
-                className="absolute left-3 top-2 text-gray-500"
-                size={16}
-              />
-            </div>
+          {/* BOTTOM ACTIONS */}
+          <div className="mt-auto flex flex-col gap-4">
+            <button className="p-2 hover:bg-gray-800 rounded">
+              <Play size={20} />
+            </button>
+
+            <button
+              onClick={saveQuiz}
+              className="p-2 bg-green-600 rounded text-white"
+            >
+              <Save size={20} />
+            </button>
           </div>
-        </header>
+        </aside>
 
-        {/* Editor Area */}
-        <section className="p-8 overflow-y-auto">
+
+        <main className="flex-1 p-8 overflow-y-auto">
           <div className="max-w-5xl mx-auto space-y-6">
-            {/* Question Editor Card */}
-            <div className="bg-[#252525] rounded-xl p-6 border border-gray-800 shadow-xl">
+
+            {/* QUESTION CARD */}
+            <div className="bg-[#252525] rounded-xl p-6 border border-gray-800">
               <div className="flex gap-4 mb-6">
-                {/* Image Upload Placeholder */}
-                <div className="w-1/3 aspect-video bg-[#1e1e1e] rounded-lg border-2 border-dashed border-gray-700 flex flex-col items-center justify-center group cursor-pointer hover:border-purple-500 transition-colors">
-                  <div className="relative w-16 h-16 mb-2">
-                    <div className="absolute inset-0 bg-green-500/20 blur-xl rounded-full"></div>
-                    <ImageIcon
-                      className="relative text-green-500 m-auto"
-                      size={48}
-                    />
-                  </div>
-                  <span className="text-xs font-medium">Upload Media</span>
+
+                {/* IMAGE */}
+                <div className="w-1/3 aspect-video bg-[#1e1e1e] rounded-lg border-dashed border-2 border-gray-700 flex items-center justify-center cursor-pointer">
+                  <ImageIcon size={40} className="text-green-500" />
                 </div>
 
-                {/* Question Textarea */}
+                {/* QUESTION */}
                 <div className="flex-1 relative bg-[#1e1e1e] rounded-lg border border-gray-700 p-4">
                   <textarea
+                    value={current.question}
+                    onChange={(e) => updateQuestion(e.target.value)}
                     placeholder="Q. Enter question here"
-                    className="w-full h-full bg-transparent border-none resize-none focus:ring-0 text-xl"
+                    className="w-full h-full bg-transparent resize-none text-xl"
                   />
-                  {/* Rich Text Toolbar */}
-                  <div className="absolute top-3 right-3 flex gap-1">
-                    <div className="flex bg-[#2a2a2a] rounded p-1 border border-gray-700">
-                      <button className="p-1 hover:bg-gray-700 rounded">
-                        <Bold size={14} />
-                      </button>
-                      <button className="p-1 hover:bg-gray-700 rounded">
-                        <Italic size={14} />
-                      </button>
-                      <button className="p-1 hover:bg-gray-700 rounded text-green-500 font-bold px-1">
-                        A
-                      </button>
-                    </div>
-                  </div>
-                  {/* Floating Action Buttons */}
-                  <div className="absolute -right-12 top-0 flex flex-col gap-2">
-                    <button className="p-2 bg-purple-600 rounded-md text-white">
-                      <Sparkles size={18} />
-                    </button>
-                    <button className="p-2 bg-green-700 rounded-md text-white">
-                      <Sigma size={18} />
-                    </button>
-                    <button className="p-2 bg-gray-700 rounded-md text-white">
-                      <Sigma size={18} />
-                    </button>
+
+                  {/* TOOLBAR */}
+                  <div className="absolute top-2 right-2 flex bg-[#2a2a2a] p-1 rounded">
+                    <Bold size={14} className="mx-1 cursor-pointer" />
+                    <Italic size={14} className="mx-1 cursor-pointer" />
                   </div>
                 </div>
               </div>
 
-              {/* Options List */}
+              {/* OPTIONS */}
               <div className="space-y-3">
-                {["A", "B", "C", "D", "E"].map((label, idx) => (
+                {current.options.map((opt, idx) => (
                   <div
                     key={idx}
-                    className="group flex items-center gap-3 bg-white rounded-lg p-3 transition-all hover:ring-2 ring-purple-500/50"
+                    className={`flex items-center gap-3 bg-white p-3 rounded-lg ${current.correctIndex === idx ? "ring-2 ring-green-500" : ""
+                      }`}
                   >
-                    <div className="w-8 h-8 rounded-full border-2 border-red-500 flex items-center justify-center text-red-500 font-bold shrink-0">
-                      {label}
+                    <div
+                      onClick={() =>
+                        setQuestions((q) => {
+                          const c = [...q];
+                          c[0].correctIndex = idx;
+                          return c;
+                        })
+                      }
+                      className="w-8 h-8 border-2 border-green-500 rounded-full text-green-600 font-bold flex items-center justify-center cursor-pointer"
+                    >
+                      {String.fromCharCode(65 + idx)}
                     </div>
+
                     <input
-                      type="text"
-                      placeholder={`Enter Option ${label}`}
-                      className="flex-1 bg-transparent border-none text-gray-800 focus:ring-0 outline-none"
+                      value={opt}
+                      onChange={(e) => updateOption(idx, e.target.value)}
+                      placeholder="Option text"
+                      className="flex-1 text-gray-800 outline-none"
                     />
-                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Sigma
-                        className="text-gray-400 cursor-pointer hover:text-purple-500"
-                        size={18}
-                      />
-                      <ImageIcon
-                        className="text-gray-400 cursor-pointer hover:text-purple-500"
-                        size={18}
-                      />
-                      <Trash2
-                        className="text-red-400 cursor-pointer hover:text-red-600"
-                        size={18}
-                      />
-                    </div>
+
+                    <Trash2
+                      size={18}
+                      onClick={() => deleteOption(idx)}
+                      className="text-red-500 cursor-pointer"
+                    />
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Bottom Controls */}
-            <div className="flex items-center justify-between mt-8">
+            {/* BOTTOM CONTROLS */}
+            <div className="flex justify-between">
               <div className="flex gap-4">
-                <div className="flex items-center bg-[#252525] px-4 py-2 rounded-lg border border-gray-700">
-                  <span className="text-xs mr-2">MCQ</span>
-                  <ChevronDown size={14} />
-                </div>
-                <div className="flex items-center bg-[#252525] px-4 py-2 rounded-lg border border-gray-700">
-                  <span className="text-xs mr-2">120 Sec</span>
-                  <ChevronDown size={14} />
-                </div>
-                <div className="flex items-center bg-[#252525] px-4 py-2 rounded-lg border border-gray-700">
-                  <span className="text-xs mr-2">1 Point</span>
-                  <ChevronDown size={14} />
-                </div>
+                <Control label="MCQ" />
+                <Control label="120 Sec" />
+                <Control label="1 Point" />
               </div>
 
               <div className="flex gap-3">
-                <button className="flex items-center gap-2 px-4 py-2 bg-[#252525] rounded-lg border border-gray-700 hover:bg-gray-800 transition">
-                  <div className="w-8 h-4 bg-gray-600 rounded-full relative">
-                    <div className="absolute left-1 top-1 w-2 h-2 bg-white rounded-full"></div>
-                  </div>
-                  <span className="text-xs">Hide Answer</span>
+                <button
+                  onClick={() =>
+                    setQuestions((q) => {
+                      const c = [...q];
+                      c[0].hideAnswer = !c[0].hideAnswer;
+                      return c;
+                    })
+                  }
+                  className="px-4 py-2 bg-[#252525] rounded-lg border"
+                >
+                  Hide Answer
                 </button>
-                <button className="flex items-center gap-2 px-4 py-2 bg-[#252525] rounded-lg border border-gray-700 hover:bg-gray-800 transition text-xs">
-                  <BookOpen size={14} /> Add Solution
+
+                <button className="px-4 py-2 bg-[#252525] rounded-lg border">
+                  <BookOpen size={14} /> Solution
                 </button>
-                <button className="flex items-center gap-2 px-4 py-2 bg-[#252525] rounded-lg border border-gray-700 hover:bg-gray-800 transition text-xs">
-                  <Tag size={14} /> Add Topic Tag
+                <button className="px-4 py-2 bg-[#252525] rounded-lg border">
+                  <Tag size={14} /> Tag
                 </button>
               </div>
             </div>
           </div>
-        </section>
-      </main>
+        </main>
+
+      </div>
     </div>
   );
 }
+
+/* --------- Small Reusable Control --------- */
+function Control({ label }) {
+  return (
+    <div className="flex items-center bg-[#252525] px-4 py-2 rounded-lg border border-gray-700">
+      <span className="text-xs mr-2">{label}</span>
+      <ChevronDown size={14} />
+    </div>
+  );
+}
+
+
+
+
+
+
+
+

@@ -230,9 +230,7 @@ export default function StudentFavorites() {
             All the learning materials you’ve marked as favorite.
           </p>
 
-          {favoriteBooks.length === 0 ? (
-            <p className="text-primaryWhite/50">You have no favorite books yet.</p>
-          ) : (
+         
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {favoriteBooks.map((item) => {
                 const resourceType = item.resourceType?.toUpperCase?.();
@@ -282,7 +280,6 @@ export default function StudentFavorites() {
                 );
               })}
             </div>
-          )}
         </div>
       </main>
     </div>
