@@ -237,6 +237,11 @@ export class AuthService {
       throw new HttpException('Invalid username or password', 400);
     }
 
+    if (!user.isActive) {
+      throw new UnauthorizedException(
+        'Your Account is Not Active Please  Contact Admin.',
+      );
+    }
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       throw new HttpException('Invalid username or password', 400);

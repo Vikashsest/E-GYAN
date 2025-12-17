@@ -1,142 +1,286 @@
 import { useState } from "react";
-import TeacherSidebar from "./TeacherSidebar";
+import {
+  Plus,
+  Image as ImageIcon,
+  Sigma,
+  Bold,
+  Italic,
+  Trash2,
+  Play,
+  Sparkles,
+  Save,
+  ChevronDown,
+  Tag,
+  BookOpen,
+} from "lucide-react";
 import TeacherNavbar from "./TeacherNavbar";
-import { FaQuestionCircle, FaPlus } from "react-icons/fa";
 
 export default function CreateQuiz() {
-  const [questions, setQuestions] = useState([{ question: "", options: ["", "", "", ""], answer: "" }]);
-  const [duration, setDuration] = useState("");
-  const [title, setTitle] = useState("");
-  const [selectedClass, setSelectedClass] = useState("");
+  const [questions, setQuestions] = useState([
+    {
+      question: "",
+      options: ["", "", "", ""],
+      correctIndex: null,
+      hideAnswer: false,
+    },
+  ]);
 
-  const classes = ["Class 6", "Class 7", "Class 8", "Class 9", "Class 10"]; // Example classes
+  const [activeIndex, setActiveIndex] = useState(0);
+  const current = questions[activeIndex];
+
+  const deleteQuestion = (index) => {
+    setQuestions((prev) => {
+      if (prev.length === 1) return prev; // at least 1 question rahe
+
+      const updated = prev.filter((_, i) => i !== index);
+
+      // activeIndex adjust karo
+      if (activeIndex >= updated.length) {
+        setActiveIndex(updated.length - 1);
+      } else if (activeIndex > index) {
+        setActiveIndex(activeIndex - 1);
+      }
+
+      return updated;
+    });
+  };
+
+
+  const updateQuestion = (value) => {
+    const copy = [...questions];
+    copy[0].question = value;
+    setQuestions(copy);
+  };
+
+  const updateOption = (idx, value) => {
+    const copy = [...questions];
+    copy[0].options[idx] = value;
+    setQuestions(copy);
+  };
+
+  const deleteOption = (idx) => {
+    const copy = [...questions];
+    copy[0].options.splice(idx, 1);
+    setQuestions(copy);
+  };
 
   const addQuestion = () => {
-    setQuestions([...questions, { question: "", options: ["", "", "", ""], answer: "" }]);
+    setQuestions([
+      ...questions,
+      { question: "", options: ["", "", "", ""], correctIndex: null },
+    ]);
   };
 
-  const handleChange = (qIndex, field, value, optIndex) => {
-    const newQuestions = [...questions];
-    if (field === "question" || field === "answer") {
-      newQuestions[qIndex][field] = value;
-    } else {
-      newQuestions[qIndex].options[optIndex] = value;
-    }
-    setQuestions(newQuestions);
+  const saveQuiz = () => {
+    console.log("Saved Quiz:", questions);
+    alert("Quiz saved (check console)");
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Quiz Created:", { title, duration, selectedClass, questions });
-    alert(`Quiz for ${selectedClass} created successfully! 🎉`);
+  const previewQuiz = () => {
+    alert(JSON.stringify(questions, null, 2));
   };
+
+  /* ---------------- UI ---------------- */
 
   return (
-    <div className="flex min-h-screen bg-[#1e1f2b] text-white">
-      <TeacherSidebar />
-      <main className="flex-1 pl-[280px] pr-5 py-6">
-        <TeacherNavbar />
+    <div className="min-h-screen bg-[#1e1f2b] text-white">
+      <TeacherNavbar />
 
-        <div className="p-6">
-          <h1 className="text-3xl font-bold mb-6 flex items-center gap-2">
-            <FaQuestionCircle /> Create Quiz
-          </h1>
+      {/* PAGE LAYOUT */}
+      <div className="flex">
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+        {/* LEFT SIDEBAR */}
+        <aside className="w-16 flex flex-col items-center py-4 bg-[#1e1e1e] border-r border-gray-800 min-h-[calc(100vh-64px)]">
 
-            {/* Class selection */}
-            <div>
-              <label className="block text-gray-300 mb-2">Select Class</label>
-              <select
-                value={selectedClass}
-                onChange={(e) => setSelectedClass(e.target.value)}
-                className="w-full p-3 rounded-lg bg-[#2a2b3c] border border-gray-600 focus:outline-none"
-              >
-                <option value="">-- Select Class --</option>
-                {classes.map((cls, idx) => (
-                  <option key={idx} value={cls}>{cls}</option>
-                ))}
-              </select>
-            </div>
+          {/* QUESTION NUMBERS */}
+          <div className="flex flex-col gap-3 mb-6">
+            {questions.map((_, idx) => (
+              <div key={idx} className="relative group">
 
-            {/* Quiz Title */}
-            <div>
-              <label className="block text-gray-300 mb-2">Quiz Title</label>
-              <input
-                type="text"
-                placeholder="Enter quiz title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="w-full p-3 rounded-lg bg-[#2a2b3c] border border-gray-600 focus:outline-none"
-              />
-            </div>
+                {/* QUESTION NUMBER */}
+                <button
+                  onClick={() => setActiveIndex(idx)}
+                  className={`w-8 h-8 rounded-full text-xs font-bold
+        ${activeIndex === idx
+                      ? "bg-green-500 text-white"
+                      : "bg-[#2a2a2a] text-gray-300 hover:bg-gray-700"
+                    }`}
+                >
+                  {idx + 1}
+                </button>
 
-            {/* Duration */}
-            <div>
-              <label className="block text-gray-300 mb-2">Duration (minutes)</label>
-              <input
-                type="number"
-                placeholder="Enter duration in minutes"
-                value={duration}
-                onChange={(e) => setDuration(e.target.value)}
-                className="w-full p-3 rounded-lg bg-[#2a2b3c] border border-gray-600 focus:outline-none"
-              />
-            </div>
+                {/* DELETE BUTTON (hover) */}
+                {questions.length > 1 && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteQuestion(idx);
+                    }}
+                    className="absolute -top-2 -right-2 hidden group-hover:flex
+                   w-5 h-5 bg-red-600 text-white rounded-full
+                   items-center justify-center text-[10px]"
+                    title="Delete Question"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            ))}
 
-            {/* Questions */}
-            <div className="space-y-4">
-              <h2 className="text-xl font-semibold">Questions</h2>
-              {questions.map((q, idx) => (
-                <div key={idx} className="p-4 bg-[#2a2b3c] rounded-lg border border-gray-600 space-y-2">
-                  <input
-                    type="text"
-                    placeholder={`Question ${idx + 1}`}
-                    value={q.question}
-                    onChange={(e) => handleChange(idx, "question", e.target.value)}
-                    className="w-full p-3 rounded-lg bg-[#1f202f] border border-gray-500"
-                  />
+          </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {q.options.map((opt, optIdx) => (
-                      <input
-                        key={optIdx}
-                        type="text"
-                        placeholder={`Option ${optIdx + 1}`}
-                        value={opt}
-                        onChange={(e) => handleChange(idx, "options", e.target.value, optIdx)}
-                        className="p-2 rounded-lg bg-[#1f202f] border border-gray-500"
-                      />
-                    ))}
-                  </div>
+          {/* ADD QUESTION */}
+          <button
+            onClick={addQuestion}
+            className="w-8 h-8 border border-dashed rounded-full mb-6"
+            title="Add Question"
+          >
+            <Plus size={16} />
+          </button>
 
-                  <input
-                    type="text"
-                    placeholder="Correct Answer"
-                    value={q.answer}
-                    onChange={(e) => handleChange(idx, "answer", e.target.value)}
-                    className="w-full p-2 rounded-lg bg-[#1f202f] border border-gray-500 mt-2"
-                  />
-                </div>
-              ))}
+          {/* AI */}
+          <button
+            onClick={() => setShowAIPanel?.(true)}
+            className="p-2 bg-purple-600 hover:bg-purple-700 rounded text-white mb-4"
+          >
+            <Sparkles size={20} />
+          </button>
 
-              <button
-                type="button"
-                onClick={addQuestion}
-                className="flex items-center gap-2 px-4 py-2 bg-purple-600 rounded-lg hover:bg-purple-700 transition"
-              >
-                <FaPlus /> Add Question
-              </button>
-            </div>
+          {/* BOTTOM ACTIONS */}
+          <div className="mt-auto flex flex-col gap-4">
+            <button className="p-2 hover:bg-gray-800 rounded">
+              <Play size={20} />
+            </button>
 
             <button
-              type="submit"
-              className="px-6 py-3 bg-green-600 rounded-lg font-bold hover:bg-green-700 transition"
+              onClick={saveQuiz}
+              className="p-2 bg-green-600 rounded text-white"
             >
-              Create Quiz
+              <Save size={20} />
             </button>
-          </form>
-        </div>
-      </main>
+          </div>
+        </aside>
+
+
+        <main className="flex-1 p-8 overflow-y-auto">
+          <div className="max-w-5xl mx-auto space-y-6">
+
+            {/* QUESTION CARD */}
+            <div className="bg-[#252525] rounded-xl p-6 border border-gray-800">
+              <div className="flex gap-4 mb-6">
+
+                {/* IMAGE */}
+                <div className="w-1/3 aspect-video bg-[#1e1e1e] rounded-lg border-dashed border-2 border-gray-700 flex items-center justify-center cursor-pointer">
+                  <ImageIcon size={40} className="text-green-500" />
+                </div>
+
+                {/* QUESTION */}
+                <div className="flex-1 relative bg-[#1e1e1e] rounded-lg border border-gray-700 p-4">
+                  <textarea
+                    value={current.question}
+                    onChange={(e) => updateQuestion(e.target.value)}
+                    placeholder="Q. Enter question here"
+                    className="w-full h-full bg-transparent resize-none text-xl"
+                  />
+
+                  {/* TOOLBAR */}
+                  <div className="absolute top-2 right-2 flex bg-[#2a2a2a] p-1 rounded">
+                    <Bold size={14} className="mx-1 cursor-pointer" />
+                    <Italic size={14} className="mx-1 cursor-pointer" />
+                  </div>
+                </div>
+              </div>
+
+              {/* OPTIONS */}
+              <div className="space-y-3">
+                {current.options.map((opt, idx) => (
+                  <div
+                    key={idx}
+                    className={`flex items-center gap-3 bg-white p-3 rounded-lg ${current.correctIndex === idx ? "ring-2 ring-green-500" : ""
+                      }`}
+                  >
+                    <div
+                      onClick={() =>
+                        setQuestions((q) => {
+                          const c = [...q];
+                          c[0].correctIndex = idx;
+                          return c;
+                        })
+                      }
+                      className="w-8 h-8 border-2 border-green-500 rounded-full text-green-600 font-bold flex items-center justify-center cursor-pointer"
+                    >
+                      {String.fromCharCode(65 + idx)}
+                    </div>
+
+                    <input
+                      value={opt}
+                      onChange={(e) => updateOption(idx, e.target.value)}
+                      placeholder="Option text"
+                      className="flex-1 text-gray-800 outline-none"
+                    />
+
+                    <Trash2
+                      size={18}
+                      onClick={() => deleteOption(idx)}
+                      className="text-red-500 cursor-pointer"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* BOTTOM CONTROLS */}
+            <div className="flex justify-between">
+              <div className="flex gap-4">
+                <Control label="MCQ" />
+                <Control label="120 Sec" />
+                <Control label="1 Point" />
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() =>
+                    setQuestions((q) => {
+                      const c = [...q];
+                      c[0].hideAnswer = !c[0].hideAnswer;
+                      return c;
+                    })
+                  }
+                  className="px-4 py-2 bg-[#252525] rounded-lg border"
+                >
+                  Hide Answer
+                </button>
+
+                <button className="px-4 py-2 bg-[#252525] rounded-lg border">
+                  <BookOpen size={14} /> Solution
+                </button>
+                <button className="px-4 py-2 bg-[#252525] rounded-lg border">
+                  <Tag size={14} /> Tag
+                </button>
+              </div>
+            </div>
+          </div>
+        </main>
+
+      </div>
     </div>
   );
 }
+
+/* --------- Small Reusable Control --------- */
+function Control({ label }) {
+  return (
+    <div className="flex items-center bg-[#252525] px-4 py-2 rounded-lg border border-gray-700">
+      <span className="text-xs mr-2">{label}</span>
+      <ChevronDown size={14} />
+    </div>
+  );
+}
+
+
+
+
+
+
+
+

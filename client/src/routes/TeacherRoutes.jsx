@@ -132,10 +132,10 @@ export const teacherRouteList = [
     ),
   },
   {
-    path: "/teacher/form/:formType",
+    path: "/teacher/form/CreateQuiz",
     element: (
       <ProtectedRoute allowedRoles={["teacher", "admin", "principal"]}>
-        <TeacherForms />
+        <CreateQuiz />
       </ProtectedRoute>
     ),
   },

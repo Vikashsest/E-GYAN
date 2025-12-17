@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchChapters, deleteChapter } from "../apiServices/booksApi";
@@ -22,10 +21,8 @@ export default function UploadChapter() {
   const [resourceTypes, setResourceTypes] = useState([]);
   const [partResourceType, setPartResourceType] = useState("");
 
-
   const API_URL = import.meta.env.VITE_API_URL;
   const progressIntervalRef = useRef(null);
-
 
   useEffect(() => {
     const loadResourceTypes = async () => {
@@ -40,8 +37,6 @@ export default function UploadChapter() {
 
     loadResourceTypes();
   }, []);
-
-
 
   useEffect(() => {
     async function loadChapters() {
@@ -73,7 +68,9 @@ export default function UploadChapter() {
     }
 
     if (!chapterNum || (!f && !vUrl && !sUrl)) {
-      toast.warning("Please enter chapter number, resource file/url and thumbnail.");
+      toast.warning(
+        "Please enter chapter number, resource file/url and thumbnail."
+      );
       return;
     }
 
@@ -127,7 +124,7 @@ export default function UploadChapter() {
       setSimulationUrl(""); // ✅ reset simulation url
       setResourceType("");
       setAddPartChapterId(null);
-      setPartResourceType(""); 
+      setPartResourceType("");
       setProgress(100);
       toast.success("Chapter/Part added successfully!");
     } catch (err) {
@@ -139,9 +136,70 @@ export default function UploadChapter() {
     }
   };
 
+  //handle add part
+  const handleAddPart = async (
+    parentChapterId,
+    partNumber,
+    f,
+    t,
+    r,
+    vUrl,
+    sUrl
+  ) => {
+    try {
+      setLoading(true);
+
+      const fd = new FormData();
+      fd.append("partNumber", partNumber);
+      fd.append("resourceType", r);
+
+      if (t) fd.append("thumbnail", t);
+
+      if (r === "video") {
+        fd.append("videoUrl", vUrl);
+      } else if (r === "simulation") {
+        fd.append("videoUrl", sUrl);
+      } else {
+        fd.append("file", f);
+      }
+
+      const res = await fetch(
+        `${API_URL}/books/${bookId}/chapters/${parentChapterId}/parts`,
+        {
+          method: "POST",
+          body: fd,
+          credentials: "include",
+        }
+      );
+
+      if (!res.ok) {
+        toast.error("Error uploading part");
+        return;
+      }
+
+      const response = await res.json();
+
+      // 🔥 frontend state update
+      setChapters((prev) =>
+        prev.map((ch) =>
+          ch.id === parentChapterId
+            ? { ...ch, parts: [...(ch.parts || []), response] } // ✅ directly use response
+            : ch
+        )
+      );
+
+      toast.success("Part uploaded successfully");
+    } catch (err) {
+      toast.error("Part upload failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Delete Chapter
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this chapter?")) return;
+    if (!window.confirm("Are you sure you want to delete this chapter?"))
+      return;
     try {
       setLoading(true);
       await deleteChapter(id);
@@ -164,7 +222,9 @@ export default function UploadChapter() {
       <div className="bg-[#38394a] shadow-lg rounded-lg p-6 w-full max-w-2xl">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-center">📚 Manage Book Chapters</h1>
+          <h1 className="text-2xl font-bold text-center">
+            📚 Manage Book Chapters
+          </h1>
           <button
             onClick={() => navigate(-1)}
             className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition"
@@ -182,7 +242,6 @@ export default function UploadChapter() {
             value={chapterNumber}
             onChange={(e) => setChapterNumber(e.target.value)}
           />
-
 
           <div className="w-full">
             <label className="block text-sm font-medium mb-1 text-gray-200">
@@ -283,10 +342,11 @@ export default function UploadChapter() {
               type="button"
               onClick={() => handleAddChapter()}
               disabled={loading}
-              className={`px-4 py-2 rounded-lg transition ${loading
-                ? "bg-blue-500 font-semibold"
-                : "font-semibold bg-blue-500 hover:bg-blue-800"
-                } text-white`}
+              className={`px-4 py-2 rounded-lg transition ${
+                loading
+                  ? "bg-blue-500 font-semibold"
+                  : "font-semibold bg-blue-500 hover:bg-blue-800"
+              } text-white`}
             >
               {loading ? "Uploading..." : "Upload"}
             </button>
@@ -296,7 +356,9 @@ export default function UploadChapter() {
         {/* Chapters List */}
         <ul className="mt-6 divide-y divide-gray-600">
           {chapters.length === 0 && !loading && (
-            <li className="py-3 text-center text-gray-400">No chapters found</li>
+            <li className="py-3 text-center text-gray-400">
+              No chapters found
+            </li>
           )}
           {chapters.map((c) => (
             <li key={c.id} className="py-2">
@@ -315,7 +377,9 @@ export default function UploadChapter() {
                       className="w-12 h-12 object-cover rounded"
                     />
                   )}
-                  <span className="font-semibold">Chapter {c.chapterNumber}</span>
+                  <span className="font-semibold">
+                    Chapter {c.chapterNumber}
+                  </span>
                   <span className="text-gray-300">
                     {openChapterId === c.id ? "▲" : "▼"}
                   </span>
@@ -323,9 +387,7 @@ export default function UploadChapter() {
                 {/* Add Part Button */}
                 <button
                   onClick={() =>
-                    setAddPartChapterId(
-                      addPartChapterId === c.id ? null : c.id
-                    )
+                    setAddPartChapterId(addPartChapterId === c.id ? null : c.id)
                   }
                   className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg ml-4"
                 >
@@ -336,11 +398,26 @@ export default function UploadChapter() {
               {/* Accordion Content */}
               {openChapterId === c.id && (
                 <div className="mt-3 ml-14 text-sm text-gray-300 space-y-2">
-                  <p><strong>Resource Type:</strong> {c.resourceType || "N/A"}</p>
+                  <p>
+                    <strong>Resource Type:</strong> {c.resourceType || "N/A"}
+                  </p>
                   {c.resourceType === "simulation" && (
-                    <p><strong>Simulation URL:</strong> <a href={c.simulationUrl} target="_blank" rel="noopener noreferrer" className="text-blue-400 underline">Open</a></p>
+                    <p>
+                      <strong>Simulation URL:</strong>{" "}
+                      <a
+                        href={c.simulationUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-400 underline"
+                      >
+                        Open
+                      </a>
+                    </p>
                   )}
-                  <p><strong>Overview:</strong> {c.overview || "No overview available"}</p>
+                  <p>
+                    <strong>Overview:</strong>{" "}
+                    {c.overview || "No overview available"}
+                  </p>
                   <button
                     type="button"
                     onClick={() => handleDelete(c.id)}
@@ -354,7 +431,9 @@ export default function UploadChapter() {
               {/* Add Part Form */}
               {addPartChapterId === c.id && (
                 <div className="mt-4 ml-14 bg-[#2f3042] p-4 rounded-lg space-y-3">
-                  <h4 className="font-semibold text-white">➕ Add Part to Chapter {c.chapterNumber}</h4>
+                  <h4 className="font-semibold text-white">
+                    ➕ Add Part to Chapter {c.chapterNumber}
+                  </h4>
 
                   <select
                     className="w-full border border-gray-500 rounded-lg p-2 mt-1 text-black focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -365,11 +444,11 @@ export default function UploadChapter() {
                     <option value="">Select Resource Type</option>
                     {resourceTypes.map((rType) => (
                       <option key={rType.id} value={rType.text.toLowerCase()}>
-                        {rType.text.charAt(0).toUpperCase() + rType.text.slice(1)}
+                        {rType.text.charAt(0).toUpperCase() +
+                          rType.text.slice(1)}
                       </option>
                     ))}
                   </select>
-
 
                   {resourceType === "video" && (
                     <input
@@ -409,15 +488,15 @@ export default function UploadChapter() {
                   <button
                     type="button"
                     onClick={() =>
-                      handleAddChapter(
-                        c.chapterNumber,
+                      handleAddPart(
+                        c.id, // ✅ parentChapterId
+                        (c.parts?.length || 0) + 1,
                         file,
                         thumbnail,
                         partResourceType,
                         videoUrl,
                         simulationUrl
                       )
-
                     }
                     className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg"
                   >
@@ -432,16 +511,3 @@ export default function UploadChapter() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -17,7 +17,7 @@ import Logout from "../Auth/Logout";
 
 export default function Sidebar({ isOpen, onClose }) {
   return (
-   <aside
+    <aside
       className={`fixed top-0 left-0 h-screen w-64 bg-sidebarbg p-6 flex flex-col justify-between z-50 transform transition-transform duration-300
       ${isOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
     >
@@ -28,7 +28,6 @@ export default function Sidebar({ isOpen, onClose }) {
       >
         <FiX size={26} />
       </button>
-
 
       <div>
         <h1 className="text-2xl font-bold flex items-center space-x-2 mb-8">
@@ -66,7 +65,7 @@ export default function Sidebar({ isOpen, onClose }) {
                   <span>Repository</span>
                 </li>
               </Link>
-               <Link className="flex items-center space-x-2" to="/admin-books">
+              <Link className="flex items-center space-x-2" to="/admin-books">
                 <li className="flex items-center space-x-2 text-gray300">
                   <FaBook />
                   <span> Manage Content</span>
@@ -90,34 +89,43 @@ export default function Sidebar({ isOpen, onClose }) {
                   <span>Manage Students</span>
                 </li>
               </Link> */}
-              <Link className="flex items-center space-x-2" to="/admin/students">
-  <li className="flex items-center space-x-2 text-gray300">
-    <FaUsers />
-    <span>Manage Students</span>
-  </li>
-</Link>
-              <Link className="flex items-center space-x-2" to="/admin/announcements">
-              <li className="flex items-center space-x-2 text-gray300">
-                <FaBullhorn />
-                <span>Announcements</span>
-              </li>
-            </Link>
+              <Link
+                className="flex items-center space-x-2"
+                to="/admin/students"
+              >
+                <li className="flex items-center space-x-2 text-gray300">
+                  <FaUsers />
+                  <span>Manage Students</span>
+                </li>
+              </Link>
+              <Link
+                className="flex items-center space-x-2"
+                to="/admin/announcements"
+              >
+                <li className="flex items-center space-x-2 text-gray300">
+                  <FaBullhorn />
+                  <span>Announcements</span>
+                </li>
+              </Link>
               <Link className="flex items-center space-x-2" to="/admin/reports">
                 <li className="flex items-center space-x-2 text-gray300">
                   <FaFileAlt />
                   <span>Reports</span>
                 </li>
               </Link>
-              <Link
-                className="flex items-center space-x-2"
-                to="/admin/role"
-              >
+              <Link className="flex items-center space-x-2" to="/admin/role">
                 <li className="flex items-center space-x-2 text-gray300">
                   <MdManageAccounts />
                   <span>Role Management</span>
                 </li>
               </Link>
-               <Link
+              <Link className="flex items-center space-x-2" to="/admin/manage">
+                <li className="flex items-center space-x-2 text-gray300">
+                  <MdManageAccounts />
+                  <span>Book Manage</span>
+                </li>
+              </Link>
+              <Link
                 className="flex items-center space-x-2"
                 to="/admin/upload-books"
               >
@@ -137,13 +145,6 @@ export default function Sidebar({ isOpen, onClose }) {
     </aside>
   );
 }
-
-
-
-
-
-
-
 
 // import {
 //   FaUsers,
@@ -172,7 +173,6 @@ export default function Sidebar({ isOpen, onClose }) {
 //               >
 //                 <FiX size={26} />
 //               </button>
-
 
 //       <div>
 //         <h1 className="text-2xl font-bold flex items-center space-x-2 mb-8">

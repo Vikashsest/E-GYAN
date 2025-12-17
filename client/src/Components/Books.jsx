@@ -1697,10 +1697,6 @@
 //   );
 // }
 
-
-
-
-
 import { useEffect, useState } from "react";
 import FlipbookPDFViewer from "./FlipbookPDFViewer";
 import { FaEdit, FaTrash, FaExpand, FaCompress } from "react-icons/fa";
@@ -1846,7 +1842,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
 
         // Classes load
         setClasses(Array.from({ length: 12 }, (_, i) => `Class ${i + 1}`));
-
       } catch (err) {
         console.error("Initial load error:", err);
 
@@ -1859,8 +1854,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
 
     loadInitialData();
   }, [setLoading]);
-
-
 
   const handleDelete = async (id) => {
     const ok = await confirmDelete();
@@ -1968,7 +1961,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
             source: "",
             link: "",
           });
-
         } else {
           toast.error("❌ Failed to add Current Affairs");
         }
@@ -2086,7 +2078,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   };
 
   return (
-
     <div className="flex min-h-screen bg-darkBg text-primaryWhite">
       {Sidebar && (
         <Sidebar
@@ -2096,7 +2087,10 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
       )}
       <main className="flex-1 lg:pl-[280px] py-6 px-5 w-full">
         <div className="lg:hidden px-4 mb-4">
-          <button onClick={() => setIsSidebarOpen(true)} className="text-primaryWhite">
+          <button
+            onClick={() => setIsSidebarOpen(true)}
+            className="text-primaryWhite"
+          >
             <FiMenu size={28} />
           </button>
         </div>
@@ -2242,7 +2236,11 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                 key={num}
                 onClick={() => setCurrentPage(num)}
                 className={`px-3 py-1 border rounded 
-          ${num === currentPage ? "bg-primaryBlue text-primaryWhite" : "bg-primaryWhite/10"}
+          ${
+            num === currentPage
+              ? "bg-primaryBlue text-primaryWhite"
+              : "bg-primaryWhite/10"
+          }
         `}
               >
                 {num}
@@ -2317,7 +2315,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                   ))}
                 </select>
               </div>
-
 
               <form className="grid gap-4" onSubmit={handleUpload}>
                 {/* === BOOK UPLOAD FORM === */}
@@ -2713,16 +2710,19 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                   </>
                 )}
 
-
                 {/* Custom Category Form */}
                 {formData.category &&
-                  !["School Education", "Current Affairs", "Simulation"].includes(
-                    formData.category
-                  ) && (
+                  ![
+                    "School Education",
+                    "Current Affairs",
+                    "Simulation",
+                  ].includes(formData.category) && (
                     <>
                       {/* Class Dropdown - from educationLevels */}
                       <div className="mb-4">
-                        <label className="text-sm font-medium block mb-1">Education Level</label>
+                        <label className="text-sm font-medium block mb-1">
+                          Education Level
+                        </label>
                         <select
                           name="levels"
                           value={formData.levels || ""}
@@ -2740,7 +2740,9 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
 
                       {/* Subject Dropdown - from subjects */}
                       <div className="mb-4">
-                        <label className="text-sm font-medium block mb-1">Subject</label>
+                        <label className="text-sm font-medium block mb-1">
+                          Subject
+                        </label>
                         <select
                           name="subject"
                           value={formData.subject || ""}
@@ -2758,7 +2760,9 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
 
                       {/* Books Dropdown - from books */}
                       <div className="mb-4">
-                        <label className="text-sm font-medium block mb-1">Books</label>
+                        <label className="text-sm font-medium block mb-1">
+                          Books
+                        </label>
                         <select
                           name="books"
                           value={formData.books || ""}
@@ -2776,7 +2780,9 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
 
                       {/* Language Dropdown - from languages */}
                       <div className="mb-4">
-                        <label className="text-sm font-medium block mb-1">Language</label>
+                        <label className="text-sm font-medium block mb-1">
+                          Language
+                        </label>
                         <select
                           name="language"
                           value={formData.language || ""}
@@ -2793,7 +2799,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                       </div>
                     </>
                   )}
-
 
                 {/* Buttons */}
                 <div className="flex justify-end gap-3 mt-4">
@@ -2964,14 +2969,14 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                   <div className="flex items-center gap-4">
                     {(getBookResourceType(viewData) === "pdf" ||
                       getBookResourceType(viewData) === "audio") && (
-                        <button
-                          onClick={handleFullscreenToggle}
-                          className="text-primaryWhite text-xl hover:text-lightGreen"
-                          title="Toggle Fullscreen"
-                        >
-                          {isFullscreen ? <FaCompress /> : <FaExpand />}
-                        </button>
-                      )}
+                      <button
+                        onClick={handleFullscreenToggle}
+                        className="text-primaryWhite text-xl hover:text-lightGreen"
+                        title="Toggle Fullscreen"
+                      >
+                        {isFullscreen ? <FaCompress /> : <FaExpand />}
+                      </button>
+                    )}
                     <button
                       onClick={() => setViewData(null)}
                       className="text-primaryWhite text-2xl hover:text-primaryRed"
@@ -3025,6 +3030,3 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
     </div>
   );
 }
-
-
-
