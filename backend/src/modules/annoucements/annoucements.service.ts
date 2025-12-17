@@ -52,7 +52,8 @@ export class AnnoucementsService {
       if (!fetechId) {
         throw new HttpException('id not found', 400);
       }
-      return await this.annoucementRepo.delete(fetechId);
+
+      return await this.annoucementRepo.remove(fetechId);
     } catch (error) {
       throw new InternalServerErrorException('Failed to delete announcement');
     }

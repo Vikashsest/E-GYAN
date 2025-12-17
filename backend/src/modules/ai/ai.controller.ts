@@ -16,7 +16,7 @@ export class AiController {
   constructor(private readonly aiService: AiService) {}
   @Post('generate-quiz')
   async generateQuiz(@Body() body: { prompt: string }) {
-    return this.aiService.generateQuizFromPrompt(body.prompt);
+    return this.aiService.generateQuiz(body.prompt);
   }
 
   @Get()

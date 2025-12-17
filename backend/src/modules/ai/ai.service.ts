@@ -4,32 +4,107 @@ import { UpdateAiDto } from './dto/update-ai.dto';
 import axios from 'axios';
 @Injectable()
 export class AiService {
-  private GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+  private GEMINI_API_KEY = 'AIzaSyDxsjTAvpaIalHTlOm7097UZIzmy314hiM';
 
-  async generateQuizFromPrompt(prompt: string) {
+  async generateQuiz(prompt: string) {
     try {
       const response = await axios.post(
-        'https://gemini-api-url/v1/generate',
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${this.GEMINI_API_KEY}`,
         {
-          prompt,
-          max_output_tokens: 500,
+          contents: [
+            {
+              parts: [
+                {
+                  text: `
+Create exactly 1 multiple choice question.
+
+Topic: "${prompt}"
+
+Rules:
+- 4 options only
+- Return valid JSON
+- No extra explanation
+
+JSON format:
+{
+  "question": "",
+  "options": ["", "", "", ""],
+  "correctIndex": 0
+}
+`,
+                },
+              ],
+            },
+          ],
         },
         {
           headers: {
-            Authorization: `Bearer ${this.GEMINI_API_KEY}`,
             'Content-Type': 'application/json',
           },
         },
       );
 
-      const text = response.data.output_text;
-      const questions = JSON.parse(text);
-      return { questions };
-    } catch (err) {
-      console.error('Gemini API failed:', err);
-      return { questions: [] };
+      const text = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+      if (!text) {
+        console.log('Empty Gemini response:', response.data);
+        return {};
+      }
+
+      const clean = text.replace(/```json|```/g, '').trim();
+      return JSON.parse(clean);
+    } catch (error) {
+      console.error('Gemini Error:', error.response?.data || error.message);
+      return {};
     }
   }
+
+  //   async generateQuiz(prompt: string) {
+  //     try {
+  //       const response = await axios.post(
+  //         `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${this.GEMINI_API_KEY}`,
+  //         {
+  //           contents: [
+  //             {
+  //               parts: [
+  //                 {
+  //                   text: `
+  // Create exactly 1 multiple choice question.
+  // Topic: "${prompt}"
+
+  // Return ONLY valid JSON:
+  // {
+  //   "question": "",
+  //   "options": ["", "", "", ""],
+  //   "correctIndex": 0
+  // }
+  // `,
+  //                 },
+  //               ],
+  //             },
+  //           ],
+  //         },
+  //         {
+  //           headers: { 'Content-Type': 'application/json' },
+  //         },
+  //       );
+
+  //       const text = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+  //       if (!text) {
+  //         console.log('Gemini empty response', response.data);
+  //         return {};
+  //       }
+
+  //       const clean = text.replace(/```json|```/g, '').trim();
+  //       console.log('clean', clean);
+
+  //       return JSON.parse(clean);
+  //     } catch (error) {
+  //       console.error('Gemini Error:', error.response?.data || error);
+  //       return {};
+  //     }
+  //   }
 
   findAll() {
     return `This action returns all ai`;
