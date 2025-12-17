@@ -707,37 +707,37 @@ export default function TeacherDashboard() {
 
           {/* Action Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-8">
-            <ActionCard
+            {/* <ActionCard
               icon={<MdOutlineQuiz size={30} />}
               title="Assign Test"
               path="/teacher/form/assign-test"
-            />
-            <ActionCard
+            /> */}
+            {/* <ActionCard
               icon={<MdOutlineSummarize size={30} />}
               title="Summarize Report"
               path="/teacher/form/summarize-report"
-            />
+            /> */}
             <ActionCard
               icon={<FaClipboardList size={28} />}
               title="Create Quiz"
-              path="/teacher/form/create-quiz"
+              path="/teacher/form/CreateQuiz"
             />
             {/* <ActionCard icon={<FaClipboardList size={28} />} title="Schedule Class" path="/teacher/form/schedule-class" /> */}
-            <ActionCard
+            {/* <ActionCard
               icon={<FaFileSignature size={28} />}
               title="Create Notice"
               path="/teacher/form/notice"
-            />
-            <ActionCard
+            /> */}
+            {/* <ActionCard
               icon={<FaTasks size={28} />}
               title="Manage Homework"
               path="/teacher/form/homework"
-            />
-            <ActionCard
+            /> */}
+            {/* <ActionCard
               icon={<FaPoll size={28} />}
               title="Create Poll"
               path="/teacher/form/poll"
-            />
+            /> */}
           </div>
         </div>
       </main>
