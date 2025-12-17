@@ -203,7 +203,7 @@ import StudentNavbar from "./StudentNavbar";
 import StudentSidebar from "./StudentSidebar";
 import WelcomeHeading from "../../Components/WelcomeHeading";
 import { useNavigate } from "react-router-dom";
-import primaryWhiteboard from "../../Components/Whiteboard";
+import Whiteboard from "../../Components/Whiteboard";
 const API_URL = import.meta.env.VITE_API_URL;
 const access_token = getCookie("access_token");
 
@@ -223,7 +223,7 @@ export default function DashboardMetrics() {
   const navigate = useNavigate();
   const [announcements, setAnnouncements] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [showprimaryWhiteboard, setShowprimaryWhiteboard] = useState(false);
+  const [showWhiteboard, setShowWhiteboard] = useState(false);
 
   useEffect(() => {
     async function fetchMetrics() {
@@ -319,7 +319,7 @@ export default function DashboardMetrics() {
           <WelcomeHeading />
         </div>
         <div
-          onClick={() => setShowprimaryWhiteboard(true)}
+          onClick={() => setShowWhiteboard(true)}
           className="
     fixed bottom-6 right-6 w-16 h-16 rounded-full 
     bg-gradient-to-br from-primaryBlue to-indigo600  
@@ -335,10 +335,10 @@ export default function DashboardMetrics() {
           🧑‍🏫
         </div>
 
-        {showprimaryWhiteboard && (
+        {showWhiteboard && (
           <div className="fixed inset-0 bg-primaryBlack/60 backdrop-blur-md flex items-center justify-center z-[9999]">
             <div className="bg-primaryWhite w-[90%] h-[90%] rounded-xl shadow-2xl relative z-[10000]">
-             <primaryWhiteboard onClose={() => setShowprimaryWhiteboard(false)} />
+              <Whiteboard onClose={() => setShowWhiteboard(false)} />
             </div>
           </div>
         )}
