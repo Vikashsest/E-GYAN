@@ -4,15 +4,17 @@ import { FaUserGraduate } from "react-icons/fa";
 import TeacherSidebar from "../Pages/Teacher/TeacherSidebar";
 import TeacherNavbar from "../Pages/Teacher/TeacherNavbar";
 import { toast } from "react-toastify";
+import { useLoader } from "../LoaderContext";
 
 export default function StudentList() {
+  const {setLoading} = useLoader()
   const navigate = useNavigate();
   const [students, setStudents] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStudents = async () => {
       try {
+        setLoading(true)
         const res = await fetch(
           `${import.meta.env.VITE_API_URL}/student-book-assign`,
           {
@@ -42,9 +44,7 @@ export default function StudentList() {
 
         <h2 className="text-3xl font-bold mb-8 text-center">All Students</h2>
 
-        {loading ? (
-          <p className="text-center text-gray-400">Loading students...</p>
-        ) : (
+       
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {students.map((student) => (
               <div
@@ -75,7 +75,6 @@ export default function StudentList() {
               </div>
             ))}
           </div>
-        )}
       </main>
     </div>
   );
