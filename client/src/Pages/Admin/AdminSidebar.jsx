@@ -125,6 +125,12 @@ export default function Sidebar({ isOpen, onClose }) {
                   <span>Book Manage</span>
                 </li>
               </Link>
+               <Link className="flex items-center space-x-2" to="/upload-content">
+                <li className="flex items-center space-x-2 text-gray300">
+                  <MdManageAccounts />
+                  <span>Upload Content</span>
+                </li>
+              </Link>
               <Link
                 className="flex items-center space-x-2"
                 to="/admin/upload-books"

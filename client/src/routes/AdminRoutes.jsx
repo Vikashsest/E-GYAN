@@ -15,6 +15,7 @@ import AdminAnnouncements from "../Pages/Admin/Annoucements";
 import AdminStudentProgress from "../Pages/Admin/AdminStudentProgress";
 import LatestVersions from "../Pages/Admin/Versions";
 import ManageBooks from "../Components/ManageBooks";
+import UploadBook from "../Pages/Admin/UploadContent";
 
 export const adminRouteList = [
   {
@@ -130,6 +131,14 @@ export const adminRouteList = [
     element: (
       <ProtectedRoute allowedRoles={["admin"]}>
         <LatestVersions />
+      </ProtectedRoute>
+    ),
+  },
+   {
+    path: "upload-content",
+    element: (
+      <ProtectedRoute allowedRoles={["admin"]}>
+        <UploadBook />
       </ProtectedRoute>
     ),
   },
