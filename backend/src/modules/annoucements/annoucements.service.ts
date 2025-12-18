@@ -2,6 +2,7 @@ import {
   HttpException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { CreateAnnoucementDto } from './dto/create-annoucement.dto';
 import { UpdateAnnoucementDto } from './dto/update-annoucement.dto';
@@ -42,8 +43,17 @@ export class AnnoucementsService {
     return `This action returns a #${id} annoucement`;
   }
 
-  update(id: number, updateAnnoucementDto: UpdateAnnoucementDto) {
-    return `This action updates a #${id} annoucement`;
+  async update(id: number, updateAnnoucementDto: UpdateAnnoucementDto) {
+    const annoucement = await this.annoucementRepo.findOne({ where: { id } });
+    if (!annoucement) {
+      throw new NotFoundException('ID not found');
+    }
+    Object.assign(annoucement, updateAnnoucementDto);
+    const updatedAnnoucement = await this.annoucementRepo.save(annoucement);
+    return {
+      message: 'Announcement updated successfully',
+      data: updatedAnnoucement,
+    };
   }
 
   async remove(id: number) {
