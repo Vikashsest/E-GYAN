@@ -7,6 +7,7 @@ import { SchoolEducationForm } from "./UploadForms/SchoolEducationForm";
 import SimulationForm from "./UploadForms/SimulationForm";
 import { CurrentAffairsForm } from "./UploadForms/CurrentAffairsForm";
 import { uploadBook } from "../../apiServices/booksApi";
+import ChapterModal from "./UploadForms/ChapterForm";
 
 export default function UploadBook() {
   const [bookData, setBookData] = useState({
@@ -34,12 +35,18 @@ export default function UploadBook() {
 
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+  const [showChapterModal, setShowChapterModal] = useState(false);
   const [categories, setCategories] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [levels, setLevels] = useState([]);
   const [loadingRepo, setLoadingRepo] = useState(false);
-
+  const [chapterData, setChapterData] = useState({
+    resourceType: "",
+    chapterNumber: "",
+    file: null,
+    link: "",
+    thumbnail: null,
+  });
 
   const handleUploadBook = async () => {
     try {
@@ -274,15 +281,13 @@ export default function UploadBook() {
             </div>
 
             <button
-
+              onClick={() => setShowChapterModal(true)}
               className="flex items-center gap-2 px-4 py-2 
-                 bg-primaryBlue hover:bg-primaryBlue 
-                 text-white text-sm font-medium 
-                 rounded-md transition"
+     bg-primaryBlue text-white rounded-md"
             >
-              <span className="text-lg leading-none">+</span>
-              Add Chapter
+              + Add Chapter
             </button>
+
           </div>
 
           {/* EMPTY STATE */}
@@ -330,6 +335,20 @@ export default function UploadBook() {
 
 
       </main>
+
+
+      <ChapterModal
+        isOpen={showChapterModal}
+        onClose={() => setShowChapterModal(false)}
+        chapterData={chapterData}
+        setChapterData={setChapterData}
+        onSave={() => {
+          console.log("Final Chapter Data:", chapterData);
+          // 🔥 yahin API call karo
+          setShowChapterModal(false);
+        }}
+      />
+
     </div>
   );
 }
