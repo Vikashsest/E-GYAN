@@ -28,7 +28,7 @@ export default function UploadChapter() {
     const loadResourceTypes = async () => {
       try {
         const data = await getRepository("resource");
-        setResourceTypes(data); // direct set because response is already array of objects
+        setResourceTypes(data); 
       } catch (err) {
         console.error("Failed to fetch resource types:", err);
         setResourceTypes([]);
@@ -60,7 +60,7 @@ export default function UploadChapter() {
     t = thumbnail,
     r = resourceType,
     vUrl = videoUrl,
-    sUrl = simulationUrl // ✅ simulation url pass
+    sUrl = simulationUrl 
   ) => {
     if (!bookId) {
       toast.error("Invalid book ID");

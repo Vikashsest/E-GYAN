@@ -1,7 +1,12 @@
-import { useState } from "react";
 import { FiMenu } from "react-icons/fi";
 import AdminNavbar from "./AdminNavbar";
 import AdminSidebar from "./AdminSidebar";
+import { getRepository } from "../../apiServices/apiRepository";
+import { useState, useEffect } from "react";
+import { SchoolEducationForm } from "./UploadForms/SchoolEducationForm";
+import SimulationForm from "./UploadForms/SimulationForm";
+import { CurrentAffairsForm } from "./UploadForms/CurrentAffairsForm";
+import { uploadBook } from "../../apiServices/booksApi";
 
 export default function UploadBook() {
   const [bookData, setBookData] = useState({
@@ -15,83 +20,78 @@ export default function UploadBook() {
     thumbnail: "",
   });
 
-  const [chapters, setChapters] = useState([]);
+  const [formData, setFormData] = useState({
+    category: "",
+    bookName: "",
+    description: "",
+    grade: "",
+    difficulty: "",
+    topic: "",
+    prerequisites: "",
+    simulationFile: null,
+    thumbnail: null,
+  });
+
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  const [categories, setCategories] = useState([]);
+  const [subjects, setSubjects] = useState([]);
+  const [levels, setLevels] = useState([]);
+  const [loadingRepo, setLoadingRepo] = useState(false);
+
+
+  const handleUploadBook = async () => {
+    try {
+      const formData = new FormData();
+
+      // bookData ko FormData me convert
+      Object.entries(bookData).forEach(([key, value]) => {
+        if (value !== "" && value !== null) {
+          formData.append(key, value);
+        }
+      });
+
+      const res = await uploadBook(formData);
+      console.log("Upload success:", res);
+      alert("Book uploaded successfully ✅");
+
+    } catch (error) {
+      console.error(error);
+      alert("Book upload failed ❌");
+    }
+  };
+
+  useEffect(() => {
+    const fetchRepository = async () => {
+      try {
+        setLoadingRepo(true);
+
+        const categoryRes = await getRepository("category");
+        const subjectRes = await getRepository("subject");
+        const levelRes = await getRepository("level");
+
+        setCategories(categoryRes.data || categoryRes);
+        setSubjects(subjectRes.data || subjectRes);
+        setLevels(levelRes.data || levelRes);
+      } catch (err) {
+        console.error("Repository load failed");
+      } finally {
+        setLoadingRepo(false);
+      }
+    };
+
+    fetchRepository();
+  }, []);
 
   const updateBook = (key, value) => {
-    setBookData((prev) => ({ ...prev, [key]: value }));
-  };
-
-  const addChapter = () => {
-    setChapters((prev) => [
+    setBookData((prev) => ({
       ...prev,
-      {
-        id: Date.now(),
-        chapterName: "",
-        chapterNumber: prev.length + 1,
-        resourceType: "pdf",
-        fileUrl: "",
-        parts: [],
-      },
-    ]);
+      [key]: value,
+    }));
   };
 
-  const updateChapter = (id, key, value) => {
-    setChapters((prev) =>
-      prev.map((ch) => (ch.id === id ? { ...ch, [key]: value } : ch))
-    );
-  };
 
-  const removeChapter = (id) => {
-    setChapters((prev) => prev.filter((ch) => ch.id !== id));
-  };
-
-  const addPart = (chapterId) => {
-    setChapters((prev) =>
-      prev.map((ch) =>
-        ch.id === chapterId
-          ? {
-            ...ch,
-            parts: [
-              ...ch.parts,
-              {
-                id: Date.now(),
-                name: "",
-                resourceType: "video",
-                fileUrl: "",
-              },
-            ],
-          }
-          : ch
-      )
-    );
-  };
-
-  const updatePart = (chapterId, partId, key, value) => {
-    setChapters((prev) =>
-      prev.map((ch) =>
-        ch.id === chapterId
-          ? {
-            ...ch,
-            parts: ch.parts.map((p) =>
-              p.id === partId ? { ...p, [key]: value } : p
-            ),
-          }
-          : ch
-      )
-    );
-  };
-
-  const removePart = (chapterId, partId) => {
-    setChapters((prev) =>
-      prev.map((ch) =>
-        ch.id === chapterId
-          ? { ...ch, parts: ch.parts.filter((p) => p.id !== partId) }
-          : ch
-      )
-    );
-  };
 
   return (
     <div className="flex min-h-screen bg-darkBg text-primaryWhite">
@@ -111,10 +111,10 @@ export default function UploadBook() {
 
 
         {/* BOOK INFORMATION – DARK MODE */}
-        <div className="bg-[#0f172a] border border-white/10 rounded-xl p-6">
+        <div className="bg-cardBg border border-white/10 rounded-xl p-6">
           {/* Header */}
           <div className="flex items-start gap-3 mb-6">
-            <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-400">
+            <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-primaryBlue/10 text-primaryBlue">
               📘
             </div>
             <div>
@@ -127,8 +127,55 @@ export default function UploadBook() {
             </div>
           </div>
 
-          {/* Book Name */}
+
+          {/* Category */}
           <div className="mb-5">
+            <label className="label-dark">Category</label>
+            <select
+              className="input-dark"
+              value={bookData.category}
+              onChange={(e) => updateBook("category", e.target.value)}
+            >
+              <option value="">Select category</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.text}>
+                  {cat.text}
+                </option>
+              ))}
+            </select>
+          </div>
+
+
+
+          {/* Dynamic Forms */}
+          {bookData.category === "School Education" && (
+            <SchoolEducationForm
+              bookData={bookData}
+              updateBook={updateBook}
+              subjects={subjects}
+              levels={levels}
+            />
+          )}
+
+          {bookData.category === "Simulation" && (
+            <SimulationForm
+              formData={formData}
+              updateBook={setFormData}
+            />
+          )}
+
+
+
+
+          {bookData.category === "Current Affairs" && (
+            <CurrentAffairsForm
+              bookData={bookData}
+              updateBook={updateBook}
+            />
+          )}
+
+
+          {/* <div className="mb-5">
             <label className="label-dark">
               Book Name <span className="text-red-400">*</span>
             </label>
@@ -136,70 +183,57 @@ export default function UploadBook() {
               type="text"
               placeholder="Enter book name"
               className="input-dark"
+              value={bookData.bookName}
+              onChange={(e) => updateBook("bookName", e.target.value)}
             />
+
           </div>
 
-          {/* Category */}
-          <div className="mb-5">
-            <label className="label-dark">Category</label>
-            <select className="input-dark">
-              <option>Select category</option>
-            </select>
-          </div>
-
-          {/* Subject & Education Level */}
+      
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
             <div>
               <label className="label-dark">Subject</label>
-              <select className="input-dark">
-                <option>Select subject</option>
+              <select
+                className="input-dark"
+                value={bookData.subject}
+                onChange={(e) => updateBook("subject", e.target.value)}
+              >
+                <option value="">Select subject</option>
+
+                {subjects.map((sub) => (
+                  <option key={sub.id} value={sub.id}>
+                    {sub.text}
+                  </option>
+                ))}
               </select>
+
             </div>
 
             <div>
               <label className="label-dark">Education Level</label>
-              <select className="input-dark">
-                <option>Select level</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Language & State Board */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
-            <div>
-              <label className="label-dark">Language</label>
-              <select className="input-dark">
-                <option>English</option>
-                <option>Hindi</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="label-dark">State Board</label>
-              <input
-                type="text"
-                placeholder="e.g., Maharashtra, UP, etc."
+              <select
                 className="input-dark"
-              />
+                value={bookData.level}
+                onChange={(e) => updateBook("educationLevel", e.target.value)}
+              >
+                <option value="">Select level</option>
+
+                {levels.map((lvl) => (
+                  <option key={lvl.id} value={lvl.id}>
+                    {lvl.text}
+                  </option>
+                ))}
+              </select>
+
             </div>
           </div>
 
-          {/* Total Pages */}
-          <div className="mb-5">
-            <label className="label-dark">Total Pages</label>
-            <input
-              type="number"
-              placeholder="Enter total number of pages"
-              className="input-dark"
-            />
-          </div>
-
-          {/* Thumbnail */}
+      
           <div>
             <label className="label-dark">Book Thumbnail/Cover</label>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center justify-center gap-4">
               <input
-                type="text"
+                type="file"
                 className="input-dark flex-1"
                 placeholder=""
               />
@@ -207,7 +241,21 @@ export default function UploadBook() {
                 ⬆ Upload Thumbnail
               </button>
             </div>
+          </div> */}
+
+
+          {/* UPLOAD BUTTON – BOOK INFORMATION */}
+          <div className="mt-6 flex justify-end">
+            <button
+              onClick={handleUploadBook}
+              className="flex items-center gap-2 px-6 py-3
+      bg-primaryBlue hover:bg-primaryBlue/90
+      text-white font-medium rounded-lg transition"
+            >
+              ⬆ Upload Book
+            </button>
           </div>
+
         </div>
 
 
@@ -226,9 +274,9 @@ export default function UploadBook() {
             </div>
 
             <button
-              onClick={addChapter}
+
               className="flex items-center gap-2 px-4 py-2 
-                 bg-indigo-600 hover:bg-indigo-500 
+                 bg-primaryBlue hover:bg-primaryBlue 
                  text-white text-sm font-medium 
                  rounded-md transition"
             >
@@ -249,7 +297,6 @@ export default function UploadBook() {
             </p>
 
             <button
-              onClick={addChapter}
               className="flex items-center gap-2 px-4 py-2 
                  border border-white/20 
                  text-white/80 text-sm 
@@ -266,7 +313,7 @@ export default function UploadBook() {
         <div className="mt-6 flex gap-4">
           <button
             className="flex-1 flex items-center justify-center gap-2
-               bg-indigo-600 hover:bg-indigo-500
+               bg-primaryBlue hover:bg-primaryBlue
                text-white font-medium py-3 rounded-lg transition"
           >
             ⬆ Publish Book
