@@ -1824,7 +1824,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
         setSubjects(subjects.map((s) => s.text));
         setBooks(books.map((s) => s.text));
         setLanguages(languages.map((l) => l.text));
-        setEducationLevels(levels.map((e) => e.text));
+        setEducationLevels(levels.map((l) => l.text));
       } catch (err) {
         console.error("Failed to load form options:", err);
 
@@ -2332,7 +2332,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                         Education Level
                       </label>
                       <select
-                        value={formData.levels}
+                        value={formData.educationLevel}
                         onChange={(e) =>
                           setFormData((prev) => ({
                             ...prev,
