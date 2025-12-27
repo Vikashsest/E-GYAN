@@ -1,4 +1,3 @@
-
 // import { useEffect, useState, useRef, useMemo } from "react";
 // import { useParams } from "react-router-dom";
 // import HTMLFlipBook from "react-pageflip";
@@ -45,7 +44,7 @@
 //   const startTimeRef = useRef(Date.now());
 //   const pdfRef = useRef(null); // store pdf instance
 
-//   // ✅ Orientation
+//  Orientation
 //   useEffect(() => {
 //     const checkOrientation = () => {
 //       setIsPortrait(window.innerHeight >= window.innerWidth);
@@ -414,12 +413,6 @@
 //   );
 // }
 
-
-
-
-
-
-
 import { useEffect, useState, useRef, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import HTMLFlipBook from "react-pageflip";
@@ -499,8 +492,6 @@ export default function FlipbookPDFViewer({
     }
   }, [chapter]);
 
-  
-
   const logActivity = (currentPage) => {
     const role = localStorage.getItem("role");
     if (role !== "student") return;
@@ -539,7 +530,8 @@ export default function FlipbookPDFViewer({
       const lower = chapterUrl.toLowerCase();
       if (lower.endsWith(".pdf")) type = "pdf";
       else if (lower.endsWith(".mp3") || lower.endsWith(".wav")) type = "audio";
-      else if (lower.endsWith(".mp4") || lower.endsWith(".webm")) type = "video";
+      else if (lower.endsWith(".mp4") || lower.endsWith(".webm"))
+        type = "video";
     }
 
     setFileType(type);
@@ -606,7 +598,8 @@ export default function FlipbookPDFViewer({
         setPages((prev) => ({ ...prev, [num]: url }));
       }, "image/png");
 
-      if (num === 1) setPageSize({ width: viewport.width, height: viewport.height });
+      if (num === 1)
+        setPageSize({ width: viewport.width, height: viewport.height });
     } catch (err) {
       console.error("Error rendering page:", err);
     }
@@ -698,16 +691,18 @@ export default function FlipbookPDFViewer({
         <div className="absolute top-2 left-1/2 -translate-x-1/2 flex gap-4 items-center z-50 text-white">
           <button
             onClick={() => setViewMode("flipbook")}
-            className={`p-1 ${viewMode === "flipbook" ? "text-blue-500" : "text-gray-700"
-              }`}
+            className={`p-1 ${
+              viewMode === "flipbook" ? "text-blue-500" : "text-gray-700"
+            }`}
             title="Flipbook View"
           >
             <FaBookOpen />
           </button>
           <button
             onClick={() => setViewMode("scroll")}
-            className={`p-1 ${viewMode === "scroll" ? "text-blue-500" : "text-gray-700"
-              }`}
+            className={`p-1 ${
+              viewMode === "scroll" ? "text-blue-500" : "text-gray-700"
+            }`}
             title="Scrollable PDF"
           >
             <FaFilePdf />
@@ -855,7 +850,6 @@ export default function FlipbookPDFViewer({
               </div>
             ))}
           </div>
-
         )
       ) : fileType === "audio" ? (
         <audio controls className="mt-10 w-2/3">
