@@ -14,7 +14,7 @@ import RepositoryManagement from "../Pages/Admin/RepositoryManagement";
 import AdminAnnouncements from "../Pages/Admin/Annoucements";
 import AdminStudentProgress from "../Pages/Admin/AdminStudentProgress";
 import LatestVersions from "../Pages/Admin/Versions";
-import ManageBooks from "../Components/ManageBooks";
+import ManageBooks from "../Pages/Admin/ManageBooks";
 import UploadBook from "../Pages/Admin/UploadContent";
 
 export const adminRouteList = [

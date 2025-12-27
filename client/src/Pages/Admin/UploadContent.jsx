@@ -8,6 +8,7 @@ import SimulationForm from "./UploadForms/SimulationForm";
 import { CurrentAffairsForm } from "./UploadForms/CurrentAffairsForm";
 import { uploadBook } from "../../apiServices/booksApi";
 import ChapterModal from "./UploadForms/ChapterForm";
+import ChaptersSection from "./UploadForms/ChapterUploadForm";
 
 export default function UploadBook() {
   const [bookData, setBookData] = useState({
@@ -15,7 +16,7 @@ export default function UploadBook() {
     category: "",
     subject: "",
     educationLevel: "",
-    language: "English",
+    language: "",
     stateBoard: "",
     totalPages: "",
     thumbnail: "",
@@ -39,6 +40,7 @@ export default function UploadBook() {
   const [categories, setCategories] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [levels, setLevels] = useState([]);
+  const [languages, setLanguages] = useState([]);
   const [loadingRepo, setLoadingRepo] = useState(false);
   const [chapterData, setChapterData] = useState({
     resourceType: "",
@@ -48,48 +50,76 @@ export default function UploadBook() {
     thumbnail: null,
   });
 
+  const handleCategoryChange = async (value) => {
+    updateBook("category", value);
+
+    // ❌ agar School Education nahi hai
+    if (value !== "School Education") return;
+
+    // ❌ agar data pehle se loaded hai
+    if (
+      subjects.length > 0 &&
+      levels.length > 0 &&
+      languages.length > 0
+    ) {
+      return;
+    }
+
+    try {
+      setLoadingRepo(true);
+
+      const levelRes = await getRepository("level");
+      const languageRes = await getRepository("language");
+
+      setLevels(levelRes.data || levelRes);
+      setLanguages(languageRes.data || languageRes);
+
+    } catch (err) {
+      console.error("Subject / Level / Language fetch failed");
+    } finally {
+      setLoadingRepo(false);
+    }
+  };
+
+
   const handleUploadBook = async () => {
     try {
-      const formData = new FormData();
+      const fd = new FormData(); // 👈 name change (important)
 
-      // bookData ko FormData me convert
       Object.entries(bookData).forEach(([key, value]) => {
         if (value !== "" && value !== null) {
-          formData.append(key, value);
+          fd.append(key, value);
         }
       });
 
-      const res = await uploadBook(formData);
+      const res = await uploadBook(fd);
+
       console.log("Upload success:", res);
       alert("Book uploaded successfully ✅");
 
     } catch (error) {
       console.error(error);
-      alert("Book upload failed ❌");
+      alert(error.message || "Book upload failed ❌");
     }
   };
 
-  useEffect(() => {
-    const fetchRepository = async () => {
-      try {
-        setLoadingRepo(true);
 
-        const categoryRes = await getRepository("category");
-        const subjectRes = await getRepository("subject");
-        const levelRes = await getRepository("level");
 
-        setCategories(categoryRes.data || categoryRes);
-        setSubjects(subjectRes.data || subjectRes);
-        setLevels(levelRes.data || levelRes);
-      } catch (err) {
-        console.error("Repository load failed");
-      } finally {
-        setLoadingRepo(false);
-      }
-    };
+  const fetchCategories = async () => {
+    // agar already loaded hain to dobara call mat karo
+    if (categories.length > 0) return;
 
-    fetchRepository();
-  }, []);
+    try {
+
+      const categoryRes = await getRepository("category");
+      setCategories(categoryRes.data || categoryRes);
+
+    } catch (err) {
+      console.error("Category fetch failed");
+    }
+  };
+
+
 
   const updateBook = (key, value) => {
     setBookData((prev) => ({
@@ -141,15 +171,22 @@ export default function UploadBook() {
             <select
               className="input-dark"
               value={bookData.category}
-              onChange={(e) => updateBook("category", e.target.value)}
+              onFocus={fetchCategories}   // 👈 sirf category API
+              onChange={(e) => handleCategoryChange(e.target.value)}
             >
-              <option value="">Select category</option>
+              <option value="">
+                {loadingRepo ? "Loading categories..." : "Select category"}
+              </option>
+
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.text}>
                   {cat.text}
                 </option>
               ))}
             </select>
+
+
+
           </div>
 
 
@@ -161,6 +198,7 @@ export default function UploadBook() {
               updateBook={updateBook}
               subjects={subjects}
               levels={levels}
+              languages={languages}
             />
           )}
 
@@ -186,83 +224,21 @@ export default function UploadBook() {
           <div className="mt-6 flex justify-end">
             <button
               onClick={handleUploadBook}
-              className="flex items-center gap-2 px-6 py-3
-      bg-primaryBlue hover:bg-primaryBlue/90
-      text-white font-medium rounded-lg transition"
+              className="flex items-center gap-2 px-4 py-2
+    bg-primaryBlue hover:bg-primaryBlue/90
+    text-white font-medium rounded-lg transition"
             >
               ⬆ Upload Book
             </button>
+
           </div>
 
         </div>
 
 
-
-        {/* CHAPTERS – DARK MODE */}
-        <div className="bg-[#0f172a] border border-white/10 rounded-xl p-6">
-          {/* Header */}
-          <div className="flex items-start justify-between mb-8">
-            <div>
-              <h2 className="text-lg font-semibold text-white">
-                Chapters
-              </h2>
-              <p className="text-sm text-white/60">
-                Add and organize book chapters with multiple parts
-              </p>
-            </div>
-
-            <button
-              onClick={() => setShowChapterModal(true)}
-              className="flex items-center gap-2 px-4 py-2 
-     bg-primaryBlue text-white rounded-md"
-            >
-              + Add Chapter
-            </button>
-
-          </div>
-
-          {/* EMPTY STATE */}
-          <div className="flex flex-col items-center justify-center py-16 text-center border border-dashed border-white/10 rounded-lg">
-            {/* Icon */}
-            <div className="mb-4 text-white/30 text-5xl">
-              📖
-            </div>
-
-            <p className="text-sm text-white/60 mb-4">
-              No chapters added yet
-            </p>
-
-            <button
-              className="flex items-center gap-2 px-4 py-2 
-                 border border-white/20 
-                 text-white/80 text-sm 
-                 rounded-md hover:bg-white/10 transition"
-            >
-              <span className="text-lg leading-none">+</span>
-              Add First Chapter
-            </button>
-          </div>
-        </div>
-
-
-        {/* ACTION BUTTONS */}
-        <div className="mt-6 flex gap-4">
-          <button
-            className="flex-1 flex items-center justify-center gap-2
-               bg-primaryBlue hover:bg-primaryBlue
-               text-white font-medium py-3 rounded-lg transition"
-          >
-            ⬆ Publish Book
-          </button>
-
-          <button
-            className="flex-1 border border-white/20
-               text-white/80 py-3 rounded-lg
-               hover:bg-white/10 transition"
-          >
-            Save as Draft
-          </button>
-        </div>
+        <ChaptersSection
+          onAddChapter={() => setShowChapterModal(true)}
+        />
 
 
       </main>

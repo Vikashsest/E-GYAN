@@ -37,6 +37,8 @@ export async function fetchEducationLevels() {
     throw error;
   }
 }
+
+
 export default async function fetechSubjects(className){
   try {
      const res = await fetch(`${API_URL}/books/subject?class=${encodeURIComponent(className)}`,{
