@@ -35,4 +35,8 @@ export class RepositoryController {
   updateRepo(@Param('id') id: number, @Body('value') value: string) {
     return this.repositoryService.update(id, value);
   }
+  @Get('books')
+  fetchBooks() {
+    return this.repositoryService.fetchAllBooks();
+  }
 }

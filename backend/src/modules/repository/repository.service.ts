@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateRepositoryDto } from './dto/create-repository.dto';
@@ -8,12 +9,15 @@ import { UpdateRepositoryDto } from './dto/update-repository.dto';
 import { Repository } from 'typeorm';
 import { Repositories } from './entities/repository.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Book } from '../book/entities/book.entity';
 
 @Injectable()
 export class RepositoryService {
   constructor(
     @InjectRepository(Repositories)
     private readonly repository: Repository<Repositories>,
+    @InjectRepository(Book)
+    private readonly bookRepo: Repository<Book>,
   ) {}
   // async create(createRepositoryDto: CreateRepositoryDto) {
   //   const { type, value } = createRepositoryDto;
@@ -85,5 +89,17 @@ export class RepositoryService {
     const repo = await this.repository.findOne({ where: { id } });
     if (!repo) throw new NotFoundException(`Repository ${id} not found`);
     return await this.repository.delete(id);
+  }
+
+  async fetchAllBooks() {
+    try {
+      const allBooks = await this.bookRepo
+        .createQueryBuilder('book')
+        .select(['book.bookName'])
+        .getMany();
+      return allBooks;
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch  Books');
+    }
   }
 }
