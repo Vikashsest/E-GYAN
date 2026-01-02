@@ -60,17 +60,30 @@ export class RepositoryService {
   // }
 
   async create(createRepositoryDto: CreateRepositoryDto) {
-    const { text, type } = createRepositoryDto;
+    console.log(createRepositoryDto.category);
+
+    const { text, type, category } = createRepositoryDto; // category add kiya
+
     if (!text || !type) throw new NotFoundException('Text or type missing');
 
-    const repo = this.repository.create({ text, type });
+    // category optional ho sakta hai, type aur text required hai
+    const repo = this.repository.create({ text, type, category });
     return await this.repository.save(repo);
   }
-  async findAll(type?: string) {
-    if (type) {
-      return await this.repository.find({ where: { type } });
-    }
-    return await this.repository.find();
+
+  // async create(createRepositoryDto: CreateRepositoryDto) {
+  //   const { text, type } = createRepositoryDto;
+  //   if (!text || !type) throw new NotFoundException('Text or type missing');
+
+  //   const repo = this.repository.create({ text, type });
+  //   return await this.repository.save(repo);
+  // }
+  async findAll(type?: string, category?: string) {
+    const where: any = {};
+    if (type) where.type = type;
+    if (category) where.category = category;
+
+    return await this.repository.find({ where });
   }
 
   async update(id: number, value: string) {

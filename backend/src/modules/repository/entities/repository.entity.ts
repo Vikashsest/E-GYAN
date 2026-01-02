@@ -7,4 +7,6 @@ export class Repositories {
   type: string;
   @Column()
   text: string;
+  @Column({ nullable: true })
+  category: string;
 }
