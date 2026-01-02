@@ -71,10 +71,6 @@
 
 // export default ClassList;
 
-
-
-
-
 // import { useEffect, useState } from "react";
 // import { useNavigate, useLocation } from "react-router-dom";
 // import StudentNavbar from "./StudentNavbar";
@@ -166,23 +162,17 @@
 
 // export default ClassList;
 
-
-
-
-
-
-
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import StudentNavbar from "./StudentNavbar";
 import StudentSidebar from "./StudentSidebar";
-import { fetchEducationLevels } from "../../apiServices/booksApi";
+import { getRepository } from "../../apiServices/apiRepository";
 import { FaBookReader, FaArrowLeft } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
 import { useLoader } from "../../LoaderContext";
 
 const ClassList = () => {
-  const {setLoading} = useLoader()
+  const { setLoading } = useLoader();
   const [classes, setClasses] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
@@ -204,7 +194,7 @@ const ClassList = () => {
   //         const uniqueClasses = [
   //           ...new Set(filteredBooks.map((book) => book.educationLevel)),
   //         ].filter(Boolean);
-          
+
   //         setClasses(uniqueClasses.map((cls) => ({ name: cls })));
   //       } else {
   //         // ✅ Career Development / Research ke liye ek hi card dikhao
@@ -218,25 +208,30 @@ const ClassList = () => {
   // }, [category, navigate]);
 
   useEffect(() => {
-  async function loadClasses() {
-    try {
-      setLoading(true)
-      if (category === "School Education" || category === "Higher Education") {
-       
-        const levels = await fetchEducationLevels();
-        setClasses(levels.map((cls) => ({ name: cls })));
-      } else {
+    async function loadClasses() {
+      try {
+        setLoading(true);
+
+        if (!category) return;
+
+        // Backend se fetch karo type = "level" & category = selected category
+        const levels = await getRepository("level", category);
+
+        if (levels && levels.length > 0) {
+          setClasses(levels.map((cls) => ({ name: cls.text })));
+        } else {
+          setClasses([{ name: category }]);
+        }
+      } catch (error) {
+        console.error("Failed to load classes:", error);
         setClasses([{ name: category }]);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Failed to load classes:", error);
     }
-    finally{
-      setLoading(false)
-    }
-  }
-  loadClasses();
-}, [category, navigate]);
+
+    loadClasses();
+  }, [category, navigate]);
 
   return (
     <div className="flex min-h-screen bg-darkBg text-primaryWhite relative">
@@ -268,7 +263,6 @@ const ClassList = () => {
 
         <StudentNavbar />
 
-
         {/* Back Button */}
         <button
           onClick={() => navigate(-1)}
@@ -285,7 +279,10 @@ const ClassList = () => {
               <div
                 key={index}
                 onClick={() => {
-                  if (category === "Career Development" || category === "Research") {
+                  if (
+                    category === "Career Development" ||
+                    category === "Research"
+                  ) {
                     navigate(`/books?category=${category}`);
                   } else {
                     navigate(`/subjects/${cls.name}?category=${category}`);
@@ -307,4 +304,3 @@ const ClassList = () => {
 };
 
 export default ClassList;
-

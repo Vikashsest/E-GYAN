@@ -1,5 +1,3 @@
-
-
 import { useEffect, useState, useRef } from "react";
 import Sidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
@@ -15,7 +13,6 @@ import {
 import fetechSubjects from "../../apiServices/booksApi";
 import { subjectWiseBooks } from "../../apiServices/booksApi";
 
-
 export default function RepositoryManagement() {
   const [resourceTypes, setResourceTypes] = useState([]);
   const [levels, setLevels] = useState([]);
@@ -28,7 +25,6 @@ export default function RepositoryManagement() {
   const [subjectsLoaded, setSubjectsLoaded] = useState(false);
   const [filteredBooks, setFilteredBooks] = useState([]);
   const [booksLoaded, setBooksLoaded] = useState(false);
-
 
   const [selected, setSelected] = useState({
     resourceType: "",
@@ -44,10 +40,7 @@ export default function RepositoryManagement() {
   useEffect(() => {
     setLoading(true);
 
-    Promise.all([
-      getRepository("resource"),
-      getRepository("language"),
-    ])
+    Promise.all([getRepository("resource"), getRepository("language")])
       .then(([resources, languages]) => {
         setResourceTypes(resources);
         setLanguages(languages);
@@ -56,7 +49,8 @@ export default function RepositoryManagement() {
   }, []);
 
   const handleCategoryClick = async () => {
-    if (texts.length === 0) { // prevent multiple fetches
+    if (texts.length === 0) {
+      // prevent multiple fetches
       setLoading(true);
       try {
         const categories = await getRepository("category");
@@ -70,51 +64,53 @@ export default function RepositoryManagement() {
     }
   };
 
-
+  // const handleLevelClick = async () => {
+  //   if (selected.category === "School Education" && !levelsLoaded) {
+  //     setLoading(true);
+  //     try {
+  //       const data = await getRepository("level"); // fetch level API
+  //       setLevels(data);
+  //       setLevelsLoaded(true); // mark as loaded
+  //     } catch (err) {
+  //       console.error("Failed to fetch levels:", err);
+  //       alert("Failed to load levels");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }
+  // };
   const handleLevelClick = async () => {
-    if (selected.category === "School Education" && !levelsLoaded) {
-      setLoading(true);
-      try {
-        const data = await getRepository("level"); // fetch level API
-        setLevels(data);
-        setLevelsLoaded(true); // mark as loaded
-      } catch (err) {
-        console.error("Failed to fetch levels:", err);
-        alert("Failed to load levels");
-      } finally {
-        setLoading(false);
-      }
+    if (!selected.category || levelsLoaded) return;
+
+    setLoading(true);
+    try {
+      const data = await getRepository("level", selected.category);
+      setLevels(data);
+      setLevelsLoaded(true);
+    } catch (err) {
+      console.error("Failed to fetch levels:", err);
+      alert("Failed to load levels");
+    } finally {
+      setLoading(false);
     }
   };
-
-
   const handleSubjectClick = async () => {
-    if (
-      selected.category === "School Education" &&
-      selected.level &&
-      !subjectsLoaded
-    ) {
-      setLoading(true);
-      try {
-        const data = await fetechSubjects(selected.level);
+    if (!selected.category || !selected.level) return;
+    if (subjectsLoaded) return;
 
-        // 🔥 STRING ARRAY → OBJECT ARRAY
-        const formattedSubjects = data.map((subject, index) => ({
-          id: index + 1,      // temporary id
-          text: subject,      // dropdown text
-        }));
-
-        setSubjects(formattedSubjects);
-        setSubjectsLoaded(true);
-      } catch (err) {
-        console.error("Failed to fetch subjects:", err);
-        alert("Failed to load subjects");
-      } finally {
-        setLoading(false);
-      }
+    setLoading(true);
+    try {
+      // Fetch subjects from repository API
+      const data = await getRepository("subject", selected.category);
+      setSubjects(data);
+      setSubjectsLoaded(true);
+    } catch (err) {
+      console.error("Failed to fetch subjects:", err);
+      alert("Failed to load subjects");
+    } finally {
+      setLoading(false);
     }
   };
-
 
   const handleBooksClick = async () => {
     if (
@@ -148,7 +144,6 @@ export default function RepositoryManagement() {
     }
   };
 
-
   const handleCategoryChange = (value) => {
     setSelected((prev) => ({
       ...prev,
@@ -163,12 +158,11 @@ export default function RepositoryManagement() {
       setLevels([]);
       setLevelsLoaded(false);
 
-      setSubjects([]);          // 🔥 IMPORTANT
+      setSubjects([]); // 🔥 IMPORTANT
       setSubjectsLoaded(false);
 
       setFilteredBooks([]);
       setBooksLoaded(false);
-
     }
   };
 
@@ -180,17 +174,12 @@ export default function RepositoryManagement() {
       book: "",
     }));
 
-    setSubjects([]);          // 🔥 old subjects clear
+    setSubjects([]); // 🔥 old subjects clear
     setSubjectsLoaded(false);
 
     setFilteredBooks([]);
     setBooksLoaded(false);
-
   };
-
-
-
-
 
   const handleSubjectChange = (value) => {
     setSelected((prev) => ({
@@ -204,32 +193,46 @@ export default function RepositoryManagement() {
     setBooksLoaded(false);
   };
 
-
-
   const addValue = async (field) => {
     if (!newValue.trim()) return alert("Enter a value first!");
+
     try {
-      const newItem = await addRepositoryValue(newValue, field); // send type
+      // 🔥 category decide karo
+      let categoryToSend = null;
+
+      // category ke andar sab kuch aata hai (level, subject, book)
+      if (field !== "category") {
+        categoryToSend = selected.category;
+      }
+
+      const newItem = await addRepositoryValue(newValue, field, categoryToSend);
+
       switch (field) {
         case "category":
           setTexts((prev) => [...prev, newItem]);
           break;
+
         case "level":
           setLevels((prev) => [...prev, newItem]);
           break;
+
         case "subject":
           setSubjects((prev) => [...prev, newItem]);
           break;
+
         case "book":
           setFilteredBooks((prev) => [...prev, newItem]);
           break;
+
         case "resource":
           setResourceTypes((prev) => [...prev, newItem]);
           break;
+
         case "language":
           setLanguages((prev) => [...prev, newItem]);
           break;
       }
+
       setNewValue("");
       alert("Added successfully!");
     } catch (err) {
@@ -237,6 +240,38 @@ export default function RepositoryManagement() {
       alert("Failed to add value");
     }
   };
+
+  // const addValue = async (field) => {
+  //   if (!newValue.trim()) return alert("Enter a value first!");
+  //   try {
+  //     const newItem = await addRepositoryValue(newValue, field); // send type
+  //     switch (field) {
+  //       case "category":
+  //         setTexts((prev) => [...prev, newItem]);
+  //         break;
+  //       case "level":
+  //         setLevels((prev) => [...prev, newItem]);
+  //         break;
+  //       case "subject":
+  //         setSubjects((prev) => [...prev, newItem]);
+  //         break;
+  //       case "book":
+  //         setFilteredBooks((prev) => [...prev, newItem]);
+  //         break;
+  //       case "resource":
+  //         setResourceTypes((prev) => [...prev, newItem]);
+  //         break;
+  //       case "language":
+  //         setLanguages((prev) => [...prev, newItem]);
+  //         break;
+  //     }
+  //     setNewValue("");
+  //     alert("Added successfully!");
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert("Failed to add value");
+  //   }
+  // };
 
   const deleteValue = async (field, id) => {
     if (!confirm(`Delete this item?`)) return;
@@ -274,7 +309,10 @@ export default function RepositoryManagement() {
 
       <main className="flex-1 lg:pl-[280px] py-6 px-5 w-full">
         <div className="lg:hidden px-4 mb-4">
-          <button onClick={() => setIsSidebarOpen(true)} className="text-primaryWhite">
+          <button
+            onClick={() => setIsSidebarOpen(true)}
+            className="text-primaryWhite"
+          >
             <FiMenu size={28} />
           </button>
         </div>
@@ -301,7 +339,6 @@ export default function RepositoryManagement() {
               onClick={handleCategoryClick} // ✅ new prop
             />
 
-
             <DropdownWithAdd
               title="Education Level"
               items={levels}
@@ -315,9 +352,8 @@ export default function RepositoryManagement() {
               activeField={activeField}
               setActiveField={setActiveField}
               disabled={!selected.category}
-              onClick={handleLevelClick}  // 🔥 lazy load only for School Education
+              onClick={handleLevelClick} // 🔥 lazy load only for School Education
             />
-
 
             <DropdownWithAdd
               title="Subject"
@@ -332,9 +368,8 @@ export default function RepositoryManagement() {
               activeField={activeField}
               setActiveField={setActiveField}
               disabled={!selected.level}
-              onClick={handleSubjectClick}   // 🔥
+              onClick={handleSubjectClick} // 🔥
             />
-
 
             <DropdownWithAdd
               title="Books"
@@ -349,9 +384,8 @@ export default function RepositoryManagement() {
               activeField={activeField}
               setActiveField={setActiveField}
               disabled={!selected.subject}
-              onClick={handleBooksClick}   // 🔥 API call here
+              onClick={handleBooksClick} // 🔥 API call here
             />
-
 
             {/* Language */}
             <DropdownWithAdd
@@ -382,7 +416,6 @@ export default function RepositoryManagement() {
               activeField={activeField}
               setActiveField={setActiveField}
             />
-
           </div>
         </div>
       </main>
@@ -403,7 +436,7 @@ export function DropdownWithAdd({
   setActiveField,
   onDelete,
   disabled = false,
-  onClick
+  onClick,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
@@ -465,10 +498,11 @@ export function DropdownWithAdd({
       <label className="block mb-2 font-semibold text-gray300">{title}</label>
 
       <div
-        className={`p-3 rounded-lg cursor-pointer flex justify-between items-center shadow-lg ${disabled
-          ? "bg-gray700 cursor-not-allowed"
-          : "bg-gradient-to-r from-purple500 to-indigo600  transition-colors"
-          }`}
+        className={`p-3 rounded-lg cursor-pointer flex justify-between items-center shadow-lg ${
+          disabled
+            ? "bg-gray700 cursor-not-allowed"
+            : "bg-gradient-to-r from-purple500 to-indigo600  transition-colors"
+        }`}
         onClick={() => {
           if (!disabled) {
             setIsOpen(!isOpen);
@@ -547,6 +581,3 @@ export function DropdownWithAdd({
     </div>
   );
 }
-
-
-

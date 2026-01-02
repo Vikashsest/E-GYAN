@@ -1,4 +1,3 @@
-
 // import { useEffect, useState } from "react";
 // import FlipbookPDFViewer from "./FlipbookPDFViewer";
 // import { FaEdit, FaTrash, FaExpand, FaCompress } from "react-icons/fa";
@@ -1050,13 +1049,6 @@
 //   );
 // }
 
-
-
-
-
-
-
-
 import { useEffect, useState } from "react";
 import FlipbookPDFViewer from "./FlipbookPDFViewer";
 import { FaEdit, FaTrash, FaExpand, FaCompress } from "react-icons/fa";
@@ -1161,23 +1153,24 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
 
     loadCategories();
   }, []);
-
   useEffect(() => {
     const loadFormOptions = async () => {
       try {
-        const [categories, subjects, languages, levels] = await Promise.all([
-          getRepository("category"),
-          getRepository("subject"),
-          getRepository("books"),
-          getRepository("language"),
-          getRepository("level"),
-        ]);
+        const [categoryData, subjectData, bookData, languageData, levelData] =
+          await Promise.all([
+            getRepository("category"), // category type
+            getRepository("subject"), // subject type
+            getRepository("book"), // book type
+            getRepository("language"), // language type
+            getRepository("level"), // level type
+          ]);
 
-        setCategories(categories.map((c) => c.text));
-        setSubjects(subjects.map((s) => s.text));
-        setBooks(books.map((s) => s.text));
-        setLanguages(languages.map((l) => l.text));
-        setEducationLevels(levels.map((l) => l.text));
+        // Map only text for dropdowns
+        setCategories(categoryData.map((c) => c.text));
+        setSubjects(subjectData.map((s) => s.text));
+        setBooks(bookData.map((b) => b.text));
+        setLanguages(languageData.map((l) => l.text));
+        setEducationLevels(levelData.map((l) => l.text));
       } catch (err) {
         console.error("Failed to load form options:", err);
 
@@ -1191,6 +1184,36 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
 
     loadFormOptions();
   }, []);
+
+  // useEffect(() => {
+  //   const loadFormOptions = async () => {
+  //     try {
+  //       const [categories, subjects, languages, levels] = await Promise.all([
+  //         getRepository("category"),
+  //         getRepository("subject"),
+  //         getRepository("books"),
+  //         getRepository("language"),
+  //         getRepository("level"),
+  //       ]);
+
+  //       setCategories(categories.map((c) => c.text));
+  //       setSubjects(subjects.map((s) => s.text));
+  //       setBooks(books.map((s) => s.text));
+  //       setLanguages(languages.map((l) => l.text));
+  //       setEducationLevels(levels.map((l) => l.text));
+  //     } catch (err) {
+  //       console.error("Failed to load form options:", err);
+
+  //       setCategories([]);
+  //       setSubjects([]);
+  //       setBooks([]);
+  //       setLanguages([]);
+  //       setEducationLevels([]);
+  //     }
+  //   };
+
+  //   loadFormOptions();
+  // }, []);
 
   useEffect(() => {
     async function loadInitialData() {
@@ -1694,7 +1717,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                         }
                         className="border border-gray400 rounded px-2 py-1 text-primaryBlack w-full"
                       >
-                        <option value="">Select Class</option>
+                        <option value="">Select Education Level</option>
                         {educationLevels.map((level, idx) => (
                           <option key={idx} value={level}>
                             {level}

@@ -1,14 +1,28 @@
 const API_URL = import.meta.env.VITE_API_URL;
 
-export const getRepository = async (type) => {
+// export const getRepository = async (type) => {
+//   try {
+//     const url = type
+//       ? `${API_URL}/repository?type=${type}`
+//       : `${API_URL}/repository`;
+
+//     const res = await fetch(url, { credentials: "include" });
+//     if (!res.ok) throw new Error("Failed to fetch repository");
+
+//     return await res.json();
+//   } catch (err) {
+//     console.error("getRepository error:", err);
+//     throw err;
+//   }
+// };
+// GET /repository?type=level&category=School Education
+export const getRepository = async (type, category) => {
   try {
-    const url = type
-      ? `${API_URL}/repository?type=${type}`
-      : `${API_URL}/repository`;
+    let url = `${API_URL}/repository?type=${type}`;
+    if (category) url += `&category=${encodeURIComponent(category)}`;
 
     const res = await fetch(url, { credentials: "include" });
     if (!res.ok) throw new Error("Failed to fetch repository");
-
     return await res.json();
   } catch (err) {
     console.error("getRepository error:", err);
@@ -16,13 +30,13 @@ export const getRepository = async (type) => {
   }
 };
 
-export const addRepositoryValue = async (text, type) => {
+export const addRepositoryValue = async (text, type, category) => {
   try {
     const res = await fetch(`${API_URL}/repository`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify({ text, type }),
+      body: JSON.stringify({ text, type, category }),
     });
 
     if (!res.ok) throw new Error("Failed to add value");
