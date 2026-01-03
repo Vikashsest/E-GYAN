@@ -149,7 +149,7 @@ function ConcernList() {
                   key={item.id}
                   className="border-b border-gray700 hover:bg-hoverGray"
                 >
-                  <td className="px-6 py-4">{item.student?.name}</td>
+                  <td className="px-6 py-4">{item.student?.username}</td>
                   <td className="px-6 py-4">{item.subject}</td>
                   <td className="px-6 py-4">
                     <span
