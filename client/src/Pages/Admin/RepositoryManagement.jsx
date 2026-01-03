@@ -199,8 +199,6 @@ export default function RepositoryManagement() {
     try {
       // 🔥 category decide karo
       let categoryToSend = null;
-
-      // category ke andar sab kuch aata hai (level, subject, book)
       if (field !== "category") {
         categoryToSend = selected.category;
       }
@@ -371,7 +369,7 @@ export default function RepositoryManagement() {
               onClick={handleSubjectClick} // 🔥
             />
 
-            <DropdownWithAdd
+            {/* <DropdownWithAdd
               title="Books"
               items={filteredBooks}
               value={selected.book}
@@ -385,7 +383,7 @@ export default function RepositoryManagement() {
               setActiveField={setActiveField}
               disabled={!selected.subject}
               onClick={handleBooksClick} // 🔥 API call here
-            />
+            /> */}
 
             {/* Language */}
             <DropdownWithAdd
