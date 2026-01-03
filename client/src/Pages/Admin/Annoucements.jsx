@@ -174,14 +174,6 @@
 //   );
 // }
 
-
-
-
-
-
-
-
-
 import { useState, useEffect } from "react";
 import Sidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
@@ -191,17 +183,20 @@ import {
   getAnnouncements,
   addAnnouncement,
   updateAnnouncement,
-  deleteAnnouncement
+  deleteAnnouncement,
 } from "../../apiServices/announcementsApi";
 import { confirmDelete } from "../../utils/confirmDelete";
 
 export default function AdminAnnouncements() {
-  const { setLoading } = useLoader()
+  const { setLoading } = useLoader();
   const [announcements, setAnnouncements] = useState([]);
   const [newAnnouncement, setNewAnnouncement] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [editModal, setEditModal] = useState({ open: false, id: null, text: "", });
-
+  const [editModal, setEditModal] = useState({
+    open: false,
+    id: null,
+    text: "",
+  });
 
   useEffect(() => {
     async function loadData() {
@@ -218,7 +213,6 @@ export default function AdminAnnouncements() {
     loadData();
   }, []);
 
-
   // 👉 Add Announcement API
   const handleAddAnnouncement = async (e) => {
     e.preventDefault();
@@ -228,24 +222,25 @@ export default function AdminAnnouncements() {
     const created = await addAnnouncement(payload);
 
     setAnnouncements([created, ...announcements]);
+
     setNewAnnouncement("");
+    const data = await getAnnouncements();
+    setAnnouncements(data);
   };
 
   const handleDelete = async (id) => {
-    const ok = await confirmDelete("Are you sure you want to delete this announcement?");
+    const ok = await confirmDelete(
+      "Are you sure you want to delete this announcement?"
+    );
     if (!ok) return;
 
     await deleteAnnouncement(id);
     setAnnouncements(announcements.filter((ann) => ann.id !== id));
   };
 
-
-  // 👉 Open Edit Modal
   const openEditModal = (ann) => {
     setEditModal({ open: true, id: ann.id, text: ann.text });
   };
-
-  // 👉 Update API
   const handleUpdate = async (e) => {
     e.preventDefault();
 
@@ -256,10 +251,10 @@ export default function AdminAnnouncements() {
     const updated = await updateAnnouncement(editModal.id, payload);
 
     setAnnouncements(
-      announcements.map((ann) =>
-        ann.id === updated.id ? updated : ann
-      )
+      announcements.map((ann) => (ann.id === updated.id ? updated : ann))
     );
+    const data = await getAnnouncements();
+    setAnnouncements(data);
 
     setEditModal({ open: false, id: null, text: "" });
   };
@@ -268,9 +263,11 @@ export default function AdminAnnouncements() {
     <div className="flex min-h-screen bg-darkBg text-primaryWhite">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <main className="flex-1 lg:pl-[280px] py-6 px-5 w-full">
-
         <div className="lg:hidden px-4 mb-4">
-          <button onClick={() => setIsSidebarOpen(true)} className="text-primaryWhite">
+          <button
+            onClick={() => setIsSidebarOpen(true)}
+            className="text-primaryWhite"
+          >
             <FiMenu size={28} />
           </button>
         </div>
@@ -279,12 +276,17 @@ export default function AdminAnnouncements() {
 
         <div className="p-2 mb-5">
           <h1 className="text-3xl font-bold mb-2">Announcements</h1>
-          <p className="text-gray-400">Manage all library announcements here.</p>
+          <p className="text-gray-400">
+            Manage all library announcements here.
+          </p>
         </div>
 
         {/* Add Announcement */}
         <section className="mb-8 bg-cardBg p-5 rounded-lg shadow">
-          <form onSubmit={handleAddAnnouncement} className="flex flex-col md:flex-row gap-2 md:items-center">
+          <form
+            onSubmit={handleAddAnnouncement}
+            className="flex flex-col md:flex-row gap-2 md:items-center"
+          >
             <input
               type="text"
               value={newAnnouncement}
@@ -301,7 +303,10 @@ export default function AdminAnnouncements() {
               />
               Important
             </label> */}
-            <button type="submit" className="bg-primaryBlue hover:bg-blue-700 px-5 py-3 rounded font-semibold">
+            <button
+              type="submit"
+              className="bg-primaryBlue hover:bg-blue-700 px-5 py-3 rounded font-semibold"
+            >
               Add
             </button>
           </form>
@@ -310,20 +315,31 @@ export default function AdminAnnouncements() {
         {/* Announcements List */}
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {announcements.map((ann) => (
-            <div key={ann.id} className="bg-cardBg p-5 rounded-lg shadow hover:shadow-xl transition relative">
+            <div
+              key={ann.id}
+              className="bg-cardBg p-5 rounded-lg shadow hover:shadow-xl transition relative"
+            >
               {/* {ann.important && (
                 <span className="absolute top-2 right-3 bg-primaryBlue text-primaryWhite px-2 py-1 text-xs rounded-full font-semibold">
                   IMPORTANT
                 </span>
               )} */}
               <p className="text-gray-200 mb-2">{ann.text}</p>
-              <p className="text-gray-400 text-sm">📅 {new Date(ann.createdAt).toLocaleDateString()}</p>
+              <p className="text-gray-400 text-sm">
+                📅 {new Date(ann.createdAt).toLocaleDateString()}
+              </p>
 
               <div className="mt-3 flex gap-2">
-                <button onClick={() => openEditModal(ann)} className="bg-primaryOrange hover:bg-yellow-700 px-3 py-1 rounded text-primaryWhite text-sm">
+                <button
+                  onClick={() => openEditModal(ann)}
+                  className="bg-primaryOrange hover:bg-yellow-700 px-3 py-1 rounded text-primaryWhite text-sm"
+                >
                   Edit
                 </button>
-                <button onClick={() => handleDelete(ann.id)} className="bg-primaryRed hover:bg-red-700 px-3 py-1 rounded text-primaryWhite text-sm">
+                <button
+                  onClick={() => handleDelete(ann.id)}
+                  className="bg-primaryRed hover:bg-red-700 px-3 py-1 rounded text-primaryWhite text-sm"
+                >
                   Delete
                 </button>
               </div>
@@ -340,7 +356,9 @@ export default function AdminAnnouncements() {
               <form onSubmit={handleUpdate} className="flex flex-col gap-3">
                 <textarea
                   value={editModal.text}
-                  onChange={(e) => setEditModal({ ...editModal, text: e.target.value })}
+                  onChange={(e) =>
+                    setEditModal({ ...editModal, text: e.target.value })
+                  }
                   className="w-full p-3 border border-gray-400 rounded"
                 />
 
@@ -357,13 +375,18 @@ export default function AdminAnnouncements() {
                 <div className="flex justify-end gap-4 mt-2">
                   <button
                     type="button"
-                    onClick={() => setEditModal({ open: false, id: null, text: "" })}
+                    onClick={() =>
+                      setEditModal({ open: false, id: null, text: "" })
+                    }
                     className="border border-primaryBlack px-4 py-2 rounded"
                   >
                     Cancel
                   </button>
 
-                  <button type="submit" className="bg-primaryBlue hover:bg-blue-700 px-4 py-2 rounded text-primaryWhite">
+                  <button
+                    type="submit"
+                    className="bg-primaryBlue hover:bg-blue-700 px-4 py-2 rounded text-primaryWhite"
+                  >
                     Update
                   </button>
                 </div>
