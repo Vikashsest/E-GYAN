@@ -96,6 +96,7 @@ export class StudentService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
+    console.log('concern', user);
     const concern = this.concernRepo.create({ ...dto, student: user });
     return await this.concernRepo.save(concern);
   }
