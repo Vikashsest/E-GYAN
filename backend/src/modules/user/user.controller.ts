@@ -78,7 +78,11 @@ export class UserController {
   fetchRequests() {
     return this.userService.fetchUserRequest();
   }
-
+  @Delete(':id')
+  async deleteRequest(@Param('id') id: number) {
+    console.log('DELETE REQUEST ID:', id);
+    return this.userService.deleteRequest(id);
+  }
   @Delete('delete-role/:id')
   @Roles(UserRole.ADMIN, UserRole.TEACHER, UserRole.PRINCIPAL)
   async deleteRole(@Param('id') id: number) {
