@@ -93,7 +93,7 @@ function ConcernList() {
 
   const handleStatusChange = async (requestId, newStatus) => {
     try {
-      const res = await fetch(`${API_URL}/user/request/${requestId}/status`, {
+      const res = await fetch(`${API_URL}/user/${requestId}/status`, {
         method: "PATCH",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
