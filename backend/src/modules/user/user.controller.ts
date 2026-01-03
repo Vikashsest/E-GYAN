@@ -78,6 +78,14 @@ export class UserController {
   fetchRequests() {
     return this.userService.fetchUserRequest();
   }
+  @Patch(':id/status')
+  updateStatus(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('status') status: 'pending' | 'resolved',
+  ) {
+    return this.userService.updateRequestStatus(id, status);
+  }
+
   @Delete(':id')
   async deleteRequest(@Param('id') id: number) {
     console.log('DELETE REQUEST ID:', id);

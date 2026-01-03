@@ -195,25 +195,21 @@ export class UserService {
       throw new InternalServerErrorException('Failed to update request');
     }
   }
-  async updateRequest(requestId: number, message: string) {
-    try {
-      const request = await this.requestRepository.findOne({
-        where: { id: requestId },
-      });
+  async updateRequestStatus(requestId: number, status: 'pending' | 'resolved') {
+    const request = await this.requestRepository.findOne({
+      where: { id: requestId },
+    });
 
-      if (!request) {
-        throw new NotFoundException(`Request not found with id ${requestId}`);
-      }
-
-      if (!message || message.trim() === '') {
-        throw new BadRequestException('Message is required');
-      }
-
-      request.message = message;
-
-      return await this.requestRepository.save(request);
-    } catch (error) {
-      throw new InternalServerErrorException('Failed to update request');
+    if (!request) {
+      throw new NotFoundException(`Request not found with id ${requestId}`);
     }
+
+    if (!status || !['pending', 'resolved'].includes(status)) {
+      throw new BadRequestException('Invalid status');
+    }
+
+    request.status = status;
+
+    return await this.requestRepository.save(request);
   }
 }
