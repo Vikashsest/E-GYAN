@@ -19,7 +19,6 @@ function ConcernList() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Concerns
         const resConcerns = await fetch(`${API_URL}/admin/concerns`, {
           credentials: "include",
           method: "GET",
@@ -27,8 +26,6 @@ function ConcernList() {
         });
         if (!resConcerns.ok) throw new Error("Failed to fetch concerns");
         setConcerns(await resConcerns.json());
-
-        // Requests
         const resRequests = await fetch(`${API_URL}/user/requests`, {
           credentials: "include",
           method: "GET",
@@ -103,11 +100,11 @@ function ConcernList() {
       if (!res.ok) throw new Error("Failed to update status");
 
       setRequests((prev) =>
-        prev.map((r) => (r._id === requestId ? { ...r, status: newStatus } : r))
+        prev.map((r) => (r.id === requestId ? { ...r, status: newStatus } : r))
       );
+
       toast.success("Status updated!");
     } catch (error) {
-      console.error(error);
       toast.error("Failed to update status");
     }
   };
