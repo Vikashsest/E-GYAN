@@ -11,7 +11,7 @@ import { User, UserRole } from '../user/entities/user.entity';
 import { Book } from '../book/entities/book.entity';
 import { StudentActivity } from './entities/student-activity.entity';
 import { StudentStatsHelper } from '../../common/utils/Helper/studentStats';
-import { Concern } from './entities/raise-concern.entity';
+import { Concern, ConcernStatus } from './entities/raise-concern.entity';
 import { CreateConcernDto } from './dto/raise-concern.dto';
 import { BookProgress } from '../book/entities/book-progress.entity';
 import { ResourceType, ActivityType } from './entities/student-activity.entity';
@@ -1020,5 +1020,20 @@ export class StudentService {
 
     await this.concernRepo.delete(id);
     return { message: 'Concern deleted successfully' };
+  }
+
+  async updateConcern(id: number, status: ConcernStatus) {
+    const concern = await this.concernRepo.findOne({ where: { id } });
+    if (!concern) {
+      throw new NotFoundException('Concern not found with this id');
+    }
+    if (!Object.values(ConcernStatus).includes(status)) {
+      throw new BadRequestException('Invalid status');
+    }
+
+    concern.status = status;
+    await this.concernRepo.save(concern);
+
+    return concern;
   }
 }
