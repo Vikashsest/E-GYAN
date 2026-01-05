@@ -50,7 +50,6 @@ function ConcernList() {
     }
   };
 
-  // DELETE CONCERN
   const deleteConcern = async (id) => {
     if (!id) return toast.error("Invalid Concern ID");
 
@@ -101,6 +100,26 @@ function ConcernList() {
 
       setRequests((prev) =>
         prev.map((r) => (r.id === requestId ? { ...r, status: newStatus } : r))
+      );
+
+      toast.success("Status updated!");
+    } catch (error) {
+      toast.error("Failed to update status");
+    }
+  };
+  const handleConcernStatus = async (requestId, newStatus) => {
+    try {
+      const res = await fetch(`${API_URL}/students/${requestId}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (!res.ok) throw new Error("Failed to update status");
+
+      setConcerns((prev) =>
+        prev.map((c) => (c.id === requestId ? { ...c, status: newStatus } : c))
       );
 
       toast.success("Status updated!");
@@ -165,16 +184,25 @@ function ConcernList() {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span
-                      className={`text-sm font-medium ${
+                    <select
+                      className={`bg-gray700 text-primaryWhite px-2 py-1 rounded${
                         item.status === "Resolved"
                           ? "text-lightGreen"
-                          : "text-lightYellow"
+                          : item.status === "Pending"
+                          ? "text-lightYellow"
+                          : "text-lightRed"
                       }`}
+                      value={item.status.toLowerCase()}
+                      onChange={(e) =>
+                        handleConcernStatus(item.id, e.target.value)
+                      }
                     >
-                      {item.status}
-                    </span>
+                      <option value="pending">Pending</option>
+                      <option value="rejected">Reject</option>
+                      <option value="resolved">Resolved</option>
+                    </select>
                   </td>
+
                   <td className="px-6 py-4">
                     {new Date(item.createdAt).toLocaleDateString("en-IN")}
                   </td>
