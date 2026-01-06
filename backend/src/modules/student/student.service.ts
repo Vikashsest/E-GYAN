@@ -648,19 +648,62 @@ export class StudentService {
     return `${h}h ${m}m`;
   }
 
+  // async getRecentBooks(userId: number) {
+  //   const activities = await this.studentActivityRepo.find({
+  //     where: { user: { id: userId } },
+  //     relations: ['book', 'chapter'],
+  //     loadEagerRelations: true,
+  //   });
+
+  //   const recentBookActivities = activities
+  //     .filter((a) => a.book)
+  //     .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+  //     .slice(0, 5);
+
+  //   return recentBookActivities.map((a) => {
+  //     const totalPages = a.chapter?.totalPages ?? a.book?.totalPages ?? 0;
+  //     const pagesRead = a.pageNumber ?? 0;
+
+  //     const progress =
+  //       totalPages > 0
+  //         ? Math.min(100, Math.round((pagesRead / totalPages) * 100))
+  //         : 0;
+
+  //     return {
+  //       id: a.book?.id,
+  //       bookName: a.resourceTitle,
+  //       subject: a.book?.subject,
+  //       type: a.resourceType,
+  //       lastAccessed: a.createdAt,
+  //       progress,
+  //     };
+  //   });
+  // }
+
   async getRecentBooks(userId: number) {
     const activities = await this.studentActivityRepo.find({
       where: { user: { id: userId } },
       relations: ['book', 'chapter'],
-      loadEagerRelations: true,
     });
 
-    const recentBookActivities = activities
+    // latest first
+    const sorted = activities
       .filter((a) => a.book)
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-      .slice(0, 5);
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
-    return recentBookActivities.map((a) => {
+    // unique books (latest activity only)
+    const uniqueMap = new Map<number, any>();
+
+    for (const a of sorted) {
+      if (!uniqueMap.has(a.book.id)) {
+        uniqueMap.set(a.book.id, a);
+      }
+      if (uniqueMap.size === 5) break;
+    }
+
+    const uniqueActivities = Array.from(uniqueMap.values());
+
+    return uniqueActivities.map((a) => {
       const totalPages = a.chapter?.totalPages ?? a.book?.totalPages ?? 0;
       const pagesRead = a.pageNumber ?? 0;
 
@@ -670,9 +713,9 @@ export class StudentService {
           : 0;
 
       return {
-        id: a.book?.id,
+        id: a.book.id,
         bookName: a.resourceTitle,
-        subject: a.book?.subject,
+        subject: a.book.subject,
         type: a.resourceType,
         lastAccessed: a.createdAt,
         progress,

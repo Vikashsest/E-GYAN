@@ -176,13 +176,10 @@ export class AdminService {
       });
       return normalized;
     });
-
-    console.log('Parsed Excel Data:', data);
-
     const usersToInsert: User[] = [];
     const skippedRows: any[] = [];
 
-    const validRoles = ['admin', 'teacher', 'student'];
+    const validRoles = ['admin', 'teacher', 'student', 'principal'];
 
     for (const row of data) {
       const r = row as {
@@ -200,29 +197,18 @@ export class AdminService {
         skippedRows.push({ row, reason: 'Missing required field' });
         continue;
       }
-
-      // Convert to lowercase + trim
       username = username.toString().trim();
-      // email = email.toString().trim().toLowerCase();
       role = role.toString().trim().toLowerCase();
-      // subject = subject ? subject.toString().trim() : null;
-
       if (!validRoles.includes(role)) {
         skippedRows.push({ row, reason: 'Invalid role' });
         continue;
       }
-
-      // Password hash
       const hashedPassword = await bcrypt.hash(password.toString(), 10);
-
-      // DOB conversion
       let dobDate: Date | null = null;
       if (dob) {
         const tempDate = new Date(dob);
         dobDate = isNaN(tempDate.getTime()) ? null : tempDate;
       }
-
-      // isActive conversion
       const isActiveVal =
         isactive === true ||
         isactive === 'TRUE' ||
@@ -233,7 +219,7 @@ export class AdminService {
 
       const user: User = this.userRepo.create({
         username,
-        email: `${username}@example.com`,
+        email: `${username}@gmail.com`,
         password: hashedPassword,
         role: role as any,
         subject,
