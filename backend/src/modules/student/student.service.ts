@@ -18,7 +18,7 @@ import { ResourceType, ActivityType } from './entities/student-activity.entity';
 import { LogActivityDto } from './dto/log.acitvity.dto';
 import { Announcement } from './entities/announcement.entity';
 import { Chapter } from '../book/entities/chapter.entity';
-
+import fetch from 'node-fetch';
 @Injectable()
 export class StudentService {
   constructor(
@@ -1021,14 +1021,31 @@ export class StudentService {
   }
 
   async getAnnouncements(): Promise<any[]> {
-    const announcements = await this.announcementRepo.find({
+    const localAnnouncements = await this.announcementRepo.find({
       where: { isActive: true },
       order: { createdAt: 'DESC' },
       take: 5,
     });
+    let externalAnnouncements: any[] = [];
+    try {
+      const response = await fetch('http://localhost:5000/annoucements');
 
-    return announcements.map((a) => ({
+      if (response.ok) {
+        externalAnnouncements = await response.json();
+      }
+    } catch (error) {
+      console.error('Failed to fetch external announcements:', error);
+    }
+
+    const merged = [...localAnnouncements, ...externalAnnouncements];
+    merged.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
+
+    return merged.map((a) => ({
       id: a.id,
+      text: a.text,
       message: a.message,
       createdAt: a.createdAt,
     }));
