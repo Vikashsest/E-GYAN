@@ -1,10 +1,8 @@
-
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import StudentNavbar from "./StudentNavbar";
 import StudentSidebar from "./StudentSidebar";
-import { FaBookReader, FaSpinner } from "react-icons/fa";
+import { FaBookReader } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
 import { getRepository } from "../../apiServices/apiRepository";
 import { useLoader } from "../../LoaderContext";
@@ -12,7 +10,7 @@ import { useLoader } from "../../LoaderContext";
 const Books = () => {
   const [categories, setCategories] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const {setLoading} = useLoader()
+  const { setLoading } = useLoader();
   const navigate = useNavigate();
 
   // useEffect(() => {
@@ -44,22 +42,35 @@ const Books = () => {
       } catch (err) {
         console.error("Failed to load categories:", err);
       } finally {
-        setLoading(false); // <-- FIX
+        setLoading(false);
       }
     };
 
     loadCategories();
   }, []);
 
+  // const getCategoryRoute = (cat) => {
+  //   switch (cat.trim()) {
+  //     case "Simulation":
+  //       return "/simulation-subjects";
+  //     case "Current Affairs":
+  //       return "/current-affairs";
+  //     default:
+  //       return `/classes?category=${cat}`;
+  //   }
+  // };
   const getCategoryRoute = (cat) => {
-    switch (cat.trim()) {
-      case "Simulation":
-        return "/simulation-subjects";
-      case "Current Affairs":
-        return "/current-affairs";
-      default:
-        return `/classes?category=${cat}`;
+    const name = cat.trim().toLowerCase();
+
+    if (/^simulation(s)?$/.test(name)) {
+      return "/simulation-subjects";
     }
+
+    if (/^current affair(s)?$/.test(name)) {
+      return "/current-affairs";
+    }
+
+    return `/classes?category=${encodeURIComponent(cat)}`;
   };
 
   return (
@@ -90,23 +101,22 @@ const Books = () => {
 
         <h2 className="text-2xl font-bold mb-6">📚 Category</h2>
 
-        
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {categories.map((cat, index) => (
-              <div
-                key={index}
-                onClick={() => navigate(getCategoryRoute(cat))}
-                className="p-5 sm:p-6 rounded-2xl shadow-lg border border-gray300 
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          {categories.map((cat, index) => (
+            <div
+              key={index}
+              onClick={() => navigate(getCategoryRoute(cat))}
+              className="p-5 sm:p-6 rounded-2xl shadow-lg border border-gray300 
                 bg-cardBg text-primaryWhite flex flex-col items-center justify-center 
                 hover:scale-105 transform transition-all duration-300 cursor-pointer"
-              >
-                <FaBookReader className="text-lightBlue text-4xl sm:text-5xl mb-3 sm:mb-4 drop-shadow-lg" />
-                <h3 className="text-base sm:text-lg md:text-xl font-bold text-center">
-                  {cat}
-                </h3>
-              </div>
-            ))}
-          </div>
+            >
+              <FaBookReader className="text-lightBlue text-4xl sm:text-5xl mb-3 sm:mb-4 drop-shadow-lg" />
+              <h3 className="text-base sm:text-lg md:text-xl font-bold text-center">
+                {cat}
+              </h3>
+            </div>
+          ))}
+        </div>
       </main>
     </div>
   );

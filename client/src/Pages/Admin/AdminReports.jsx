@@ -2,7 +2,13 @@ import AdminSidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
 import { useState } from "react";
 import { FiMenu } from "react-icons/fi";
-import { FaFileExport, FaPrint, FaBook, FaUsers, FaClock } from "react-icons/fa";
+import {
+  FaFileExport,
+  FaPrint,
+  FaBook,
+  FaUsers,
+  FaClock,
+} from "react-icons/fa";
 
 export default function EgYanReportsPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -23,28 +29,36 @@ export default function EgYanReportsPage() {
   return (
     <div className="flex min-h-screen bg-darkBg text-primaryWhite">
       {/* Sidebar */}
-      <AdminSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <AdminSidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
 
       {/* Main Content */}
       <main className="flex-1 lg:pl-[280px] py-6 px-5 w-full">
         {/* Mobile Menu Icon */}
         <div className="lg:hidden px-4 mb-4">
-          <button onClick={() => setIsSidebarOpen(true)} className="text-primaryWhite">
+          <button
+            onClick={() => setIsSidebarOpen(true)}
+            className="text-primaryWhite"
+          >
             <FiMenu size={28} />
           </button>
         </div>
 
-        <AdminNavbar/>
+        <AdminNavbar />
 
         <section className="px-4">
           {/* Header */}
           <header className="mb-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-extrabold mb-1 text-gradient bg-clip-text text-transparent from-indigo-400 to-green-400">
+              <h1 className="text-3xl text-white font-extrabold mb-1 text-gradient bg-clip-text text-transparent from-indigo-400 to-green-400">
                 📊 eGyan School Reports
               </h1>
+
               <p className="text-primaryWhite/70 text-sm">
-                Analyze student reading activity, book completion, and engagement metrics.
+                Analyze student reading activity, book completion, and
+                engagement metrics.
               </p>
             </div>
           </header>
@@ -59,7 +73,9 @@ export default function EgYanReportsPage() {
             >
               <option value="">All Classes</option>
               {Array.from({ length: 12 }, (_, i) => (
-                <option key={i + 1} value={i + 1}>Class {i + 1}</option>
+                <option key={i + 1} value={i + 1}>
+                  Class {i + 1}
+                </option>
               ))}
             </select>
 
@@ -155,7 +171,9 @@ export default function EgYanReportsPage() {
 
           {/* Table */}
           <div className="overflow-x-auto bg-gray800 rounded-2xl shadow-xl p-6">
-            <h2 className="text-xl font-semibold mb-4">Detailed Class & Student Report</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              Detailed Class & Student Report
+            </h2>
             <table className="min-w-full text-sm table-auto border-collapse">
               <thead>
                 <tr className="bg-gray-900 text-primaryWhite/70 border-b border-gray700">
@@ -169,11 +187,35 @@ export default function EgYanReportsPage() {
               </thead>
               <tbody>
                 {[
-                  { class: "10", student: "Ravi Kumar", books: 12, hours: 5, last: "Today", status: "Active" },
-                  { class: "9", student: "Sita Sharma", books: 8, hours: 3, last: "Yesterday", status: "Inactive" },
-                  { class: "8", student: "Aman Verma", books: 15, hours: 7, last: "2 days ago", status: "Active" },
+                  {
+                    class: "10",
+                    student: "Ravi Kumar",
+                    books: 12,
+                    hours: 5,
+                    last: "Today",
+                    status: "Active",
+                  },
+                  {
+                    class: "9",
+                    student: "Sita Sharma",
+                    books: 8,
+                    hours: 3,
+                    last: "Yesterday",
+                    status: "Inactive",
+                  },
+                  {
+                    class: "8",
+                    student: "Aman Verma",
+                    books: 15,
+                    hours: 7,
+                    last: "2 days ago",
+                    status: "Active",
+                  },
                 ].map((row, idx) => (
-                  <tr key={idx} className="border-t border-gray700 hover:bg-gray700/30 transition">
+                  <tr
+                    key={idx}
+                    className="border-t border-gray700 hover:bg-gray700/30 transition"
+                  >
                     <td className="py-2 px-4">{row.class}</td>
                     <td className="py-2 px-4">{row.student}</td>
                     <td className="py-2 px-4">{row.books}</td>
@@ -182,7 +224,9 @@ export default function EgYanReportsPage() {
                     <td className="py-2 px-4">
                       <span
                         className={`px-2 py-1 rounded text-xs ${
-                          row.status === "Active" ? "bg-primaryGreen text-black" : "bg-primaryRed text-black"
+                          row.status === "Active"
+                            ? "bg-primaryGreen text-black"
+                            : "bg-primaryRed text-black"
                         }`}
                       >
                         {row.status}
