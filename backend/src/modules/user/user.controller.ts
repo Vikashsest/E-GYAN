@@ -88,7 +88,6 @@ export class UserController {
 
   @Delete(':id')
   async deleteRequest(@Param('id') id: number) {
-    console.log('DELETE REQUEST ID:', id);
     return this.userService.deleteRequest(id);
   }
   @Delete('delete-role/:id')

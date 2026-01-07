@@ -767,26 +767,6 @@ export class StudentService {
       existing.isFavorite = !existing.isFavorite;
       return await activityRepo.save(existing);
     } else {
-      // const book = await this.bookRepo.findOne({ where: { id: bookId } });
-
-      // if (!book || !chapter.resourceType) {
-      //   throw new NotFoundException('Book not found or missing resourceType');
-      // }
-
-      // const resourceType = book.resourceType.toUpperCase();
-      // if (!Object.values(ResourceType).includes(resourceType as ResourceType)) {
-      //   throw new BadRequestException(`Invalid resourceType: ${resourceType}`);
-      // }
-
-      // const newActivity = this.studentActivityRepo.create({
-      //   user: { id: userId },
-      //   book: { id: bookId },
-      //   activityType: ActivityType.FAVORITE,
-      //   resourceTitle: book.bookName,
-      //   isFavorite: true,
-      //   resourceType: resourceType as ResourceType,
-      // });
-      // return await activityRepo.save(newActivity);
       const book = await this.bookRepo.findOne({
         where: { id: bookId },
         relations: ['chapters'],

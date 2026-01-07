@@ -96,7 +96,7 @@ export class UserService {
     user.role = role;
     user.isActive = isActive;
     await this.userRepository.save(user);
-    console.log('UPDATE STATUS', user.isActive);
+
     return { message: 'User update successfully' };
   }
   async deleteRole(id: number) {
@@ -115,8 +115,6 @@ export class UserService {
       if (updateUserDto.password) {
         updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
       }
-      console.log('DTO:', updateUserDto);
-      console.log('Type of isActive:', typeof updateUserDto.isActive);
 
       Object.assign(user, updateUserDto);
       const updateUser = await this.userRepository.save(user);

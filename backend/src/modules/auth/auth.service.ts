@@ -248,10 +248,16 @@ export class AuthService {
     }
 
     const token = this.generateToken(user);
+    // res.cookie('access_token', token, {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: 'none',
+    //   maxAge: 7 * 24 * 60 * 60 * 1000,
+    // });
     res.cookie('access_token', token, {
       httpOnly: true,
-      secure: true,
-      sameSite: 'none',
+      secure: false, // local dev
+      sameSite: 'lax', // local dev
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 

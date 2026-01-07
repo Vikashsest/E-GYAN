@@ -6,8 +6,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 
-
-
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
@@ -28,13 +26,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: any): Promise<any> {
     const user = await this.userRepository.findOne({
       where: { id: payload.id },
-      select: ['id', 'username', 'role'], 
+      select: ['id', 'username', 'role'],
     });
-console.log("user",user)
+    // console.log("user",user)
     if (!user) {
       throw new UnauthorizedException('Invalid token');
     }
 
-    return user; 
+    return user;
   }
 }
