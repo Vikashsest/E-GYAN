@@ -308,7 +308,10 @@ export default function DashboardMetrics() {
       <main className="flex-1 lg:pl-[280px] py-6 pr-5 w-full">
         {/* Mobile Menu Icon */}
         <div className="lg:hidden px-4 mb-4">
-          <button onClick={() => setIsSidebarOpen(true)} className="text-primaryWhite">
+          <button
+            onClick={() => setIsSidebarOpen(true)}
+            className="text-primaryWhite"
+          >
             <FiMenu size={28} />
           </button>
         </div>
@@ -435,7 +438,7 @@ export default function DashboardMetrics() {
                   {/* Text */}
                   <div>
                     <p className="text-sm text-gray200">
-                      {announcement.message}
+                      {announcement.message || announcement.text}
                     </p>
                     {/* <span className="text-xs  text-gray400">  📅 {new Date(announcement.createdAt).toLocaleDateString()}</span> */}
                     <span className="text-xs text-gray400">
