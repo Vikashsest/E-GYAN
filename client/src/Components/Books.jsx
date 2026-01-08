@@ -1299,19 +1299,64 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   const handleUpload = async (e) => {
     e.preventDefault();
 
-    if (!formData.category || formData.category === "") {
-      toast.warn("Please select a category before uploading");
-      return;
-    }
-
     try {
+      // COMMON CHECK
+      if (!formData.category) {
+        toast.warn("📌 Category is mandatory");
+        return;
+      }
+
+      // 📰 CURRENT AFFAIRS VALIDATION
+      if (formData.category === "Current Affairs") {
+        if (!formData.title?.trim()) {
+          toast.warn("📌 Title is mandatory");
+          return;
+        }
+
+        if (!formData.newsCategory?.trim()) {
+          toast.warn("📌 Please select Current Affairs category type");
+          return;
+        }
+
+        if (!formData.date) {
+          toast.warn("📌 Date is mandatory");
+          return;
+        }
+
+        // File OR link required
+        if (!formData.file && !formData.link) {
+          toast.warn("📌 Upload a file or provide a link");
+          return;
+        }
+      }
+
+      // 📚 BOOK UPLOAD VALIDATION
+      else {
+        if (!formData.bookName?.trim()) {
+          toast.warn("📌 Book name is mandatory");
+          return;
+        }
+        if (!formData.subject?.trim()) {
+          toast.warn("📌 Subject is mandatory");
+          return;
+        }
+        if (!formData.educationLevel?.trim()) {
+          toast.warn("📌 Education level is mandatory");
+          return;
+        }
+        if (!formData.language?.trim()) {
+          toast.warn("📌 Language is mandatory");
+          return;
+        }
+      }
+
+      // --- IF ALL GOOD - CONTINUE YOUR OLD LOGIC ---
       if (formData.category === "Current Affairs") {
         const currentFormData = new FormData();
 
         currentFormData.append("title", formData.title?.trim() || "");
-        currentFormData.append("mainCategory", formData.category || ""); // 📰 "Current Affairs"
-        currentFormData.append("category", formData.newsCategory || ""); // 🧠 "Science & Technology"
-
+        currentFormData.append("mainCategory", formData.category || "");
+        currentFormData.append("category", formData.newsCategory || "");
         currentFormData.append(
           "description",
           formData.description?.trim() || ""
@@ -1320,10 +1365,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
         currentFormData.append("source", formData.source?.trim() || "");
         if (formData.file) currentFormData.append("file", formData.file);
         if (formData.link) currentFormData.append("link", formData.link);
-
-        console.log("📦 Sending FormData entries:", [
-          ...currentFormData.entries(),
-        ]);
 
         const result = await addCurrentAffairs(null, currentFormData);
         if (result) {
@@ -1344,11 +1385,11 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
             source: "",
             link: "",
           });
-        } else {
-          toast.error("❌ Failed to add Current Affairs");
-        }
-      } else {
-        // 🟢 Normal book upload
+        } else toast.error("❌ Failed to add Current Affairs");
+      }
+
+      // Book Upload
+      else {
         const uploadData = new FormData();
         uploadData.append("bookName", formData.bookName);
         uploadData.append("category", formData.category);
@@ -1374,6 +1415,85 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
       toast.error("⚠️ Something went wrong during upload");
     }
   };
+
+  // const handleUpload = async (e) => {
+  //   e.preventDefault();
+
+  //   if (!formData.category || formData.category === "") {
+  //     toast.warn("Please select a category before uploading");
+  //     return;
+  //   }
+
+  //   try {
+  //     if (formData.category === "Current Affairs") {
+  //       const currentFormData = new FormData();
+
+  //       currentFormData.append("title", formData.title?.trim() || "");
+  //       currentFormData.append("mainCategory", formData.category || ""); // 📰 "Current Affairs"
+  //       currentFormData.append("category", formData.newsCategory || ""); // 🧠 "Science & Technology"
+
+  //       currentFormData.append(
+  //         "description",
+  //         formData.description?.trim() || ""
+  //       );
+  //       currentFormData.append("date", formData.date || "");
+  //       currentFormData.append("source", formData.source?.trim() || "");
+  //       if (formData.file) currentFormData.append("file", formData.file);
+  //       if (formData.link) currentFormData.append("link", formData.link);
+
+  //       console.log("📦 Sending FormData entries:", [
+  //         ...currentFormData.entries(),
+  //       ]);
+
+  //       const result = await addCurrentAffairs(null, currentFormData);
+  //       if (result) {
+  //         toast.success("✅ Current Affairs added successfully");
+  //         setShowUploadModal(false);
+  //         setFormData({
+  //           bookName: "",
+  //           category: "",
+  //           subject: "",
+  //           educationLevel: "",
+  //           language: "",
+  //           file: null,
+  //           thumbnail: null,
+  //           title: "",
+  //           description: "",
+  //           newsCategory: "",
+  //           date: "",
+  //           source: "",
+  //           link: "",
+  //         });
+  //       } else {
+  //         toast.error("❌ Failed to add Current Affairs");
+  //       }
+  //     } else {
+  //       // 🟢 Normal book upload
+  //       const uploadData = new FormData();
+  //       uploadData.append("bookName", formData.bookName);
+  //       uploadData.append("category", formData.category);
+  //       uploadData.append("subject", formData.subject);
+  //       uploadData.append("educationLevel", formData.educationLevel);
+  //       uploadData.append("language", formData.language);
+  //       if (formData.file) uploadData.append("file", formData.file);
+  //       if (formData.thumbnail)
+  //         uploadData.append("thumbnail", formData.thumbnail);
+
+  //       const result = await uploadBook(uploadData);
+  //       if (result && result.id) {
+  //         setBookList((prev) => [...prev, result]);
+  //         setShowUploadModal(false);
+  //         navigate(`/books/${result.id}/chapters`);
+  //         toast.success("✅ Book uploaded successfully");
+  //       } else {
+  //         toast.error("❌ Upload failed");
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     toast.error("⚠️ Something went wrong during upload");
+  //   }
+  // };
 
   const getViewLabel = (type) => {
     switch (type?.toLowerCase()) {
