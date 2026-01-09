@@ -136,14 +136,14 @@ function AdminNavbar({
 }) {
   const navigate = useNavigate();
   const [onlineUsersCount, setOnlineUsersCount] = useState(0);
-
   useEffect(() => {
-    fetch("https://e-gyan-9tky.onrender.com/websocket/count", {
+    // initial fetch (optional)
+    fetch("http://localhost:5000/websocket/online-count", {
       credentials: "include",
     })
       .then((res) => res.json())
       .then((data) => setOnlineUsersCount(data.count))
-      .catch((err) => console.log("Initial fetch error:", err));
+      .catch(console.error);
 
     const socket = io("https://e-gyan-9tky.onrender.com", {
       withCredentials: true,
@@ -151,13 +151,13 @@ function AdminNavbar({
 
     socket.on("connect", () => console.log("Socket connected!"));
     socket.on("disconnect", () => console.log("Socket disconnected!"));
+
     socket.on("onlineCount", (count) => {
+      console.log("Online users:", count);
       setOnlineUsersCount(count);
     });
 
-    return () => {
-      socket.disconnect();
-    };
+    return () => socket.disconnect();
   }, []);
 
   return (
