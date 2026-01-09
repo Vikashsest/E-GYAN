@@ -1,4 +1,3 @@
-
 // import { useEffect, useState } from "react";
 // import { useNavigate } from "react-router-dom";
 // import {
@@ -29,10 +28,9 @@
 // export default function StudentFavorites() {
 //   const [favoriteBooks, setFavoriteBooks] = useState([]);
 //   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  
 
 //   const navigate = useNavigate();
-  
+
 //   useEffect(() => {
 //     fetch(`${API_URL}/students/favorite-books`, {
 //       credentials: "include",
@@ -74,7 +72,6 @@
 //         </div>
 
 //         <StudentNavbar />
-
 
 //         <div className="p-4">
 //           <h1 className="text-3xl font-bold mb-2">❤️ Favorite Books</h1>
@@ -128,12 +125,6 @@
 //   );
 // }
 
-
-
-
-
-
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -163,36 +154,34 @@ const buttonTextMap = {
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function StudentFavorites() {
-  const {setLoading} = useLoader()
+  const { setLoading } = useLoader();
   const [favoriteBooks, setFavoriteBooks] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const navigate = useNavigate();
 
- useEffect(() => {
-  const fetchFavorites = async () => {
-    try {
-      setLoading(true);
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      try {
+        setLoading(true);
 
-      const res = await fetch(`${API_URL}/students/favorite-books`, {
-        credentials: "include",
-      });
+        const res = await fetch(`${API_URL}/students/favorite-books`, {
+          credentials: "include",
+        });
 
-      if (!res.ok) throw new Error("Failed to fetch favorite books");
+        if (!res.ok) throw new Error("Failed to fetch favorite books");
 
-      const data = await res.json();
-      setFavoriteBooks(data);
+        const data = await res.json();
+        setFavoriteBooks(data);
+      } catch (err) {
+        console.error("Error fetching favorites:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    } catch (err) {
-      console.error("Error fetching favorites:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  fetchFavorites();
-}, [setLoading]);
-
+    fetchFavorites();
+  }, [setLoading]);
 
   return (
     <div className="flex min-h-screen bg-darkBg text-primaryWhite relative">
@@ -230,56 +219,79 @@ export default function StudentFavorites() {
             All the learning materials you’ve marked as favorite.
           </p>
 
-         
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {favoriteBooks.map((item) => {
-                const resourceType = item.resourceType?.toUpperCase?.();
-                const icon = iconMap[resourceType] || (
-                  <FaBookOpen className="text-gray-400 text-xl" />
-                );
-                const buttonText = buttonTextMap[resourceType] || "Continue";
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {favoriteBooks.map((item) => {
+              const resourceType = item.resourceType?.toUpperCase?.();
+              const icon = iconMap[resourceType] || (
+                <FaBookOpen className="text-gray-400 text-xl" />
+              );
+              const buttonText = buttonTextMap[resourceType] || "Continue";
 
-                return (
-                  <div
-                    key={item.id}
-                    className="bg-gradient-to-br from-[#2a2b39] to-[#1c1d2a] p-5 rounded-2xl
+              return (
+                <div
+                  key={item.id}
+                  className="bg-gradient-to-br from-[#2a2b39] to-[#1c1d2a] p-5 rounded-2xl
                                shadow-lg hover:shadow-2xl hover:scale-105 
                                transition-all duration-300 border border-primaryWhite/10 backdrop-blur-md"
-                  >
-                    {/* Header */}
-                    <div className="flex justify-between items-center mb-4">
-                      <h3 className="text-lg font-semibold truncate text-primaryWhite">
-                        {item.title}
-                      </h3>
-                      <FaHeart className="text-pink500 text-lg animate-pulse" />
-                    </div>
+                >
+                  {/* Header */}
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-lg font-semibold truncate text-primaryWhite">
+                      {item.title}
+                    </h3>
+                    {/* <FaHeart className="text-pink500 text-lg animate-pulse" /> */}
+                    <FaHeart
+                      className="text-pink500 text-lg cursor-pointer hover:scale-125 transition"
+                      onClick={async () => {
+                        try {
+                          const res = await fetch(
+                            `${API_URL}/students/toggle-favorite/${item.id}`,
+                            {
+                              method: "PATCH",
+                              credentials: "include",
+                            }
+                          );
 
-                    {/* Subject + Type */}
-                    <div className="flex justify-between text-sm mb-4">
-                      <span className="text-primaryWhite/60">{item.subject}</span>
-                      <span className="flex items-center gap-2 bg-primaryWhite/10 px-2 py-1 rounded-full">
-                        {icon}
-                        <span className="text-primaryWhite/80 text-xs font-medium">
-                          {item.resourceType}
-                        </span>
+                          if (!res.ok)
+                            throw new Error("Failed to toggle favorite");
+
+                          // UI se turant remove kar do
+                          setFavoriteBooks((prev) =>
+                            prev.filter((b) => b.id !== item.id)
+                          );
+                        } catch (err) {
+                          console.error("Error toggling favorite:", err);
+                        }
+                      }}
+                    />
+                  </div>
+
+                  {/* Subject + Type */}
+                  <div className="flex justify-between text-sm mb-4">
+                    <span className="text-primaryWhite/60">{item.subject}</span>
+                    <span className="flex items-center gap-2 bg-primaryWhite/10 px-2 py-1 rounded-full">
+                      {icon}
+                      <span className="text-primaryWhite/80 text-xs font-medium">
+                        {item.resourceType}
                       </span>
-                    </div>
+                    </span>
+                  </div>
 
-                    {/* Action Button */}
-                    <button
-                      onClick={() =>
-                        navigate(`/student/books/${item.id}/chapters`)
-                      }
-                      className="w-full mt-2 flex items-center justify-center gap-2 px-4 py-2 rounded-lg 
+                  {/* Action Button */}
+                  <button
+                    onClick={() =>
+                      navigate(`/student/books/${item.id}/chapters`)
+                    }
+                    className="w-full mt-2 flex items-center justify-center gap-2 px-4 py-2 rounded-lg 
                                  bg-gradient-to-r from-pink500 via-primaryRed to-primaryYellow 
                                  text-primaryWhite text-sm font-semibold shadow-md transition-all"
-                    >
-                      {buttonText}
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
+                  >
+                    {buttonText}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </main>
     </div>

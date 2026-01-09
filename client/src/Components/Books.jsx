@@ -1069,7 +1069,6 @@ import { useNavigate } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-// Convert local or Nextcloud URLs into proxy URLs
 const getProxiedUrl = (url) => {
   if (!url) return null;
   if (url.includes("/index.php/s/")) {
@@ -1158,11 +1157,11 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
       try {
         const [categoryData, subjectData, bookData, languageData, levelData] =
           await Promise.all([
-            getRepository("category"), // category type
-            getRepository("subject"), // subject type
-            getRepository("book"), // book type
-            getRepository("language"), // language type
-            getRepository("level"), // level type
+            getRepository("category"),
+            getRepository("subject"),
+            getRepository("book"),
+            getRepository("language"),
+            getRepository("level"),
           ]);
 
         // Map only text for dropdowns
@@ -1237,6 +1236,56 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
 
     loadInitialData();
   }, [setLoading]);
+
+  useEffect(() => {
+    const loadFormOptions = async () => {
+      if (!formData.category) return; // agar category select nahi hui ho to return
+
+      try {
+        const [subjectData, bookData, languageData, levelData] =
+          await Promise.all([
+            getRepository("subject"),
+            getRepository("book"),
+            getRepository("language"),
+            getRepository("level"),
+          ]);
+
+        // frontend filter category ke hisab se
+        const selectedCategory = formData.category;
+
+        setSubjects(
+          subjectData
+            .filter((s) => s.category === selectedCategory)
+            .map((s) => s.text)
+        );
+        setBooks(
+          bookData
+            .filter((b) => b.category === selectedCategory)
+            .map((b) => b.text)
+        );
+        // setLanguages(
+        //   languageData
+        //     .filter((l) => l.category === selectedCategory)
+        //     .map((l) => l.text)
+        // );
+        setLanguages(languageData.map((l) => l.text));
+
+        setEducationLevels(
+          levelData
+            .filter((l) => l.category === selectedCategory)
+            .map((l) => l.text)
+        );
+      } catch (err) {
+        console.error(err);
+        setSubjects([]);
+        setBooks([]);
+        setLanguages([]);
+        setEducationLevels([]);
+      }
+    };
+
+    loadFormOptions();
+  }, [formData.category]);
 
   const handleDelete = async (id) => {
     const ok = await confirmDelete();
@@ -1792,6 +1841,31 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                 <label className="text-sm font-medium block mb-1">
                   Select Category
                 </label>
+                {/* <select
+                  value={formData.category}
+                  onChange={(e) => {
+                    const selectedCategory = e.target.value;
+
+                    setFormData((prev) => ({
+                      ...prev,
+                      category: selectedCategory,
+                      level: "",
+                      subject: "",
+                      resourceType: "",
+                      language: "",
+                      class: "",
+                      books: "",
+                    }));
+                  }}
+                  className="w-full border border-gray300 p-2 rounded text-sm"
+                >
+                  <option value="">-- Choose Category --</option>
+                  {categories.map((cat, idx) => (
+                    <option key={idx} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select> */}
                 <select
                   value={formData.category}
                   onChange={(e) => {
