@@ -94,6 +94,7 @@ import { AuthSessionModuleModule } from './modules/auth-session-module/auth-sess
 import { StudentBookAssignModule } from './modules/student-book-assign/student-book-assign.module';
 import { AnnoucementsModule } from './modules/annoucements/annoucements.module';
 import { WebsocketModule } from './modules/websocket/websocket.module';
+import { ReportsModule } from './modules/reports/reports.module';
 
 @Module({
   imports: [
@@ -125,6 +126,7 @@ import { WebsocketModule } from './modules/websocket/websocket.module';
     StudentBookAssignModule,
     AnnoucementsModule,
     WebsocketModule,
+    ReportsModule,
   ],
   controllers: [AuthController],
   providers: [

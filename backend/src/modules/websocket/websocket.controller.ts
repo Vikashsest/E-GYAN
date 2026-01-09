@@ -4,8 +4,7 @@ import { WebsocketService } from './websocket.service';
 @Controller('websocket')
 export class WebsocketController {
   constructor(private readonly websocketService: WebsocketService) {}
-
-  @Get('count')
+  @Get('online-count')
   getOnlineCount() {
     return { count: this.websocketService.getCount() };
   }
