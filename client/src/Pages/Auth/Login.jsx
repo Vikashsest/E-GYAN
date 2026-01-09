@@ -403,7 +403,7 @@ export default function LoginPage() {
 
         <div className="pt-4 border-t border-primaryWhite/10">
           <a
-            href="https://drive.google.com/file/d/1qaOuvwWZbPiB5czasQdJP1TN4Tsgj4Ue/view?usp=drive_link"
+            href="https://drive.google.com/file/d/1G15zrCtDwNxXApGsa3r_ZgBTO4lMC3_5/view?usp=sharing"
             className="inline-block mt-2 px-5 py-2 bg-primaryGreen hover:bg-green-700 rounded-lg text-primaryBlack font-semibold shadow-md"
           >
             ⬇️ Download Android Apk
