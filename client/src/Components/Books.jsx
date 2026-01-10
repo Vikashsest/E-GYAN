@@ -2397,7 +2397,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
             </div>
           </div>
         )}
-
         {editData && (
           <div className="fixed inset-0 bg-primaryBlack bg-opacity-40 z-50 flex justify-center items-center">
             <div className="bg-primaryWhite text-primaryBlack rounded-lg w-[95%] max-w-xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-lg">
@@ -2410,36 +2409,41 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                 onSubmit={async (e) => {
                   e.preventDefault();
 
-                  const allowedFields = [
+                  const fd = new FormData();
+
+                  // Append text fields
+                  [
                     "bookName",
                     "category",
                     "subject",
                     "educationLevel",
                     "language",
-                    // "stateBoard",
                     "resourceType",
-                    // "chapter",
-                    "file",
-                    "thumbnail",
                     "totalPages",
-                  ];
-
-                  const fd = new FormData();
-
-                  allowedFields.forEach((key) => {
+                  ].forEach((key) => {
                     if (editData[key] !== undefined && editData[key] !== null) {
                       fd.append(key, editData[key]);
                     }
                   });
+
+                  // Append main file if selected
+                  if (editData.file instanceof File)
+                    fd.append("file", editData.file);
+
+                  // Append thumbnail if selected
+                  if (editData.thumbnail instanceof File)
+                    fd.append("thumbnail", editData.thumbnail);
 
                   try {
                     const res = await fetch(`${API_URL}/books/${editData.id}`, {
                       method: "PATCH",
                       body: fd,
                       credentials: "include",
+                      // DO NOT set Content-Type; browser sets multipart/form-data automatically
                     });
 
                     const result = await res.json();
+
                     if (res.ok) {
                       setBookList((prev) =>
                         prev.map((book) =>
@@ -2457,14 +2461,13 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                   }
                 }}
               >
+                {/* Text Inputs */}
                 {[
                   "bookName",
-                  // "chapter",
                   "subject",
                   "category",
                   "educationLevel",
                   "language",
-                  // "stateBoard",
                   "resourceType",
                 ].map((key) => (
                   <input
@@ -2483,27 +2486,13 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                   />
                 ))}
 
-                {/* <div>
-                  <label className="text-sm font-medium">
-                    Main File (PDF / Video / Audio)
-                  </label>
-                  <input
-                    type="file"
-                    accept=".pdf,video/*,audio/*"
-                    className="w-full border p-2 rounded text-sm"
-                    onChange={(e) =>
-                      setEditData((prev) => ({
-                        ...prev,
-                        file: e.target.files[0],
-                      }))
-                    }
-                  />
-                </div> */}
+                {/* Thumbnail Upload */}
                 <div>
                   <label className="text-sm font-medium">Thumbnail Image</label>
                   <input
                     type="file"
                     accept="image/*"
+                    name="thumbnail"
                     className="w-full border p-2 rounded text-sm"
                     onChange={(e) =>
                       setEditData((prev) => ({
