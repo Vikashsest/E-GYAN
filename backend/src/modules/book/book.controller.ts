@@ -439,14 +439,26 @@ export class BookController {
 
   // ✅ Update book
   @Patch(':id')
-  // @Roles(UserRole.ADMIN, UserRole.TEACHER, UserRole.PRINCIPAL)
-  @UseInterceptors(FileInterceptor('pdf'))
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [
+        { name: 'file', maxCount: 1 },
+        { name: 'thumbnail', maxCount: 1 },
+      ],
+      multerConfig, // ✅ same as uploadBook
+    ),
+  )
   update(
     @Param('id') id: string,
-    @UploadedFile() file: Express.Multer.File,
-    @Body() dto: UpdateBookDto,
+    @UploadedFiles()
+    files: { file?: Express.Multer.File[]; thumbnail?: Express.Multer.File[] },
+    @Body() body: any,
   ) {
-    return this.bookService.updateBook(+id, dto, file);
+    const file = files.file?.[0];
+    const thumbnail = files.thumbnail?.[0];
+    if (body.totalPages) body.totalPages = Number(body.totalPages);
+
+    return this.bookService.updateBook(+id, body, file, thumbnail);
   }
 
   // ✅ Delete book & chapter

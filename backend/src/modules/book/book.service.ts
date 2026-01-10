@@ -288,20 +288,42 @@ export class BookService {
   }
   async updateBook(
     id: number,
-    updateBookDto: UpdateBookDto,
+    updateBookDto: any,
     file?: Express.Multer.File,
+    thumbnail?: Express.Multer.File,
   ) {
     const book = await this.bookrepo.findOne({ where: { id } });
     if (!book) {
       throw new NotFoundException(`Book with ID ${id} not found`);
     }
+
+    // Main file handling (PDF / Video / Audio)
     if (file) {
-      updateBookDto.fileUrl = file.filename;
+      updateBookDto.fileUrl = file.path || file.filename;
       updateBookDto.fileType = file.mimetype;
     }
+
+    // Thumbnail handling - Nextcloud upload
+    if (thumbnail) {
+      const thumbRemotePath = `books/thumbnails/book-${id}.jpg`;
+
+      // Upload to Nextcloud
+      const uploadedThumbPath = await this.nextcloudService.uploadFile(
+        thumbnail.path,
+        thumbRemotePath,
+      );
+
+      // Generate public URL
+      const thumbnailUrl = await generatePublicLink(uploadedThumbPath);
+
+      // Save URL in DB
+      updateBookDto.thumbnail = thumbnailUrl;
+    }
+
     const updatedBook = Object.assign(book, updateBookDto);
     return this.bookrepo.save(updatedBook);
   }
+
   async getChaptersByBookId(bookId: number): Promise<any[]> {
     const chapters = await this.chapterRepo.find({
       where: { book: { id: bookId } },
