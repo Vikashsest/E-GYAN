@@ -95,6 +95,7 @@ import { StudentBookAssignModule } from './modules/student-book-assign/student-b
 import { AnnoucementsModule } from './modules/annoucements/annoucements.module';
 import { WebsocketModule } from './modules/websocket/websocket.module';
 import { ReportsModule } from './modules/reports/reports.module';
+import { ModulesModule } from './ai/modules/modules.module';
 
 @Module({
   imports: [
@@ -127,6 +128,7 @@ import { ReportsModule } from './modules/reports/reports.module';
     AnnoucementsModule,
     WebsocketModule,
     ReportsModule,
+    ModulesModule,
   ],
   controllers: [AuthController],
   providers: [

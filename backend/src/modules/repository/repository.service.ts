@@ -80,13 +80,11 @@ export class RepositoryService {
   // }
   async findAll(type?: string, category?: string) {
     const where: any = {};
-    console.log('where', where);
-
     if (type) where.type = type;
     if (category) where.category = category;
 
     const resp = await this.repository.find({ where });
-    console.log('res', resp);
+
     return resp;
   }
 

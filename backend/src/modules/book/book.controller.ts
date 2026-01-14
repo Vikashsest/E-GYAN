@@ -275,6 +275,7 @@ export class BookController {
   async getSubjects(@Query('class') className?: string) {
     return this.bookService.getSubjects(className);
   }
+
   @Get('education-levels')
   async getEducationLevels() {
     return this.bookService.findAllEducationLevels();

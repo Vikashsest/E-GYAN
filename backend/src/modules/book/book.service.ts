@@ -649,4 +649,17 @@ export class BookService {
       displayName: `Chapter ${chapter.chapterNumber} Part ${part.chapterNumber}`,
     }));
   }
+
+  // book.service.ts
+  async getBooksByCategory(category?: string) {
+    const query = this.bookrepo
+      .createQueryBuilder('book')
+      .leftJoinAndSelect('book.chapters', 'chapter');
+
+    if (category) {
+      query.andWhere('book.category = :category', { category });
+    }
+
+    return await query.getMany();
+  }
 }
