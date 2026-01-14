@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import StudentNavbar from "./StudentNavbar";
 import StudentSidebar from "./StudentSidebar";
-import { fetchFavoriteBooks, subjectWiseBooks, toggleFavoriteBook } from "../../apiServices/booksApi";
-import { FaArrowLeft, FaHeart, FaRegHeart, FaSpinner } from "react-icons/fa";
+import { fetchFavoriteBooks, subjectWiseBooks} from "../../apiServices/booksApi";
+import { FaArrowLeft} from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
 import { useLoader } from "../../LoaderContext";
 

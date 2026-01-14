@@ -1049,6 +1049,10 @@
 //   );
 // }
 
+
+
+
+
 import { useEffect, useState } from "react";
 import FlipbookPDFViewer from "./FlipbookPDFViewer";
 import { FaEdit, FaTrash, FaExpand, FaCompress } from "react-icons/fa";
@@ -1105,6 +1109,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(getItemsPerPage());
   const [categories, setCategories] = useState([]);
+  const [filterCategory, setFilterCategory] = useState("");
   const [formData, setFormData] = useState({
     bookName: "",
     category: "",
@@ -1184,35 +1189,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
     loadFormOptions();
   }, []);
 
-  // useEffect(() => {
-  //   const loadFormOptions = async () => {
-  //     try {
-  //       const [categories, subjects, languages, levels] = await Promise.all([
-  //         getRepository("category"),
-  //         getRepository("subject"),
-  //         getRepository("books"),
-  //         getRepository("language"),
-  //         getRepository("level"),
-  //       ]);
-
-  //       setCategories(categories.map((c) => c.text));
-  //       setSubjects(subjects.map((s) => s.text));
-  //       setBooks(books.map((s) => s.text));
-  //       setLanguages(languages.map((l) => l.text));
-  //       setEducationLevels(levels.map((l) => l.text));
-  //     } catch (err) {
-  //       console.error("Failed to load form options:", err);
-
-  //       setCategories([]);
-  //       setSubjects([]);
-  //       setBooks([]);
-  //       setLanguages([]);
-  //       setEducationLevels([]);
-  //     }
-  //   };
-
-  //   loadFormOptions();
-  // }, []);
 
   useEffect(() => {
     async function loadInitialData() {
@@ -1302,48 +1278,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
     }
   };
 
-  // const handleUpload = async (e) => {
-  //   e.preventDefault();
-
-  //   const uploadData = new FormData();
-  //   uploadData.append("bookName", formData.bookName);
-  //   uploadData.append("category", formData.category);
-  //   uploadData.append("subject", formData.subject);
-  //   uploadData.append("educationLevel", formData.educationLevel);
-  //   uploadData.append("language", formData.language);
-  //   // uploadData.append("resourceType", formData.resourceType);
-  //   if (formData.file) uploadData.append("file", formData.file);
-  //   if (formData.thumbnail) uploadData.append("thumbnail", formData.thumbnail);
-
-  //   try {
-  //     const result = await uploadBook(uploadData);
-
-  //     if (result && result.id) {
-  //       setBookList((prev) => [...prev, result]);
-  //       setShowUploadModal(false);
-  //       setFormData({
-
-  //         bookName: "",
-  //         subject: "",
-
-  //         educationLevel: "",
-  //         language: "",
-
-  //         category: "",
-  //         file: null,
-  //         thumbnail: null,
-  //       });
-  //       navigate(`/books/${result.id}/chapters`);
-
-  //       toast.success("Book uploaded successfully ✅");
-  //     } else {
-  //       toast.error("Upload failed ❌");
-  //     }
-  //   } catch (error) {
-  //     toast.error("Something went wrong during upload ❌");
-  //     console.error("Upload Error:", error);
-  //   }
-  // };
 
   const handleUpload = async (e) => {
     e.preventDefault();
@@ -1379,25 +1313,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
         }
       }
 
-      // 📚 BOOK UPLOAD VALIDATION
-      else {
-        if (!formData.bookName?.trim()) {
-          toast.warn("📌 Book name is mandatory");
-          return;
-        }
-        if (!formData.subject?.trim()) {
-          toast.warn("📌 Subject is mandatory");
-          return;
-        }
-        if (!formData.educationLevel?.trim()) {
-          toast.warn("📌 Education level is mandatory");
-          return;
-        }
-        if (!formData.language?.trim()) {
-          toast.warn("📌 Language is mandatory");
-          return;
-        }
-      }
 
       // --- IF ALL GOOD - CONTINUE YOUR OLD LOGIC ---
       if (formData.category === "Current Affairs") {
@@ -1465,84 +1380,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
     }
   };
 
-  // const handleUpload = async (e) => {
-  //   e.preventDefault();
-
-  //   if (!formData.category || formData.category === "") {
-  //     toast.warn("Please select a category before uploading");
-  //     return;
-  //   }
-
-  //   try {
-  //     if (formData.category === "Current Affairs") {
-  //       const currentFormData = new FormData();
-
-  //       currentFormData.append("title", formData.title?.trim() || "");
-  //       currentFormData.append("mainCategory", formData.category || ""); // 📰 "Current Affairs"
-  //       currentFormData.append("category", formData.newsCategory || ""); // 🧠 "Science & Technology"
-
-  //       currentFormData.append(
-  //         "description",
-  //         formData.description?.trim() || ""
-  //       );
-  //       currentFormData.append("date", formData.date || "");
-  //       currentFormData.append("source", formData.source?.trim() || "");
-  //       if (formData.file) currentFormData.append("file", formData.file);
-  //       if (formData.link) currentFormData.append("link", formData.link);
-
-  //       console.log("📦 Sending FormData entries:", [
-  //         ...currentFormData.entries(),
-  //       ]);
-
-  //       const result = await addCurrentAffairs(null, currentFormData);
-  //       if (result) {
-  //         toast.success("✅ Current Affairs added successfully");
-  //         setShowUploadModal(false);
-  //         setFormData({
-  //           bookName: "",
-  //           category: "",
-  //           subject: "",
-  //           educationLevel: "",
-  //           language: "",
-  //           file: null,
-  //           thumbnail: null,
-  //           title: "",
-  //           description: "",
-  //           newsCategory: "",
-  //           date: "",
-  //           source: "",
-  //           link: "",
-  //         });
-  //       } else {
-  //         toast.error("❌ Failed to add Current Affairs");
-  //       }
-  //     } else {
-  //       // 🟢 Normal book upload
-  //       const uploadData = new FormData();
-  //       uploadData.append("bookName", formData.bookName);
-  //       uploadData.append("category", formData.category);
-  //       uploadData.append("subject", formData.subject);
-  //       uploadData.append("educationLevel", formData.educationLevel);
-  //       uploadData.append("language", formData.language);
-  //       if (formData.file) uploadData.append("file", formData.file);
-  //       if (formData.thumbnail)
-  //         uploadData.append("thumbnail", formData.thumbnail);
-
-  //       const result = await uploadBook(uploadData);
-  //       if (result && result.id) {
-  //         setBookList((prev) => [...prev, result]);
-  //         setShowUploadModal(false);
-  //         navigate(`/books/${result.id}/chapters`);
-  //         toast.success("✅ Book uploaded successfully");
-  //       } else {
-  //         toast.error("❌ Upload failed");
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     toast.error("⚠️ Something went wrong during upload");
-  //   }
-  // };
 
   const getViewLabel = (type) => {
     switch (type?.toLowerCase()) {
@@ -1576,18 +1413,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // const filteredBooks = bookList.filter((b) => {
-  //   // CLASS FILTER
-  //   const classMatch = selectedClass
-  //     ? Number(b.educationLevel) === Number(selectedClass)
-  //     : true;
-
-  //   // SEARCH FILTER
-  //   const text = `${b.bookName} ${b.subject} ${b.educationLevel}`.toLowerCase();
-  //   const searchMatch = text.includes(searchTerm.toLowerCase());
-
-  //   return classMatch && searchMatch;
-  // });
 
   const filteredBooks = bookList.filter((b) => {
     const selectedClassNumber = selectedClass ? parseInt(selectedClass) : null;
@@ -1788,11 +1613,10 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                 key={num}
                 onClick={() => setCurrentPage(num)}
                 className={`px-3 py-1 border rounded 
-          ${
-            num === currentPage
-              ? "bg-primaryBlue text-primaryWhite"
-              : "bg-primaryWhite/10"
-          }
+          ${num === currentPage
+                    ? "bg-primaryBlue text-primaryWhite"
+                    : "bg-primaryWhite/10"
+                  }
         `}
               >
                 {num}
@@ -2301,8 +2125,8 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                           Education Level
                         </label>
                         <select
-                          name="levels"
-                          value={formData.levels || ""}
+                          name="educationLevel"
+                          value={formData.educationLevel || ""}
                           onChange={handleChange}
                           className="w-full border border-gray300 p-2 rounded text-sm"
                         >
@@ -2313,6 +2137,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                             </option>
                           ))}
                         </select>
+
                       </div>
 
                       {/* Subject Dropdown - from subjects */}
@@ -2341,8 +2166,8 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                           Books
                         </label>
                         <select
-                          name="books"
-                          value={formData.books || ""}
+                          name="bookName"
+                          value={formData.bookName || ""}
                           onChange={handleChange}
                           className="w-full border border-gray300 p-2 rounded text-sm"
                         >
@@ -2353,6 +2178,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                             </option>
                           ))}
                         </select>
+
                       </div>
 
                       {/* Language Dropdown - from languages */}
@@ -2374,6 +2200,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                           ))}
                         </select>
                       </div>
+
                     </>
                   )}
 
@@ -2535,14 +2362,14 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                   <div className="flex items-center gap-4">
                     {(getBookResourceType(viewData) === "pdf" ||
                       getBookResourceType(viewData) === "audio") && (
-                      <button
-                        onClick={handleFullscreenToggle}
-                        className="text-primaryWhite text-xl hover:text-lightGreen"
-                        title="Toggle Fullscreen"
-                      >
-                        {isFullscreen ? <FaCompress /> : <FaExpand />}
-                      </button>
-                    )}
+                        <button
+                          onClick={handleFullscreenToggle}
+                          className="text-primaryWhite text-xl hover:text-lightGreen"
+                          title="Toggle Fullscreen"
+                        >
+                          {isFullscreen ? <FaCompress /> : <FaExpand />}
+                        </button>
+                      )}
                     <button
                       onClick={() => setViewData(null)}
                       className="text-primaryWhite text-2xl hover:text-primaryRed"
