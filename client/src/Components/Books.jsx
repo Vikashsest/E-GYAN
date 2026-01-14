@@ -1049,10 +1049,6 @@
 //   );
 // }
 
-
-
-
-
 import { useEffect, useState } from "react";
 import FlipbookPDFViewer from "./FlipbookPDFViewer";
 import { FaEdit, FaTrash, FaExpand, FaCompress } from "react-icons/fa";
@@ -1189,7 +1185,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
     loadFormOptions();
   }, []);
 
-
   useEffect(() => {
     async function loadInitialData() {
       try {
@@ -1278,7 +1273,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
     }
   };
 
-
   const handleUpload = async (e) => {
     e.preventDefault();
 
@@ -1312,7 +1306,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
           return;
         }
       }
-
 
       // --- IF ALL GOOD - CONTINUE YOUR OLD LOGIC ---
       if (formData.category === "Current Affairs") {
@@ -1380,7 +1373,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
     }
   };
 
-
   const getViewLabel = (type) => {
     switch (type?.toLowerCase()) {
       case "pdf":
@@ -1413,6 +1405,22 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // const filteredBooks = bookList.filter((b) => {
+  //   const selectedClassNumber = selectedClass ? parseInt(selectedClass) : null;
+
+  //   const bookClassNumber = b.educationLevel
+  //     ? parseInt(b.educationLevel.toString().replace(/\D/g, ""))
+  //     : null;
+
+  //   const classMatch = selectedClassNumber
+  //     ? bookClassNumber === selectedClassNumber
+  //     : true;
+
+  //   const text = `${b.bookName} ${b.subject} ${b.educationLevel}`.toLowerCase();
+  //   const searchMatch = text.includes(searchTerm.toLowerCase());
+
+  //   return classMatch && searchMatch;
+  // });
 
   const filteredBooks = bookList.filter((b) => {
     const selectedClassNumber = selectedClass ? parseInt(selectedClass) : null;
@@ -1425,10 +1433,12 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
       ? bookClassNumber === selectedClassNumber
       : true;
 
+    const categoryMatch = filterCategory ? b.category === filterCategory : true;
+
     const text = `${b.bookName} ${b.subject} ${b.educationLevel}`.toLowerCase();
     const searchMatch = text.includes(searchTerm.toLowerCase());
 
-    return classMatch && searchMatch;
+    return classMatch && categoryMatch && searchMatch;
   });
 
   const totalPages = Math.ceil(filteredBooks.length / itemsPerPage);
@@ -1500,6 +1510,24 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
               </option>
             ))}
           </select>
+          <div className="mb-4 flex gap-3 items-center">
+            <label className="font-medium">Category:</label>
+            <select
+              value={filterCategory}
+              onChange={(e) => {
+                setFilterCategory(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="border border-gray400 rounded px-2 py-1 text-primaryBlack"
+            >
+              <option value="">All Categories</option>
+              {categories.map((cat, idx) => (
+                <option key={idx} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -1613,10 +1641,11 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                 key={num}
                 onClick={() => setCurrentPage(num)}
                 className={`px-3 py-1 border rounded 
-          ${num === currentPage
-                    ? "bg-primaryBlue text-primaryWhite"
-                    : "bg-primaryWhite/10"
-                  }
+          ${
+            num === currentPage
+              ? "bg-primaryBlue text-primaryWhite"
+              : "bg-primaryWhite/10"
+          }
         `}
               >
                 {num}
@@ -2137,7 +2166,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                             </option>
                           ))}
                         </select>
-
                       </div>
 
                       {/* Subject Dropdown - from subjects */}
@@ -2178,7 +2206,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                             </option>
                           ))}
                         </select>
-
                       </div>
 
                       {/* Language Dropdown - from languages */}
@@ -2200,7 +2227,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                           ))}
                         </select>
                       </div>
-
                     </>
                   )}
 
@@ -2362,14 +2388,14 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                   <div className="flex items-center gap-4">
                     {(getBookResourceType(viewData) === "pdf" ||
                       getBookResourceType(viewData) === "audio") && (
-                        <button
-                          onClick={handleFullscreenToggle}
-                          className="text-primaryWhite text-xl hover:text-lightGreen"
-                          title="Toggle Fullscreen"
-                        >
-                          {isFullscreen ? <FaCompress /> : <FaExpand />}
-                        </button>
-                      )}
+                      <button
+                        onClick={handleFullscreenToggle}
+                        className="text-primaryWhite text-xl hover:text-lightGreen"
+                        title="Toggle Fullscreen"
+                      >
+                        {isFullscreen ? <FaCompress /> : <FaExpand />}
+                      </button>
+                    )}
                     <button
                       onClick={() => setViewData(null)}
                       className="text-primaryWhite text-2xl hover:text-primaryRed"

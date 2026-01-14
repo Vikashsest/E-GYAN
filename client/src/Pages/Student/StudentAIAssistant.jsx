@@ -68,7 +68,6 @@ export default function StudentAIAssistant({
     setLoading(false);
   };
 
-  // Show chapter name
   const chapterName = selectedChapter?.chapterName || "Select a chapter";
 
   return (
