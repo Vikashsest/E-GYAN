@@ -1424,7 +1424,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
 
   const filteredBooks = bookList.filter((b) => {
     const selectedClassNumber = selectedClass ? parseInt(selectedClass) : null;
-
     const bookClassNumber = b.educationLevel
       ? parseInt(b.educationLevel.toString().replace(/\D/g, ""))
       : null;
