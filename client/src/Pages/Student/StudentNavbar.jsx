@@ -1,6 +1,6 @@
-
 import { FiSearch, FiBell } from "react-icons/fi";
-import {Link} from "react-router-dom";
+import { MdSmartToy } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 function StudentNavbar({
   searchTerm = "",
@@ -29,6 +29,15 @@ function StudentNavbar({
 
       {/* Right Icons */}
       <div className="flex items-center space-x-6">
+        {/* AI Assistant Button */}
+        <Link
+          to="/student/ai-assistant"
+          className="flex items-center bg-primaryBlue px-3 py-1.5 rounded text-sm font-semibold hover:bg-hoverBlue transition"
+        >
+          <MdSmartToy size={18} className="mr-1" />
+          Ask Egyan AI
+        </Link>
+
         {onAdd && (
           <button
             onClick={onAdd}
@@ -38,6 +47,10 @@ function StudentNavbar({
           </button>
         )}
 
+        {/* Bell icon */}
+        <FiBell size={22} className="cursor-pointer hidden sm:block" />
+
+        {/* User Profile */}
         <div className="flex flex-col items-center">
           <Link
             to="/student/profile"
