@@ -1245,29 +1245,29 @@ export default function ChaptersList() {
 
   useEffect(() => {
     if (!openPartsId) {
-      setShowVideo([]);
+      setPartsList([]);
       return;
     }
 
-    const fetchParts = async (chapterId) => {
+    const fetchParts = async () => {
       try {
         const res = await fetch(
-          `${API_URL}/books/${bookId}/chapters/${chapterId}/parts`,
+          `${API_URL}/books/${bookId}/chapters/${openPartsId}/parts`,
           { credentials: "include" }
         );
-        if (!res.ok) throw new Error("Failed");
+        if (!res.ok) throw new Error("Failed to fetch parts");
 
         const data = await res.json();
-        setPartsList(data); // ✅ array of parts
+        setPartsList(data);
       } catch (err) {
         console.error(err);
         setPartsList([]);
       }
     };
 
-
     fetchParts();
-  }, [openPartsId, bookId]); // ✅ Dependency array me openPartsId add kiya
+  }, [openPartsId, bookId]);
+
 
   // Filter ke hisaab se pehla chapter select karo
   useEffect(() => {
