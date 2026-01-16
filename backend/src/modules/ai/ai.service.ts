@@ -153,7 +153,6 @@ JSON format:
       });
       buffer = Buffer.from(response.data);
     } else {
-      // Local file fallback
       buffer = fs.readFileSync(fileUrl);
     }
 
