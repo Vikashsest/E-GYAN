@@ -1170,11 +1170,15 @@
 
 
 
+
+
+
 import { useState, useEffect, useRef } from "react";
 import { FiMenu, FiX } from "react-icons/fi";
 import { FaExpand, FaCompress } from "react-icons/fa";
 import FlipbookPDFViewer from "../../Components/FlipbookPDFViewer";
 import { useNavigate, useParams } from "react-router-dom";
+import { FaPlayCircle } from "react-icons/fa";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -1187,6 +1191,9 @@ export default function ChaptersList() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [viewMode, setViewMode] = useState("flip");
+  const [partsList, setPartsList] = useState([]);
+
+
   const viewerRef = useRef(null);
   const navigate = useNavigate();
 
@@ -1238,25 +1245,26 @@ export default function ChaptersList() {
 
   useEffect(() => {
     if (!openPartsId) {
-      setShowVideo([]); 
+      setShowVideo([]);
       return;
     }
 
-    const fetchParts = async () => {
+    const fetchParts = async (chapterId) => {
       try {
+        const res = await fetch(
+          `${API_URL}/books/${bookId}/chapters/${chapterId}/parts`,
+          { credentials: "include" }
+        );
+        if (!res.ok) throw new Error("Failed");
 
-        const res = await fetch(`${API_URL}/books/${bookId}/chapters/${openPartsId}/parts`,
-          { credentials: "include" });
-        console.log(res)
-        if (!res.ok) throw new Error("Failed to fetch parts");
-        
         const data = await res.json();
-        console.log("Fetched Parts:", data);
-        setShowVideo(data.url);
+        setPartsList(data); // ✅ array of parts
       } catch (err) {
-        console.error(err.message)
+        console.error(err);
+        setPartsList([]);
       }
     };
+
 
     fetchParts();
   }, [openPartsId, bookId]); // ✅ Dependency array me openPartsId add kiya
@@ -1460,14 +1468,18 @@ export default function ChaptersList() {
                       <div className="flex items-center h-[60px]">
 
                         <div className="w-20 h-14 flex items-center justify-center bg-gray-300 dark:bg-gray-600 rounded-l-lg overflow-hidden">
-                          <img
-                            src={thumbSrc}
-                            alt={`thumb-${item.id}`}
-                            loading="lazy"
-                            data-tried="0"
-                            onError={(e) => handleImgError(e, item)}
-                            className="w-full h-full object-cover"
-                          />
+                          {item.resourceType === "video" ? (
+                            <FaPlayCircle className="text-gray-700 dark:text-white" size={32} />
+                          ) : (
+                            <img
+                              src={thumbSrc}
+                              alt={`thumb-${item.id}`}
+                              loading="lazy"
+                              data-tried="0"
+                              onError={(e) => handleImgError(e, item)}
+                              className="w-full h-full object-cover"
+                            />
+                          )}
                         </div>
 
                         <div className="ml-3 flex flex-col w-full">
@@ -1480,45 +1492,53 @@ export default function ChaptersList() {
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  // Toggle parts ID
-                                  setOpenPartsId(openPartsId === item.id ? null : item.id);
+                                  if (openPartsId === item.id) {
+                                    setOpenPartsId(null);
+                                    setPartsList([]);
+                                  } else {
+                                    setOpenPartsId(item.id);
+                                  }
                                 }}
-                                className="text-xs text-white font-semibold rounded-lg px-2 py-1 bg-gray-300 dark:bg-gray-600 mr-2 shrink-0"
+                                className="text-xs px-2 py-1 bg-gray-300 dark:bg-gray-600 rounded"
                               >
                                 Parts ▼
                               </button>
                             )}
+
                           </div>
                         </div>
 
                       </div>
 
                       {/* ✅ FIXED: DROPDOWN with API Data */}
-                      {openPartsId === item.id && item.resourceType === "video" && (
-                        <div className="mt-2 ml-3 mb-3 flex flex-col gap-1 text-xs bg-gray-200 dark:bg-gray-700 p-2 rounded">
-                          {showVideo && showVideo.length > 0 ? (
-                            showVideo.map((part, idx) => (
+                      {openPartsId === item.id && (
+                        <div className="mt-2 ml-3 mb-3 flex flex-col gap-1 bg-gray-200 dark:bg-gray-700 p-2 rounded">
+                          {partsList.length > 0 ? (
+                            partsList.map((part) => (
                               <button
-                                key={part.id || idx}
+                                key={part.id}
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  
-                                  setShowVideo({
-                                    ...part,
-                                    resourceType: 'video',
-                                    title: part.title || `Part ${idx + 1}`
+
+                                  // ✅ PLAY THIS PART
+                                  setSelectedChapter({
+                                    id: part.id,
+                                    resourceType: "video",
+                                    fileUrl: part.proxyUrl, // 🔥 MUST
+                                    title: part.displayName,
                                   });
                                 }}
-                                className="text-left px-2 py-1 text-white bg-gray-400 dark:bg-gray-500 border-light rounded hover:bg-gray-500 dark:hover:bg-gray-400"
+                                className="text-left px-2 py-1 text-sm text-white bg-gray-500 rounded hover:bg-gray-600"
                               >
-                                {part.title || `Part ${idx + 1}`}
+                                ▶ {part.displayName}
                               </button>
                             ))
                           ) : (
-                            <p className="px-2 text-gray-500">part</p>
+                            <p className="text-xs text-gray-400 px-2">No parts found</p>
                           )}
                         </div>
                       )}
+
 
                     </div>
 
@@ -1580,15 +1600,20 @@ export default function ChaptersList() {
                             }`}
                         >
                           <div className="w-14 h-14 flex items-center justify-center bg-gray-300 dark:bg-gray-600 rounded-l-lg overflow-hidden">
-                            <img
-                              src={thumbSrc}
-                              alt={`thumb-${item.id}`}
-                              loading="lazy"
-                              data-tried="0"
-                              onError={(e) => handleImgError(e, item)}
-                              className="w-full h-full object-cover"
-                            />
+                            {item.resourceType === "video" ? (
+                              <FaPlayCircle className="text-gray-700 dark:text-white" size={28} />
+                            ) : (
+                              <img
+                                src={thumbSrc}
+                                alt={`thumb-${item.id}`}
+                                loading="lazy"
+                                data-tried="0"
+                                onError={(e) => handleImgError(e, item)}
+                                className="w-full h-full object-cover"
+                              />
+                            )}
                           </div>
+
                           <p className="ml-3 text-sm font-medium text-gray-800 dark:text-gray-200">
                             {item.title}
                           </p>
