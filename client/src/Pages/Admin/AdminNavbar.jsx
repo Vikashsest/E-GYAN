@@ -138,7 +138,7 @@ function AdminNavbar({
   const [onlineUsersCount, setOnlineUsersCount] = useState(0);
   useEffect(() => {
     // initial fetch (optional)
-    fetch("http://localhost:5000/websocket/online-count", {
+    fetch("https://e-gyan-9tky.onrender.com/websocket/online-count", {
       credentials: "include",
     })
       .then((res) => res.json())
