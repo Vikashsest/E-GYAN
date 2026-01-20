@@ -1192,13 +1192,13 @@ export default function ChaptersList() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [viewMode, setViewMode] = useState("flip");
   const [partsList, setPartsList] = useState([]);
+  const [currentVideoUrl, setCurrentVideoUrl] = useState(null);
 
 
   const viewerRef = useRef(null);
   const navigate = useNavigate();
 
   const [openPartsId, setOpenPartsId] = useState(null);
-  const [showVideo, setShowVideo] = useState(null);
 
   // Fetch chapters
   useEffect(() => {
@@ -1269,13 +1269,19 @@ export default function ChaptersList() {
   }, [openPartsId, bookId]);
 
 
-  // Filter ke hisaab se pehla chapter select karo
   useEffect(() => {
     if (chapters.length > 0) {
       const firstFiltered = chapters.find((ch) => ch.typeUpper === filter);
       setSelectedChapter(firstFiltered || null);
+
+      if (firstFiltered?.resourceType === "video") {
+        setFilter("VIDEO"); // 🔥 ADD THIS
+        setCurrentVideoUrl(firstFiltered.proxyUrl || firstFiltered.fileUrl);
+      }
+
     }
   }, [chapters, filter]);
+
 
   const filtered = chapters.filter((ch) => ch.typeUpper === filter);
 
@@ -1318,6 +1324,8 @@ export default function ChaptersList() {
       )}`;
     }
   };
+
+
 
   return (
     <div className="flex h-screen bg-[#fdf6f2] dark:bg-gray-900 transition-colors duration-300">
@@ -1391,14 +1399,17 @@ export default function ChaptersList() {
               </>
             )}
 
-            {selectedChapter.resourceType === "video" && (
+            {selectedChapter?.resourceType === "video" && selectedChapter?.fileUrl && (
               <video
-                key={selectedChapter.id} // Key change hone par video reload hoga
+                key={selectedChapter.id}
                 controls
+                autoPlay
                 className="w-full h-full object-contain"
                 src={selectedChapter.fileUrl}
               />
             )}
+
+
 
             {selectedChapter.resourceType === "audio" && (
               <div className="flex flex-col items-center justify-center w-full h-full gap-4 text-white">
@@ -1456,7 +1467,12 @@ export default function ChaptersList() {
                   return (
                     <div
                       key={item.id}
-                      onClick={() => setSelectedChapter(item)}
+                      onClick={() => {
+                        setSelectedChapter(item);
+                        setFilter("VIDEO");
+                        setCurrentVideoUrl(item.proxyUrl || item.fileUrl);
+                      }}
+
                       className={`flex flex-col w-[320px] rounded-lg shadow-sm cursor-pointer
     ${selectedChapter?.id === item.id
                           ? "bg-blue-200 dark:bg-blue-600"
@@ -1520,17 +1536,27 @@ export default function ChaptersList() {
                                 onClick={(e) => {
                                   e.stopPropagation();
 
-                                  // ✅ PLAY THIS PART
+                                  const videoUrl = part.proxyUrl || part.fileUrl;
+                                  if (!videoUrl) return;
+
                                   setSelectedChapter({
                                     id: part.id,
                                     resourceType: "video",
-                                    fileUrl: part.proxyUrl, // 🔥 MUST
-                                    title: part.displayName,
+                                    title: `Part ${part.partNumber || ""}`,
+                                    fileUrl: part.fileUrl,
+                                    proxyUrl: part.proxyUrl,
                                   });
+
+                                  setFilter("VIDEO");
+                                  setCurrentVideoUrl(videoUrl);
                                 }}
+
+
+
+
                                 className="text-left px-2 py-1 text-sm text-white bg-gray-500 rounded hover:bg-gray-600"
                               >
-                                ▶ {part.displayName}
+                                ▶ {`part ${part.chapterNumber}`}
                               </button>
                             ))
                           ) : (

@@ -11,28 +11,25 @@ function StudentNavbar({
 }) {
   return (
     <div className="flex justify-between items-center mb-6">
-      {/* Search Bar */}
       {onSearchChange ? (
-        <div className="flex items-center bg-sidebarbg px-4 py-2 rounded w-full max-w-md">
-          <FiSearch className="text-gray400 mr-2" />
+        <div className="flex items-center bg-gray-800 px-4 py-2 rounded w-full max-w-md">
+          <FiSearch className="text-gray-400 mr-2" />
           <input
             type="text"
             placeholder={searchPlaceholder}
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="bg-transparent outline-none w-full placeholder-gray400"
+            className="bg-transparent outline-none w-full text-white placeholder-gray-400"
           />
         </div>
       ) : (
         <div />
       )}
 
-      {/* Right Icons */}
       <div className="flex items-center space-x-6">
-        {/* AI Assistant Button */}
         <Link
           to="/student/ai-assistant"
-          className="flex items-center bg-primaryBlue px-3 py-1.5 rounded text-sm font-semibold hover:bg-hoverBlue transition"
+          className="flex items-center bg-blue-600 px-3 py-1.5 rounded text-sm font-semibold text-white hover:bg-blue-700"
         >
           <MdSmartToy size={18} className="mr-1" />
           Ask Egyan AI
@@ -41,33 +38,21 @@ function StudentNavbar({
         {onAdd && (
           <button
             onClick={onAdd}
-            className="bg-primaryBlue px-4 py-1 rounded text-sm font-semibold hover:bg-hoverBlue"
+            className="bg-blue-600 px-4 py-1 rounded text-sm font-semibold text-white"
           >
             {buttonLabel}
           </button>
         )}
 
-        {/* Bell icon */}
-        <FiBell size={22} className="cursor-pointer hidden sm:block" />
+        <FiBell size={22} className="cursor-pointer text-white hidden sm:block" />
 
-        {/* User Profile */}
-        <div className="flex flex-col items-center">
-          <Link
-            to="/student/profile"
-            className="flex flex-col items-center group relative"
-          >
-            <img
-              src="/user.png"
-              alt="User"
-              width={32}
-              height={32}
-              className="rounded-full cursor-pointer"
-            />
-            <span className="absolute top-full mt-1 text-primaryWhite font-bold text-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              Student
-            </span>
-          </Link>
-        </div>
+        <Link to="/student/profile">
+          <img
+            src="/user.png"
+            alt="User"
+            className="w-8 h-8 rounded-full"
+          />
+        </Link>
       </div>
     </div>
   );

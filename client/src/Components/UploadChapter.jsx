@@ -548,7 +548,6 @@ export default function UploadChapter() {
   const [resourceTypes, setResourceTypes] = useState([]);
   const [partsMap, setPartsMap] = useState({});
   const [partNumber, setPartNumber] = useState("");
-  const [partsByChapter, setPartsByChapter] = useState({});
   const API_URL = import.meta.env.VITE_API_URL;
   const progressIntervalRef = useRef(null);
 
@@ -779,7 +778,7 @@ export default function UploadChapter() {
                     <div key={p.id} className="flex justify-between items-center text-sm">
                       <span>
                         {c.resourceType === "video"
-                          ? `Lecture ${p.partNumber}`
+                          ? `Part ${p.chapterNumber}`
                           : `Part ${p.partNumber}`}
                       </span>
 
@@ -875,7 +874,7 @@ export default function UploadChapter() {
                           key={p.id}
                           className="p-2 bg-[#1f2030] rounded text-sm text-white"
                         >
-                          <div className="font-semibold">{p.displayName}</div>
+                          <div className="font-semibold">{`part ${p.chapterNumber}`}</div>
                           <div className="text-gray-400">
                             Type: {p.resourceType}
                           </div>
