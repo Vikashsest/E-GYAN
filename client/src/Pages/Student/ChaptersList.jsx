@@ -1158,8 +1158,6 @@
 //   );
 // }
 
-
-
 import { useState, useEffect, useRef } from "react";
 import { FiMenu, FiX } from "react-icons/fi";
 import { FaExpand, FaCompress } from "react-icons/fa";
@@ -1181,12 +1179,10 @@ export default function ChaptersList() {
   const [partsList, setPartsList] = useState([]);
   const [currentVideoUrl, setCurrentVideoUrl] = useState(null);
 
-
   const viewerRef = useRef(null);
   const navigate = useNavigate();
 
   const [openPartsId, setOpenPartsId] = useState(null);
-  const [showVideo, setShowVideo] = useState(null);
 
   // Fetch chapters
   useEffect(() => {
@@ -1217,11 +1213,12 @@ export default function ChaptersList() {
             title,
             file: item.proxyUrl || item.fileUrl,
             typeUpper: type.toUpperCase(),
-            parts: item.parts || [], // ⭐ ADDED ONLY THIS
           };
         });
 
         setChapters(formatted);
+        setOpenPartsId(formatted.parts);
+        console.log(formatted.parts);
       } catch (err) {
         setError(err.message);
       }
@@ -1230,33 +1227,31 @@ export default function ChaptersList() {
     if (bookId) fetchChapters();
   }, [bookId]);
 
-  // Fetch parts when user opens a chapter
   useEffect(() => {
     if (!openPartsId) {
-      setShowVideo([]); 
+      setPartsList([]);
       return;
     }
 
     const fetchParts = async () => {
       try {
-
-        const res = await fetch(`${API_URL}/books/${bookId}/chapters/${openPartsId}/parts`,
-          { credentials: "include" });
-        console.log(res)
+        const res = await fetch(
+          `${API_URL}/books/${bookId}/chapters/${openPartsId}/parts`,
+          { credentials: "include" },
+        );
         if (!res.ok) throw new Error("Failed to fetch parts");
-        
+
         const data = await res.json();
-        console.log("Fetched Parts:", data);
-        setShowVideo(data.url);
+        setPartsList(data);
       } catch (err) {
-        console.error(err.message)
+        console.error(err);
+        setPartsList([]);
       }
     };
 
     fetchParts();
   }, [openPartsId, bookId]);
 
-  // Filter ke hisaab se pehla chapter select karo
   useEffect(() => {
     if (chapters.length > 0) {
       const firstFiltered = chapters.find((ch) => ch.typeUpper === filter);
@@ -1266,10 +1261,8 @@ export default function ChaptersList() {
         setFilter("VIDEO"); // 🔥 ADD THIS
         setCurrentVideoUrl(firstFiltered.proxyUrl || firstFiltered.fileUrl);
       }
-
     }
   }, [chapters, filter]);
-
 
   const filtered = chapters.filter((ch) => ch.typeUpper === filter);
 
@@ -1283,16 +1276,16 @@ export default function ChaptersList() {
       return item.thumbnail.includes("/index.php/s/")
         ? item.thumbnail + "/download"
         : `${API_URL}/books/proxy/thumbnail?url=${encodeURIComponent(
-            item.thumbnail
+            item.thumbnail,
           )}`;
     }
     if (item.fileUrl) {
       return `${API_URL}/books/proxy/thumbnail?url=${encodeURIComponent(
-        item.fileUrl
+        item.fileUrl,
       )}`;
     }
     return `data:image/svg+xml;utf8,${encodeURIComponent(
-      `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='140'><rect width='100%' height='100%' fill='#e5e7eb'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='#9ca3af' font-family='Arial' font-size='14'>No Image</text></svg>`
+      `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='140'><rect width='100%' height='100%' fill='#e5e7eb'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='#9ca3af' font-family='Arial' font-size='14'>No Image</text></svg>`,
     )}`;
   };
 
@@ -1304,21 +1297,20 @@ export default function ChaptersList() {
       el.src = item.thumbnail.includes("/index.php/s/")
         ? item.thumbnail + "/download"
         : `${API_URL}/books/proxy/thumbnail?url=${encodeURIComponent(
-            item.thumbnail
+            item.thumbnail,
           )}`;
     } else if (item.fileUrl) {
       el.src = `${API_URL}/books/proxy/thumbnail?url=${encodeURIComponent(
-        item.fileUrl
+        item.fileUrl,
       )}`;
     }
   };
-
-
 
   return (
     <div className="flex h-screen bg-[#fdf6f2] dark:bg-gray-900 transition-colors duration-300">
       {/* Main Viewer */}
       <div className="flex-1 flex flex-col relative">
+        {/* Back button */}
         {!isFullscreen && (
           <div className="absolute top-3 left-3 flex items-center gap-3 z-50">
             <button
@@ -1330,6 +1322,7 @@ export default function ChaptersList() {
           </div>
         )}
 
+        {/* Mobile menu */}
         {!isFullscreen && (
           <div className="absolute top-3 right-3 flex items-center gap-2 z-40 lg:hidden">
             <button
@@ -1341,6 +1334,7 @@ export default function ChaptersList() {
           </div>
         )}
 
+        {/* Viewer */}
         {selectedChapter ? (
           <div
             ref={viewerRef}
@@ -1355,6 +1349,7 @@ export default function ChaptersList() {
                     isFullscreen ? "w-full h-full p-0 bg-black" : "p-4"
                   }`}
                 >
+                  {/* Flipbook / Scrollable PDF */}
                   <FlipbookPDFViewer
                     chapter={selectedChapter}
                     isFullscreen={isFullscreen}
@@ -1362,6 +1357,7 @@ export default function ChaptersList() {
                     className="w-full h-full"
                   />
 
+                  {/* Fullscreen Toggle */}
                   <button
                     onClick={handleFullscreen}
                     className={`absolute bottom-3 right-3 p-2 ${
@@ -1385,17 +1381,16 @@ export default function ChaptersList() {
               </>
             )}
 
-            {selectedChapter?.resourceType === "video" && selectedChapter?.fileUrl && (
-              <video
-                key={selectedChapter.id}
-                controls
-                autoPlay
-                className="w-full h-full object-contain"
-                src={selectedChapter.proxyUrl || selectedChapter.fileUrl}
-              />
-            )}
-
-
+            {selectedChapter?.resourceType === "video" &&
+              selectedChapter?.fileUrl && (
+                <video
+                  key={selectedChapter.id}
+                  controls
+                  autoPlay
+                  className="w-full h-full object-contain"
+                  src={selectedChapter.fileUrl}
+                />
+              )}
 
             {selectedChapter.resourceType === "audio" && (
               <div className="flex flex-col items-center justify-center w-full h-full gap-4 text-white">
@@ -1420,23 +1415,27 @@ export default function ChaptersList() {
         )}
       </div>
 
+      {/* Sidebar (Desktop & Mobile) */}
       {!isFullscreen && (
-        <div className="hidden lg:flex w-[320px] bg-white dark:bg-gray-800 p-4 flex-col shadow-lg overflow-y-auto">
-          <div className="flex justify-between mb-4">
-            {["PDF", "VIDEO", "AUDIO"].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setFilter(tab)}
-                className={`px-5 py-1 rounded-lg text-sm font-medium ${
-                  filter === tab
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200"
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
+        <>
+          {/* Desktop Sidebar */}
+          <div className="hidden lg:flex w-[320px] bg-white dark:bg-gray-800 p-4 flex-col shadow-lg overflow-y-auto">
+            {/* Filter Tabs */}
+            <div className="flex justify-between mb-4">
+              {["PDF", "VIDEO", "AUDIO"].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setFilter(tab)}
+                  className={`px-5 py-1 rounded-lg text-sm font-medium ${
+                    filter === tab
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
 
             {/* Chapter List */}
             <div className="flex flex-col gap-3">
@@ -1450,84 +1449,102 @@ export default function ChaptersList() {
                   return (
                     <div
                       key={item.id}
-                      onClick={() => setSelectedChapter(item)}
+                      onClick={() => {
+                        setSelectedChapter(item);
+                        setFilter("VIDEO");
+                        setCurrentVideoUrl(item.proxyUrl || item.fileUrl);
+                      }}
                       className={`flex flex-col w-[320px] rounded-lg shadow-sm cursor-pointer
-    ${selectedChapter?.id === item.id
-                          ? "bg-blue-200 dark:bg-blue-600"
-                          : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
-                        }`}
+    ${
+      selectedChapter?.id === item.id
+        ? "bg-blue-200 dark:bg-blue-600"
+        : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+    }`}
                     >
-
                       {/* Row: Image + Title + Parts button */}
                       <div className="flex items-center h-[60px]">
-
                         <div className="w-20 h-14 flex items-center justify-center bg-gray-300 dark:bg-gray-600 rounded-l-lg overflow-hidden">
-                          <img
-                            src={thumbSrc}
-                            alt={`thumb-${item.id}`}
-                            loading="lazy"
-                            data-tried="0"
-                            onError={(e) => handleImgError(e, item)}
-                            className="w-full h-full object-cover"
-                          />
+                          {item.resourceType === "video" ? (
+                            <FaPlayCircle
+                              className="text-gray-700 dark:text-white"
+                              size={32}
+                            />
+                          ) : (
+                            <img
+                              src={thumbSrc}
+                              alt={`thumb-${item.id}`}
+                              loading="lazy"
+                              data-tried="0"
+                              onError={(e) => handleImgError(e, item)}
+                              className="w-full h-full object-cover"
+                            />
+                          )}
                         </div>
 
-                      <div className="ml-3 flex flex-col w-full">
-                        <div className="flex justify-between items-center">
-                          <p className="text-sm font-medium text-gray-800 dark:text-gray-200 line-clamp-1 mr-2">
-                            {item.title}
-                          </p>
+                        <div className="ml-3 flex flex-col w-full">
+                          <div className="flex justify-between items-center">
+                            <p className="text-sm font-medium text-gray-800 dark:text-gray-200 line-clamp-1 mr-2">
+                              {item.title}
+                            </p>
 
                             {item.resourceType === "video" && (
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  // Toggle parts ID
-                                  setOpenPartsId(openPartsId === item.id ? null : item.id);
+                                  if (openPartsId === item.id) {
+                                    setOpenPartsId(null);
+                                    setPartsList([]);
+                                  } else {
+                                    setOpenPartsId(item.id);
+                                  }
                                 }}
-                                className="text-xs text-white font-semibold rounded-lg px-2 py-1 bg-gray-300 dark:bg-gray-600 mr-2 shrink-0"
+                                className="text-xs px-2 py-1 bg-gray-300 dark:bg-gray-600 rounded"
                               >
                                 Parts ▼
                               </button>
                             )}
                           </div>
                         </div>
-
                       </div>
 
                       {/* ✅ FIXED: DROPDOWN with API Data */}
-                      {openPartsId === item.id && item.resourceType === "video" && (
-                        <div className="mt-2 ml-3 mb-3 flex flex-col gap-1 text-xs bg-gray-200 dark:bg-gray-700 p-2 rounded">
-                          {showVideo && showVideo.length > 0 ? (
-                            showVideo.map((part, idx) => (
+                      {openPartsId === item.id && (
+                        <div className="mt-2 ml-3 mb-3 flex flex-col gap-1 bg-gray-200 dark:bg-gray-700 p-2 rounded">
+                          {partsList.length > 0 ? (
+                            partsList.map((part) => (
                               <button
-                                key={part.id || idx}
+                                key={part.id}
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  
-                                  setShowVideo({
-                                    ...part,
-                                    resourceType: 'video',
-                                    title: part.title || `Part ${idx + 1}`
+
+                                  const videoUrl =
+                                    part.proxyUrl || part.fileUrl;
+                                  if (!videoUrl) return;
+
+                                  setSelectedChapter({
+                                    id: part.id,
+                                    resourceType: "video",
+                                    title: `Part ${part.partNumber || ""}`,
+                                    fileUrl: part.fileUrl,
+                                    proxyUrl: part.proxyUrl,
                                   });
+
+                                  setFilter("VIDEO");
+                                  setCurrentVideoUrl(videoUrl);
                                 }}
-
-
-
-
                                 className="text-left px-2 py-1 text-sm text-white bg-gray-500 rounded hover:bg-gray-600"
                               >
-                                {part.title || `Part ${idx + 1}`}
+                                ▶ {`part ${part.chapterNumber}`}
                               </button>
                             ))
                           ) : (
-                            <p className="px-2 text-gray-500">part</p>
+                            <p className="text-xs text-gray-400 px-2">
+                              No parts found
+                            </p>
                           )}
                         </div>
                       )}
-
                     </div>
-
                   );
                 })
               )}
@@ -1555,10 +1572,11 @@ export default function ChaptersList() {
                     <button
                       key={tab}
                       onClick={() => setFilter(tab)}
-                      className={`px-3 py-1 rounded-lg text-sm font-medium ${filter === tab
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200"
-                        }`}
+                      className={`px-3 py-1 rounded-lg text-sm font-medium ${
+                        filter === tab
+                          ? "bg-blue-500 text-white"
+                          : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200"
+                      }`}
                     >
                       {tab}
                     </button>
@@ -1580,21 +1598,30 @@ export default function ChaptersList() {
                             setSelectedChapter(item);
                             setIsSidebarOpen(false);
                           }}
-                          className={`flex items-center w-full h-[60px] rounded-lg shadow-sm cursor-pointer ${selectedChapter?.id === item.id
-                            ? "bg-blue-200 dark:bg-blue-600"
-                            : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
-                            }`}
+                          className={`flex items-center w-full h-[60px] rounded-lg shadow-sm cursor-pointer ${
+                            selectedChapter?.id === item.id
+                              ? "bg-blue-200 dark:bg-blue-600"
+                              : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+                          }`}
                         >
                           <div className="w-14 h-14 flex items-center justify-center bg-gray-300 dark:bg-gray-600 rounded-l-lg overflow-hidden">
-                            <img
-                              src={thumbSrc}
-                              alt={`thumb-${item.id}`}
-                              loading="lazy"
-                              data-tried="0"
-                              onError={(e) => handleImgError(e, item)}
-                              className="w-full h-full object-cover"
-                            />
+                            {item.resourceType === "video" ? (
+                              <FaPlayCircle
+                                className="text-gray-700 dark:text-white"
+                                size={28}
+                              />
+                            ) : (
+                              <img
+                                src={thumbSrc}
+                                alt={`thumb-${item.id}`}
+                                loading="lazy"
+                                data-tried="0"
+                                onError={(e) => handleImgError(e, item)}
+                                className="w-full h-full object-cover"
+                              />
+                            )}
                           </div>
+
                           <p className="ml-3 text-sm font-medium text-gray-800 dark:text-gray-200">
                             {item.title}
                           </p>
