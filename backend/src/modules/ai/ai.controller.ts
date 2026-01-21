@@ -17,8 +17,14 @@ export class AiController {
   private memoryStore: { chunk: string; embedding: number[] }[] = [];
   @Post('chat')
   async chat(@Body('question') question: string) {
-    return await this.aiService.chatWithGemini(question);
+    const result = await this.aiService.chatWithGemini(question);
+
+    return {
+      answer: result.answer,
+      suggestions: result.suggestions || [],
+    };
   }
+
   constructor(private readonly aiService: AiService) {}
   @Post('generate-quiz')
   async generateQuiz(@Body() body: { prompt: string }) {

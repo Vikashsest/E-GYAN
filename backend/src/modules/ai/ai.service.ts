@@ -291,20 +291,36 @@ JSON format:
           {
             parts: [
               {
-                text: `You are a helpful study assistant.\n\nStudent: ${message}\nAssistant:`,
+                text: `
+You are a helpful study assistant.
+
+Student Question: ${message}
+
+Respond ONLY in JSON format like below:
+{
+  "answer": "simple explanation for student",
+  "suggestions": [
+    {
+      "type": "video",
+      "title": "Video title",
+      "query": "youtube search keywords"
+    }
+  ]
+}
+              `,
               },
             ],
           },
         ],
       },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
+      { headers: { 'Content-Type': 'application/json' } },
     );
 
-    const answer = response.data.candidates[0].content.parts[0].text;
-    return answer;
+    let text = response.data.candidates[0].content.parts[0].text;
+
+    // Remove ```json``` if Gemini adds it
+    text = text.replace(/```json|```/g, '');
+
+    return JSON.parse(text);
   }
 }
