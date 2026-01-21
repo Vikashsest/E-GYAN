@@ -1,8 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { MdSmartToy } from "react-icons/md";
+import {
+  FaMicrophone,
+  FaMicrophoneSlash,
+  FaVolumeUp,
+  FaVolumeMute,
+} from "react-icons/fa";
 import StudentSidebar from "./StudentSidebar";
-import StudentNavbar from "./StudentNavbar";
-import { askGemini } from "../../apiServices/aiService";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function StudentAIAssistant({
   selectedClass,
@@ -11,28 +17,127 @@ export default function StudentAIAssistant({
   selectedChapter,
 }) {
   const [messages, setMessages] = useState([
-    { sender: "bot", text: "Hi 👋 I am your Study Assistant! Ask me anything." },
+    {
+      sender: "bot",
+      text: "Hi 👋 I am your Study Assistant! Ask me anything.",
+    },
   ]);
+
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [isListening, setIsListening] = useState(false);
+  const [isSpeakingEnabled, setIsSpeakingEnabled] = useState(false);
+  const [micStatusText, setMicStatusText] = useState("");
+
+  const recognitionRef = useRef(null);
+  const chatEndRef = useRef(null);
+
+  // Auto scroll
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
+
+  // Speech Recognition Setup
+  useEffect(() => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-IN";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      setMicStatusText("Mic is ON (Listening...)");
+      setIsListening(true);
+    };
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setInput(transcript);
+    };
+
+    recognition.onend = () => {
+      setMicStatusText("Mic stopped");
+      setIsListening(false);
+    };
+
+    recognition.onerror = () => {
+      setMicStatusText("Mic error");
+      setIsListening(false);
+    };
+
+    recognitionRef.current = recognition;
+  }, []);
+
+  const startListening = () => {
+    if (!recognitionRef.current) {
+      setMicStatusText("Your browser doesn't support Speech Recognition.");
+      return;
+    }
+    recognitionRef.current.start();
+  };
+
+  const stopListening = () => {
+    recognitionRef.current?.stop();
+    setMicStatusText("Mic stopped");
+    setIsListening(false);
+  };
+
+  // Text-to-Speech
+  const speakText = (text) => {
+    if (!isSpeakingEnabled) return;
+
+    const synth = window.speechSynthesis;
+    if (!synth) return;
+
+    synth.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-IN";
+    synth.speak(utterance);
+  };
 
   const sendMessage = async () => {
     if (!input.trim()) return;
 
-    setMessages(prev => [...prev, { sender: "user", text: input }]);
+    setMessages((prev) => [...prev, { sender: "user", text: input }]);
     setLoading(true);
 
     try {
-      const res = await askGemini(input);
+      const res = await fetch(`${API_URL}/ai/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ question: input }),
+      });
 
-      const answer = res.message?.content?.[0]?.text || "No response from AI.";
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`Server error: ${res.status} - ${errText}`);
+      }
 
-      setMessages(prev => [...prev, { sender: "bot", text: answer }]);
+      // 🔥 IMPORTANT: Check content-type
+      const contentType = res.headers.get("content-type");
+      let answer = "";
+
+      if (contentType && contentType.includes("application/json")) {
+        const data = await res.json();
+        answer = data.answer || data.message || "No response from AI.";
+      } else {
+        // If response is plain text
+        answer = await res.text();
+      }
+
+      setMessages((prev) => [...prev, { sender: "bot", text: answer }]);
+      speakText(answer);
     } catch (err) {
       console.error(err);
-      setMessages(prev => [
+      setMessages((prev) => [
         ...prev,
-        { sender: "bot", text: "⚠️ Gemini API Error. Please try again." }
+        { sender: "bot", text: "⚠️ Gemini API Error. Please try again." },
       ]);
     }
 
@@ -49,7 +154,7 @@ export default function StudentAIAssistant({
         <div className="flex flex-col flex-1 p-4 space-y-3">
           <div className="flex items-center bg-primaryBlue px-4 py-2 rounded text-primaryWhite font-semibold">
             <MdSmartToy className="mr-2" />
-            AI Assistant - {chapterName}
+            AI Assistant
           </div>
 
           <div className="flex-1 overflow-y-auto bg-gray800 rounded p-3 space-y-3">
@@ -65,8 +170,19 @@ export default function StudentAIAssistant({
                 {msg.text}
               </div>
             ))}
-            {loading && <div className="text-gray400 text-sm">AI is typing...</div>}
+
+            {loading && (
+              <div className="text-gray400 text-sm">AI is typing...</div>
+            )}
+            <div ref={chatEndRef} />
           </div>
+
+          {/* Mic status text */}
+          {micStatusText && (
+            <div className="text-sm text-yellow-300 font-semibold">
+              {micStatusText}
+            </div>
+          )}
 
           <div className="mt-3 flex items-center gap-2">
             <input
@@ -77,6 +193,27 @@ export default function StudentAIAssistant({
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}
               className="flex-1 bg-gray700 text-primaryWhite px-3 py-2 rounded outline-none placeholder-gray400"
             />
+
+            {/* Mic Button */}
+            <button
+              onClick={isListening ? stopListening : startListening}
+              className={`px-4 py-2 rounded font-semibold ${
+                isListening
+                  ? "bg-red-600 text-white animate-pulse"
+                  : "bg-gray700 text-white"
+              }`}
+            >
+              {isListening ? <FaMicrophoneSlash /> : <FaMicrophone />}
+            </button>
+
+            {/* Speaker Button */}
+            <button
+              onClick={() => setIsSpeakingEnabled((prev) => !prev)}
+              className="bg-gray700 px-4 py-2 rounded text-primaryWhite hover:bg-gray600 font-semibold"
+            >
+              {isSpeakingEnabled ? <FaVolumeUp /> : <FaVolumeMute />}
+            </button>
+
             <button
               onClick={sendMessage}
               disabled={loading}
