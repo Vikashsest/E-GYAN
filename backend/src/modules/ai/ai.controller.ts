@@ -15,7 +15,10 @@ import { UpdateAiDto } from './dto/update-ai.dto';
 @Controller('ai')
 export class AiController {
   private memoryStore: { chunk: string; embedding: number[] }[] = [];
-
+  @Post('chat')
+  async chat(@Body('question') question: string) {
+    return await this.aiService.chatWithGemini(question);
+  }
   constructor(private readonly aiService: AiService) {}
   @Post('generate-quiz')
   async generateQuiz(@Body() body: { prompt: string }) {
