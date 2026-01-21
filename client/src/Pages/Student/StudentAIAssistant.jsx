@@ -104,7 +104,6 @@ export default function StudentAIAssistant({
 
     setMessages((prev) => [...prev, { sender: "user", text: input }]);
     setLoading(true);
-
     try {
       const res = await fetch(`${API_URL}/ai/chat`, {
         method: "POST",
