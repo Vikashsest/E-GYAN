@@ -283,4 +283,44 @@ JSON format:
 
     return { answer };
   }
+  async chatWithGemini(message: string) {
+    const response = await axios.post(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${this.GEMINI_API_KEY}`,
+      {
+        contents: [
+          {
+            parts: [
+              {
+                text: `
+You are a helpful study assistant.
+
+Student Question: ${message}
+
+Respond ONLY in JSON format like below:
+{
+  "answer": "simple explanation for student",
+  "suggestions": [
+    {
+      "type": "video",
+      "title": "Video title",
+      "query": "youtube search keywords"
+    }
+  ]
+}
+              `,
+              },
+            ],
+          },
+        ],
+      },
+      { headers: { 'Content-Type': 'application/json' } },
+    );
+
+    let text = response.data.candidates[0].content.parts[0].text;
+
+    // Remove ```json``` if Gemini adds it
+    text = text.replace(/```json|```/g, '');
+
+    return JSON.parse(text);
+  }
 }
