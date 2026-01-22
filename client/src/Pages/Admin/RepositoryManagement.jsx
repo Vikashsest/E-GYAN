@@ -599,6 +599,9 @@ import AdminNavbar from "./AdminNavbar";
 import { FiMenu } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
+import { confirmDelete } from "../../utils/confirmDelete";
+import { toast } from "react-toastify";
+
 import {
   getRepository,
   addRepositoryValue,
@@ -659,21 +662,7 @@ export default function RepositoryManagement() {
     }
   };
 
-  // const handleLevelClick = async () => {
-  //   if (selected.category === "School Education" && !levelsLoaded) {
-  //     setLoading(true);
-  //     try {
-  //       const data = await getRepository("level"); // fetch level API
-  //       setLevels(data);
-  //       setLevelsLoaded(true); // mark as loaded
-  //     } catch (err) {
-  //       console.error("Failed to fetch levels:", err);
-  //       alert("Failed to load levels");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   }
-  // };
+  
   const handleLevelClick = async () => {
     if (!selected.category || levelsLoaded) return;
 
@@ -689,32 +678,6 @@ export default function RepositoryManagement() {
       setLoading(false);
     }
   };
-
-
-//   const handleSubjectClick = async () => {
-//   if (!selected.level) return;
-//   if (subjectsLoaded) return;
-
-//   setLoading(true);
-//   try {
-//     const data = await fetchSubjects(selected.level);
-
-//     console.log("Subjects response:", data);
-
-//     // response: ["English","Hindi","Maths"]
-//     const formatted = data.map((subject, index) => ({
-//       id: index,
-//       text: subject,
-//     }));
-
-//     setSubjects(formatted);
-//     setSubjectsLoaded(true);
-//   } catch (err) {
-//     console.error("Failed to fetch subjects:", err);
-//   } finally {
-//     setLoading(false);
-//   }
-// };
 
 
 const handleSubjectClick = async () => {
@@ -765,39 +728,6 @@ const handleSubjectClick = async () => {
 };
 
 
-
-  // const handleBooksClick = async () => {
-  //   if (
-  //     selected.category === "School Education" &&
-  //     selected.level &&
-  //     selected.subject &&
-  //     !booksLoaded
-  //   ) {
-  //     setLoading(true);
-  //     try {
-  //       const data = await subjectWiseBooks({
-  //         className: selected.level,
-  //         subject: selected.subject,
-  //         category: selected.category,
-  //       });
-
-  //       // 🔥 ensure dropdown-friendly format
-  //       const formattedBooks = data.map((book) => ({
-  //         id: book.id,
-  //         text: book.bookName || book.title || book.name,
-  //       }));
-
-  //       setFilteredBooks(formattedBooks);
-  //       setBooksLoaded(true);
-  //     } catch (err) {
-  //       console.error("Failed to fetch books:", err);
-  //       alert("Failed to load books");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   }
-  // };
-
   const handleBooksClick = async () => {
   if (booksLoaded) return;
 
@@ -847,7 +777,7 @@ const handleSubjectClick = async () => {
     setBooksLoaded(true);
   } catch (err) {
     console.error("Failed to fetch books:", err);
-    alert("Failed to load books");
+    toast.error("Failed to load books");
   } finally {
     setLoading(false);
   }
@@ -942,74 +872,65 @@ const handleSubjectClick = async () => {
       }
 
       setNewValue("");
-      alert("Added successfully!");
+      toast.success("Added successfully!");
     } catch (err) {
       console.error(err);
-      alert("Failed to add value");
+      toast.error("Failed to add value");
     }
   };
-
-  // const addValue = async (field) => {
-  //   if (!newValue.trim()) return alert("Enter a value first!");
-  //   try {
-  //     const newItem = await addRepositoryValue(newValue, field); // send type
-  //     switch (field) {
-  //       case "category":
-  //         setTexts((prev) => [...prev, newItem]);
-  //         break;
-  //       case "level":
-  //         setLevels((prev) => [...prev, newItem]);
-  //         break;
-  //       case "subject":
-  //         setSubjects((prev) => [...prev, newItem]);
-  //         break;
-  //       case "book":
-  //         setFilteredBooks((prev) => [...prev, newItem]);
-  //         break;
-  //       case "resource":
-  //         setResourceTypes((prev) => [...prev, newItem]);
-  //         break;
-  //       case "language":
-  //         setLanguages((prev) => [...prev, newItem]);
-  //         break;
-  //     }
-  //     setNewValue("");
-  //     alert("Added successfully!");
-  //   } catch (err) {
-  //     console.error(err);
-  //     alert("Failed to add value");
-  //   }
-  // };
 
   const deleteValue = async (field, id) => {
-    if (!confirm(`Delete this item?`)) return;
-    try {
-      await deleteRepositoryValue(id);
-      switch (field) {
-        case "category":
-          setTexts((prev) => prev.filter((i) => i.id !== id));
-          break;
-        case "level":
-          setLevels((prev) => prev.filter((i) => i.id !== id));
-          break;
-        case "subject":
-          setSubjects((prev) => prev.filter((i) => i.id !== id));
-          break;
-        case "book":
-          setFilteredBooks((prev) => prev.filter((i) => i.id !== id));
-          break;
-        case "resource":
-          setResourceTypes((prev) => prev.filter((i) => i.id !== id));
-          break;
-        case "language":
-          setLanguages((prev) => prev.filter((i) => i.id !== id));
-          break;
-      }
-      alert("Deleted successfully!");
-    } catch {
-      alert("Failed to delete!");
+  const isConfirmed = await confirmDelete(
+    "This item will be permanently deleted from the repository."
+  );
+
+  if (!isConfirmed) return;
+
+  try {
+    await deleteRepositoryValue(id);
+
+    switch (field) {
+      case "category":
+        setTexts((prev) => prev.filter((i) => i.id !== id));
+        break;
+      case "level":
+        setLevels((prev) => prev.filter((i) => i.id !== id));
+        break;
+      case "subject":
+        setSubjects((prev) => prev.filter((i) => i.id !== id));
+        break;
+      case "book":
+        setFilteredBooks((prev) => prev.filter((i) => i.id !== id));
+        break;
+      case "resource":
+        setResourceTypes((prev) => prev.filter((i) => i.id !== id));
+        break;
+      case "language":
+        setLanguages((prev) => prev.filter((i) => i.id !== id));
+        break;
     }
-  };
+
+    Swal.fire({
+      icon: "success",
+      title: "Deleted!",
+      text: "Item has been deleted successfully.",
+      background: "#1e1f2b",
+      color: "white",
+      timer: 1500,
+      showConfirmButton: false,
+    });
+
+  } catch (err) {
+    Swal.fire({
+      icon: "error",
+      title: "Failed",
+      text: "Failed to delete item.",
+      background: "#1e1f2b",
+      color: "white",
+    });
+  }
+};
+
 
   return (
     <div className="flex min-h-screen bg-[#1e1f2b] text-primaryWhite">

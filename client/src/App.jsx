@@ -5,49 +5,54 @@ import ProfilePage from "./Components/ProfilePage";
 import ViewConcerns from "./Components/ViewConcerns";
 import NotFound from "./Components/NotFound";
 import { adminRouteList } from "./routes/AdminRoutes";
-import  {principalRouteList } from "./routes/PrincipalRoutes";
-import  {teacherRouteList } from "./routes/TeacherRoutes";
-import {studentRouteList}  from "./routes/StudentRoutes";
+import { principalRouteList } from "./routes/PrincipalRoutes";
+import { teacherRouteList } from "./routes/TeacherRoutes";
+import { studentRouteList } from "./routes/StudentRoutes";
 import UploadChapter from "./Components/UploadChapter";
 import LoginPage from "./Pages/Auth/Login";
 import { useLoader } from "./LoaderContext";
 import GlobalLoader from "./Components/Loader";
+import NewsPage from "./Pages/Student/NewsModel";
 
 function Page() {
   const { loading } = useLoader();
   return (
     <>
-     {loading && <GlobalLoader />}
-    <Routes>
-      {/* Public Routes */}
-      <Route path="/" element={<Navigate to="/login" replace />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/concerns-list" element={<ViewConcerns />} />
-      <Route path="/profilepage" element={<ProfilePage />} />
-      <Route path="/booksdetails/:id" element={<UploadChapter />} />
+      {loading && <GlobalLoader />}
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/concerns-list" element={<ViewConcerns />} />
+        <Route path="/profilepage" element={<ProfilePage />} />
+        <Route path="/booksdetails/:id" element={<UploadChapter />} />
 
-      {/* Admin Routes */}
-      {adminRouteList.map(({ path, element }, i) => (
-        <Route key={i} path={path} element={element} />
-      ))}
+        <Route path="current-affairs/:id" element={<NewsPage />} />
 
-      {/* Principal Routes */}
-      {principalRouteList.map(({ path, element }, i) => (
-        <Route key={i} path={path} element={element} />
-      ))}
 
-      {/* Teacher Routes */}
-      {teacherRouteList.map(({ path, element }, i) => (
-        <Route key={i} path={path} element={element} />
-      ))}
 
-      {/* Student Routes */}
-      {studentRouteList.map(({ path, element }, i) => (
-        <Route key={i} path={path} element={element} />
-      ))}
-       <Route path="*" element={<NotFound />} />
-    </Routes>
+        {/* Admin Routes */}
+        {adminRouteList.map(({ path, element }, i) => (
+          <Route key={i} path={path} element={element} />
+        ))}
+
+        {/* Principal Routes */}
+        {principalRouteList.map(({ path, element }, i) => (
+          <Route key={i} path={path} element={element} />
+        ))}
+
+        {/* Teacher Routes */}
+        {teacherRouteList.map(({ path, element }, i) => (
+          <Route key={i} path={path} element={element} />
+        ))}
+
+        {/* Student Routes */}
+        {studentRouteList.map(({ path, element }, i) => (
+          <Route key={i} path={path} element={element} />
+        ))}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </>
   );
 }

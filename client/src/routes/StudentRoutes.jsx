@@ -303,14 +303,7 @@ export const studentRouteList = [
       </ProtectedRoute>
     ),
   },
-  {
-    path: "current-affairs/:id",
-    element: (
-      <ProtectedRoute allowedRoles={["student"]}>
-        <NewsModal />
-      </ProtectedRoute>
-    ),
-  },
+
   {
     path: "student/ai-assistant",
     element: (
