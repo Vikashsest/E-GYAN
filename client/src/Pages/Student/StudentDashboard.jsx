@@ -208,7 +208,6 @@ import WelcomeHeading from "../../Components/WelcomeHeading";
 import { useNavigate } from "react-router-dom";
 import Whiteboard from "../../Components/Whiteboard";
 const API_URL = import.meta.env.VITE_API_URL;
-const access_token = getCookie("access_token");
 
 function formatTime(seconds) {
   const h = Math.floor(seconds / 3600);
@@ -324,22 +323,40 @@ export default function DashboardMetrics() {
         <div className="p-4">
           <WelcomeHeading />
         </div>
-        <div
-          onClick={() => setShowWhiteboard(true)}
-          className="
-    fixed bottom-6 right-6 w-16 h-16 rounded-full 
-    bg-gradient-to-br from-primaryBlue to-indigo600  
-    shadow-2xl cursor-pointer 
-    flex items-center justify-center 
-    animate-bounce 
-    text-primaryWhite text-3xl 
-    hover:scale-110 transition-all duration-300
-    border border-primaryWhite/40
-    z-10
-  "
-        >
-          🧑‍🏫
+        <div className="relative group">
+          <div
+            onClick={() => setShowWhiteboard(true)}
+            className="
+      fixed bottom-6 right-6 w-16 h-16 rounded-full 
+      bg-gradient-to-br from-primaryBlue to-indigo600  
+      shadow-2xl cursor-pointer 
+      flex items-center justify-center 
+      animate-bounce 
+      text-primaryWhite text-3xl 
+      hover:scale-110 transition-all duration-300
+      border border-primaryWhite/40
+      z-10
+    "
+          >
+            🧑‍🏫
+            {/* Hover Text */}
+            <span
+              className="
+      fixed bottom-14 right-1 text-center
+      text-sm text-white 
+      py-1 rounded-md
+      opacity-0 translate-y-2 
+      group-hover:opacity-100 group-hover:translate-y-0
+      transition-all duration-300
+      pointer-events-none
+      z-20
+    "
+            >
+              Whiteboard
+            </span>
+          </div>
         </div>
+
 
         {showWhiteboard && (
           <div className="fixed inset-0 bg-primaryBlack/60 backdrop-blur-md flex items-center justify-center z-[9999]">
