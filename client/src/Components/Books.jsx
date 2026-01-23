@@ -3784,7 +3784,7 @@ import { getRepository } from "../apiServices/apiRepository";
 import JoditEditor from "jodit-react";
 import { useRef } from "react";
 import { useLoader } from "../LoaderContext";
-import { fetchSimulationData } from "../apiServices/simulationApi";
+import { fetchSimulationData, createSimulation } from "../apiServices/simulationApi";
 import SimulationModal from "../Pages/Student/SimulationModal";
 import { fetchCurrentAffairs } from "../apiServices/booksApi";
 
@@ -3819,6 +3819,10 @@ const getItemsPerPage = () => {
 };
 
 export default function ManageBooksPage({ role, Navbar, Sidebar }) {
+  const SIMULATION_PER_PAGE = 8;
+
+const [simulationPage, setSimulationPage] = useState(1);
+
   const { setLoading } = useLoader();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
@@ -3889,6 +3893,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
     loadCategories();
   }, []);
 
+
   useEffect(() => {
     if (filterCategory === "Simulation") {
       loadSimulations();
@@ -3903,9 +3908,22 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
     } catch (err) {
       console.error("Simulation fetch error:", err);
     } finally {
-       setLoading(false); // ✅ STOP LOADER
+      setLoading(false); // ✅ STOP LOADER
     }
   };
+
+  const totalSimulationPages = Math.ceil(
+  simulationData.length / SIMULATION_PER_PAGE
+);
+
+const simulationStartIndex =
+  (simulationPage - 1) * SIMULATION_PER_PAGE;
+
+const paginatedSimulations = simulationData.slice(
+  simulationStartIndex,
+  simulationStartIndex + SIMULATION_PER_PAGE
+);
+
 
   useEffect(() => {
     if (filterCategory === "Current Affairs") {
@@ -3914,14 +3932,14 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   }, [filterCategory]);
 
   const loadCurrentAffairs = async () => {
-     setLoading(true); // 🔄 START LOADER
+    setLoading(true); // 🔄 START LOADER
     try {
       const data = await fetchCurrentAffairs();
       setCurrentAffairs(data);
     } catch (err) {
       console.error("Failed to load current affairs", err);
     } finally {
-       setLoading(false); // ✅ STOP LOADER
+      setLoading(false); // ✅ STOP LOADER
     }
   };
 
@@ -4054,6 +4072,54 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
         toast.warn("📌 Category is mandatory");
         return;
       }
+
+      // ================= SIMULATION UPLOAD =================
+      if (formData.category === "Simulation") {
+        if (!formData.bookName || !formData.simulationLink) {
+          toast.warn("📌 Simulation Title & URL are mandatory");
+          return;
+        }
+
+        const payload = {
+          title: formData.bookName,
+          subject: formData.subject,
+          topic: formData.topic,
+          grade: formData.grade,
+          link: formData.simulationLink,
+          image: formData.thumbnailUrl,
+        };
+
+        try {
+          setLoading(true);
+
+          await createSimulation(payload);
+
+          toast.success("✅ Simulation added successfully");
+
+          setShowUploadModal(false);
+
+          setFormData((prev) => ({
+            ...prev,
+            bookName: "",
+            subject: "",
+            topic: "",
+            grade: "",
+            simulationLink: "",
+            image: "",
+            category: "",
+          }));
+
+          loadSimulations(); // 🔄 refresh list
+        } catch (err) {
+          console.error("Simulation create error:", err);
+          toast.error("❌ Failed to add simulation");
+        } finally {
+          setLoading(false);
+        }
+
+        return; // ⛔ VERY IMPORTANT (Book upload na chale)
+      }
+
 
       // 📰 CURRENT AFFAIRS VALIDATION
       if (formData.category === "Current Affairs") {
@@ -4276,6 +4342,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
               onChange={(e) => {
                 setFilterCategory(e.target.value);
                 setCurrentPage(1);
+                setSimulationPage(1); 
               }}
               className="border border-gray400 rounded px-2 py-1 text-primaryBlack"
             >
@@ -4562,113 +4629,124 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                 )}
 
                 {formData.category === "Simulation" && (
-                  <>
-                    <input
-                      type="text"
-                      placeholder="Simulation Title"
-                      value={formData.bookName}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          bookName: e.target.value,
-                        }))
-                      }
-                    />
+                  <div className="flex flex-col gap-4">
 
-                    <textarea
-                      placeholder="Simulation Description"
-                      value={formData.subject}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          subject: e.target.value,
-                        }))
-                      }
-                    />
+                    {/* Simulation Title */}
+                    <div className="flex flex-col gap-1">
+                      <label className="text-sm font-medium text-gray-700">
+                        Simulation Title
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.bookName}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            bookName: e.target.value,
+                          }))
+                        }
+                        className="border rounded px-3 py-2"
+                      />
+                    </div>
 
-                    <select
-                      value={formData.grade}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          grade: e.target.value,
-                        }))
-                      }
-                    >
-                      <option value="">Select Grade</option>
-                      <option value="6">6</option>
-                      <option value="7">7</option>
-                      <option value="8">8</option>
-                    </select>
+                    {/* Subject / Description */}
+                    <div className="flex flex-col gap-1">
+                      <label className="text-sm font-medium text-gray-700">
+                        Subject / Description
+                      </label>
+                      <textarea
+                        value={formData.subject}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            subject: e.target.value,
+                          }))
+                        }
+                        className="border rounded px-3 py-2"
+                        rows={3}
+                      />
+                    </div>
 
-                    <select
-                      value={formData.difficulty}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          difficulty: e.target.value,
-                        }))
-                      }
-                    >
-                      <option value="">Select Difficulty</option>
-                      <option value="Beginner">Beginner</option>
-                      <option value="Intermediate">Intermediate</option>
-                      <option value="Advanced">Advanced</option>
-                    </select>
+                    {/* Grade */}
+                    <div className="flex flex-col gap-1">
+                      <label className="text-sm font-medium text-gray-700">
+                        Grade
+                      </label>
+                      <select
+                        value={formData.grade}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            grade: e.target.value,
+                          }))
+                        }
+                        className="border rounded px-3 py-2"
+                      >
+                        <option value="">Select Grade</option>
+                        <option value="Middle School">Middle School</option>
+                        <option value="High School">High School</option>
+                      </select>
+                    </div>
 
-                    <input
-                      type="text"
-                      placeholder="Topics (comma separated)"
-                      value={formData.topic}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          topic: e.target.value,
-                        }))
-                      }
-                    />
+                    {/* Topic */}
+                    <div className="flex flex-col gap-1">
+                      <label className="text-sm font-medium text-gray-700">
+                        Topic
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.topic}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            topic: e.target.value,
+                          }))
+                        }
+                        className="border rounded px-3 py-2"
+                        placeholder="e.g. Electricity, Circuits"
+                      />
+                    </div>
 
-                    <input
-                      type="file"
-                      accept=".zip,.exe,.html"
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          file: e.target.files[0],
-                        }))
-                      }
-                    />
+                    {/* Simulation URL */}
+                    <div className="flex flex-col gap-1">
+                      <label className="text-sm font-medium text-gray-700">
+                        Simulation URL
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.simulationLink}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            simulationLink: e.target.value,
+                          }))
+                        }
+                        className="border rounded px-3 py-2"
+                      />
+                    </div>
 
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          thumbnail: e.target.files[0],
-                        }))
-                      }
-                    />
+                    {/* Thumbnail Image URL */}
+                    <div className="flex flex-col gap-1">
+                      <label className="text-sm font-medium text-gray-700">
+                        Thumbnail Image
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.image}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            thumbnailUrl: e.target.value,
+                          }))
+                        }
+                        className="border rounded px-3 py-2"
+                      />
+                    </div>
 
-                    <textarea
-                      placeholder="Prerequisites"
-                      value={formData.prerequisites}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          prerequisites: e.target.value,
-                        }))
-                      }
-                    />
-
-                    {/* <input
-                      type="text"
-                      placeholder="Tags (comma separated)"
-                      value={formData.tags}
-                      onChange={(e) => setFormData(prev => ({ ...prev, tags: e.target.value }))}
-                    /> */}
-                  </>
+                  </div>
                 )}
+
+
 
                 {/* === CURRENT AFFAIRS FORM === */}
                 {formData.category === "Current Affairs" && (
@@ -5105,7 +5183,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
             {simulationLoading ? (
               <p>Loading simulations...</p>
             ) : simulationData.length ? (
-              simulationData.map((sim) => (
+              paginatedSimulations.map((sim) => (
                 <div
                   key={sim.id}
                   className="bg-primaryWhite/10 border border-primaryWhite/20 rounded-2xl shadow-md p-4 hover:scale-105 transition"
@@ -5135,6 +5213,52 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
             )}
           </div>
         )}
+
+        {filterCategory === "Simulation" && totalSimulationPages > 1 && (
+          <div className="flex justify-center mt-6 gap-2 flex-wrap">
+
+            {/* Prev */}
+            <button
+              onClick={() =>
+                setSimulationPage((p) => Math.max(1, p - 1))
+              }
+              disabled={simulationPage === 1}
+              className="px-3 py-1 bg-primaryWhite/10 border border-primaryWhite/20 rounded disabled:opacity-50"
+            >
+              ‹ Prev
+            </button>
+
+            {/* Page Numbers */}
+            {Array.from({ length: totalSimulationPages }, (_, i) => i + 1).map(
+              (num) => (
+                <button
+                  key={num}
+                  onClick={() => setSimulationPage(num)}
+                  className={`px-3 py-1 border rounded ${num === simulationPage
+                      ? "bg-primaryBlue text-primaryWhite"
+                      : "bg-primaryWhite/10"
+                    }`}
+                >
+                  {num}
+                </button>
+              )
+            )}
+
+            {/* Next */}
+            <button
+              onClick={() =>
+                setSimulationPage((p) =>
+                  Math.min(totalSimulationPages, p + 1)
+                )
+              }
+              disabled={simulationPage === totalSimulationPages}
+              className="px-3 py-1 bg-primaryWhite/10 border border-primaryWhite/20 rounded disabled:opacity-50"
+            >
+              Next ›
+            </button>
+          </div>
+        )}
+
 
         {/* CURRENT AFFAIRS SECTION */}
         {filterCategory === "Current Affairs" && (
