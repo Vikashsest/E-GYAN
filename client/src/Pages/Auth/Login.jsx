@@ -1,5 +1,3 @@
-
-
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
@@ -49,22 +47,21 @@ export default function LoginPage() {
     },
   });
 
- function handlesubmit(e) {
-  e.preventDefault();
+  function handlesubmit(e) {
+    e.preventDefault();
 
-  const trimmedData = {
-    username: data.username.trim(),
-    password: data.password.trim(),
-  };
+    const trimmedData = {
+      username: data.username.trim(),
+      password: data.password.trim(),
+    };
 
-  if (!trimmedData.username || !trimmedData.password) {
-    toast.error("Username and password cannot be empty ❌");
-    return;
+    if (!trimmedData.username || !trimmedData.password) {
+      toast.error("Username and password cannot be empty ❌");
+      return;
+    }
+
+    mutate(trimmedData);
   }
-
-  mutate(trimmedData);
-}
-
 
   return (
     <main
@@ -138,7 +135,7 @@ export default function LoginPage() {
 
         <div className="pt-4 border-t border-primaryWhite/10">
           <a
-            href="https://drive.google.com/file/d/1G15zrCtDwNxXApGsa3r_ZgBTO4lMC3_5/view?usp=sharing"
+            href="https://drive.google.com/file/d/1N5Dvn_MXkWd-1jxSSUTbm7z-Zx-ja6Qn/view?usp=sharing"
             className="inline-block mt-2 px-5 py-2 bg-primaryGreen hover:bg-green-700 rounded-lg text-primaryBlack font-semibold shadow-md"
           >
             ⬇️ Download Android Apk
