@@ -9,6 +9,7 @@ import {
 } from "react-icons/fa";
 import { toast } from "react-toastify";
 import FlipbookPDFViewer from "./FlipbookPDFViewer";
+import { FiMenu } from "react-icons/fi";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -22,6 +23,7 @@ export default function UploadedBooksPage({ role, Sidebar, Navbar }) {
   const [viewData, setViewData] = useState(null);
   const [editData, setEditData] = useState(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     const getBooks = async () => {
@@ -104,8 +106,21 @@ export default function UploadedBooksPage({ role, Sidebar, Navbar }) {
 
   return (
     <div className="flex min-h-screen bg-[#1e1f2b] text-white">
-      {Sidebar && <Sidebar />}
-      <main className="pl-[280px] py-6 pr-5 w-full">
+      {Sidebar && (
+        <Sidebar
+          isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      <main className="flex-1 lg:pl-[280px] py-6 px-6 w-full">
+        {/* Mobile menu */}
+        <div className="lg:hidden mb-4">
+          <button onClick={() => setIsSidebarOpen(true)} className="text-2xl">
+          <FiMenu/>
+          </button>
+        </div>
+
         {Navbar && (
           <Navbar
             searchTerm={searchTerm}
@@ -113,6 +128,8 @@ export default function UploadedBooksPage({ role, Sidebar, Navbar }) {
             showAddButton={false}
           />
         )}
+
+
         <h1 className="text-2xl font-bold mb-4">
           📤 Books Uploaded by {role.charAt(0).toUpperCase() + role.slice(1)}
         </h1>

@@ -4,6 +4,7 @@ import TeacherSidebar from "./TeacherSidebar";
 import TeacherNavbar from "./TeacherNavbar";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { FiMenu } from "react-icons/fi";
 
 export default function AssignBookPage() {
   const { id } = useParams();
@@ -11,6 +12,7 @@ export default function AssignBookPage() {
   const navigate = useNavigate();
   const [book, setBook] = useState("");
   const [books, setBooks] = useState([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
@@ -56,9 +58,23 @@ export default function AssignBookPage() {
   };
 
   return (
-    <div className="p-6 bg-[#1e1f2b] min-h-screen text-white">
-      <TeacherNavbar />
-      <TeacherSidebar />
+    <div className="flex min-h-screen bg-darkBg text-white">
+      {/* Sidebar */}
+      <TeacherSidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
+
+      {/* Main content */}
+      <main className="flex-1 lg:pl-[280px] p-5">
+
+        {/* Mobile menu */}
+        <div className="lg:hidden mb-4">
+          <button onClick={() => setIsSidebarOpen(true)}>
+            <FiMenu size={28} />
+          </button>
+        </div>
+        <TeacherNavbar />
 
       <h2 className="text-3xl font-bold text-center mb-8">
         Assign Book to Student
@@ -98,6 +114,7 @@ export default function AssignBookPage() {
           Assign Book
         </button>
       </div>
+      </main>
     </div>
   );
 }

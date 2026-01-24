@@ -613,7 +613,7 @@ export default function UploadChapter() {
       setOpenChapterId(null);
     } else {
       setOpenChapterId(id);
-      fetchParts(id);   // 🔥 yahin se parts load honge
+      fetchParts(id);   
     }
   };
 
@@ -756,7 +756,21 @@ export default function UploadChapter() {
           {resourceType === "video" && <input type="text" placeholder="Video URL" value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white" />}
           {resourceType === "simulation" && <input type="text" placeholder="Simulation URL" value={simulationUrl} onChange={(e) => setSimulationUrl(e.target.value)} className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white" />}
           {(resourceType === "pdf" || resourceType === "audio") && <input type="file" onChange={(e) => setFile(e.target.files[0])} className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white" />}
-          <input type="number" placeholder="Chapter Number" value={chapterNumber} onChange={(e) => setChapterNumber(e.target.value)} className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white" />
+          <input
+            type="number"
+            min={1}            
+            step={1}               
+            placeholder="Chapter Number (1, 2, 3...)"
+            value={chapterNumber}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (value === "" || Number(value) >= 1) {
+                setChapterNumber(value);
+              }
+            }}
+            className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white"
+          />
+
           <input type="file" accept="image/*" onChange={(e) => setThumbnail(e.target.files[0])} className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white" />
 
           <button onClick={handleAddChapter} className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg w-full">Add Chapter</button>
