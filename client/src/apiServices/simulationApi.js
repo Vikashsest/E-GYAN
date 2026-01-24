@@ -17,3 +17,20 @@ export async function fetchSimulationData() {
   });
   return await response.json(); 
 }
+
+
+export async function createSimulation(payload) {
+  const res = await fetch(`${API_URL}/books/simulation`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getCookie("access_token")}`,
+    },
+    body: JSON.stringify(payload),
+    credentials: "include",
+  });
+
+  if (!res.ok) throw new Error("Create simulation failed");
+
+  return res.json();
+}
