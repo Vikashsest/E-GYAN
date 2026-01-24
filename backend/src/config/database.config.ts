@@ -74,7 +74,7 @@ export const databaseConfig: TypeOrmModuleOptions = {
     Annoucement,
     Announcement,
   ],
-  synchronize: true,
+  synchronize: false,
   extra: {
     connectionTimeoutMillis: 30000,
   },

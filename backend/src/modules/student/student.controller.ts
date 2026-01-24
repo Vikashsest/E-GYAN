@@ -1,10 +1,8 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
-  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
@@ -25,6 +23,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { UserRole } from '../user/entities/user.entity';
 import { LogActivityDto } from './dto/log.acitvity.dto';
+import { ConcernStatus } from './entities/raise-concern.entity';
 
 @Controller('students')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -34,7 +33,6 @@ export class StudentController {
   @Get('metrices')
   @Roles(UserRole.ADMIN, UserRole.PRINCIPAL, UserRole.TEACHER, UserRole.STUDENT)
   async getStudentDashboardStats(@Req() req: any) {
-    console.log(req.user);
     const userId = req.user?.['id'];
     if (!userId) throw new UnauthorizedException('No user ID');
     return this.studentService.studentMetrice(userId);
@@ -115,6 +113,13 @@ export class StudentController {
   @Get('announcements')
   async getAnnouncements() {
     return this.studentService.getAnnouncements();
+  }
+  @Patch(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('status') status: ConcernStatus,
+  ) {
+    return this.studentService.updateConcern(id, status);
   }
   @Delete(':id')
   async deleteConcern(@Param('id') id: number) {

@@ -176,7 +176,7 @@ import { saveAs } from "file-saver";
 import { FiMenu } from "react-icons/fi";
 import { debounce } from "lodash";
 import { useLoader } from "../../LoaderContext";
-
+import { IoClose } from "react-icons/io5";
 
 
 
@@ -196,7 +196,7 @@ function progressColor(percent) {
 }
 
 export default function AdminStudentProgress() {
-  const { setLoading } = useLoader(); 
+  const { setLoading } = useLoader();
   const [students, setStudents] = useState([]);
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("name_asc");
@@ -218,7 +218,7 @@ export default function AdminStudentProgress() {
   useEffect(() => {
     async function fetchStudents() {
       try {
-        setLoading(true); 
+        setLoading(true);
         // const res = await fetch("http://localhost:5000/admin/student-progress");
         const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/student-progress`,)
         const data = await res.json();
@@ -237,8 +237,8 @@ export default function AdminStudentProgress() {
         console.error("Failed to fetch students", err);
       }
       finally {
-      setLoading(false); // 🔴 STOP LOADER
-    }
+        setLoading(false); // 🔴 STOP LOADER
+      }
     }
 
     fetchStudents();
@@ -411,44 +411,109 @@ export default function AdminStudentProgress() {
         {/* Detail Modal */}
         <AnimatePresence>
           {selectedStudent && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
-              <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }} className="bg-primaryWhite text-black rounded-lg p-6 w-full max-w-2xl">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-semibold">{selectedStudent.username}</h2>
-                  <button className="text-sm text-gray-600" onClick={() => setSelectedStudent(null)}>Close</button>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <p><strong>Email:</strong> {selectedStudent.email}</p>
-                    <p><strong>Average Progress:</strong> {avgProgress(selectedStudent)}%</p>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4"
+            >
+              <motion.div
+                initial={{ y: 40, scale: 0.95 }}
+                animate={{ y: 0, scale: 1 }}
+                exit={{ y: 40, scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                className="
+          bg-white text-black 
+          rounded-2xl shadow-2xl 
+          w-full max-w-3xl 
+          max-h-[90vh] overflow-hidden
+        "
+              >
+                {/* HEADER */}
+                <div className="flex items-center justify-between px-6 py-4 border-b">
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={`w-12 h-12 rounded-full flex items-center justify-center text-white text-lg ${selectedStudent.avatarColor}`}
+                    >
+                      {selectedStudent.username[0]}
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-semibold">
+                        {selectedStudent.username}
+                      </h2>
+                      <p className="text-sm text-gray-500">
+                        {selectedStudent.email}
+                      </p>
+                    </div>
                   </div>
 
-                  <div>
-                    <h3 className="font-medium mb-2">Book-wise progress</h3>
-                    <div className="space-y-2">
+                  <button
+                    onClick={() => setSelectedStudent(null)}
+                    className="text-sm px-3 py-1 rounded gap-2 bg-gray-100 hover:bg-gray-200"
+                  >
+                    <IoClose className="text-primaryRed inline font-semibold text-lg" />
+                    Close
+                  </button>
+                </div>
+
+                {/* BODY */}
+                <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* LEFT – SUMMARY */}
+                  <div className="md:col-span-1 space-y-4">
+                    <div className="p-4 rounded-xl bg-gray-100 text-center">
+                      <p className="text-sm text-gray-500">Average Progress</p>
+                      <p className="text-3xl font-bold">
+                        {avgProgress(selectedStudent)}%
+                      </p>
+
+                      <div className="w-full bg-gray-300 h-3 rounded mt-3 overflow-hidden">
+                        <div
+                          className={`${progressColor(avgProgress(selectedStudent))} h-3 rounded`}
+                          style={{ width: `${avgProgress(selectedStudent)}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-gray-100 text-sm">
+                      <p>
+                        <strong>Total Books:</strong>{" "}
+                        {selectedStudent.progressByBook.length}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* RIGHT – BOOK PROGRESS */}
+                  <div className="md:col-span-2">
+                    <h3 className="font-semibold mb-3 text-gray-700">
+                      Book-wise Progress
+                    </h3>
+
+                    <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-2">
                       {selectedStudent.progressByBook.map((b, i) => (
-                        <div key={i}>
-                          <div className="flex justify-between">
-                            <div>{b.bookName}</div>
-                            <div>{b.progressPercent}%</div>
+                        <div
+                          key={i}
+                          className="p-3 rounded-lg bg-gray-50 border"
+                        >
+                          <div className="flex justify-between text-sm font-medium mb-1">
+                            <span>{b.bookName}</span>
+                            <span>{b.progressPercent}%</span>
                           </div>
-                          <div className="w-full bg-gray-200 h-3 rounded mt-1 overflow-hidden">
-                            <div className={`${progressColor(b.progressPercent)} h-3 rounded`} style={{ width: `${b.progressPercent}%` }}></div>
+                          <div className="w-full bg-gray-300 h-2 rounded overflow-hidden">
+                            <div
+                              className={`${progressColor(b.progressPercent)} h-2 rounded`}
+                              style={{ width: `${b.progressPercent}%` }}
+                            />
                           </div>
                         </div>
                       ))}
                     </div>
                   </div>
                 </div>
-
-                <div className="mt-4 flex justify-end">
-                  <button className="px-4 py-2 rounded bg-gray-200" onClick={() => setSelectedStudent(null)}>Close</button>
-                </div>
               </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
+
       </main>
     </div>
   );

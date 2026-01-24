@@ -254,6 +254,12 @@ export class AuthService {
       sameSite: 'none',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+    // res.cookie('access_token', token, {
+    //   httpOnly: true,
+    //   secure: false, // local dev
+    //   sameSite: 'lax', // local dev
+    //   maxAge: 7 * 24 * 60 * 60 * 1000,
+    // });
 
     return {
       message: 'Login successful',

@@ -24,8 +24,6 @@
 // import { Module } from './quizzes/modules/.module';
 // import { AssessmentsModule } from './modules/assessments/assessments.module';
 
-
-
 // @Module({
 //   imports: [
 //     ConfigModule.forRoot({
@@ -51,17 +49,17 @@
 //     AssessmentsModule,
 //     Module,
 //     QuizzesModule
-    
+
 //   ],
 //   controllers: [AuthController],
 //   providers: [
 //     {
 //       provide: APP_GUARD,
-//       useClass: JwtAuthGuard, 
+//       useClass: JwtAuthGuard,
 //     },
 //     {
 //       provide: APP_GUARD,
-//       useClass: RolesGuard, 
+//       useClass: RolesGuard,
 //     },
 //   ]
 // })
@@ -95,6 +93,9 @@ import { AiModule } from './modules/ai/ai.module';
 import { AuthSessionModuleModule } from './modules/auth-session-module/auth-session-module.module';
 import { StudentBookAssignModule } from './modules/student-book-assign/student-book-assign.module';
 import { AnnoucementsModule } from './modules/annoucements/annoucements.module';
+import { WebsocketModule } from './modules/websocket/websocket.module';
+import { ReportsModule } from './modules/reports/reports.module';
+import { ModulesModule } from './ai/modules/modules.module';
 
 @Module({
   imports: [
@@ -119,23 +120,26 @@ import { AnnoucementsModule } from './modules/annoucements/annoucements.module';
     RepositoryModule,
     AssessmentsModule,
     QuizzesModule,
-  ChatModule,
-  CurrentAffairsModule,
-  AiModule,
-  AuthSessionModuleModule,
-  StudentBookAssignModule,
-  AnnoucementsModule
+    ChatModule,
+    CurrentAffairsModule,
+    AiModule,
+    AuthSessionModuleModule,
+    StudentBookAssignModule,
+    AnnoucementsModule,
+    WebsocketModule,
+    ReportsModule,
+    ModulesModule,
   ],
   controllers: [AuthController],
   providers: [
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard, 
+      useClass: JwtAuthGuard,
     },
     {
       provide: APP_GUARD,
-      useClass: RolesGuard, 
+      useClass: RolesGuard,
     },
-  ]
+  ],
 })
 export class AppModule {}

@@ -1,4 +1,3 @@
-
 import Sidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
 import WelcomeHeading from "../../Components/WelcomeHeading";
@@ -86,8 +85,11 @@ export default function FileManagerDashboard() {
         body: formData,
         credentials: "include",
       });
-
-      await res.json();
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.message || "Upload failed!");
+        return;
+      }
       alert("File uploaded successfully!");
       setShowUploadModal(false);
       setFile(null);
@@ -104,13 +106,9 @@ export default function FileManagerDashboard() {
 
       {/* Main Content */}
       <main className="flex-1 lg:pl-[280px] py-6 px-5 w-full">
-
         {/* Mobile Menu Icon */}
         <div className="lg:hidden px-4 mb-4">
-          <button
-            onClick={() => setIsSidebarOpen(true)}
-            className="text-white"
-          >
+          <button onClick={() => setIsSidebarOpen(true)} className="text-white">
             <FiMenu size={28} />
           </button>
         </div>
@@ -162,10 +160,30 @@ export default function FileManagerDashboard() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { type: "Books", count: stats.totalBooks, size: "16GB", color: "primaryOrange" },
-              { type: "PDF", count: stats.totalPdf, size: "8GB", color: "primaryBlue" },
-              { type: "Audios", count: stats.totalAudio, size: "0GB", color: "primaryGreen" },
-              { type: "Videos", count: stats.totalVideos, size: "1GB", color: "primaryYellow" },
+              {
+                type: "Books",
+                count: stats.totalBooks,
+                size: "16GB",
+                color: "primaryOrange",
+              },
+              {
+                type: "PDF",
+                count: stats.totalPdf,
+                size: "8GB",
+                color: "primaryBlue",
+              },
+              {
+                type: "Audios",
+                count: stats.totalAudio,
+                size: "0GB",
+                color: "primaryGreen",
+              },
+              {
+                type: "Videos",
+                count: stats.totalVideos,
+                size: "1GB",
+                color: "primaryYellow",
+              },
             ].map((item, index) => (
               <div key={index} className="bg-cardBg p-4 rounded">
                 <p className={`text-${item.color} font-bold`}>{item.type}</p>
@@ -192,7 +210,6 @@ export default function FileManagerDashboard() {
         {/* Pie Charts */}
         <section>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
             <div className="bg-cardBg p-4 rounded shadow">
               <h2 className="text-lg font-semibold mb-4">Total Students</h2>
               <ResponsiveContainer width="100%" height={250}>
@@ -232,14 +249,12 @@ export default function FileManagerDashboard() {
                 </PieChart>
               </ResponsiveContainer>
             </div>
-
           </div>
         </section>
 
         {/* Footer */}
         <footer className="mt-12 bg-gradient-to-r from-[#2d2e3b] to-darkBg border-t border-gray700 rounded-lg shadow-inner p-6 text-center text-gray300">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 flex items-center justify-center bg-primaryBlue rounded-full text-white font-bold">
                 V
@@ -279,18 +294,9 @@ export default function FileManagerDashboard() {
                 © {new Date().getFullYear()} All rights reserved
               </p>
             </div>
-
           </div>
         </footer>
       </main>
     </div>
   );
 }
-
-
-
-
-
-
-
-

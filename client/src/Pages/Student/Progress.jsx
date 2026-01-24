@@ -544,36 +544,48 @@ export default function StudentProgress() {
                 )}
 
               {/* Recently Accessed */}
-              <div className="bg-cardBg p-5 rounded-xl shadow mt-6">
-                <h2 className="text-xl font-semibold mb-4">
+              <div className="bg-cardBg p-4 sm:p-5 rounded-xl shadow mt-6">
+                <h2 className="text-lg sm:text-xl font-semibold mb-4">
                   🕒 Recently Accessed
                 </h2>
 
-                <ul className="text-primaryWhite/80 text-sm space-y-2">
-                  {progress.recentActivity &&
-                    progress.recentActivity.length > 0 ? (
+                <ul className="text-primaryWhite/80 text-sm space-y-3">
+                  {progress.recentActivity && progress.recentActivity.length > 0 ? (
                     progress.recentActivity.map((item, index) => (
                       <li
                         key={index}
-                        className="flex justify-between hover:bg-[#272833] p-2 rounded transition-colors"
+                        className="
+            flex flex-col sm:flex-row 
+            sm:justify-between sm:items-center
+            gap-1 sm:gap-4
+            hover:bg-[#272833] 
+            p-3 rounded-lg 
+            transition-colors
+          "
                       >
-                        <div>
+                        {/* Left content */}
+                        <div className="text-sm">
                           <span className="font-medium text-primaryWhite">
                             {item.type}:
                           </span>{" "}
                           {item.title}
                         </div>
-                        <div className="text-primaryWhite/50">
+
+                        {/* Right content */}
+                        <div className="text-xs sm:text-sm text-primaryWhite/50">
                           {item.bookClass} •{" "}
                           {new Date(item.time).toLocaleString()}
                         </div>
                       </li>
                     ))
                   ) : (
-                    <li>No recent activity found.</li>
+                    <li className="text-center text-primaryWhite/50">
+                      No recent activity found.
+                    </li>
                   )}
                 </ul>
               </div>
+
             </>
           )}
         </div>

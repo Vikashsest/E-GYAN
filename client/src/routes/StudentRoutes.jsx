@@ -124,6 +124,7 @@ import SimulationLibrary from "../Pages/Student/SimulationLibrary";
 import CurrentAffairs from "../Pages/Student/CurrentAffairs";
 import NewsModal from "../Pages/Student/NewsModel";
 import MyBooks from "../Pages/Student/AssignedBook";
+import StudentAIAssistant from "../Pages/Student/StudentAIAssistant";
 
 export const studentRouteList = [
   {
@@ -302,11 +303,12 @@ export const studentRouteList = [
       </ProtectedRoute>
     ),
   },
+
   {
-    path: "current-affairs/:id",
+    path: "student/ai-assistant",
     element: (
       <ProtectedRoute allowedRoles={["student"]}>
-        <NewsModal />
+        <StudentAIAssistant />
       </ProtectedRoute>
     ),
   },

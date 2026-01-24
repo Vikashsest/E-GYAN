@@ -11,14 +11,14 @@ import { User, UserRole } from '../user/entities/user.entity';
 import { Book } from '../book/entities/book.entity';
 import { StudentActivity } from './entities/student-activity.entity';
 import { StudentStatsHelper } from '../../common/utils/Helper/studentStats';
-import { Concern } from './entities/raise-concern.entity';
+import { Concern, ConcernStatus } from './entities/raise-concern.entity';
 import { CreateConcernDto } from './dto/raise-concern.dto';
 import { BookProgress } from '../book/entities/book-progress.entity';
 import { ResourceType, ActivityType } from './entities/student-activity.entity';
 import { LogActivityDto } from './dto/log.acitvity.dto';
 import { Announcement } from './entities/announcement.entity';
 import { Chapter } from '../book/entities/chapter.entity';
-
+import fetch from 'node-fetch';
 @Injectable()
 export class StudentService {
   constructor(
@@ -96,6 +96,7 @@ export class StudentService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
+    console.log('concern', user);
     const concern = this.concernRepo.create({ ...dto, student: user });
     return await this.concernRepo.save(concern);
   }
@@ -647,19 +648,62 @@ export class StudentService {
     return `${h}h ${m}m`;
   }
 
+  // async getRecentBooks(userId: number) {
+  //   const activities = await this.studentActivityRepo.find({
+  //     where: { user: { id: userId } },
+  //     relations: ['book', 'chapter'],
+  //     loadEagerRelations: true,
+  //   });
+
+  //   const recentBookActivities = activities
+  //     .filter((a) => a.book)
+  //     .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+  //     .slice(0, 5);
+
+  //   return recentBookActivities.map((a) => {
+  //     const totalPages = a.chapter?.totalPages ?? a.book?.totalPages ?? 0;
+  //     const pagesRead = a.pageNumber ?? 0;
+
+  //     const progress =
+  //       totalPages > 0
+  //         ? Math.min(100, Math.round((pagesRead / totalPages) * 100))
+  //         : 0;
+
+  //     return {
+  //       id: a.book?.id,
+  //       bookName: a.resourceTitle,
+  //       subject: a.book?.subject,
+  //       type: a.resourceType,
+  //       lastAccessed: a.createdAt,
+  //       progress,
+  //     };
+  //   });
+  // }
+
   async getRecentBooks(userId: number) {
     const activities = await this.studentActivityRepo.find({
       where: { user: { id: userId } },
       relations: ['book', 'chapter'],
-      loadEagerRelations: true,
     });
 
-    const recentBookActivities = activities
+    // latest first
+    const sorted = activities
       .filter((a) => a.book)
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-      .slice(0, 5);
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
-    return recentBookActivities.map((a) => {
+    // unique books (latest activity only)
+    const uniqueMap = new Map<number, any>();
+
+    for (const a of sorted) {
+      if (!uniqueMap.has(a.book.id)) {
+        uniqueMap.set(a.book.id, a);
+      }
+      if (uniqueMap.size === 5) break;
+    }
+
+    const uniqueActivities = Array.from(uniqueMap.values());
+
+    return uniqueActivities.map((a) => {
       const totalPages = a.chapter?.totalPages ?? a.book?.totalPages ?? 0;
       const pagesRead = a.pageNumber ?? 0;
 
@@ -669,9 +713,9 @@ export class StudentService {
           : 0;
 
       return {
-        id: a.book?.id,
+        id: a.book.id,
         bookName: a.resourceTitle,
-        subject: a.book?.subject,
+        subject: a.book.subject,
         type: a.resourceType,
         lastAccessed: a.createdAt,
         progress,
@@ -723,26 +767,6 @@ export class StudentService {
       existing.isFavorite = !existing.isFavorite;
       return await activityRepo.save(existing);
     } else {
-      // const book = await this.bookRepo.findOne({ where: { id: bookId } });
-
-      // if (!book || !chapter.resourceType) {
-      //   throw new NotFoundException('Book not found or missing resourceType');
-      // }
-
-      // const resourceType = book.resourceType.toUpperCase();
-      // if (!Object.values(ResourceType).includes(resourceType as ResourceType)) {
-      //   throw new BadRequestException(`Invalid resourceType: ${resourceType}`);
-      // }
-
-      // const newActivity = this.studentActivityRepo.create({
-      //   user: { id: userId },
-      //   book: { id: bookId },
-      //   activityType: ActivityType.FAVORITE,
-      //   resourceTitle: book.bookName,
-      //   isFavorite: true,
-      //   resourceType: resourceType as ResourceType,
-      // });
-      // return await activityRepo.save(newActivity);
       const book = await this.bookRepo.findOne({
         where: { id: bookId },
         relations: ['chapters'],
@@ -997,14 +1021,33 @@ export class StudentService {
   }
 
   async getAnnouncements(): Promise<any[]> {
-    const announcements = await this.announcementRepo.find({
+    const localAnnouncements = await this.announcementRepo.find({
       where: { isActive: true },
       order: { createdAt: 'DESC' },
       take: 5,
     });
+    let externalAnnouncements: any[] = [];
+    try {
+      const response = await fetch(
+        'https://e-gyan-9tky.onrender.com/annoucements',
+      );
 
-    return announcements.map((a) => ({
+      if (response.ok) {
+        externalAnnouncements = await response.json();
+      }
+    } catch (error) {
+      console.error('Failed to fetch external announcements:', error);
+    }
+
+    const merged = [...localAnnouncements, ...externalAnnouncements];
+    merged.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
+
+    return merged.map((a) => ({
       id: a.id,
+      text: a.text,
       message: a.message,
       createdAt: a.createdAt,
     }));
@@ -1019,5 +1062,20 @@ export class StudentService {
 
     await this.concernRepo.delete(id);
     return { message: 'Concern deleted successfully' };
+  }
+
+  async updateConcern(id: number, status: ConcernStatus) {
+    const concern = await this.concernRepo.findOne({ where: { id } });
+    if (!concern) {
+      throw new NotFoundException('Concern not found with this id');
+    }
+    if (!Object.values(ConcernStatus).includes(status)) {
+      throw new BadRequestException('Invalid status');
+    }
+
+    concern.status = status;
+    await this.concernRepo.save(concern);
+
+    return concern;
   }
 }

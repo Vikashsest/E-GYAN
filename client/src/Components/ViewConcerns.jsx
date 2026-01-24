@@ -16,11 +16,9 @@ function ConcernList() {
   const modalRef = useRef(null);
   const navigate = useNavigate();
 
-  // Fetch Concerns & Requests
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Concerns
         const resConcerns = await fetch(`${API_URL}/admin/concerns`, {
           credentials: "include",
           method: "GET",
@@ -28,12 +26,9 @@ function ConcernList() {
         });
         if (!resConcerns.ok) throw new Error("Failed to fetch concerns");
         setConcerns(await resConcerns.json());
-
-        // Requests
         const resRequests = await fetch(`${API_URL}/user/requests`, {
           credentials: "include",
           method: "GET",
-          headers: { Authorization: `Bearer ${access_token}` },
         });
         if (!resRequests.ok) throw new Error("Failed to fetch requests");
         setRequests(await resRequests.json());
@@ -55,67 +50,80 @@ function ConcernList() {
     }
   };
 
-  const handleDelete = async (id, type) => {
-    if (!id) {
-      console.error("Invalid ID:", id);
-      toast.error("Invalid ID");
-      return;
-    }
-
-    let url = "";
-
-    if (type === "concern") {
-      url = `${API_URL}/students/${id}`;
-    } else if (type === "request") {
-      url = `${API_URL}/admin/request/${id}`;
-    }
+  const deleteConcern = async (id) => {
+    if (!id) return toast.error("Invalid Concern ID");
 
     try {
-      const res = await fetch(url, {
+      const res = await fetch(`${API_URL}/students/${id}`, {
         method: "DELETE",
         credentials: "include",
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
       });
-
       if (!res.ok) throw new Error("Delete failed");
 
-      if (type === "concern") {
-        setConcerns((prev) => prev.filter((c) => c._id !== id));
-      } else {
-        setRequests((prev) => prev.filter((r) => r.id !== id));
-      }
-
-      toast.success(`${type} deleted successfully`);
+      setConcerns((prev) => prev.filter((c) => c._id !== id));
+      toast.success("Concern deleted successfully");
     } catch (err) {
       console.error("Delete error:", err);
-      toast.error("Failed to delete");
+      toast.error("Failed to delete concern");
+    }
+  };
+
+  // DELETE REQUEST
+  const deleteRequest = async (id) => {
+    if (!id) return toast.error("Invalid Request ID");
+
+    try {
+      const res = await fetch(`${API_URL}/user/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Delete failed");
+
+      setRequests((prev) => prev.filter((r) => r.id !== id));
+      toast.success("Request deleted successfully");
+    } catch (err) {
+      console.error("Delete error:", err);
+      toast.error("Failed to delete request");
     }
   };
 
   const handleStatusChange = async (requestId, newStatus) => {
     try {
-      const res = await fetch(`${API_URL}/admin/request/${requestId}/status`, {
+      const res = await fetch(`${API_URL}/user/${requestId}/status`, {
         method: "PATCH",
         credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${access_token}`,
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),
       });
 
       if (!res.ok) throw new Error("Failed to update status");
 
-      // Update local state
       setRequests((prev) =>
         prev.map((r) => (r.id === requestId ? { ...r, status: newStatus } : r))
       );
 
       toast.success("Status updated!");
     } catch (error) {
-      console.error(error);
+      toast.error("Failed to update status");
+    }
+  };
+  const handleConcernStatus = async (requestId, newStatus) => {
+    try {
+      const res = await fetch(`${API_URL}/students/${requestId}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (!res.ok) throw new Error("Failed to update status");
+
+      setConcerns((prev) =>
+        prev.map((c) => (c.id === requestId ? { ...c, status: newStatus } : c))
+      );
+
+      toast.success("Status updated!");
+    } catch (error) {
       toast.error("Failed to update status");
     }
   };
@@ -157,10 +165,10 @@ function ConcernList() {
             ) : (
               concerns.map((item) => (
                 <tr
-                  key={item._id}
+                  key={item.id}
                   className="border-b border-gray700 hover:bg-hoverGray"
                 >
-                  <td className="px-6 py-4">{item.student?.name}</td>
+                  <td className="px-6 py-4">{item.student?.username}</td>
                   <td className="px-6 py-4">{item.subject}</td>
                   <td className="px-6 py-4">
                     <span
@@ -176,16 +184,25 @@ function ConcernList() {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span
-                      className={`text-sm font-medium ${
+                    <select
+                      className={`bg-gray700 text-primaryWhite px-2 py-1 rounded${
                         item.status === "Resolved"
                           ? "text-lightGreen"
-                          : "text-lightYellow"
+                          : item.status === "Pending"
+                          ? "text-lightYellow"
+                          : "text-lightRed"
                       }`}
+                      value={item.status.toLowerCase()}
+                      onChange={(e) =>
+                        handleConcernStatus(item.id, e.target.value)
+                      }
                     >
-                      {item.status}
-                    </span>
+                      <option value="pending">Pending</option>
+                      <option value="rejected">Reject</option>
+                      <option value="resolved">Resolved</option>
+                    </select>
                   </td>
+
                   <td className="px-6 py-4">
                     {new Date(item.createdAt).toLocaleDateString("en-IN")}
                   </td>
@@ -197,7 +214,7 @@ function ConcernList() {
                       View
                     </button>
                     <button
-                      onClick={() => handleDelete(item.id, "concern")}
+                      onClick={() => deleteConcern(item.id)}
                       title="Delete Concern"
                       className="text-lightRed hover:text-primaryRed text-base"
                     >
@@ -260,7 +277,7 @@ function ConcernList() {
                       View
                     </button>
                     <button
-                      onClick={() => handleDelete(item.id, "request")}
+                      onClick={() => deleteRequest(item.id)}
                       title="Delete Request"
                       className="text-lightRed hover:text-primaryRed text-base"
                     >
@@ -273,6 +290,7 @@ function ConcernList() {
           </tbody>
         </table>
       </div>
+
       {selectedItem && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
           <div

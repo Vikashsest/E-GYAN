@@ -5,14 +5,14 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import StudentNavbar from "./StudentNavbar";
 import StudentSidebar from "./StudentSidebar";
 import { fetchFavoriteBooks, subjectWiseBooks, toggleFavoriteBook } from "../../apiServices/booksApi";
-import { FaArrowLeft, FaHeart, FaRegHeart, FaSpinner } from "react-icons/fa";
+import { FaArrowLeft, FaRegHeart, FaHeart } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
 import { useLoader } from "../../LoaderContext";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const BooksList = () => {
-  const {setLoading} = useLoader()
+  const { setLoading } = useLoader()
   const { className, subject } = useParams();
   const location = useLocation();
   const [books, setBooks] = useState([]);
@@ -72,16 +72,16 @@ const BooksList = () => {
     navigate(`/student/books/${bookId}/chapters`);
   };
 
-  // const toggleFavorite = async (bookId) => {
-  //   try {
-  //     await toggleFavoriteBook(bookId);
-  //     setBooks((prevBooks) =>
-  //       prevBooks.map((b) => (b.id === bookId ? { ...b, isFavorite: !b.isFavorite } : b))
-  //     );
-  //   } catch (err) {
-  //     console.error("Failed to toggle favorite:", err);
-  //   }
-  // };
+  const toggleFavorite = async (bookId) => {
+    try {
+      await toggleFavoriteBook(bookId);
+      setBooks((prevBooks) =>
+        prevBooks.map((b) => (b.id === bookId ? { ...b, isFavorite: !b.isFavorite } : b))
+      );
+    } catch (err) {
+      console.error("Failed to toggle favorite:", err);
+    }
+  };
 
   return (
     <div className="flex min-h-screen bg-darkBg text-primaryWhite relative">
@@ -147,19 +147,21 @@ const BooksList = () => {
                   ) : (
                     <p className="text-gray300">No Image</p>
                   )}
-                  <div className="absolute top-2 right-2 flex items-center space-x-2">
+                  <div className="absolute top-2 right-2 left-2 flex items-center justify-between">
                     {book.language && (
                       <span className="bg-primaryBlack/60 text-primaryWhite text-xs px-2 py-1 rounded-md">
                         {book.language}
                       </span>
                     )}
+
                     <button
                       className="text-lightRed hover:text-darkRed text-lg"
-                    // onClick={() => toggleFavorite(book.id)}
+                      onClick={() => toggleFavorite(book.id)}
                     >
-                      {/* {book.isFavorite ? <FaHeart /> : <FaRegHeart />} */}
+                      {book.isFavorite ? <FaHeart /> : <FaRegHeart />}
                     </button>
                   </div>
+
 
                 </div>
                 <div className="mt-4 text-center">
@@ -169,7 +171,7 @@ const BooksList = () => {
               </div>
             ))}
           </div>
-        ) }
+        )}
       </main>
     </div>
   );

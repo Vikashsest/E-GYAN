@@ -78,7 +78,18 @@ export class UserController {
   fetchRequests() {
     return this.userService.fetchUserRequest();
   }
+  @Patch(':id/status')
+  updateStatus(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('status') status: 'pending' | 'resolved',
+  ) {
+    return this.userService.updateRequestStatus(id, status);
+  }
 
+  @Delete(':id')
+  async deleteRequest(@Param('id') id: number) {
+    return this.userService.deleteRequest(id);
+  }
   @Delete('delete-role/:id')
   @Roles(UserRole.ADMIN, UserRole.TEACHER, UserRole.PRINCIPAL)
   async deleteRole(@Param('id') id: number) {

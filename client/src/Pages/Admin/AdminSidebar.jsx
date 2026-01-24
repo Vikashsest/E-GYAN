@@ -116,7 +116,7 @@ export default function Sidebar({ isOpen, onClose }) {
                   <span>Role Management</span>
                 </li>
               </Link>
-              <Link className="flex items-center space-x-2" to="/admin/manage">
+              {/* <Link className="flex items-center space-x-2" to="/admin/manage">
                 <li className="flex items-center space-x-2 text-gray300">
                   <MdManageAccounts />
                   <span>Book Manage</span>
@@ -127,7 +127,7 @@ export default function Sidebar({ isOpen, onClose }) {
                   <MdManageAccounts />
                   <span>Upload Content</span>
                 </li>
-              </Link>
+              </Link> */}
               <Link
                 className="flex items-center space-x-2"
                 to="/admin/upload-books"

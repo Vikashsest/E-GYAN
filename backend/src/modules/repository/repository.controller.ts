@@ -27,8 +27,8 @@ export class RepositoryController {
   }
 
   @Get()
-  getAll(@Query('type') type?: string) {
-    return this.repositoryService.findAll(type);
+  getAll(@Query('type') type?: string, @Query('category') category?: string) {
+    return this.repositoryService.findAll(type, category);
   }
 
   @Patch(':id')

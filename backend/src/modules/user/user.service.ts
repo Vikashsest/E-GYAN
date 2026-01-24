@@ -96,7 +96,7 @@ export class UserService {
     user.role = role;
     user.isActive = isActive;
     await this.userRepository.save(user);
-    console.log('UPDATE STATUS', user.isActive);
+
     return { message: 'User update successfully' };
   }
   async deleteRole(id: number) {
@@ -115,8 +115,6 @@ export class UserService {
       if (updateUserDto.password) {
         updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
       }
-      console.log('DTO:', updateUserDto);
-      console.log('Type of isActive:', typeof updateUserDto.isActive);
 
       Object.assign(user, updateUserDto);
       const updateUser = await this.userRepository.save(user);
@@ -128,44 +126,88 @@ export class UserService {
       throw new InternalServerErrorException('Internal server error');
     }
   }
-
   async createRequest(dto: CreateRequestDto) {
     try {
+      // 1️⃣ Find the user by ID
       const user = await this.userRepository.findOne({
         where: { id: dto.userId },
       });
       if (!user) {
-        throw new NotFoundException(`user not found this ${dto.userId} id`);
+        throw new NotFoundException(`User not found with id ${dto.userId}`);
       }
+
+      // 2️⃣ Validate message
       if (!dto.message || dto.message.trim() === '') {
         throw new BadRequestException('Message is required');
       }
 
+      // 3️⃣ Create new request
       const newRequest = this.requestRepository.create({
         message: dto.message,
         user: user,
       });
-      return this.requestRepository.save(newRequest);
+
+      // 4️⃣ Save to database
+      const savedRequest = await this.requestRepository.save(newRequest);
+
+      return {
+        ...savedRequest,
+        id: savedRequest.id,
+      };
     } catch (error) {
-      throw new InternalServerErrorException('Failed to create  request');
+      console.error(error); // log actual error
+      throw new InternalServerErrorException('Failed to create request');
     }
   }
+
+  // Example in RequestsService
   async fetchUserRequest() {
+    const requests = await this.requestRepository.find({
+      relations: ['user'],
+    });
+
+    // Map to include _id for frontend
+    return requests.map((r) => ({
+      id: r.id, // unique id for frontend
+      message: r.message,
+      status: r.status,
+      user: {
+        username: r.user.username,
+        role: r.user.role,
+      },
+    }));
+  }
+
+  async deleteRequest(requestId: number) {
     try {
-      const requests = await this.requestRepository.find({
-        relations: ['user'],
-        select: {
-          message: true,
-          status: true,
-          user: {
-            username: true,
-            role: true,
-          },
-        },
+      const user = await this.requestRepository.findOne({
+        where: { id: requestId },
       });
-      return requests;
+
+      if (!user) {
+        throw new NotFoundException(`Request not found with id ${requestId}`);
+      }
+      const del = await this.requestRepository.delete(requestId);
+      return del;
     } catch (error) {
-      throw new InternalServerErrorException('Failed to fetch requests');
+      throw new InternalServerErrorException('Failed to update request');
     }
+  }
+  async updateRequestStatus(requestId: number, status: 'pending' | 'resolved') {
+    const request = await this.requestRepository.findOne({
+      where: { id: requestId },
+    });
+
+    if (!request) {
+      throw new NotFoundException(`Request not found with id ${requestId}`);
+    }
+
+    if (!status || !['pending', 'resolved'].includes(status)) {
+      throw new BadRequestException('Invalid status');
+    }
+
+    request.status = status;
+
+    return await this.requestRepository.save(request);
   }
 }

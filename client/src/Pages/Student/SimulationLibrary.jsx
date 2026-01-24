@@ -372,28 +372,49 @@ export default function SimulationLibrary() {
               <option value="A-Z">A-Z</option>
               <option value="Z-A">Z-A</option>
             </select>
-            <div className="flex space-x-2">
-              <button
-                onClick={() => setSelectedView("grid")}
-                className={`p-2 rounded ${selectedView === "grid" ? "bg-gray-700" : "bg-gray-800"
-                  }`}
-              >
-                <FaTh />
-              </button>
-              <button
-                onClick={() => setSelectedView("list")}
-                className={`p-2 rounded ${selectedView === "list" ? "bg-gray-700" : "bg-gray-800"
-                  }`}
-              >
-                <FaList />
-              </button>
-              <button
-                onClick={() => setFilterSidebarOpen(true)}
-                className="p-2 bg-gray-700 rounded hover:bg-gray-600"
-              >
-                <FaFilter />
-              </button>
+            <div className="flex space-x-3">
+              {/* Grid View */}
+              <div className="relative group flex flex-col items-center">
+                <button
+                  onClick={() => setSelectedView("grid")}
+                  className={`p-2 rounded ${selectedView === "grid" ? "bg-gray-700" : "bg-gray-800"
+                    }`}
+                >
+                  <FaTh />
+                   <span className="absolute left-0 top-full text-md text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                  Grid
+                </span>
+                </button>
+              </div>
+
+              {/* List View */}
+              <div className="relative group flex flex-col items-center">
+                <button
+                  onClick={() => setSelectedView("list")}
+                  className={`p-2 rounded ${selectedView === "list" ? "bg-gray-700" : "bg-gray-800"
+                    }`}
+                >
+                  <FaList />
+                  <span className="absolute left-0 top-full text-md text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                  List
+                </span>
+                </button>
+              </div>
+
+              {/* Filter */}
+              <div className="relative group flex flex-col items-center">
+                <button
+                  onClick={() => setFilterSidebarOpen(true)}
+                  className="p-2 bg-gray-700 rounded hover:bg-gray-600"
+                >
+                  <FaFilter />
+                  <span className="absolute left-0 top-full text-md  text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                  Filter
+                </span>
+                </button>
+              </div>
             </div>
+
           </div>
         </div>
 

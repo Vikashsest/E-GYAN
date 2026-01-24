@@ -42,7 +42,7 @@ export async function addAnnouncement(data) {
 export async function updateAnnouncement(id, data) {
   try {
     const res = await fetch(`${API_URL}/annoucements/${id}`, {
-      method: "PUT",
+      method: "PATCH",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
@@ -74,4 +74,3 @@ export async function deleteAnnouncement(id) {
     throw err;
   }
 }
-
