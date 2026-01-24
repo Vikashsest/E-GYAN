@@ -655,7 +655,7 @@ export default function RepositoryManagement() {
         setTexts(categories); // populate dropdown
       } catch (err) {
         console.error("Failed to fetch categories:", err);
-        alert("Failed to load categories");
+        toast.error("Failed to load categories");
       } finally {
         setLoading(false);
       }
@@ -673,7 +673,7 @@ export default function RepositoryManagement() {
       setLevelsLoaded(true);
     } catch (err) {
       console.error("Failed to fetch levels:", err);
-      alert("Failed to load levels");
+      toast.error("Failed to load levels");
     } finally {
       setLoading(false);
     }
@@ -722,6 +722,7 @@ const handleSubjectClick = async () => {
     setSubjectsLoaded(true);
   } catch (err) {
     console.error("Failed to fetch subjects:", err);
+    toast.error("Failed to load subjects");
   } finally {
     setLoading(false);
   }

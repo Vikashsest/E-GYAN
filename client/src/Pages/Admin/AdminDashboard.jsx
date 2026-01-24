@@ -13,6 +13,7 @@ import {
 import { FiMenu } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { getCookie } from "../../utils/cookie";
+import { toast } from "react-toastify";
 
 export default function FileManagerDashboard() {
   const [stats, setStats] = useState({
@@ -74,7 +75,7 @@ export default function FileManagerDashboard() {
 
   const handleFileUpload = async (e) => {
     e.preventDefault();
-    if (!file) return alert("Please select a file");
+    if (!file) return toast.warn("Please select a file");
 
     const formData = new FormData();
     formData.append("credentialFile", file);
@@ -87,15 +88,15 @@ export default function FileManagerDashboard() {
       });
       const data = await res.json();
       if (!res.ok) {
-        alert(data.message || "Upload failed!");
+        toast.error(data.message || "Upload failed!");
         return;
       }
-      alert("File uploaded successfully!");
+      toast.success("File uploaded successfully!");
       setShowUploadModal(false);
       setFile(null);
     } catch (err) {
       console.error("Upload error:", err);
-      alert("Upload failed!");
+      toast.error("Upload failed!");
     }
   };
 
