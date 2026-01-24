@@ -244,6 +244,7 @@ async function bootstrap() {
         'http://localhost:5173',
         'http://localhost:5000',
         'http://172.16.0.19:5173',
+        'https://e-gyan-analytics.vercel.app',
       ];
       if (!origin || allowedOrigins.includes(origin)) callback(null, true);
       else callback(new Error(`CORS error: origin ${origin} not allowed`));
