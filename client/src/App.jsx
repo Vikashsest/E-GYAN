@@ -20,7 +20,6 @@ function Page() {
     <>
       {loading && <GlobalLoader />}
       <Routes>
-        {/* Public Routes */}
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -29,8 +28,6 @@ function Page() {
         <Route path="/booksdetails/:id" element={<UploadChapter />} />
 
         <Route path="current-affairs/:id" element={<NewsPage />} />
-
-
 
         {/* Admin Routes */}
         {adminRouteList.map(({ path, element }, i) => (

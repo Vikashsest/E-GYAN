@@ -1,12 +1,9 @@
 import {
   FaUsers,
   FaBook,
-  FaChalkboardTeacher,
-  FaUserTie,
   FaFileAlt,
   FaTachometerAlt,
   FaSchool,
-  FaBookOpen,
   FaBullhorn,
 } from "react-icons/fa";
 import { RiGitRepositoryFill } from "react-icons/ri";
@@ -151,6 +148,11 @@ export default function Sidebar({ isOpen, onClose }) {
     </aside>
   );
 }
+
+
+
+
+
 
 // import {
 //   FaUsers,

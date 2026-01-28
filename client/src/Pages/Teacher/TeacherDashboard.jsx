@@ -620,17 +620,19 @@
 //   );
 // }
 
+
+
+
 import { useEffect, useState } from "react";
 import TeacherSidebar from "./TeacherSidebar";
 import TeacherNavbar from "./TeacherNavbar";
+import { FiMenu } from "react-icons/fi";
 import {
   FaUserGraduate,
   FaChalkboardTeacher,
   FaBook,
   FaClipboardList,
 } from "react-icons/fa";
-import { FaPoll, FaTasks, FaFileSignature } from "react-icons/fa";
-import { MdOutlineQuiz, MdOutlineSummarize } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import WelcomeHeading from "../../Components/WelcomeHeading";
 import { toast } from "react-toastify";
@@ -638,6 +640,7 @@ import { toast } from "react-toastify";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function TeacherDashboard() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [overview, setOverview] = useState({
     totalStudents: 0,
     totalSubjects: 0,
@@ -665,9 +668,22 @@ export default function TeacherDashboard() {
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-[#1e1f2b] text-white">
-      <TeacherSidebar />
-      <main className="flex-1 pl-[280px] pr-5 py-6">
+    <div className="flex min-h-screen bg-darkBg text-white">
+      {/* Sidebar */}
+      <TeacherSidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
+
+      {/* Main content */}
+      <main className="flex-1 lg:pl-[280px] p-5">
+
+        {/* Mobile menu */}
+        <div className="lg:hidden mb-4">
+          <button onClick={() => setIsSidebarOpen(true)}>
+            <FiMenu size={28} />
+          </button>
+        </div>
         <TeacherNavbar />
         <WelcomeHeading />
 

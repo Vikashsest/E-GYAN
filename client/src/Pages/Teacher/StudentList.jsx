@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUserGraduate } from "react-icons/fa";
-import TeacherSidebar from "../Pages/Teacher/TeacherSidebar";
-import TeacherNavbar from "../Pages/Teacher/TeacherNavbar";
+import TeacherSidebar from "./TeacherSidebar";
+import TeacherNavbar from "./TeacherNavbar";
 import { toast } from "react-toastify";
-import { useLoader } from "../LoaderContext";
+import { useLoader } from "../../LoaderContext";
+import { FiMenu } from "react-icons/fi";
 
 export default function StudentList() {
   const {setLoading} = useLoader()
   const navigate = useNavigate();
   const [students, setStudents] = useState([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -37,9 +39,22 @@ export default function StudentList() {
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-[#1e1f2b] text-white">
-      <TeacherSidebar />
-      <main className="flex-1 pl-[280px] pr-6 py-6">
+    <div className="flex min-h-screen bg-darkBg text-white">
+      {/* Sidebar */}
+      <TeacherSidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
+
+      {/* Main content */}
+      <main className="flex-1 lg:pl-[280px] p-5">
+
+        {/* Mobile menu */}
+        <div className="lg:hidden mb-4">
+          <button onClick={() => setIsSidebarOpen(true)}>
+            <FiMenu size={28} />
+          </button>
+        </div>
         <TeacherNavbar />
 
         <h2 className="text-3xl font-bold mb-8 text-center">All Students</h2>

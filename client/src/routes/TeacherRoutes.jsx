@@ -56,7 +56,7 @@ import CreateAssignment from "../Pages/Teacher/CreateAssignment";
 import TeacherForms from "../Pages/Teacher/DashboardForm";
 import QuizStartUI from "../Pages/Teacher/ContentGenrator/QuizUI";
 import { questions } from "../utils/questions";
-import StudentList from "../Components/StudentList";
+import StudentList from "../Pages/Teacher/StudentList";
 import AssignBookPage from "../Pages/Teacher/AssignBook";
 export const teacherRouteList = [
   {

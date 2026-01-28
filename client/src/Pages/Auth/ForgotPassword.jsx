@@ -149,6 +149,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { sendOtp,verifyOtp,resetPassword } from '../../apiServices/authApi';
+import { toast } from "react-toastify";
 export default function ResetPasswordUI() {
   const [step, setStep] = useState(1); 
   const [email, setEmail] = useState("");
@@ -168,24 +169,24 @@ export default function ResetPasswordUI() {
 
 
   const handleSendOtp = async () => {
-    if (!email) return alert("Please enter email");
+    if (!email) return toast.warn("Please enter email");
     try {
       await sendOtp({ email });
-      alert("OTP sent to your email!");
+      toast.success("OTP sent to your email!");
       setStep(2);
     } catch (error) {
-      alert(error.message || "Failed to send OTP");
+      toast.error(error.message || "Failed to send OTP");
     }
   };
 
   const handleVerifyOtp = async () => {
-    if (!otp) return alert("Please enter OTP");
+    if (!otp) return toast.warn("Please enter OTP");
     try {
       await verifyOtp({ email, otp });
-      alert("OTP verified!");
+      toast.success("OTP verified!");
       setStep(3);
     } catch (error) {
-      alert(error.message || "OTP verification failed");
+      toast.error(error.message || "OTP verification failed");
     }
   };
 
@@ -196,10 +197,10 @@ export default function ResetPasswordUI() {
 
     try {
       await resetPassword({ email, newPassword, confirmPassword,otp });
-      alert("Password reset successful!");
+      toast.success("Password reset successful!");
       navigate("/login");
     } catch (error) {
-      alert(error.message || "Password reset failed");
+      toast.error(error.message || "Password reset failed");
     }
   };
 

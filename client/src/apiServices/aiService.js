@@ -10,10 +10,10 @@ export async function askGemini(question) {
       },
       body: JSON.stringify({
         prompt: {
-          text: question
-        }
+          text: question,
+        },
       }),
-    }
+    },
   );
 
   if (!res.ok) {
