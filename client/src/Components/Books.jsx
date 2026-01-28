@@ -1,5 +1,3 @@
-
-
 // import { useEffect, useState } from "react";
 // import FlipbookPDFViewer from "./FlipbookPDFViewer";
 // import { FaEdit, FaTrash, FaExpand, FaCompress } from "react-icons/fa";
@@ -356,7 +354,6 @@
 //     return () => window.removeEventListener("resize", handleResize);
 //   }, []);
 
-
 //   const filteredBooks = bookList.filter((b) => {
 //     const selectedClassNumber = selectedClass ? parseInt(selectedClass) : null;
 //     const bookClassNumber = b.educationLevel
@@ -375,7 +372,6 @@
 
 //     return categoryMatch && classMatch && searchMatch;
 //   });
-
 
 //   const totalPages = Math.ceil(filteredBooks.length / itemsPerPage);
 //   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -578,7 +574,7 @@
 //               <button
 //                 key={num}
 //                 onClick={() => setCurrentPage(num)}
-//                 className={`px-3 py-1 border rounded 
+//                 className={`px-3 py-1 border rounded
 //           ${num === currentPage
 //                     ? "bg-primaryBlue text-primaryWhite"
 //                     : "bg-primaryWhite/10"
@@ -1352,19 +1348,16 @@
 //   );
 // }
 
-
-
-
-
-
-
-
-
-
-
 import { useEffect, useState } from "react";
 import FlipbookPDFViewer from "./FlipbookPDFViewer";
-import { FaEdit, FaTrash, FaExpand, FaCompress, FaCalendarAlt, FaArrowRight } from "react-icons/fa";
+import {
+  FaEdit,
+  FaTrash,
+  FaExpand,
+  FaCompress,
+  FaCalendarAlt,
+  FaArrowRight,
+} from "react-icons/fa";
 import { toast } from "react-toastify";
 import { FiMenu } from "react-icons/fi";
 import { confirmDelete } from "../utils/confirmDelete";
@@ -1372,7 +1365,10 @@ import { getRepository } from "../apiServices/apiRepository";
 import JoditEditor from "jodit-react";
 import { useRef } from "react";
 import { useLoader } from "../LoaderContext";
-import { fetchSimulationData, createSimulation } from "../apiServices/simulationApi";
+import {
+  fetchSimulationData,
+  createSimulation,
+} from "../apiServices/simulationApi";
 import SimulationModal from "../Pages/Student/SimulationModal";
 import { fetchCurrentAffairs } from "../apiServices/booksApi";
 
@@ -1481,7 +1477,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
     loadCategories();
   }, []);
 
-
   useEffect(() => {
     if (filterCategory === "Simulation") {
       loadSimulations();
@@ -1501,17 +1496,15 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   };
 
   const totalSimulationPages = Math.ceil(
-    simulationData.length / SIMULATION_PER_PAGE
+    simulationData.length / SIMULATION_PER_PAGE,
   );
 
-  const simulationStartIndex =
-    (simulationPage - 1) * SIMULATION_PER_PAGE;
+  const simulationStartIndex = (simulationPage - 1) * SIMULATION_PER_PAGE;
 
   const paginatedSimulations = simulationData.slice(
     simulationStartIndex,
-    simulationStartIndex + SIMULATION_PER_PAGE
+    simulationStartIndex + SIMULATION_PER_PAGE,
   );
-
 
   useEffect(() => {
     if (filterCategory === "Current Affairs") {
@@ -1605,12 +1598,12 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
         setSubjects(
           subjectData
             .filter((s) => s.category === selectedCategory)
-            .map((s) => s.text)
+            .map((s) => s.text),
         );
         setBooks(
           bookData
             .filter((b) => b.category === selectedCategory)
-            .map((b) => b.text)
+            .map((b) => b.text),
         );
         // setLanguages(
         //   languageData
@@ -1622,7 +1615,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
         setEducationLevels(
           levelData
             .filter((l) => l.category === selectedCategory)
-            .map((l) => l.text)
+            .map((l) => l.text),
         );
       } catch (err) {
         console.error(err);
@@ -1708,7 +1701,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
         return; // ⛔ VERY IMPORTANT (Book upload na chale)
       }
 
-
       // 📰 CURRENT AFFAIRS VALIDATION
       if (formData.category === "Current Affairs") {
         if (!formData.title?.trim()) {
@@ -1742,7 +1734,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
         currentFormData.append("category", formData.newsCategory || "");
         currentFormData.append(
           "description",
-          formData.description?.trim() || ""
+          formData.description?.trim() || "",
         );
         currentFormData.append("date", formData.date || "");
         currentFormData.append("source", formData.source?.trim() || "");
@@ -1831,7 +1823,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-
   const filteredBooks = bookList.filter((b) => {
     const selectedClassNumber = selectedClass ? parseInt(selectedClass) : null;
     const bookClassNumber = b.educationLevel
@@ -1851,12 +1842,11 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
     return categoryMatch && classMatch && searchMatch;
   });
 
-
   const totalPages = Math.ceil(filteredBooks.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedBooks = filteredBooks.slice(
     startIndex,
-    startIndex + itemsPerPage
+    startIndex + itemsPerPage,
   );
 
   // PAGINATION NUMBERS (max 5 visible)
@@ -1905,7 +1895,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
         <h1 className="text-2xl font-bold mb-4">📘 Manage Books</h1>
 
         <div className="mb-4 flex flex-col md:flex-row gap-3 md:items-center">
-
           {/* Category – mobile me TOP, desktop me RIGHT */}
           <div className="flex gap-3 items-center order-1 md:order-2">
             <label className="font-medium whitespace-nowrap">Category:</label>
@@ -1944,7 +1933,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
               </select>
             </div>
           )}
-
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -2058,10 +2046,11 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                 key={num}
                 onClick={() => setCurrentPage(num)}
                 className={`px-3 py-1 border rounded 
-          ${num === currentPage
-                    ? "bg-primaryBlue text-primaryWhite"
-                    : "bg-primaryWhite/10"
-                  }
+          ${
+            num === currentPage
+              ? "bg-primaryBlue text-primaryWhite"
+              : "bg-primaryWhite/10"
+          }
         `}
               >
                 {num}
@@ -2221,7 +2210,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
 
                 {formData.category === "Simulation" && (
                   <div className="flex flex-col gap-4">
-
                     {/* Simulation Title */}
                     <div className="flex flex-col gap-1">
                       <label className="text-sm font-medium text-gray-700">
@@ -2333,11 +2321,8 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                         className="border rounded px-3 py-2"
                       />
                     </div>
-
                   </div>
                 )}
-
-
 
                 {/* === CURRENT AFFAIRS FORM === */}
                 {formData.category === "Current Affairs" && (
@@ -2692,8 +2677,10 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                     if (res.ok) {
                       setBookList((prev) =>
                         prev.map((book) =>
-                          book.id === editData.id ? result.book || result : book
-                        )
+                          book.id === editData.id
+                            ? result.book || result
+                            : book,
+                        ),
                       );
                       setEditData(null);
                       toast.success("✅ Book updated");
@@ -2796,7 +2783,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                   >
                     ▶️ Open Simulation
                   </button>
-
                 </div>
               ))
             ) : (
@@ -2807,12 +2793,9 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
 
         {filterCategory === "Simulation" && totalSimulationPages > 1 && (
           <div className="flex justify-center mt-6 gap-2 flex-wrap">
-
             {/* Prev */}
             <button
-              onClick={() =>
-                setSimulationPage((p) => Math.max(1, p - 1))
-              }
+              onClick={() => setSimulationPage((p) => Math.max(1, p - 1))}
               disabled={simulationPage === 1}
               className="px-3 py-1 bg-primaryWhite/10 border border-primaryWhite/20 rounded disabled:opacity-50"
             >
@@ -2825,22 +2808,21 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                 <button
                   key={num}
                   onClick={() => setSimulationPage(num)}
-                  className={`px-3 py-1 border rounded ${num === simulationPage
-                    ? "bg-primaryBlue text-primaryWhite"
-                    : "bg-primaryWhite/10"
-                    }`}
+                  className={`px-3 py-1 border rounded ${
+                    num === simulationPage
+                      ? "bg-primaryBlue text-primaryWhite"
+                      : "bg-primaryWhite/10"
+                  }`}
                 >
                   {num}
                 </button>
-              )
+              ),
             )}
 
             {/* Next */}
             <button
               onClick={() =>
-                setSimulationPage((p) =>
-                  Math.min(totalSimulationPages, p + 1)
-                )
+                setSimulationPage((p) => Math.min(totalSimulationPages, p + 1))
               }
               disabled={simulationPage === totalSimulationPages}
               className="px-3 py-1 bg-primaryWhite/10 border border-primaryWhite/20 rounded disabled:opacity-50"
@@ -2849,7 +2831,6 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
             </button>
           </div>
         )}
-
 
         {/* CURRENT AFFAIRS SECTION */}
         {filterCategory === "Current Affairs" && (
@@ -2926,14 +2907,14 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                   <div className="flex items-center gap-4">
                     {(getBookResourceType(viewData) === "pdf" ||
                       getBookResourceType(viewData) === "audio") && (
-                        <button
-                          onClick={handleFullscreenToggle}
-                          className="text-primaryWhite text-xl hover:text-lightGreen"
-                          title="Toggle Fullscreen"
-                        >
-                          {isFullscreen ? <FaCompress /> : <FaExpand />}
-                        </button>
-                      )}
+                      <button
+                        onClick={handleFullscreenToggle}
+                        className="text-primaryWhite text-xl hover:text-lightGreen"
+                        title="Toggle Fullscreen"
+                      >
+                        {isFullscreen ? <FaCompress /> : <FaExpand />}
+                      </button>
+                    )}
                     <button
                       onClick={() => setViewData(null)}
                       className="text-primaryWhite text-2xl hover:text-primaryRed"
@@ -2965,7 +2946,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
                     <div className="flex flex-col items-center justify-center h-full gap-4 text-primaryWhite">
                       <img
                         src={getProxiedUrl(
-                          viewData.thumbnail || "default-audio-cover.jpg"
+                          viewData.thumbnail || "default-audio-cover.jpg",
                         )}
                         alt="Thumbnail"
                         className="w-60 h-60 object-cover rounded-lg shadow-lg"
@@ -2983,12 +2964,10 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
             </div>
           </div>
         )}
-
         <SimulationModal
           url={openSimulation}
           onClose={() => setOpenSimulation(null)}
         />
-
       </main>
     </div>
   );
