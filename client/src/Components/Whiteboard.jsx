@@ -149,56 +149,97 @@ export default function Whiteboard({ onClose }) {
         className={`
           fixed z-40 bg-white/90  backdrop-blur-xl border-2 border-gray-400 shadow-2xl
           md:bottom-4 md:left-1/2 md:-translate-x-1/2 md:flex md:flex-row md:gap-4 md:rounded-full md:p-4
-          ${
-            isMobileMenuOpen
-              ? "bottom-20 left-4 flex flex-col gap-3 p-4 rounded-2xl"
-              : "hidden md:flex"
+          ${isMobileMenuOpen
+            ? "bottom-20 left-4 flex flex-col gap-3 p-4 rounded-2xl"
+            : "hidden md:flex"
           }
         `}
       >
-        <Tool onClick={() => { setColor("#000"); canvasRef.current.eraseMode(false); }} bg="bg-blue-500">
+        <Tool
+          label="Pencil"
+          onClick={() => {
+            setColor("#000");
+            canvasRef.current.eraseMode(false);
+          }}
+          bg="bg-blue-500"
+        >
           <FaPencilAlt />
         </Tool>
 
-        <Tool onClick={() => canvasRef.current.eraseMode(true)} bg="bg-red-500">
+        <Tool
+          label="Eraser"
+          onClick={() => canvasRef.current.eraseMode(true)}
+          bg="bg-red-500"
+        >
           <FaEraser />
         </Tool>
 
-        <input
-          type="color"
-          value={color}
-          onChange={(e) => setColor(e.target.value)}
-          className="w-10 h-10 rounded-full border"
-        />
+        <div className="relative group">
+          <input
+            type="color"
+            value={color}
+            onChange={(e) => setColor(e.target.value)}
+            className="w-10 h-10 rounded-full border cursor-pointer"
+          />
 
-        <div className="flex items-center gap-2 bg-purple-500 text-black px-3 py-2 rounded-full">
-          <button onClick={() => setSize((s) => Math.max(1, s - 1))}>-</button>
-          <span>{size}</span>
-          <button onClick={() => setSize((s) => s + 1)}>+</button>
+          <span
+            className="
+      absolute -top-8 left-1/2 -translate-x-1/2
+      bg-black text-white text-xs px-2 py-1 rounded
+      opacity-0 group-hover:opacity-100
+      transition-opacity duration-200
+      pointer-events-none
+      whitespace-nowrap
+    "
+          >
+            Color Picker
+          </span>
         </div>
 
-        <Tool onClick={() => canvasRef.current.undo()} bg="bg-yellow-400" text="text-black">
+
+        <div className="relative group">
+          <div className="flex items-center gap-2 bg-purple-500 text-black px-3 py-2 rounded-full">
+            <button onClick={() => setSize((s) => Math.max(1, s - 1))}>-</button>
+            <span>{size}</span>
+            <button onClick={() => setSize((s) => s + 1)}>+</button>
+          </div>
+
+          <span
+            className="
+      absolute -top-8 left-1/2 -translate-x-1/2
+      bg-black text-white text-xs px-2 py-1 rounded
+      opacity-0 group-hover:opacity-100
+      transition-opacity duration-200
+      pointer-events-none
+      whitespace-nowrap
+    "
+          >
+            Brush Size
+          </span>
+        </div>
+
+
+        <Tool label="Undo" onClick={() => canvasRef.current.undo()} bg="bg-yellow-400" text="text-black">
           Undo
         </Tool>
 
-        <Tool onClick={() => canvasRef.current.clearCanvas()} bg="bg-red-600">
+        <Tool label="Clear Canvas" onClick={() => canvasRef.current.clearCanvas()} bg="bg-red-600">
           Clear
         </Tool>
 
-        <Tool onClick={() => fileInputRef.current.click()} bg="bg-teal-500">
+        <Tool label="Upload Image" onClick={() => fileInputRef.current.click()} bg="bg-teal-500">
           <FaUpload />
         </Tool>
-        <input type="file" ref={fileInputRef} hidden onChange={uploadImage} />
 
-        <Tool onClick={prevPage} bg="bg-gray-500">
+        <Tool label="Previous Page" onClick={prevPage} bg="bg-gray-500">
           <FaArrowLeft />
         </Tool>
 
-        <Tool onClick={addNewPage} bg="bg-green-500">
+        <Tool label="Add Page" onClick={addNewPage} bg="bg-green-500">
           <FaPlus />
         </Tool>
 
-        <Tool onClick={nextPage} bg="bg-gray-500">
+        <Tool label="Next Page" onClick={nextPage} bg="bg-gray-500">
           <FaArrowRight />
         </Tool>
       </div>
@@ -207,13 +248,34 @@ export default function Whiteboard({ onClose }) {
 }
 
 /* 🔧 Reusable Tool Button */
-function Tool({ children, onClick, bg }) {
+const Tool = ({ children, onClick, bg, text = "text-white", label }) => {
   return (
-    <button
-      onClick={onClick}
-      className={`w-10 h-10 ${bg} text-white rounded-full flex items-center justify-center hover:scale-110 transition`}
-    >
-      {children}
-    </button>
+    <div className="relative group flex justify-center">
+      <button
+        onClick={onClick}
+        className={`
+          w-12 h-12 rounded-full flex items-center justify-center
+          ${bg} ${text}
+          hover:scale-110 transition
+        `}
+      >
+        {children}
+      </button>
+
+      {/* Tooltip */}
+      {label && (
+        <div
+          className="
+            absolute -top-9 left-1/2 -translate-x-1/2
+            bg-black text-white text-xs px-2 py-1 rounded
+            opacity-0 group-hover:opacity-100
+            transition-all duration-200
+            whitespace-nowrap pointer-events-none
+          "
+        >
+          {label}
+        </div>
+      )}
+    </div>
   );
-}
+};

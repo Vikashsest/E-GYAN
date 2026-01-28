@@ -252,6 +252,9 @@
 //   );
 // }
 
+
+
+
 import { useState, useEffect, useRef } from "react";
 import { MdSmartToy } from "react-icons/md";
 import {
@@ -260,6 +263,8 @@ import {
   FaVolumeUp,
   FaVolumeMute,
 } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { FiX } from "react-icons/fi";
 import StudentSidebar from "./StudentSidebar";
 const API_URL = import.meta.env.VITE_API_URL;
 export default function StudentAIAssistant() {
@@ -277,6 +282,7 @@ export default function StudentAIAssistant() {
   const [micStatusText, setMicStatusText] = useState("");
   const recognitionRef = useRef(null);
   const chatEndRef = useRef(null);
+  const navigate = useNavigate();
 
   // Auto scroll
   useEffect(() => {
@@ -358,12 +364,25 @@ export default function StudentAIAssistant() {
 
   return (
     <div className="flex h-screen overflow-hidden">
-      <StudentSidebar isOpen={false} onClose={() => {}} />
+      <StudentSidebar isOpen={false} onClose={() => { }} />
       <div className="flex flex-col flex-1 ml-0 lg:ml-64 bg-cardBg">
-        <div className="flex items-center bg-primaryBlue px-4 py-2 text-white font-semibold">
-          <MdSmartToy className="mr-2" />
-          AI Study Assistant
+        <div className="flex items-center justify-between bg-primaryBlue px-4 py-2 text-white font-semibold">
+          {/* Left Title */}
+          <div className="flex items-center">
+            <MdSmartToy className="mr-2" />
+            AI Study Assistant
+          </div>
+
+          {/* Right Close Button */}
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 rounded hover:bg-blue-700 transition"
+            title="Close"
+          >
+            <FiX size={22} />
+          </button>
         </div>
+
 
         {/* Chat area */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">

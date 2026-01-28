@@ -205,6 +205,8 @@ export default function AdminStudentProgress() {
   const [pageSize, setPageSize] = useState(12);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+
 
   const handleSearchDebounced = useCallback(
     debounce((q) => {
@@ -213,6 +215,7 @@ export default function AdminStudentProgress() {
     }, 300),
     []
   );
+
 
   // fetch students from backend
   useEffect(() => {
@@ -371,9 +374,14 @@ export default function AdminStudentProgress() {
             <input
               placeholder="Search name or email..."
               className="bg-transparent px-3 py-2 w-full outline-none text-sm"
-              value={search}
-              onChange={(e) => handleSearchDebounced(e.target.value)}
+              value={searchInput}
+              onChange={(e) => {
+                const value = e.target.value;
+                setSearchInput(value);       
+                handleSearchDebounced(value); 
+              }}
             />
+
           </div>
 
 
