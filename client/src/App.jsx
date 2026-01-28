@@ -1,6 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import ForgotPassword from "./Pages/Auth/ForgotPassword";
-
 import ProfilePage from "./Components/ProfilePage";
 import ViewConcerns from "./Components/ViewConcerns";
 import NotFound from "./Components/NotFound";
