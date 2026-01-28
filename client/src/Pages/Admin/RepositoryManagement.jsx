@@ -4,14 +4,17 @@
 // import { FiMenu } from "react-icons/fi";
 // import { MdDelete } from "react-icons/md";
 // import { FaEdit } from "react-icons/fa";
+// import { confirmDelete } from "../../utils/confirmDelete";
+// import { toast } from "react-toastify";
+
 // import {
 //   getRepository,
 //   addRepositoryValue,
 //   updateRepositoryValue,
 //   deleteRepositoryValue,
 // } from "../../apiServices/apiRepository";
-// import fetechSubjects from "../../apiServices/booksApi";
-// import { subjectWiseBooks } from "../../apiServices/booksApi";
+// import fetchSubjects from "../../apiServices/booksApi";
+// import {subjectWiseBooks } from "../../apiServices/booksApi";
 
 // export default function RepositoryManagement() {
 //   const [resourceTypes, setResourceTypes] = useState([]);
@@ -57,28 +60,14 @@
 //         setTexts(categories); // populate dropdown
 //       } catch (err) {
 //         console.error("Failed to fetch categories:", err);
-//         alert("Failed to load categories");
+//         toast.error("Failed to load categories");
 //       } finally {
 //         setLoading(false);
 //       }
 //     }
 //   };
 
-//   // const handleLevelClick = async () => {
-//   //   if (selected.category === "School Education" && !levelsLoaded) {
-//   //     setLoading(true);
-//   //     try {
-//   //       const data = await getRepository("level"); // fetch level API
-//   //       setLevels(data);
-//   //       setLevelsLoaded(true); // mark as loaded
-//   //     } catch (err) {
-//   //       console.error("Failed to fetch levels:", err);
-//   //       alert("Failed to load levels");
-//   //     } finally {
-//   //       setLoading(false);
-//   //     }
-//   //   }
-//   // };
+  
 //   const handleLevelClick = async () => {
 //     if (!selected.category || levelsLoaded) return;
 
@@ -89,60 +78,117 @@
 //       setLevelsLoaded(true);
 //     } catch (err) {
 //       console.error("Failed to fetch levels:", err);
-//       alert("Failed to load levels");
+//       toast.error("Failed to load levels");
 //     } finally {
 //       setLoading(false);
 //     }
 //   };
-//   const handleSubjectClick = async () => {
-//     if (!selected.category || !selected.level) return;
-//     if (subjectsLoaded) return;
 
-//     setLoading(true);
-//     try {
-//       // Fetch subjects from repository API
-//       const data = await getRepository("subject", selected.category);
-//       setSubjects(data);
-//       setSubjectsLoaded(true);
-//     } catch (err) {
-//       console.error("Failed to fetch subjects:", err);
-//       alert("Failed to load subjects");
-//     } finally {
-//       setLoading(false);
+
+// const handleSubjectClick = async () => {
+//   if (subjectsLoaded) return;
+
+//   setLoading(true);
+//   try {
+//     let data = [];
+
+//     // 1️⃣ Try BOOKS API first (if class selected)
+//     if (selected.level) {
+//       const res = await fetchSubjects(selected.level);
+//       console.log("Subjects from fetchSubjects:", res);
+
+//       // 👉 Agar books me data mila
+//       if (Array.isArray(res) && res.length > 0) {
+//         data = res.map((subject, index) => ({
+//           id: index,
+//           text: subject,
+//         }));
+//       }
 //     }
-//   };
+
+//     // 2️⃣ FALLBACK → agar books empty aaye
+//     if (data.length === 0) {
+//       console.log("Books empty → fetching from repository");
+
+//       const repoRes = await getRepository("subject");
+//       console.log("Subjects from getRepository:", repoRes);
+
+//       const list = Array.isArray(repoRes)
+//         ? repoRes
+//         : repoRes?.data || [];
+
+//       data = list.map((item) => ({
+//         id: item._id,
+//         text: item.text || item.subjectName,
+//       }));
+//     }
+
+//     setSubjects(data);
+//     setSubjectsLoaded(true);
+//   } catch (err) {
+//     console.error("Failed to fetch subjects:", err);
+//     toast.error("Failed to load subjects");
+//   } finally {
+//     setLoading(false);
+//   }
+// };
+
 
 //   const handleBooksClick = async () => {
+//   if (booksLoaded) return;
+
+//   // subject select hona zaroori
+//   if (!selected.subject) return;
+
+//   setLoading(true);
+//   try {
+//     let data = [];
+
+//     // 1️⃣ FIRST → subjectWiseBooks API
 //     if (
 //       selected.category === "School Education" &&
 //       selected.level &&
-//       selected.subject &&
-//       !booksLoaded
+//       selected.subject
 //     ) {
-//       setLoading(true);
-//       try {
-//         const data = await subjectWiseBooks({
-//           className: selected.level,
-//           subject: selected.subject,
-//           category: selected.category,
-//         });
+//       const res = await subjectWiseBooks({
+//         className: selected.level,
+//         subject: selected.subject,
+//         category: selected.category,
+//       });
 
-//         // 🔥 ensure dropdown-friendly format
-//         const formattedBooks = data.map((book) => ({
-//           id: book.id,
+//       console.log("Books from subjectWiseBooks:", res);
+
+//       if (Array.isArray(res) && res.length > 0) {
+//         data = res.map((book, index) => ({
+//           id: book.id ?? index,
 //           text: book.bookName || book.title || book.name,
 //         }));
-
-//         setFilteredBooks(formattedBooks);
-//         setBooksLoaded(true);
-//       } catch (err) {
-//         console.error("Failed to fetch books:", err);
-//         alert("Failed to load books");
-//       } finally {
-//         setLoading(false);
 //       }
 //     }
-//   };
+
+//     // 2️⃣ FALLBACK → getRepository
+//     if (data.length === 0) {
+//       console.log("Books empty → fetching from repository");
+
+//       const repoRes = await getRepository("book");
+//       console.log("Books from getRepository:", repoRes);
+
+//       data = repoRes.map((item) => ({
+//         id: item.id,      // ✅ backend response key
+//         text: item.text,  // ✅ backend response key
+//       }));
+//     }
+
+//     setFilteredBooks(data);
+//     setBooksLoaded(true);
+//   } catch (err) {
+//     console.error("Failed to fetch books:", err);
+//     toast.error("Failed to load books");
+//   } finally {
+//     setLoading(false);
+//   }
+// };
+
 
 //   const handleCategoryChange = (value) => {
 //     setSelected((prev) => ({
@@ -166,20 +212,20 @@
 //     }
 //   };
 
-//   const handleLevelChange = (value) => {
-//     setSelected((prev) => ({
-//       ...prev,
-//       level: value,
-//       subject: "",
-//       book: "",
-//     }));
+//  const handleLevelChange = (value) => {
+//   setSelected((prev) => ({
+//     ...prev,
+//     level: value,
+//     subject: "",
+//   }));
 
-//     setSubjects([]); // 🔥 old subjects clear
-//     setSubjectsLoaded(false);
+//   setSubjects([]);
+//   setSubjectsLoaded(false); 
 
-//     setFilteredBooks([]);
-//     setBooksLoaded(false);
-//   };
+//   setFilteredBooks([]);
+//   setBooksLoaded(false);
+// };
+
 
 //   const handleSubjectChange = (value) => {
 //     setSelected((prev) => ({
@@ -232,74 +278,65 @@
 //       }
 
 //       setNewValue("");
-//       alert("Added successfully!");
+//       toast.success("Added successfully!");
 //     } catch (err) {
 //       console.error(err);
-//       alert("Failed to add value");
+//       toast.error("Failed to add value");
 //     }
 //   };
-
-//   // const addValue = async (field) => {
-//   //   if (!newValue.trim()) return alert("Enter a value first!");
-//   //   try {
-//   //     const newItem = await addRepositoryValue(newValue, field); // send type
-//   //     switch (field) {
-//   //       case "category":
-//   //         setTexts((prev) => [...prev, newItem]);
-//   //         break;
-//   //       case "level":
-//   //         setLevels((prev) => [...prev, newItem]);
-//   //         break;
-//   //       case "subject":
-//   //         setSubjects((prev) => [...prev, newItem]);
-//   //         break;
-//   //       case "book":
-//   //         setFilteredBooks((prev) => [...prev, newItem]);
-//   //         break;
-//   //       case "resource":
-//   //         setResourceTypes((prev) => [...prev, newItem]);
-//   //         break;
-//   //       case "language":
-//   //         setLanguages((prev) => [...prev, newItem]);
-//   //         break;
-//   //     }
-//   //     setNewValue("");
-//   //     alert("Added successfully!");
-//   //   } catch (err) {
-//   //     console.error(err);
-//   //     alert("Failed to add value");
-//   //   }
-//   // };
 
 //   const deleteValue = async (field, id) => {
-//     if (!confirm(`Delete this item?`)) return;
-//     try {
-//       await deleteRepositoryValue(id);
-//       switch (field) {
-//         case "category":
-//           setTexts((prev) => prev.filter((i) => i.id !== id));
-//           break;
-//         case "level":
-//           setLevels((prev) => prev.filter((i) => i.id !== id));
-//           break;
-//         case "subject":
-//           setSubjects((prev) => prev.filter((i) => i.id !== id));
-//           break;
-//         case "book":
-//           setFilteredBooks((prev) => prev.filter((i) => i.id !== id));
-//           break;
-//         case "resource":
-//           setResourceTypes((prev) => prev.filter((i) => i.id !== id));
-//           break;
-//         case "language":
-//           setLanguages((prev) => prev.filter((i) => i.id !== id));
-//           break;
-//       }
-//       alert("Deleted successfully!");
-//     } catch {
-//       alert("Failed to delete!");
+//   const isConfirmed = await confirmDelete(
+//     "This item will be permanently deleted from the repository."
+//   );
+
+//   if (!isConfirmed) return;
+
+//   try {
+//     await deleteRepositoryValue(id);
+
+//     switch (field) {
+//       case "category":
+//         setTexts((prev) => prev.filter((i) => i.id !== id));
+//         break;
+//       case "level":
+//         setLevels((prev) => prev.filter((i) => i.id !== id));
+//         break;
+//       case "subject":
+//         setSubjects((prev) => prev.filter((i) => i.id !== id));
+//         break;
+//       case "book":
+//         setFilteredBooks((prev) => prev.filter((i) => i.id !== id));
+//         break;
+//       case "resource":
+//         setResourceTypes((prev) => prev.filter((i) => i.id !== id));
+//         break;
+//       case "language":
+//         setLanguages((prev) => prev.filter((i) => i.id !== id));
+//         break;
 //     }
-//   };
+
+//     Swal.fire({
+//       icon: "success",
+//       title: "Deleted!",
+//       text: "Item has been deleted successfully.",
+//       background: "#1e1f2b",
+//       color: "white",
+//       timer: 1500,
+//       showConfirmButton: false,
+//     });
+
+//   } catch (err) {
+//     Swal.fire({
+//       icon: "error",
+//       title: "Failed",
+//       text: "Failed to delete item.",
+//       background: "#1e1f2b",
+//       color: "white",
+//     });
+//   }
+// };
+
 
 //   return (
 //     <div className="flex min-h-screen bg-[#1e1f2b] text-primaryWhite">
@@ -591,8 +628,6 @@
 
 
 
-
-
 import { useEffect, useState, useRef } from "react";
 import Sidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
@@ -681,7 +716,9 @@ export default function RepositoryManagement() {
 
 
 const handleSubjectClick = async () => {
-  if (subjectsLoaded) return;
+  if (!selected.level) return;
+
+  if (subjectsLoaded && subjects.length > 0) return;
 
   setLoading(true);
   try {
@@ -730,7 +767,10 @@ const handleSubjectClick = async () => {
 
 
   const handleBooksClick = async () => {
-  if (booksLoaded) return;
+  if (!selected.subject) return;
+
+  if (booksLoaded && filteredBooks.length > 0) return;
+
 
   // subject select hona zaroori
   if (!selected.subject) return;
@@ -786,26 +826,26 @@ const handleSubjectClick = async () => {
 
 
   const handleCategoryChange = (value) => {
-    setSelected((prev) => ({
-      ...prev,
-      category: value,
-      level: "", // 🔥 clear selected level
-      subject: "",
-      book: "",
-    }));
+  setSelected({
+    resourceType: "",
+    category: value,
+    level: "",
+    subject: "",
+    book: "",
+    language: "",
+  });
 
-    // 🔥 agar School Education nahi hai → clear level data
-    if (value !== "School Education") {
-      setLevels([]);
-      setLevelsLoaded(false);
+  // 🔥 RESET EVERYTHING (no condition)
+  setLevels([]);
+  setLevelsLoaded(false);
 
-      setSubjects([]); // 🔥 IMPORTANT
-      setSubjectsLoaded(false);
+  setSubjects([]);
+  setSubjectsLoaded(false);
 
-      setFilteredBooks([]);
-      setBooksLoaded(false);
-    }
-  };
+  setFilteredBooks([]);
+  setBooksLoaded(false);
+};
+
 
  const handleLevelChange = (value) => {
   setSelected((prev) => ({
@@ -1211,3 +1251,4 @@ export function DropdownWithAdd({
     </div>
   );
 }
+

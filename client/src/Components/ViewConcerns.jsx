@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { FaExpand, FaCompress, FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { getCookie } from "../utils/cookie";
+import { confirmDelete } from "../utils/confirmDelete";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const access_token = getCookie("access_token");
@@ -51,22 +52,31 @@ function ConcernList() {
   };
 
   const deleteConcern = async (id) => {
-    if (!id) return toast.error("Invalid Concern ID");
+  if (!id) return toast.error("Invalid Concern ID");
 
-    try {
-      const res = await fetch(`${API_URL}/students/${id}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
-      if (!res.ok) throw new Error("Delete failed");
+  const confirmed = await confirmDelete(
+    "Delete Student Concern?",
+    "This concern will be permanently removed from the system. This action cannot be undone."
+  );
 
-      setConcerns((prev) => prev.filter((c) => c._id !== id));
-      toast.success("Concern deleted successfully");
-    } catch (err) {
-      console.error("Delete error:", err);
-      toast.error("Failed to delete concern");
-    }
-  };
+  if (!confirmed) return;
+
+  try {
+    const res = await fetch(`${API_URL}/students/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    if (!res.ok) throw new Error("Delete failed");
+
+    setConcerns((prev) => prev.filter((c) => c.id !== id));
+    toast.success("Concern deleted successfully");
+  } catch (err) {
+    console.error("Delete error:", err);
+    toast.error("Failed to delete concern");
+  }
+};
+
 
   // DELETE REQUEST
   const deleteRequest = async (id) => {

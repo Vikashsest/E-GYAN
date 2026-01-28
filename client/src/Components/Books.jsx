@@ -1409,7 +1409,7 @@ const getItemsPerPage = () => {
 export default function ManageBooksPage({ role, Navbar, Sidebar }) {
   const SIMULATION_PER_PAGE = 8;
 
-const [simulationPage, setSimulationPage] = useState(1);
+  const [simulationPage, setSimulationPage] = useState(1);
 
   const { setLoading } = useLoader();
   const navigate = useNavigate();
@@ -1501,16 +1501,16 @@ const [simulationPage, setSimulationPage] = useState(1);
   };
 
   const totalSimulationPages = Math.ceil(
-  simulationData.length / SIMULATION_PER_PAGE
-);
+    simulationData.length / SIMULATION_PER_PAGE
+  );
 
-const simulationStartIndex =
-  (simulationPage - 1) * SIMULATION_PER_PAGE;
+  const simulationStartIndex =
+    (simulationPage - 1) * SIMULATION_PER_PAGE;
 
-const paginatedSimulations = simulationData.slice(
-  simulationStartIndex,
-  simulationStartIndex + SIMULATION_PER_PAGE
-);
+  const paginatedSimulations = simulationData.slice(
+    simulationStartIndex,
+    simulationStartIndex + SIMULATION_PER_PAGE
+  );
 
 
   useEffect(() => {
@@ -1904,10 +1904,32 @@ const paginatedSimulations = simulationData.slice(
 
         <h1 className="text-2xl font-bold mb-4">📘 Manage Books</h1>
 
-        <div className="mb-4 flex gap-3 items-center">
+        <div className="mb-4 flex flex-col md:flex-row gap-3 md:items-center">
+
+          {/* Category – mobile me TOP, desktop me RIGHT */}
+          <div className="flex gap-3 items-center order-1 md:order-2">
+            <label className="font-medium whitespace-nowrap">Category:</label>
+            <select
+              value={filterCategory}
+              onChange={(e) => {
+                setFilterCategory(e.target.value);
+                setCurrentPage(1);
+                setSimulationPage(1);
+              }}
+              className="border border-gray400 rounded px-2 py-1 text-primaryBlack"
+            >
+              {categories.map((cat, idx) => (
+                <option key={idx} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Classes – mobile me BELOW category */}
           {filterCategory === "School Education" && (
-            <>
-              <label className="font-medium">Classes:</label>
+            <div className="flex gap-3 items-center order-2 md:order-1">
+              <label className="font-medium whitespace-nowrap">Classes:</label>
               <select
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
@@ -1920,28 +1942,9 @@ const paginatedSimulations = simulationData.slice(
                   </option>
                 ))}
               </select>
-            </>
+            </div>
           )}
 
-          <div className="mb-4 flex gap-3 items-center">
-            <label className="font-medium">Category:</label>
-            <select
-              value={filterCategory}
-              onChange={(e) => {
-                setFilterCategory(e.target.value);
-                setCurrentPage(1);
-                setSimulationPage(1); 
-              }}
-              className="border border-gray400 rounded px-2 py-1 text-primaryBlack"
-            >
-              {categories.map((cat, idx) => (
-                <option key={idx} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-
-          </div>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -2823,8 +2826,8 @@ const paginatedSimulations = simulationData.slice(
                   key={num}
                   onClick={() => setSimulationPage(num)}
                   className={`px-3 py-1 border rounded ${num === simulationPage
-                      ? "bg-primaryBlue text-primaryWhite"
-                      : "bg-primaryWhite/10"
+                    ? "bg-primaryBlue text-primaryWhite"
+                    : "bg-primaryWhite/10"
                     }`}
                 >
                   {num}

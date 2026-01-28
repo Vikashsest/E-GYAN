@@ -166,7 +166,7 @@ function AdminNavbar({
     <div className="flex justify-between items-center gap-4 mb-6">
       {/* Search Bar */}
       {onSearchChange ? (
-        <div className="flex items-center bg-darkBg px-4 py-2 rounded w-[70%] lg:w-full lg:max-w-md">
+        <div className="flex items-center bg-darkBg px-4 py-2 rounded w-[50%] md:w-[70%] lg:w-full lg:max-w-md">
           <FiSearch className="text-gray400 mr-2" />
           <input
             type="text"
@@ -185,7 +185,7 @@ function AdminNavbar({
         {onUpload && (
           <button
             onClick={onUpload}
-            className="bg-primaryBlue px-4 py-1 rounded text-sm font-semibold hover:bg-hoverBlue"
+            className="bg-primaryBlue px-2 md:px-4 py-1 rounded text-xs md:text-sm font-semibold hover:bg-hoverBlue"
           >
             {uploadLabel}
           </button>
@@ -195,7 +195,7 @@ function AdminNavbar({
         {onAdd && (
           <button
             onClick={onAdd}
-            className="bg-primaryBlue px-4 py-1 rounded text-sm font-semibold hover:bg-hoverBlue"
+            className="bg-primaryBlue px-4 py-1 rounded text-xs md:text-sm font-semibold hover:bg-hoverBlue"
           >
             {buttonLabel}
           </button>

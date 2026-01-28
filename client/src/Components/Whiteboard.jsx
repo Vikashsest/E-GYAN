@@ -8,7 +8,6 @@ import {
   FaPlus,
   FaArrowLeft,
   FaArrowRight,
-  FaMinus,
   FaExpand,
   FaCompress,
   FaBars,

@@ -13,6 +13,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
 import { fetchCurrentAffairs } from "../../apiServices/booksApi";
+import { useLoader } from "../../LoaderContext";
 
 const menuLinks = [
   { name: "All", url: "" },
@@ -38,9 +39,9 @@ const CurrentAffairs = () => {
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [newsList, setNewsList] = useState([]);
   const navigate = useNavigate();
+  const { setLoading, loading } = useLoader();
 
   useEffect(() => {
     async function loadCurrentAffairs() {
@@ -76,24 +77,26 @@ const CurrentAffairs = () => {
 
 
   useEffect(() => {
-  const handleClickOutside = (event) => {
-    // Topics Dropdown Close
-    if (!event.target.closest(".topics-dropdown")) {
-      setIsTopicsDropdownOpen(false);
-    }
-    // Months Dropdown Close
-    if (!event.target.closest(".months-dropdown")) {
-      setIsMonthsDropdownOpen(false);
-    }
-    // Calendar Close
-    if (!event.target.closest(".calendar-container")) {
-      setIsCalendarOpen(false);
-    }
-  };
+    const handleClickOutside = (event) => {
+      // Topics Dropdown Close
+      if (!event.target.closest(".topics-dropdown")) {
+        setIsTopicsDropdownOpen(false);
+      }
+      // Months Dropdown Close
+      if (!event.target.closest(".months-dropdown")) {
+        setIsMonthsDropdownOpen(false);
+      }
+      // Calendar Close
+      if (!event.target.closest(".calendar-container")) {
+        setIsCalendarOpen(false);
+      }
+    };
 
-  document.addEventListener("click", handleClickOutside);
-  return () => document.removeEventListener("click", handleClickOutside);
-}, []);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
+
+  if (!loading) return null;
 
   return (
     <div className="flex min-h-screen bg-[#1e1f2b] text-white relative">

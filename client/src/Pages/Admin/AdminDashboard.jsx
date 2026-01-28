@@ -32,6 +32,14 @@ export default function FileManagerDashboard() {
   const API_URL = import.meta.env.VITE_API_URL;
   const access_token = getCookie("access_token");
 
+  /* 🔹 Dynamic Date Logic */
+  const lastUpdated = new Date();
+  const formattedDate = lastUpdated.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -198,8 +206,8 @@ export default function FileManagerDashboard() {
                         item.size === "1GB"
                           ? "10%"
                           : item.size === "8GB"
-                          ? "30%"
-                          : "70%",
+                            ? "30%"
+                            : "70%",
                     }}
                   ></div>
                 </div>
@@ -273,7 +281,7 @@ export default function FileManagerDashboard() {
               </p>
               <p className="text-gray400">
                 🗓️ Last Updated:{" "}
-                <span className="text-primaryGreen">12 November 2025</span>
+                <span className="text-primaryGreen">{formattedDate}</span>
               </p>
               <Link to="/latest-release">
                 <button className="mt-3 bg-gradient-to-r from-primaryBlue to-indigo-500 hover:from-blue-700 hover:to-indigo-600 text-white text-sm px-4 py-2 rounded-lg shadow-md transition-all">
@@ -285,11 +293,13 @@ export default function FileManagerDashboard() {
             <div className="text-sm">
               <p className="text-gray400">
                 ⚙️ Developed by{" "}
-                <span className="text-primaryBlue font-medium cursor-pointer">
-                  <a href="https://sestinfotech.com" target="_blank">
-                    SEST INFOTECH PVT LTD
-                  </a>
-                </span>
+                <a
+                  href="https://sestinfotech.com"
+                  target="_blank"
+                  className="text-primaryBlue font-medium"
+                >
+                  SEST INFOTECH PVT LTD
+                </a>
               </p>
               <p className="text-gray500 text-xs">
                 © {new Date().getFullYear()} All rights reserved
