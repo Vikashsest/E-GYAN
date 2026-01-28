@@ -9,8 +9,6 @@ import {
   FaUserTie,
   FaBook,
   FaSyncAlt,
-  FaIdCard,
-  FaTabletAlt,
 } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
 import { toast } from "react-toastify";
@@ -50,6 +48,26 @@ export default function AdminSchoolOverview() {
 
   const COLORS = ["#3B82F6", "#06B6D4", "#34D399", "#FACC15", "#F87171"];
 
+
+  useEffect(() => {
+    const loadSummary = async () => {
+      try {
+        const result = await fetchAdminSchoolOverview();
+
+        if (result) {
+          setData(result);
+        } else {
+          toast.error("Invalid summary data");
+        }
+      } catch (err) {
+        toast.error("Error fetching school summary");
+      }
+    };
+
+    loadSummary();
+  }, [data]);
+
+
   /* ------------------ STATIC ANALYTICS (Replace later) ------------------ */
 
   useEffect(() => {
@@ -75,25 +93,6 @@ export default function AdminSchoolOverview() {
   }, []);
 
 
-  useEffect(() => {
-    const loadSchoolOverview = async () => {
-      try {
-        const result = await fetchAdminSchoolOverview();
-
-        if (result && result.totalBooks !== undefined) {
-          setData(result);
-        } else {
-          toast.error("Invalid school overview data");
-        }
-      } catch (err) {
-        toast.error("Error fetching school overview");
-        console.error(err);
-      }
-    };
-
-    loadSchoolOverview();
-  }, []);
-
   /* ------------------ SYNC ------------------ */
 
   const handleSync = () => {
@@ -108,25 +107,25 @@ export default function AdminSchoolOverview() {
     {
       title: "Total Teachers",
       icon: <FaUserTie />,
-      count: data.totalTeachers ?? 0,
+      count: data.totalTeachers,
       color: "bg-orange-500",
     },
     {
       title: "Total Students",
       icon: <FaUsers />,
-      count: data.totalStudents ?? 0,
+      count: data.totalStudents,
       color: "bg-blue-500",
     },
     {
       title: "Total Classes",
       icon: <FaChalkboard />,
-      count: data.totalClasses ?? 0,
+      count: data.totalClasses,
       color: "bg-green-500",
     },
     {
       title: "Total Books",
       icon: <FaBook />,
-      count: data.totalBooks ?? 0,
+      count: data.totalBooks,
       color: "bg-yellow-500",
     },
   ];
