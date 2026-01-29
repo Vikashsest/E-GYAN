@@ -33,7 +33,7 @@ import {
 } from "recharts";
 
 // ✅ API SERVICE
-import { fetchAdminSchoolOverview,fetchSingleSchoolAnalytics } from "../../apiServices/schoolOverview";
+import { fetchAdminSchoolOverview, fetchSingleSchoolAnalytics } from "../../apiServices/schoolOverview";
 
 export default function AdminSchoolOverview() {
   const [data, setData] = useState({});
@@ -44,53 +44,47 @@ export default function AdminSchoolOverview() {
   const [activityStats, setActivityStats] = useState([]);
   const [studyTime, setStudyTime] = useState([]);
   const [leaderboard, setLeaderboard] = useState([]);
+  const [summary, setSummary] = useState({});
+  const [analytics, setAnalytics] = useState({});
 
 
   const COLORS = ["#3B82F6", "#06B6D4", "#34D399", "#FACC15", "#F87171"];
 
 
-  useEffect(() => {
-    const loadSummary = async () => {
-      try {
-        const result = await fetchAdminSchoolOverview();
+ useEffect(() => {
+  const loadSummary = async () => {
+    try {
+      const result = await fetchAdminSchoolOverview();
+      setSummary(result);
+    } catch (err) {
+      toast.error("Error fetching school summary");
+    }
+  };
 
-        if (result) {
-          setData(result);
-        } else {
-          toast.error("Invalid summary data");
-        }
-      } catch (err) {
-        toast.error("Error fetching school summary");
-      }
-    };
-
-    loadSummary();
-  }, [data]);
+  loadSummary();
+}, []);
 
 
-  /* ------------------ STATIC ANALYTICS (Replace later) ------------------ */
+ useEffect(() => {
+  const loadSchoolOverview = async () => {
+    try {
+      const result = await fetchSingleSchoolAnalytics();
 
-  useEffect(() => {
-    const loadSchoolOverview = async () => {
-      try {
-        const result = await fetchSingleSchoolAnalytics();
+      setAnalytics(result);
 
-        setData(result);
+      setPerformance(result.performance ?? []);
+      setSubjectEngagement(result.subjectEngagement ?? []);
+      setActivityStats(result.activityStats ?? []);
+      setStudyTime(result.studyTime ?? []);
+      setLeaderboard(result.leaderboard ?? []);
+    } catch (err) {
+      toast.error("Error fetching school overview");
+    }
+  };
 
-        // 🔥 CHART DATA
-        setPerformance(result.performance ?? []);
-        setSubjectEngagement(result.subjectEngagement ?? []);
-        setActivityStats(result.activityStats ?? []);
-        setStudyTime(result.studyTime ?? []);
-        setLeaderboard(result.leaderboard ?? []);
+  loadSchoolOverview();
+}, []);
 
-      } catch (err) {
-        toast.error("Error fetching school overview");
-      }
-    };
-
-    loadSchoolOverview();
-  }, []);
 
 
   /* ------------------ SYNC ------------------ */
@@ -104,31 +98,32 @@ export default function AdminSchoolOverview() {
   };
 
   const summaryCards = [
-    {
-      title: "Total Teachers",
-      icon: <FaUserTie />,
-      count: data.totalTeachers,
-      color: "bg-orange-500",
-    },
-    {
-      title: "Total Students",
-      icon: <FaUsers />,
-      count: data.totalStudents,
-      color: "bg-blue-500",
-    },
-    {
-      title: "Total Classes",
-      icon: <FaChalkboard />,
-      count: data.totalClasses,
-      color: "bg-green-500",
-    },
-    {
-      title: "Total Books",
-      icon: <FaBook />,
-      count: data.totalBooks,
-      color: "bg-yellow-500",
-    },
-  ];
+  {
+    title: "Total Teachers",
+    icon: <FaUserTie />,
+    count: summary.totalTeachers,
+    color: "bg-orange-500",
+  },
+  {
+    title: "Total Students",
+    icon: <FaUsers />,
+    count: summary.totalStudents,
+    color: "bg-blue-500",
+  },
+  {
+    title: "Total Classes",
+    icon: <FaChalkboard />,
+    count: summary.totalClasses,
+    color: "bg-green-500",
+  },
+  {
+    title: "Total Books",
+    icon: <FaBook />,
+    count: summary.totalBooks,
+    color: "bg-yellow-500",
+  },
+];
+
 
   return (
     <div className="flex min-h-screen bg-darkBg text-primaryWhite">
