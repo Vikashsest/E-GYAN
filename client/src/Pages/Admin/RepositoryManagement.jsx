@@ -714,46 +714,31 @@ export default function RepositoryManagement() {
     }
   };
 
-
 const handleSubjectClick = async () => {
-  if (!selected.level) return;
+  if (!selected.category || !selected.level) return;
 
-  if (subjectsLoaded && subjects.length > 0) return;
+  if (subjectsLoaded) return;
 
   setLoading(true);
   try {
-    let data = [];
+    // ✅ ONLY repository API
+    const repoRes = await getRepository(
+      "subject",
+      selected.category,
+      selected.level
+    );
 
-    // 1️⃣ Try BOOKS API first (if class selected)
-    if (selected.level) {
-      const res = await fetchSubjects(selected.level);
-      console.log("Subjects from fetchSubjects:", res);
+    console.log(
+      "HIT URL => /repository?type=subject&category=",
+      selected.category,
+      "&level=",
+      selected.level
+    );
 
-      // 👉 Agar books me data mila
-      if (Array.isArray(res) && res.length > 0) {
-        data = res.map((subject, index) => ({
-          id: index,
-          text: subject,
-        }));
-      }
-    }
-
-    // 2️⃣ FALLBACK → agar books empty aaye
-    if (data.length === 0) {
-      console.log("Books empty → fetching from repository");
-
-      const repoRes = await getRepository("subject");
-      console.log("Subjects from getRepository:", repoRes);
-
-      const list = Array.isArray(repoRes)
-        ? repoRes
-        : repoRes?.data || [];
-
-      data = list.map((item) => ({
-        id: item._id,
-        text: item.text || item.subjectName,
-      }));
-    }
+    const data = repoRes.map((item) => ({
+      id: item.id || item._id,
+      text: item.text,     // ✅ subject name
+    }));
 
     setSubjects(data);
     setSubjectsLoaded(true);
@@ -764,6 +749,7 @@ const handleSubjectClick = async () => {
     setLoading(false);
   }
 };
+
 
 
   const handleBooksClick = async () => {
