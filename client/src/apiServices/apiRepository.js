@@ -16,19 +16,41 @@ const API_URL = import.meta.env.VITE_API_URL;
 //   }
 // };
 //GET /repository?type=level&category=School Education
-export const getRepository = async (type, category) => {
+export const getRepository = async (type, category, level) => {
   try {
-    let url = `${API_URL}/repository?type=${type}`;
-    if (category) url += `&category=${encodeURIComponent(category)}`;
+    let url = `${API_URL}/repository?type=${encodeURIComponent(type)}`;
+
+    if (category) {
+      url += `&category=${encodeURIComponent(category)}`;
+    }
+
+    if (level) {
+      url += `&educationlevel=${encodeURIComponent(level)}`;
+    }
 
     const res = await fetch(url, { credentials: "include" });
     if (!res.ok) throw new Error("Failed to fetch repository");
+
     return await res.json();
   } catch (err) {
     console.error("getRepository error:", err);
     throw err;
   }
 };
+
+// export const getRepository = async (type, category, level) => {
+//   try {
+//     let url = `${API_URL}/repository?type=${type}`;
+//     if (category) url += `&category=${encodeURIComponent(category)}`;
+
+//     const res = await fetch(url, { credentials: "include" });
+//     if (!res.ok) throw new Error("Failed to fetch repository");
+//     return await res.json();
+//   } catch (err) {
+//     console.error("getRepository error:", err);
+//     throw err;
+//   }
+// };
 
 export const addRepositoryValue = async (text, type, category) => {
   try {
