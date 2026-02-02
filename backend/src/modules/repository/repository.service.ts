@@ -120,14 +120,16 @@ export class RepositoryService {
   async findAllFilter(filters: any) {
     const qb = this.repository.createQueryBuilder('repo');
 
+    const allowedFields = ['type', 'category', 'text'];
+
     Object.keys(filters).forEach((key) => {
-      if (filters[key]) {
+      if (allowedFields.includes(key) && filters[key]) {
         qb.andWhere(`repo.${key} = :${key}`, {
           [key]: filters[key],
         });
       }
     });
 
-    return await qb.getMany();
+    return qb.getMany();
   }
 }
