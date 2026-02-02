@@ -39,4 +39,8 @@ export class RepositoryController {
   fetchBooks() {
     return this.repositoryService.fetchAllBooks();
   }
+  @Get()
+  getQuery(@Query() query: any) {
+    return this.repositoryService.findAllFilter(query);
+  }
 }

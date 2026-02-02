@@ -117,4 +117,17 @@ export class RepositoryService {
       throw new InternalServerErrorException('Failed to fetch  Books');
     }
   }
+  async findAllFilter(filters: any) {
+    const qb = this.repository.createQueryBuilder('repo');
+
+    Object.keys(filters).forEach((key) => {
+      if (filters[key]) {
+        qb.andWhere(`repo.${key} = :${key}`, {
+          [key]: filters[key],
+        });
+      }
+    });
+
+    return await qb.getMany();
+  }
 }
