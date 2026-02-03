@@ -65,8 +65,6 @@ export class RepositoryService {
     const { text, type, category } = createRepositoryDto; // category add kiya
 
     if (!text || !type) throw new NotFoundException('Text or type missing');
-
-    // category optional ho sakta hai, type aur text required hai
     const repo = this.repository.create({ text, type, category });
     return await this.repository.save(repo);
   }

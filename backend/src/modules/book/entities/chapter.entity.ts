@@ -34,11 +34,19 @@ export class Chapter {
   @ManyToOne(() => Book, (book) => book.chapters, { onDelete: 'CASCADE' })
   @Index()
   book: Book;
-  @ManyToOne(() => Chapter, (chapter) => chapter.parts, { nullable: true })
-  parentChapter?: Chapter;
+  // @ManyToOne(() => Chapter, (chapter) => chapter.parts, { nullable: true })
+  // parentChapter?: Chapter;
+
+  // @OneToMany(() => Chapter, (chapter) => chapter.parentChapter)
+  // parts?: Chapter[];
+  @ManyToOne(() => Chapter, (chapter) => chapter.parts, {
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
+  parentChapter: Chapter | null;
 
   @OneToMany(() => Chapter, (chapter) => chapter.parentChapter)
-  parts?: Chapter[];
+  parts: Chapter[];
 
   @CreateDateColumn()
   createdAt: Date;

@@ -19,6 +19,7 @@ import { LogActivityDto } from './dto/log.acitvity.dto';
 import { Announcement } from './entities/announcement.entity';
 import { Chapter } from '../book/entities/chapter.entity';
 import fetch from 'node-fetch';
+import { FindOptionsWhere, IsNull } from 'typeorm';
 @Injectable()
 export class StudentService {
   constructor(
@@ -123,12 +124,23 @@ export class StudentService {
   async remove(id: number) {
     return await this.bookRepo.delete(id);
   }
+
   async getByFilters(query: Partial<Book>): Promise<Book[]> {
+    const where: FindOptionsWhere<Book> = {};
+    if (query.id) where.id = query.id;
+    if (query.uploadedAt) where.uploadedAt = query.uploadedAt;
     return this.bookRepo.find({
-      where: query,
+      where,
       order: { uploadedAt: 'DESC' },
     });
   }
+
+  // async getByFilters(query: Partial<Book>): Promise<Book[]> {
+  //   return this.bookRepo.find({
+  //     where: query,
+  //     order: { uploadedAt: 'DESC' },
+  //   });
+  // }
   // async getStudentProgress(userId: number) {
   //   const activities = await this.studentActivityRepo.find({
   //     where: { user: { id: userId } },

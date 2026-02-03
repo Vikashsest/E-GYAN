@@ -57,11 +57,11 @@ export class BookController {
   }
 
   // ✅ Uploaded by user
-  @Get('uploaded-by')
-  async uploadedBy(@Req() req: CustomRequest) {
-    const userId = req.user?.id;
-    return this.bookService.findByUploaderId(userId);
-  }
+  // @Get('uploaded-by')
+  // async uploadedBy(@Req() req: CustomRequest) {
+  //   const userId = req.user?.id;
+  //   return this.bookService.findByUploaderId(userId);
+  // }
 
   // ✅ Upload book
   @Post('upload')
