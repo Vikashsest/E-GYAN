@@ -78,14 +78,38 @@ export class RepositoryService {
   //   const repo = this.repository.create({ text, type });
   //   return await this.repository.save(repo);
   // }
+  // async findAll(type?: string, category?: string) {
+  //   const where: any = {};
+  //   if (type) where.type = type;
+  //   if (category) where.category = category;
+
+  //   const resp = await this.repository.find({ where });
+  //   let unique = new Set(resp);
+  //   return unique;
+  // }
   async findAll(type?: string, category?: string) {
-    const where: any = {};
-    if (type) where.type = type;
-    if (category) where.category = category;
+    const query = this.repository.createQueryBuilder('repo');
 
-    const resp = await this.repository.find({ where });
+    if (type) {
+      query.andWhere('repo.type = :type', { type });
+    }
 
-    return resp;
+    if (category) {
+      query.andWhere('repo.category = :category', { category });
+    }
+
+    query
+      .select([
+        'MIN(repo.id) as id',
+        'repo.type as type',
+        'repo.text as text',
+        'repo.category as category',
+      ])
+      .groupBy('repo.text')
+      .addGroupBy('repo.type')
+      .addGroupBy('repo.category');
+
+    return await query.getRawMany();
   }
 
   async update(id: number, value: string) {
