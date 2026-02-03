@@ -466,80 +466,80 @@ export class BookService {
     };
   }
 
-  async getChaptersMeta(bookId: number) {
-    const chapters = await this.chapterRepo.find({
-      where: {
-        book: { id: bookId },
-        parentChapter: IsNull(), // 🔥 only chapters
-      },
-      relations: ['parts'],
-      order: { chapterNumber: 'ASC' },
-    });
-    console.log('chaptetrs logs', chapters);
-    return chapters.map((ch) => ({
-      id: ch.id,
-      chapterNumber: ch.chapterNumber,
-      chapterName: ch.chapterName,
-      resourceType: ch.resourceType,
-      totalPages: ch.totalPages,
-      thumbnail: ch.thumbnail,
-
-      parts:
-        ch.parts?.map((p) => ({
-          id: p.id,
-          chapterNumber: p.chapterNumber,
-          chapterName: p.chapterName,
-          resourceType: p.resourceType,
-          totalPages: p.totalPages,
-          thumbnail: p.thumbnail || ch.thumbnail, // fallback
-          fileUrl: p.fileUrl,
-        })) || [],
-    }));
-  }
-
   // async getChaptersMeta(bookId: number) {
-  //   const book = await this.bookrepo.findOne({ where: { id: bookId } });
-  //   if (!book) throw new NotFoundException('Book not found');
-
   //   const chapters = await this.chapterRepo.find({
   //     where: {
   //       book: { id: bookId },
-  //       parentChapter: IsNull(), // ✅ only main chapters
+  //       parentChapter: IsNull(), // 🔥 only chapters
   //     },
   //     relations: ['parts'],
-  //     order: { chapterNumber: 'ASC', id: 'ASC' },
+  //     order: { chapterNumber: 'ASC' },
   //   });
+  //   console.log('chaptetrs logs', chapters);
+  //   return chapters.map((ch) => ({
+  //     id: ch.id,
+  //     chapterNumber: ch.chapterNumber,
+  //     chapterName: ch.chapterName,
+  //     resourceType: ch.resourceType,
+  //     totalPages: ch.totalPages,
+  //     thumbnail: ch.thumbnail,
 
-  //   return chapters
-  //     .filter((ch) => !ch.parentChapter)
-  //     .map((ch) => ({
-  //       id: ch.id,
-  //       chapterNumber: ch.chapterNumber,
-  //       chapterName: ch.chapterName,
-  //       resourceType: ch.resourceType || 'pdf',
-  //       totalPages: ch.totalPages,
-  //       thumbnail: ch.thumbnail,
-  //       thumbnailProxyUrl: ch.thumbnail
-  //         ? `${process.env.API_URL}/books/proxy/thumbnail?url=${encodeURIComponent(ch.thumbnail)}`
-  //         : null,
-  //       fileUrl: ch.fileUrl,
-  //       proxyUrl: `${process.env.API_URL}/books/${bookId}/chapters/${ch.id}/file`,
-  //       parts:
-  //         ch.parts?.map((p) => ({
-  //           id: p.id,
-  //           chapterNumber: p.chapterNumber,
-  //           chapterName: p.chapterName,
-  //           resourceType: p.resourceType || 'pdf',
-  //           totalPages: p.totalPages,
-  //           thumbnail: p.thumbnail,
-  //           thumbnailProxyUrl: p.thumbnail
-  //             ? `${process.env.API_URL}/books/proxy/thumbnail?url=${encodeURIComponent(p.thumbnail)}`
-  //             : null,
-  //           fileUrl: p.fileUrl,
-  //           proxyUrl: `${process.env.API_URL}/books/${bookId}/chapters/${p.id}/file`,
-  //         })) || [],
-  //     }));
+  //     parts:
+  //       ch.parts?.map((p) => ({
+  //         id: p.id,
+  //         chapterNumber: p.chapterNumber,
+  //         chapterName: p.chapterName,
+  //         resourceType: p.resourceType,
+  //         totalPages: p.totalPages,
+  //         thumbnail: p.thumbnail || ch.thumbnail, // fallback
+  //         fileUrl: p.fileUrl,
+  //       })) || [],
+  //   }));
   // }
+
+  async getChaptersMeta(bookId: number) {
+    const book = await this.bookrepo.findOne({ where: { id: bookId } });
+    if (!book) throw new NotFoundException('Book not found');
+
+    const chapters = await this.chapterRepo.find({
+      where: {
+        book: { id: bookId },
+        parentChapter: IsNull(), // ✅ only main chapters
+      },
+      relations: ['parts'],
+      order: { chapterNumber: 'ASC', id: 'ASC' },
+    });
+
+    return chapters
+      .filter((ch) => !ch.parentChapter)
+      .map((ch) => ({
+        id: ch.id,
+        chapterNumber: ch.chapterNumber,
+        chapterName: ch.chapterName,
+        resourceType: ch.resourceType || 'pdf',
+        totalPages: ch.totalPages,
+        thumbnail: ch.thumbnail,
+        thumbnailProxyUrl: ch.thumbnail
+          ? `${process.env.API_URL}/books/proxy/thumbnail?url=${encodeURIComponent(ch.thumbnail)}`
+          : null,
+        fileUrl: ch.fileUrl,
+        proxyUrl: `${process.env.API_URL}/books/${bookId}/chapters/${ch.id}/file`,
+        parts:
+          ch.parts?.map((p) => ({
+            id: p.id,
+            chapterNumber: p.chapterNumber,
+            chapterName: p.chapterName,
+            resourceType: p.resourceType || 'pdf',
+            totalPages: p.totalPages,
+            thumbnail: p.thumbnail,
+            thumbnailProxyUrl: p.thumbnail
+              ? `${process.env.API_URL}/books/proxy/thumbnail?url=${encodeURIComponent(p.thumbnail)}`
+              : null,
+            fileUrl: p.fileUrl,
+            proxyUrl: `${process.env.API_URL}/books/${bookId}/chapters/${p.id}/file`,
+          })) || [],
+      }));
+  }
 
   async createSimulation(data: {
     title: string;
