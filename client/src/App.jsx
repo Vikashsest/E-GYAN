@@ -25,7 +25,6 @@ function Page() {
         <Route path="/concerns-list" element={<ViewConcerns />} />
         <Route path="/profilepage" element={<ProfilePage />} />
         <Route path="/booksdetails/:id" element={<UploadChapter />} />
-
         <Route path="current-affairs/:id" element={<NewsPage />} />
 
         {/* Admin Routes */}
