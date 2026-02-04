@@ -438,7 +438,6 @@ export class BookController {
     return this.bookService.getParts(+bookId, +chapterId);
   }
 
-  // ✅ Update book
   @Patch(':id')
   @UseInterceptors(
     FileFieldsInterceptor(
@@ -446,7 +445,7 @@ export class BookController {
         { name: 'file', maxCount: 1 },
         { name: 'thumbnail', maxCount: 1 },
       ],
-      multerConfig, // ✅ same as uploadBook
+      multerConfig,
     ),
   )
   update(

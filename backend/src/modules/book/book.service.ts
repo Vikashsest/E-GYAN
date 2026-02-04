@@ -455,7 +455,7 @@ export class BookService {
       totalPages,
       thumbnail: thumbnailUrl,
       book,
-      parentChapter: null, // 🔥 IMPORTANT
+      parentChapter: null,
     });
 
     const saved = await this.chapterRepo.save(chapter);
