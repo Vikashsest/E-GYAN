@@ -15,6 +15,9 @@ const API_URL = import.meta.env.VITE_API_URL;
 //     throw err;
 //   }
 // };
+
+
+
 //GET /repository?type=level&category=School Education
 export const getRepository = async (type, category, level) => {
   try {
@@ -25,7 +28,7 @@ export const getRepository = async (type, category, level) => {
     }
 
     if (level) {
-      url += `&educationlevel=${encodeURIComponent(level)}`;
+      url += `&educationLevel=${encodeURIComponent(level)}`;
     }
 
     const res = await fetch(url, { credentials: "include" });

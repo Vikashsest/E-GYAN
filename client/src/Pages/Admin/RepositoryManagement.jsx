@@ -13,8 +13,7 @@ import {
   updateRepositoryValue,
   deleteRepositoryValue,
 } from "../../apiServices/apiRepository";
-import fetchSubjects from "../../apiServices/booksApi";
-import { subjectWiseBooks } from "../../apiServices/booksApi";
+import fetechSubjects, { subjectWiseBooks } from "../../apiServices/booksApi";
 
 export default function RepositoryManagement() {
   const [resourceTypes, setResourceTypes] = useState([]);
@@ -84,18 +83,19 @@ export default function RepositoryManagement() {
   };
 
   const handleSubjectClick = async () => {
-    if (subjectsLoaded) return;
+    if (subjectsLoaded || !selected.level) return;
 
     setLoading(true);
+    let data = [];
+
     try {
-      let data = [];
+      // ✅ ONLY FOR SCHOOL EDUCATION
+      if (
+        selected.category === "School Education" &&
+        selected.level
+      ) {
+        const res = await fetechSubjects(selected.level);
 
-      // 1️⃣ Try BOOKS API first (if class selected)
-      if (selected.level) {
-        const res = await fetchSubjects(selected.level);
-        console.log("Subjects from fetchSubjects:", res);
-
-        // 👉 Agar books me data mila
         if (Array.isArray(res) && res.length > 0) {
           data = res.map((subject, index) => ({
             id: index,
@@ -104,14 +104,32 @@ export default function RepositoryManagement() {
         }
       }
 
-      // 2️⃣ FALLBACK → agar books empty aaye
+      // ✅ CUSTOM / REPOSITORY SUBJECTS
       if (data.length === 0) {
-        console.log("Books empty → fetching from repository");
+        const safeCategory =
+          typeof selected.category === "object"
+            ? selected.category.text
+            : selected.category;
 
-        const repoRes = await getRepository("subject", "EE", "1");
-        console.log("Subjects from getRepository:", repoRes);
+        const safeLevel =
+          typeof selected.level === "object"
+            ? selected.level.text
+            : selected.level;
 
-        const list = Array.isArray(repoRes) ? repoRes : repoRes?.data || [];
+        const repoRes = await getRepository(
+          "subject",
+          safeCategory,
+          safeLevel
+        );
+
+        const list =
+          Array.isArray(repoRes)
+            ? repoRes
+            : Array.isArray(repoRes?.data)
+              ? repoRes.data
+              : Array.isArray(repoRes?.data?.data)
+                ? repoRes.data.data
+                : [];
 
         data = list.map((item) => ({
           id: item._id,
@@ -119,66 +137,95 @@ export default function RepositoryManagement() {
         }));
       }
 
-      setSubjects(data);
-      setSubjectsLoaded(true);
+      setSubjects(data);          // ✅ SET STATE
+      setSubjectsLoaded(true);    // ✅ MARK LOADED
     } catch (err) {
-      console.error("Failed to fetch subjects:", err);
-      toast.error("Failed to load subjects");
+      console.error("Error fetching subjects", err);
     } finally {
       setLoading(false);
     }
   };
+
+
 
   const handleBooksClick = async () => {
-    if (booksLoaded) return;
+  // subject select hona zaroori
+  if (!selected.subject || !selected.level) return;
 
-    // subject select hona zaroori
-    if (!selected.subject) return;
+  setLoading(true);
 
-    setLoading(true);
-    try {
-      let data = [];
+  try {
+    let data = [];
 
-      // 1️⃣ FIRST → subjectWiseBooks API
-      if (
-        selected.category === "School Education" &&
-        selected.level &&
-        selected.subject
-      ) {
-        const res = await subjectWiseBooks({
-          className: selected.level,
-          subject: selected.subject,
-          category: selected.category,
-        });
+    const safeCategory =
+      typeof selected.category === "object"
+        ? selected.category.text
+        : selected.category;
 
-        if (Array.isArray(res) && res.length > 0) {
-          data = res.map((book, index) => ({
-            id: book.id ?? index,
-            text: book.bookName || book.title || book.name,
-          }));
-        }
-      }
-      if (data.length === 0) {
-        console.log("Books empty → fetching from repository");
+    const safeLevel =
+      typeof selected.level === "object"
+        ? selected.level.text
+        : selected.level;
 
-        const repoRes = await getRepository("book");
-        console.log("Books from getRepository:", repoRes);
+    const safeSubject =
+      typeof selected.subject === "object"
+        ? selected.subject.text
+        : selected.subject;
 
-        data = repoRes.map((item) => ({
-          id: item.id, // ✅ backend response key
-          text: item.text, // ✅ backend response key
+    // 1️⃣ SCHOOL EDUCATION → subjectWiseBooks API
+    if (safeCategory === "School Education") {
+      const res = await subjectWiseBooks({
+        className: safeLevel,
+        subject: safeSubject,
+        category: safeCategory,
+      });
+
+      if (Array.isArray(res) && res.length > 0) {
+        data = res.map((book, index) => ({
+          id: book._id || book.id || index,
+          text: book.bookName || book.title || book.name,
         }));
       }
-
-      setFilteredBooks(data);
-      setBooksLoaded(true);
-    } catch (err) {
-      console.error("Failed to fetch books:", err);
-      toast.error("Failed to load books");
-    } finally {
-      setLoading(false);
     }
-  };
+
+    // 2️⃣ FALLBACK → repository (WITH FILTERING 🔥)
+    if (data.length === 0) {
+      const repoRes = await getRepository(
+        "book",
+        safeCategory,
+        safeLevel
+      );
+
+      const list =
+        Array.isArray(repoRes)
+          ? repoRes
+          : Array.isArray(repoRes?.data)
+          ? repoRes.data
+          : [];
+
+      // ✅ subject-level filtering
+      data = list
+        .filter(
+          (item) =>
+            item.subject === safeSubject &&
+            item.educationlevel === safeLevel
+        )
+        .map((item) => ({
+          id: item._id,
+          text: item.text || item.bookName,
+        }));
+    }
+
+    // 🔥 overwrite old books (MOST IMPORTANT)
+    setFilteredBooks(data);
+  } catch (err) {
+    console.error("Failed to fetch books:", err);
+    toast.error("Failed to load books");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleCategoryChange = (value) => {
     setSelected((prev) => ({
@@ -520,11 +567,10 @@ export function DropdownWithAdd({
       <label className="block mb-2 font-semibold text-gray300">{title}</label>
 
       <div
-        className={`p-3 rounded-lg cursor-pointer flex justify-between items-center shadow-lg ${
-          disabled
-            ? "bg-gray700 cursor-not-allowed"
-            : "bg-gradient-to-r from-purple500 to-indigo600  transition-colors"
-        }`}
+        className={`p-3 rounded-lg cursor-pointer flex justify-between items-center shadow-lg ${disabled
+          ? "bg-gray700 cursor-not-allowed"
+          : "bg-gradient-to-r from-purple500 to-indigo600  transition-colors"
+          }`}
         onClick={() => {
           if (!disabled) {
             setIsOpen(!isOpen);
@@ -603,6 +649,14 @@ export function DropdownWithAdd({
     </div>
   );
 }
+
+
+
+
+
+
+
+
 
 // import { useEffect, useState, useRef } from "react";
 // import Sidebar from "./AdminSidebar";

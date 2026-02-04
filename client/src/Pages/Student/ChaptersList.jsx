@@ -2121,6 +2121,7 @@ export default function ChaptersList() {
   const [partsMap, setPartsMap] = useState({});
   const [selectedPart, setSelectedPart] = useState(null);
   const [openLectureId, setOpenLectureId] = useState(null);
+  const [currentVideoUrl, setCurrentVideoUrl] = useState(null);
 
 
 
@@ -2148,16 +2149,6 @@ export default function ChaptersList() {
             title,
             file: item.proxyUrl || item.fileUrl,
             typeUpper: type.toUpperCase(),
-            parts:
-              item.parts?.map((p) => ({
-                id: p.id,
-                chapterNumber: p.chapterNumber,
-                fileUrl: p.fileUrl,
-                resourceType: (p.resourceType || "pdf").toLowerCase(),
-                thumbnail: p.thumbnail,
-                thumbnailProxyUrl: p.thumbnailProxyUrl,
-                title: p.displayName || `Part ${p.chapterNumber}`,
-              })) || [],
           };
         });
 
@@ -2206,11 +2197,7 @@ export default function ChaptersList() {
     }
   };
 
-  useEffect(() => {
-    if (selectedChapter?.resourceType === "video") {
-      fetchParts(selectedChapter.id);
-    }
-  }, [selectedChapter]);
+
 
 
   // Filter ke hisaab se pehla chapter select karo
@@ -2344,14 +2331,15 @@ export default function ChaptersList() {
               </>
             )}
 
-            {selectedChapter.resourceType === "video" && (
+            {selectedChapter?.resourceType === "video" && currentVideoUrl && (
               <video
-                key={selectedChapter.fileUrl}
+                key={currentVideoUrl}
                 controls
                 className="w-full h-full object-contain"
-                src={selectedChapter.fileUrl}
+                src={currentVideoUrl}
               />
             )}
+
 
 
 
@@ -2443,11 +2431,13 @@ export default function ChaptersList() {
                       setOpenLectureId(null);
 
                       if (item.resourceType === "video") {
-                        fetchParts(item.id);
+                        setCurrentVideoUrl(item.fileUrl);
                       }
 
                       setIsSidebarOpen(false);
                     }}
+
+
                   >
                     {/* Left */}
                     <div className="flex items-center gap-3">
@@ -2471,9 +2461,8 @@ export default function ChaptersList() {
 
 
                     </div>
-
                     {item.resourceType === "video" && (
-                      <button
+                      <span
                         onClick={(e) => {
                           e.stopPropagation();
                           fetchParts(item.id);
@@ -2481,10 +2470,16 @@ export default function ChaptersList() {
                             openLectureId === item.id ? null : item.id
                           );
                         }}
-                        className="mr-3 text-sm text-black border-2 p-1 border-black rounded-lg font-semibold"
+                        className="
+    mr-3 px-2 py-1 text-xs text-primaryWhite font-semibold
+    border border-primaryWhite rounded-md
+    cursor-pointer select-none
+    inline-flex items-center
+  "
                       >
-                        Select Parts 
-                      </button>
+                        Select Parts
+                      </span>
+
                     )}
 
 
@@ -2498,10 +2493,7 @@ export default function ChaptersList() {
                             key={part.id}
                             onClick={() => {
                               setSelectedPart(part);
-                              setSelectedChapter((prev) => ({
-                                ...prev,
-                                fileUrl: part.fileUrl,
-                              }));
+                              setCurrentVideoUrl(part.fileUrl);
                               setIsSidebarOpen(false);
                             }}
                             className={`text-sm px-3 py-2 rounded cursor-pointer
