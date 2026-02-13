@@ -85,29 +85,41 @@ export class RepositoryService {
   //   let unique = new Set(resp);
   //   return unique;
   // }
-  async findAll(type?: string, category?: string) {
+  // async findAll(type?: string, category?: string) {
+  //   const query = this.repository.createQueryBuilder('repo');
+
+  //   if (type) {
+  //     query.andWhere('repo.type = :type', { type });
+  //   }
+
+  //   if (category) {
+  //     query.andWhere('repo.category = :category', { category });
+  //   }
+
+  //   query
+  //     .select([
+  //       'MIN(repo.id) as id',
+  //       'repo.type as type',
+  //       'repo.text as text',
+  //       'repo.category as category',
+  //     ])
+  //     .groupBy('repo.text')
+  //     .addGroupBy('repo.type')
+  //     .addGroupBy('repo.category');
+
+  //   return await query.getRawMany();
+  // }
+
+  async findAll(filters: any) {
     const query = this.repository.createQueryBuilder('repo');
 
-    if (type) {
-      query.andWhere('repo.type = :type', { type });
-    }
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value) {
+        query.andWhere(`repo.${key} = :${key}`, { [key]: value });
+      }
+    });
 
-    if (category) {
-      query.andWhere('repo.category = :category', { category });
-    }
-
-    query
-      .select([
-        'MIN(repo.id) as id',
-        'repo.type as type',
-        'repo.text as text',
-        'repo.category as category',
-      ])
-      .groupBy('repo.text')
-      .addGroupBy('repo.type')
-      .addGroupBy('repo.category');
-
-    return await query.getRawMany();
+    return query.getMany();
   }
 
   async update(id: number, value: string) {

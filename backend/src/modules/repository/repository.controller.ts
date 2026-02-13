@@ -26,9 +26,13 @@ export class RepositoryController {
     return this.repositoryService.create(createDto);
   }
 
+  // @Get()
+  // getAll(@Query('type') type?: string, @Query('category') category?: string) {
+  //   return this.repositoryService.findAll(type, category);
+  // }
   @Get()
-  getAll(@Query('type') type?: string, @Query('category') category?: string) {
-    return this.repositoryService.findAll(type, category);
+  getAll(@Query() query: any) {
+    return this.repositoryService.findAll(query);
   }
 
   @Patch(':id')
