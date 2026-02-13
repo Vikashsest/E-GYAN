@@ -25,7 +25,7 @@ export const getRepository = async (type, category, level) => {
     }
 
     if (level) {
-      url += `&educationlevel=${encodeURIComponent(level)}`;
+      url += `&educationLevel=${encodeURIComponent(level)}`;
     }
 
     const res = await fetch(url, { credentials: "include" });
