@@ -28,7 +28,7 @@
 //     const loadResourceTypes = async () => {
 //       try {
 //         const data = await getRepository("resource");
-//         setResourceTypes(data); 
+//         setResourceTypes(data);
 //       } catch (err) {
 //         console.error("Failed to fetch resource types:", err);
 //         setResourceTypes([]);
@@ -60,7 +60,7 @@
 //     t = thumbnail,
 //     r = resourceType,
 //     vUrl = videoUrl,
-//     sUrl = simulationUrl 
+//     sUrl = simulationUrl
 //   ) => {
 //     if (!bookId) {
 //       toast.error("Invalid book ID");
@@ -236,8 +236,6 @@
 //         {/* Form (Main Add Chapter) */}
 //         <div className="flex flex-col gap-4 items-center">
 
-
-
 //             <div className="w-full">
 //             <label className="block text-sm font-medium mb-1 text-gray-200">
 //               Resource Type
@@ -306,7 +304,6 @@
 //             onChange={(e) => setChapterNumber(e.target.value)}
 //           />
 //           </div>
-
 
 //           <div className="w-full">
 //             <label>Thumbnail Image</label>
@@ -519,12 +516,6 @@
 //   );
 // }
 
-
-
-
-
-
-
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchChapters, deleteChapter } from "../apiServices/booksApi";
@@ -551,21 +542,20 @@ export default function UploadChapter() {
   const API_URL = import.meta.env.VITE_API_URL;
   const progressIntervalRef = useRef(null);
 
-
   const fetchParts = async (chapterId) => {
     try {
       const res = await fetch(
         `${API_URL}/books/${bookId}/chapters/${chapterId}/parts`,
-        { credentials: "include" }
+        { credentials: "include" },
       );
 
       if (!res.ok) throw new Error("Failed to fetch parts");
 
       const data = await res.json();
 
-      setPartsMap(prev => ({
+      setPartsMap((prev) => ({
         ...prev,
-        [chapterId]: data
+        [chapterId]: data,
       }));
     } catch (err) {
       toast.error("Failed to load parts");
@@ -593,12 +583,9 @@ export default function UploadChapter() {
         const data = await fetchChapters(bookId);
 
         // 🔥 ONLY parent chapters (jinka parentChapter NULL ho)
-        const onlyChapters = (data || []).filter(
-          (item) => !item.parentChapter
-        );
+        const onlyChapters = (data || []).filter((item) => !item.parentChapter);
 
         setChapters(onlyChapters);
-
       } catch {
         toast.error("Failed to fetch chapters");
       } finally {
@@ -613,10 +600,9 @@ export default function UploadChapter() {
       setOpenChapterId(null);
     } else {
       setOpenChapterId(id);
-      fetchParts(id);   
+      fetchParts(id);
     }
   };
-
 
   const handleAddChapter = async () => {
     if (!chapterNumber || (!file && !videoUrl && !simulationUrl)) {
@@ -636,7 +622,8 @@ export default function UploadChapter() {
       fd.append("resourceType", resourceType);
       if (thumbnail) fd.append("thumbnail", thumbnail);
       if (resourceType === "video") fd.append("videoUrl", videoUrl);
-      else if (resourceType === "simulation") fd.append("simulationUrl", simulationUrl);
+      else if (resourceType === "simulation")
+        fd.append("simulationUrl", simulationUrl);
       else fd.append("file", file);
 
       const res = await fetch(`${API_URL}/books/${bookId}/chapters`, {
@@ -650,7 +637,12 @@ export default function UploadChapter() {
 
       const newChapter = await res.json();
       setChapters((prev) => [...prev, newChapter]);
-      setChapterNumber(""); setFile(null); setThumbnail(null); setVideoUrl(""); setSimulationUrl(""); setResourceType("");
+      setChapterNumber("");
+      setFile(null);
+      setThumbnail(null);
+      setVideoUrl("");
+      setSimulationUrl("");
+      setResourceType("");
       toast.success("Chapter added!");
       setProgress(100);
     } catch {
@@ -663,7 +655,7 @@ export default function UploadChapter() {
   };
 
   const handleAddPart = async (parentId) => {
-    const chapter = chapters.find(c => c.id === parentId);
+    const chapter = chapters.find((c) => c.id === parentId);
     if (!chapter || (!file && !videoUrl && !simulationUrl)) {
       return toast.warning("Add part details");
     }
@@ -694,7 +686,7 @@ export default function UploadChapter() {
           method: "POST",
           body: fd,
           credentials: "include",
-        }
+        },
       );
 
       if (!res.ok) throw new Error("Part upload failed");
@@ -714,8 +706,6 @@ export default function UploadChapter() {
     }
   };
 
-
-
   const handleDelete = async (id) => {
     if (!window.confirm("Delete chapter?")) return;
     try {
@@ -731,8 +721,15 @@ export default function UploadChapter() {
     <div className="min-h-screen bg-[#2a2b39] flex flex-col items-center py-10 text-white">
       <div className="bg-[#38394a] shadow-lg rounded-lg p-6 w-full max-w-2xl">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-center">📚 Manage Book Chapters</h1>
-          <button onClick={() => navigate(-1)} className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-lg">⬅ Back</button>
+          <h1 className="text-2xl font-bold text-center">
+            📚 Manage Book Chapters
+          </h1>
+          <button
+            onClick={() => navigate(-1)}
+            className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-lg"
+          >
+            ⬅ Back
+          </button>
         </div>
 
         {/* Add Chapter */}
@@ -753,13 +750,36 @@ export default function UploadChapter() {
             </select>
           </div>
 
-          {resourceType === "video" && <input type="text" placeholder="Video URL" value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white" />}
-          {resourceType === "simulation" && <input type="text" placeholder="Simulation URL" value={simulationUrl} onChange={(e) => setSimulationUrl(e.target.value)} className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white" />}
-          {(resourceType === "pdf" || resourceType === "audio") && <input type="file" onChange={(e) => setFile(e.target.files[0])} className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white" />}
+          {resourceType === "video" && (
+            <input
+              type="text"
+              placeholder="Video URL"
+              accept="video/mp4"
+              value={videoUrl}
+              onChange={(e) => setVideoUrl(e.target.value)}
+              className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white"
+            />
+          )}
+          {resourceType === "simulation" && (
+            <input
+              type="text"
+              placeholder="Simulation URL"
+              value={simulationUrl}
+              onChange={(e) => setSimulationUrl(e.target.value)}
+              className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white"
+            />
+          )}
+          {(resourceType === "pdf" || resourceType === "audio") && (
+            <input
+              type="file"
+              onChange={(e) => setFile(e.target.files[0])}
+              className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white"
+            />
+          )}
           <input
             type="number"
-            min={1}            
-            step={1}               
+            min={1}
+            step={1}
             placeholder="Chapter Number (1, 2, 3...)"
             value={chapterNumber}
             onChange={(e) => {
@@ -771,25 +791,48 @@ export default function UploadChapter() {
             className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white"
           />
 
-          <input type="file" accept="image/*" onChange={(e) => setThumbnail(e.target.files[0])} className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white" />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setThumbnail(e.target.files[0])}
+            className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white"
+          />
 
-          <button onClick={handleAddChapter} className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg w-full">Add Chapter</button>
+          <button
+            onClick={handleAddChapter}
+            className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg w-full"
+          >
+            Add Chapter
+          </button>
         </div>
 
         {/* Chapters List */}
         <ul className="mt-6 divide-y divide-gray-600">
-          {chapters.length === 0 && <li className="py-3 text-center text-gray-400">No chapters found</li>}
+          {chapters.length === 0 && (
+            <li className="py-3 text-center text-gray-400">
+              No chapters found
+            </li>
+          )}
           {chapters.map((c) => (
             <li key={c.id} className="py-2">
-              <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleChapter(c.id)}>
-                <span className="font-semibold">{c.resourceType === "video" ? "Lecture" : "Chapter"} {c.chapterNumber}</span>
+              <div
+                className="flex justify-between items-center cursor-pointer"
+                onClick={() => toggleChapter(c.id)}
+              >
+                <span className="font-semibold">
+                  {c.resourceType === "video" ? "Lecture" : "Chapter"}{" "}
+                  {c.chapterNumber}
+                </span>
                 <span>{openChapterId === c.id ? "▲" : "▼"}</span>
               </div>
 
               {openChapterId === c.id && (
                 <div className="ml-6 mt-2 space-y-1">
                   {partsMap[c.id]?.map((p) => (
-                    <div key={p.id} className="flex justify-between items-center text-sm">
+                    <div
+                      key={p.id}
+                      className="flex justify-between items-center text-sm"
+                    >
                       <span>
                         {c.resourceType === "video"
                           ? `Part ${p.chapterNumber}`
@@ -821,13 +864,24 @@ export default function UploadChapter() {
               )}
 
               <div className="flex gap-2 mt-2">
-                <button onClick={() => setAddPartChapterId(addPartChapterId === c.id ? null : c.id)} className="bg-green-500 px-3 py-1 rounded-lg">+ Add Part</button>
-                <button onClick={() => handleDelete(c.id)} className="bg-red-500 px-3 py-1 rounded-lg">Delete</button>
+                <button
+                  onClick={() =>
+                    setAddPartChapterId(addPartChapterId === c.id ? null : c.id)
+                  }
+                  className="bg-green-500 px-3 py-1 rounded-lg"
+                >
+                  + Add Part
+                </button>
+                <button
+                  onClick={() => handleDelete(c.id)}
+                  className="bg-red-500 px-3 py-1 rounded-lg"
+                >
+                  Delete
+                </button>
               </div>
 
               {addPartChapterId === c.id && (
                 <div className="ml-6 mt-2 p-3 bg-[#2f3042] rounded-lg space-y-2">
-
                   {/* ✅ Part Number Input */}
                   <input
                     type="number"
@@ -842,6 +896,7 @@ export default function UploadChapter() {
                     <input
                       type="text"
                       placeholder="Video URL"
+                      accept="video/mp4"
                       value={videoUrl}
                       onChange={(e) => setVideoUrl(e.target.value)}
                       className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white"
@@ -896,10 +951,8 @@ export default function UploadChapter() {
                       ))}
                     </div>
                   )}
-
                 </div>
               )}
-
             </li>
           ))}
         </ul>
