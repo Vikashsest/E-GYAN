@@ -20,12 +20,12 @@ import pdfParse from 'pdf-parse';
 @Injectable()
 export class AiService {
   private memoryStore: { chunk: string; embedding: number[] }[] = [];
-  private GEMINI_API_KEY = 'AIzaSyDxsjTAvpaIalHTlOm7097UZIzmy314hiM';
+  private GEMINI_API_KEY = 'AIzaSyAr5shYxifwSjgpWU6ouhnqPZF9L9gtd8M';
 
   private openai: OpenAI;
   constructor(
     @InjectRepository(ChapterEmbedding)
-    private embeddingRepo: Repository<ChapterEmbedding>, // correct injection
+    private embeddingRepo: Repository<ChapterEmbedding>,
   ) {
     // OpenAI client initialization
     this.openai = new OpenAI({
@@ -296,14 +296,28 @@ You are a helpful study assistant.
 
 Student Question: ${message}
 
-Respond ONLY in JSON format like below:
+Rules:
+- Normally return only a simple explanation.
+- ONLY include video or image suggestions if the student explicitly asks for:
+  "video", "videos", "image", "images", or "diagram".
+- If the student does not ask for them, return an empty suggestions array.
+
+Respond STRICTLY in JSON format:
+
 {
   "answer": "simple explanation for student",
+  "suggestions": []
+}
+
+If student asks for video/image, then:
+
+{
+  "answer": "simple explanation",
   "suggestions": [
     {
-      "type": "video",
-      "title": "Video title",
-      "query": "youtube search keywords"
+      "type": "video" or "image",
+      "title": "Title",
+      "query": "search keywords"
     }
   ]
 }
@@ -317,8 +331,6 @@ Respond ONLY in JSON format like below:
     );
 
     let text = response.data.candidates[0].content.parts[0].text;
-
-    // Remove ```json``` if Gemini adds it
     text = text.replace(/```json|```/g, '');
 
     return JSON.parse(text);
