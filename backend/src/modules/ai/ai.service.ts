@@ -262,7 +262,6 @@ JSON format:
       embeddings.push(emb);
     }
 
-    // Store embeddings in memory or DB
     this.memoryStore = await this.storeChunkInMemory(chunks, embeddings);
 
     return {

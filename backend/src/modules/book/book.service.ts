@@ -360,7 +360,7 @@ export class BookService {
       where: { id: chapterId, book: { id: bookId } },
       select: ['id', 'fileUrl'],
     });
-
+    console.log('chapter', chapter);
     if (!chapter || !chapter.fileUrl) {
       throw new NotFoundException('File URL not found');
     }
