@@ -140,14 +140,14 @@ function AdminNavbar({
   const [onlineUsersCount, setOnlineUsersCount] = useState(0);
   useEffect(() => {
     // initial fetch (optional)
-    fetch("https://e-gyan-9tky.onrender.com/websocket/online-count", {
+    fetch("https://silver-chough-578260.hostingersite.com/websocket/online-count", {
       credentials: "include",
     })
       .then((res) => res.json())
       .then((data) => setOnlineUsersCount(data.count))
       .catch(console.error);
 
-    const socket = io("https://e-gyan-9tky.onrender.com", {
+    const socket = io("https://silver-chough-578260.hostingersite.com", {
       withCredentials: true,
     });
 

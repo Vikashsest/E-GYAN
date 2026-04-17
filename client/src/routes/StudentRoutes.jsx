@@ -104,6 +104,9 @@
 
 // ];
 
+
+
+
 import ProtectedRoute from "../ProtectedRoute";
 import StudentDashboard from "../Pages/Student/StudentDashboard";
 import StudentProfile from "../Pages/Student/StudentProfile";
@@ -122,7 +125,6 @@ import QuizStartPage from "../Pages/Student/QuizStartPage";
 import AssessmentStartPage from "../Pages/Student/AssessmentStartPage";
 import SimulationLibrary from "../Pages/Student/SimulationLibrary";
 import CurrentAffairs from "../Pages/Student/CurrentAffairs";
-import NewsModal from "../Pages/Student/NewsModel";
 import MyBooks from "../Pages/Student/AssignedBook";
 import StudentAIAssistant from "../Pages/Student/StudentAIAssistant";
 

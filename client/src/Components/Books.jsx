@@ -1562,6 +1562,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
         setLoading(true); // 🔄 START LOADER
 
         const books = await fetchBooks();
+     
         setBookList(books);
 
         // Classes load
@@ -1572,7 +1573,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
         // fallback classes
         setClasses(Array.from({ length: 12 }, (_, i) => `Class ${i + 1}`));
       } finally {
-        setLoading(false); // ✅ STOP LOADER
+        setLoading(false);
       }
     }
 
@@ -1581,7 +1582,7 @@ export default function ManageBooksPage({ role, Navbar, Sidebar }) {
 
   useEffect(() => {
     const loadFormOptions = async () => {
-      if (!formData.category) return; // agar category select nahi hui ho to return
+      if (!formData.category) return; 
 
       try {
         const [subjectData, bookData, languageData, levelData] =

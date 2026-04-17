@@ -539,6 +539,7 @@ export default function UploadChapter() {
   const [resourceTypes, setResourceTypes] = useState([]);
   const [partsMap, setPartsMap] = useState({});
   const [partNumber, setPartNumber] = useState("");
+  const [audioUrl, setAudioUrl] = useState("");
   const API_URL = import.meta.env.VITE_API_URL;
   const progressIntervalRef = useRef(null);
 
@@ -605,8 +606,15 @@ export default function UploadChapter() {
   };
 
   const handleAddChapter = async () => {
-    if (!chapterNumber || (!file && !videoUrl && !simulationUrl)) {
-      toast.warning("Enter chapter number and file/link");
+    if (
+      !chapterNumber ||
+      !resourceType ||
+      (resourceType === "pdf" && !file) ||
+      (resourceType === "video" && !videoUrl) ||
+      (resourceType === "simulation" && !simulationUrl) ||
+      (resourceType === "audio" && !audioUrl)
+    ) {
+      toast.warning("Please fill all required fields");
       return;
     }
 
@@ -699,6 +707,7 @@ export default function UploadChapter() {
       setFile(null);
       setThumbnail(null);
       setVideoUrl("");
+      setAudioUrl("");
       setSimulationUrl("");
       setAddPartChapterId(parentId); // form open hi rahe
     } catch {
@@ -734,8 +743,11 @@ export default function UploadChapter() {
 
         {/* Add Chapter */}
         <div className="flex flex-col gap-4 items-center">
+          {/* Resource Type */}
           <div className="w-full">
-            <label>Resource Type</label>
+            <label className="block mb-1 text-sm text-gray-300">
+              Resource Type
+            </label>
             <select
               value={resourceType}
               onChange={(e) => setResourceType(e.target.value)}
@@ -754,7 +766,6 @@ export default function UploadChapter() {
             <input
               type="text"
               placeholder="Video URL"
-              accept="video/mp4"
               value={videoUrl}
               onChange={(e) => setVideoUrl(e.target.value)}
               className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white"

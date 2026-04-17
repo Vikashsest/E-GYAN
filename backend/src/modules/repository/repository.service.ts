@@ -59,18 +59,14 @@ export class RepositoryService {
   //   return this.repository.save(repo);
   // }
 
-  // async create(createRepositoryDto: CreateRepositoryDto) {
-  //   console.log(createRepositoryDto.category);
+  async create(createRepositoryDto: CreateRepositoryDto) {
+    console.log(createRepositoryDto.category);
 
-  //   const { text, type, category } = createRepositoryDto; // category add kiya
+    const { text, type, category } = createRepositoryDto; // category add kiya
 
-  //   if (!text || !type) throw new NotFoundException('Text or type missing');
-  //   const repo = this.repository.create({ text, type, category });
-  //   return await this.repository.save(repo);
-  // }
-  async create(dto: CreateRepositoryDto) {
-    const repo = this.repository.create(dto);
-    return this.repository.save(repo);
+    if (!text || !type) throw new NotFoundException('Text or type missing');
+    const repo = this.repository.create({ text, type, category });
+    return await this.repository.save(repo);
   }
 
   // async create(createRepositoryDto: CreateRepositoryDto) {

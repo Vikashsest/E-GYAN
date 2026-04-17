@@ -440,6 +440,7 @@ export default function FlipbookPDFViewer({
 }) {
   const { bookId: paramBookId } = useParams();
   const bookId = propBookId || paramBookId;
+console.log("sfjhwkighbekige",import.meta.env.VITE_API_URL);
 
   const [bookUrl, setBookUrl] = useState(null);
   const [fileType, setFileType] = useState(null);
@@ -567,6 +568,8 @@ export default function FlipbookPDFViewer({
         // ✅ render first page immediately
         await renderPage(1);
       } catch (err) {
+        console.log(err.message);
+        
         console.error("Error loading PDF:", err);
       } finally {
         setLoading(false); // first page render ke baad hide loader
@@ -688,7 +691,7 @@ export default function FlipbookPDFViewer({
 
       {/* Top Controls */}
       {fileType === "pdf" && total > 0 && (
-        <div className="absolute top-2 left-1/2 -translate-x-1/2 flex gap-4 items-center z-50 text-white">
+        <div className="absolute top-2 left-1/2 -translate-x-1/2 flex gap-4 p-1 border-2 border-primaryBlue rounded-3xl items-center z-50 text-white">
           <button
             onClick={() => setViewMode("flipbook")}
             className={`p-1 ${
