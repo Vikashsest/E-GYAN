@@ -2103,9 +2103,8 @@ import { FiMenu, FiX } from "react-icons/fi";
 import { FaExpand, FaCompress, FaVideo } from "react-icons/fa";
 import FlipbookPDFViewer from "../../Components/FlipbookPDFViewer";
 import { useNavigate, useParams } from "react-router-dom";
-
-
 const API_URL = import.meta.env.VITE_API_URL;
+
 
 export default function ChaptersList() {
   const [filter, setFilter] = useState("PDF");
@@ -2162,13 +2161,14 @@ export default function ChaptersList() {
   }, [bookId]);
 
   const fetchParts = async (chapterId) => {
-    if (partsMap[chapterId]) return;
+    if (partsMap[chapterId] !== undefined) return;
 
     try {
       const res = await fetch(
         `${API_URL}/books/${bookId}/chapters/${chapterId}/parts`,
         { credentials: "include" }
       );
+
       if (!res.ok) throw new Error("Failed to fetch parts");
 
       const data = await res.json();
@@ -2184,34 +2184,38 @@ export default function ChaptersList() {
         [chapterId]: formattedParts,
       }));
 
-      // ✅ default Part 1 play
-      if (formattedParts.length > 0) {
-        setSelectedPart(formattedParts[0]);
-        setSelectedChapter((prev) => ({
-          ...prev,
-          fileUrl: formattedParts[0].fileUrl,
-        }));
-      }
     } catch (err) {
       console.error(err);
     }
   };
 
+  useEffect(() => {
+    chapters
+      .filter((ch) => ch.resourceType === "video")
+      .forEach((video) => {
+        fetchParts(video.id);
+      });
+  }, [chapters]);
 
 
-
-  // Filter ke hisaab se pehla chapter select karo
   useEffect(() => {
     if (chapters.length > 0) {
       const firstFiltered = chapters.find((ch) => {
         if (ch.typeUpper === filter) return true;
-        if (ch.parts?.some((p) => p.resourceType.toUpperCase() === filter))
-          return true;
         return false;
       });
-      setSelectedChapter(firstFiltered || null);
+
+      if (firstFiltered) {
+        setSelectedChapter(firstFiltered);
+
+        // ✅ Agar VIDEO hai to by default video URL set karo
+        if (firstFiltered.resourceType === "video") {
+          setCurrentVideoUrl(firstFiltered.fileUrl);
+        }
+      }
     }
   }, [chapters, filter]);
+
 
   // Filter chapters & parts
   const filtered = chapters.filter((ch) => {
@@ -2335,24 +2339,22 @@ export default function ChaptersList() {
               <video
                 key={currentVideoUrl}
                 controls
+                autoPlay  
                 className="w-full h-full object-contain"
                 src={currentVideoUrl}
               />
             )}
 
-
-
-
             {selectedChapter.resourceType === "audio" && (
               <div className="flex flex-col items-center justify-center w-full h-full gap-4 text-primaryWhite">
-                <img
+                {/* <img
                   src={
                     selectedChapter.thumbnailProxyUrl ||
                     selectedChapter.thumbnail
                   }
                   alt="Thumbnail"
                   className="w-60 h-60 object-cover rounded-lg shadow-lg"
-                />
+                /> */}
                 <audio key={selectedChapter.id} controls className="w-2/3">
                   <source src={selectedChapter.fileUrl} type="audio/mpeg" />
                 </audio>
@@ -2461,26 +2463,22 @@ export default function ChaptersList() {
 
 
                     </div>
-                    {item.resourceType === "video" && (
-                      <span
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          fetchParts(item.id);
-                          setOpenLectureId(
-                            openLectureId === item.id ? null : item.id
-                          );
-                        }}
-                        className="
-    mr-3 px-2 py-1 text-xs text-primaryWhite font-semibold
-    border border-primaryWhite rounded-md
-    cursor-pointer select-none
-    inline-flex items-center
-  "
-                      >
-                        Select Parts
-                      </span>
-
-                    )}
+                    {item.resourceType === "video" &&
+                      partsMap[item.id]?.length > 0 && (
+                        <span
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setOpenLectureId(
+                              openLectureId === item.id ? null : item.id
+                            );
+                          }}
+                          className="mr-3 px-2 py-1 text-xs text-primaryWhite font-semibold
+                 border border-primaryWhite rounded-md
+                 cursor-pointer select-none inline-flex items-center"
+                        >
+                          Select Parts
+                        </span>
+                      )}
 
 
                   </div>

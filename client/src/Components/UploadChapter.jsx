@@ -548,6 +548,7 @@ export default function UploadChapter() {
   const [resourceTypes, setResourceTypes] = useState([]);
   const [partsMap, setPartsMap] = useState({});
   const [partNumber, setPartNumber] = useState("");
+  const [audioUrl, setAudioUrl] = useState("");
   const API_URL = import.meta.env.VITE_API_URL;
   const progressIntervalRef = useRef(null);
 
@@ -613,14 +614,21 @@ export default function UploadChapter() {
       setOpenChapterId(null);
     } else {
       setOpenChapterId(id);
-      fetchParts(id);   
+      fetchParts(id);
     }
   };
 
 
   const handleAddChapter = async () => {
-    if (!chapterNumber || (!file && !videoUrl && !simulationUrl)) {
-      toast.warning("Enter chapter number and file/link");
+    if (
+      !chapterNumber ||
+      !resourceType ||
+      (resourceType === "pdf" && !file) ||
+      (resourceType === "video" && !videoUrl) ||
+      (resourceType === "simulation" && !simulationUrl) ||
+      (resourceType === "audio" && !audioUrl)
+    ) {
+      toast.warning("Please fill all required fields");
       return;
     }
 
@@ -635,9 +643,18 @@ export default function UploadChapter() {
       fd.append("chapterNumber", chapterNumber);
       fd.append("resourceType", resourceType);
       if (thumbnail) fd.append("thumbnail", thumbnail);
-      if (resourceType === "video") fd.append("videoUrl", videoUrl);
-      else if (resourceType === "simulation") fd.append("simulationUrl", simulationUrl);
-      else fd.append("file", file);
+      if (resourceType === "video") {
+        fd.append("videoUrl", videoUrl);
+      }
+      else if (resourceType === "simulation") {
+        fd.append("simulationUrl", simulationUrl);
+      }
+      else if (resourceType === "audio") {
+        fd.append("audioUrl", audioUrl);
+      }
+      else if (resourceType === "pdf") {
+        fd.append("file", file);
+      }
 
       const res = await fetch(`${API_URL}/books/${bookId}/chapters`, {
         method: "POST",
@@ -707,6 +724,7 @@ export default function UploadChapter() {
       setFile(null);
       setThumbnail(null);
       setVideoUrl("");
+      setAudioUrl("");
       setSimulationUrl("");
       setAddPartChapterId(parentId); // form open hi rahe
     } catch {
@@ -737,8 +755,12 @@ export default function UploadChapter() {
 
         {/* Add Chapter */}
         <div className="flex flex-col gap-4 items-center">
+
+          {/* Resource Type */}
           <div className="w-full">
-            <label>Resource Type</label>
+            <label className="block mb-1 text-sm text-gray-300">
+              Resource Type
+            </label>
             <select
               value={resourceType}
               onChange={(e) => setResourceType(e.target.value)}
@@ -753,27 +775,111 @@ export default function UploadChapter() {
             </select>
           </div>
 
-          {resourceType === "video" && <input type="text" placeholder="Video URL" value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white" />}
-          {resourceType === "simulation" && <input type="text" placeholder="Simulation URL" value={simulationUrl} onChange={(e) => setSimulationUrl(e.target.value)} className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white" />}
-          {(resourceType === "pdf" || resourceType === "audio") && <input type="file" onChange={(e) => setFile(e.target.files[0])} className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white" />}
-          <input
-            type="number"
-            min={1}            
-            step={1}               
-            placeholder="Chapter Number (1, 2, 3...)"
-            value={chapterNumber}
-            onChange={(e) => {
-              const value = e.target.value;
-              if (value === "" || Number(value) >= 1) {
-                setChapterNumber(value);
-              }
-            }}
-            className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white"
-          />
+          {/* Video URL */}
+          {resourceType === "video" && (
+            <div className="w-full">
+              <label className="block mb-1 text-sm text-gray-300">
+                Video URL
+              </label>
+              <input
+                type="text"
+                placeholder="Enter video URL"
+                value={videoUrl}
+                onChange={(e) => setVideoUrl(e.target.value)}
+                className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white"
+              />
+            </div>
+          )}
 
-          <input type="file" accept="image/*" onChange={(e) => setThumbnail(e.target.files[0])} className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white" />
+          {/* Simulation URL */}
+          {resourceType === "simulation" && (
+            <div className="w-full">
+              <label className="block mb-1 text-sm text-gray-300">
+                Simulation URL
+              </label>
+              <input
+                type="text"
+                placeholder="Enter simulation URL"
+                value={simulationUrl}
+                onChange={(e) => setSimulationUrl(e.target.value)}
+                className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white"
+              />
+            </div>
+          )}
 
-          <button onClick={handleAddChapter} className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg w-full">Add Chapter</button>
+          {/* File Upload (PDF / Audio) */}
+          {/* File Upload (PDF Only) */}
+          {resourceType === "pdf" && (
+            <div className="w-full">
+              <label className="block mb-1 text-sm text-gray-300">
+                Upload PDF File
+              </label>
+              <input
+                type="file"
+                onChange={(e) => setFile(e.target.files[0])}
+                className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white"
+              />
+            </div>
+          )}
+
+          {/* Audio URL */}
+          {resourceType === "audio" && (
+            <div className="w-full">
+              <label className="block mb-1 text-sm text-gray-300">
+                Audio URL
+              </label>
+              <input
+                type="text"
+                placeholder="Enter audio URL"
+                value={audioUrl}
+                onChange={(e) => setAudioUrl(e.target.value)}
+                className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white"
+              />
+            </div>
+          )}
+
+          {/* Chapter Number */}
+          <div className="w-full">
+            <label className="block mb-1 text-sm text-gray-300">
+              Chapter Number
+            </label>
+            <input
+              type="number"
+              min={1}
+              step={1}
+              placeholder="1, 2, 3..."
+              value={chapterNumber}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value === "" || Number(value) >= 1) {
+                  setChapterNumber(value);
+                }
+              }}
+              className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white"
+            />
+          </div>
+
+          {/* Thumbnail Upload */}
+          <div className="w-full">
+            <label className="block mb-1 text-sm text-gray-300">
+              Thumbnail Image
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setThumbnail(e.target.files[0])}
+              className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white"
+            />
+          </div>
+
+          {/* Button */}
+          <button
+            onClick={handleAddChapter}
+            className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg w-full"
+          >
+            Add Chapter
+          </button>
+
         </div>
 
         {/* Chapters List */}
