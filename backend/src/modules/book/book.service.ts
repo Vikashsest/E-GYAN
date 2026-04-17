@@ -360,7 +360,7 @@ export class BookService {
       where: { id: chapterId, book: { id: bookId } },
       select: ['id', 'fileUrl'],
     });
-    console.log('chapter', chapter);
+
     if (!chapter || !chapter.fileUrl) {
       throw new NotFoundException('File URL not found');
     }
@@ -399,6 +399,7 @@ export class BookService {
       chapterNumber: number;
       resourceType?: 'pdf' | 'video' | 'audio' | 'simulation';
       videoUrl?: string;
+      audioUrl?: string;
     },
     file?: Express.Multer.File,
     thumbnail?: Express.Multer.File,
@@ -411,8 +412,6 @@ export class BookService {
     let thumbnailUrl: string | undefined;
 
     const resourceType = body.resourceType || 'pdf';
-
-    // 📌 resource handling
     if (resourceType === 'pdf') {
       if (!file) throw new BadRequestException('PDF file required');
 
@@ -433,12 +432,10 @@ export class BookService {
       resourceType === 'audio' ||
       resourceType === 'simulation'
     ) {
-      if (!body.videoUrl)
+      if (!body.videoUrl && body.audioUrl)
         throw new BadRequestException('Video/Audio URL required');
-      fileUrl = body.videoUrl;
+      fileUrl = body.videoUrl || body.audioUrl;
     }
-
-    // 📌 thumbnail
     if (thumbnail) {
       const thumbPath = `books/${bookId}/chapters/thumbnails/chapter-${body.chapterNumber}.jpg`;
       const uploadedThumb = await this.nextcloudService.uploadFile(
