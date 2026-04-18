@@ -432,8 +432,8 @@ export class BookService {
       resourceType === 'audio' ||
       resourceType === 'simulation'
     ) {
-      if (!body.videoUrl && body.audioUrl)
-        throw new BadRequestException('Video/Audio URL required');
+      // if (!body.videoUrl && body.audioUrl)
+      //   throw new BadRequestException('Video/Audio URL required');
       fileUrl = body.videoUrl || body.audioUrl;
     }
     if (thumbnail) {
