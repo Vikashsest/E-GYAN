@@ -516,6 +516,8 @@
 //   );
 // }
 
+
+
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchChapters, deleteChapter } from "../apiServices/booksApi";
@@ -632,6 +634,8 @@ export default function UploadChapter() {
       if (resourceType === "video") fd.append("videoUrl", videoUrl);
       else if (resourceType === "simulation")
         fd.append("simulationUrl", simulationUrl);
+      else if (resourceType === "audio")
+        fd.append("audioUrl", audioUrl);
       else fd.append("file", file);
 
       const res = await fetch(`${API_URL}/books/${bookId}/chapters`, {
@@ -684,7 +688,10 @@ export default function UploadChapter() {
         fd.append("videoUrl", videoUrl);
       } else if (chapter.resourceType === "simulation") {
         fd.append("simulationUrl", simulationUrl);
-      } else {
+      } else if (chapter.resourceType === "audio") {
+        fd.append("audioUrl", audioUrl);
+      }
+      else {
         fd.append("file", file);
       }
 
@@ -780,10 +787,20 @@ export default function UploadChapter() {
               className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white"
             />
           )}
-          {(resourceType === "pdf" || resourceType === "audio") && (
+          {resourceType === "pdf" && (
             <input
               type="file"
               onChange={(e) => setFile(e.target.files[0])}
+              className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white"
+            />
+          )}
+
+          {resourceType === "audio" && (
+            <input
+              type="text"
+              placeholder="Audio URL"
+              value={audioUrl}
+              onChange={(e) => setAudioUrl(e.target.value)}
               className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white"
             />
           )}
@@ -924,10 +941,20 @@ export default function UploadChapter() {
                     />
                   )}
 
-                  {(c.resourceType === "pdf" || c.resourceType === "audio") && (
+                  {c.resourceType === "pdf" && (
                     <input
                       type="file"
                       onChange={(e) => setFile(e.target.files[0])}
+                      className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white"
+                    />
+                  )}
+
+                  {c.resourceType === "audio" && (
+                    <input
+                      type="text"
+                      placeholder="Audio URL"
+                      value={audioUrl}
+                      onChange={(e) => setAudioUrl(e.target.value)}
                       className="w-full p-2 rounded-lg bg-[#2a2b39] border border-gray-500 text-white"
                     />
                   )}
