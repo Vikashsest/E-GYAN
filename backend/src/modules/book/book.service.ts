@@ -499,7 +499,7 @@ export class BookService {
     const chapters = await this.chapterRepo.find({
       where: {
         book: { id: bookId },
-        parentChapter: IsNull(), // ✅ only main chapters
+        parentChapter: IsNull(),
       },
       relations: ['parts'],
       order: { chapterNumber: 'ASC', id: 'ASC' },
