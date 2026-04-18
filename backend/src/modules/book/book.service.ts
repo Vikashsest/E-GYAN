@@ -454,9 +454,7 @@ export class BookService {
       book,
       parentChapter: null,
     });
-
     const saved = await this.chapterRepo.save(chapter);
-
     return {
       ...saved,
       displayName: `Chapter ${saved.chapterNumber}`,
