@@ -188,9 +188,6 @@
 //   );
 // }
 
-
-
-
 import { useEffect, useState } from "react";
 import {
   FaClock,
@@ -290,11 +287,11 @@ export default function DashboardMetrics() {
       icon: icons.booksCompleted,
       count: metrics.booksCompleted,
     },
-    {
-      title: "Recent Activity",
-      icon: icons.recentActivity,
-      count: metrics.recentActivity,
-    },
+    // {
+    //   title: "Recent Activity",
+    //   icon: icons.recentActivity,
+    //   count: metrics.recentActivity,
+    // },
     { title: "Favorites", icon: icons.favorites, count: metrics.favorites },
   ];
 
@@ -356,7 +353,6 @@ export default function DashboardMetrics() {
             </span>
           </div>
         </div>
-
 
         {showWhiteboard && (
           <div className="fixed inset-0 bg-primaryBlack/60 backdrop-blur-md flex items-center justify-center z-[9999]">
@@ -469,7 +465,7 @@ export default function DashboardMetrics() {
                           day: "2-digit",
                           month: "short",
                           year: "numeric",
-                        }
+                        },
                       )}
                     </span>
                   </div>
