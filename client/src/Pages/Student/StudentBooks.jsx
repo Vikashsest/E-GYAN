@@ -176,7 +176,7 @@ const Books = () => {
     const name = cat.trim().toLowerCase();
 
     if (/simulation/i.test(name)) {
-      return "Pentagon Hybrid Education technology for simulation";
+      return "Pentagon Hybrid Education Technology For Simulation";
     }
 
     return cat;
