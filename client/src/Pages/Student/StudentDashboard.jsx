@@ -287,11 +287,11 @@ export default function DashboardMetrics() {
       icon: icons.booksCompleted,
       count: metrics.booksCompleted,
     },
-    // {
-    //   title: "Recent Activity",
-    //   icon: icons.recentActivity,
-    //   count: metrics.recentActivity,
-    // },
+    {
+      title: "Recent Activity",
+      icon: icons.recentActivity,
+      count: metrics.recentActivity,
+    },
     { title: "Favorites", icon: icons.favorites, count: metrics.favorites },
   ];
 

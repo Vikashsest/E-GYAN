@@ -171,32 +171,32 @@ export default function FileManagerDashboard() {
             {[
               {
                 type: "Books",
-                count: stats.totalBooks,
+                count: "300+ Books Mapped",
                 size: "16GB",
                 color: "primaryOrange",
               },
               {
                 type: "PDF",
-                count: stats.totalPdf,
-                size: "8GB",
+                count: "2500+",
+                size: "28GB",
                 color: "primaryBlue",
               },
               {
                 type: "Audios",
-                count: stats.totalAudio,
+                count: "300+",
                 size: "0GB",
                 color: "primaryGreen",
               },
               {
                 type: "Videos",
-                count: stats.totalVideos,
-                size: "1GB",
+                count: "2500+",
+                size: "10GB",
                 color: "primaryYellow",
               },
             ].map((item, index) => (
               <div key={index} className="bg-cardBg p-4 rounded">
                 <p className={`text-${item.color} font-bold`}>{item.type}</p>
-                <p className="text-sm text-gray400">{item.count} items</p>
+                <p className="text-sm text-gray400">{item.count}</p>
 
                 <div className="w-full h-2 bg-gray700 rounded-full mt-2">
                   <div
