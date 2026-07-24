@@ -300,7 +300,7 @@ export default function AdminSchoolOverview() {
                 <thead>
                   <tr className="text-gray300 text-sm">
                     <th>Name</th>
-                    <th>Score</th>
+                    <th>Time</th>
                   </tr>
                 </thead>
                 <tbody>
