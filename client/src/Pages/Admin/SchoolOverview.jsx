@@ -1,5 +1,3 @@
-
-
 import { useEffect, useState } from "react";
 import AdminSidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
@@ -33,7 +31,10 @@ import {
 } from "recharts";
 
 // ✅ API SERVICE
-import { fetchAdminSchoolOverview, fetchSingleSchoolAnalytics } from "../../apiServices/schoolOverview";
+import {
+  fetchAdminSchoolOverview,
+  fetchSingleSchoolAnalytics,
+} from "../../apiServices/schoolOverview";
 
 export default function AdminSchoolOverview() {
   const [data, setData] = useState({});
@@ -47,45 +48,40 @@ export default function AdminSchoolOverview() {
   const [summary, setSummary] = useState({});
   const [analytics, setAnalytics] = useState({});
 
-
   const COLORS = ["#3B82F6", "#06B6D4", "#34D399", "#FACC15", "#F87171"];
 
+  useEffect(() => {
+    const loadSummary = async () => {
+      try {
+        const result = await fetchAdminSchoolOverview();
+        setSummary(result);
+      } catch (err) {
+        toast.error("Error fetching school summary");
+      }
+    };
 
- useEffect(() => {
-  const loadSummary = async () => {
-    try {
-      const result = await fetchAdminSchoolOverview();
-      setSummary(result);
-    } catch (err) {
-      toast.error("Error fetching school summary");
-    }
-  };
+    loadSummary();
+  }, []);
 
-  loadSummary();
-}, []);
+  useEffect(() => {
+    const loadSchoolOverview = async () => {
+      try {
+        const result = await fetchSingleSchoolAnalytics();
 
+        setAnalytics(result);
 
- useEffect(() => {
-  const loadSchoolOverview = async () => {
-    try {
-      const result = await fetchSingleSchoolAnalytics();
+        setPerformance(result.performance ?? []);
+        setSubjectEngagement(result.subjectEngagement ?? []);
+        setActivityStats(result.activityStats ?? []);
+        setStudyTime(result.studyTime ?? []);
+        setLeaderboard(result.leaderboard ?? []);
+      } catch (err) {
+        toast.error("Error fetching school overview");
+      }
+    };
 
-      setAnalytics(result);
-
-      setPerformance(result.performance ?? []);
-      setSubjectEngagement(result.subjectEngagement ?? []);
-      setActivityStats(result.activityStats ?? []);
-      setStudyTime(result.studyTime ?? []);
-      setLeaderboard(result.leaderboard ?? []);
-    } catch (err) {
-      toast.error("Error fetching school overview");
-    }
-  };
-
-  loadSchoolOverview();
-}, []);
-
-
+    loadSchoolOverview();
+  }, []);
 
   /* ------------------ SYNC ------------------ */
 
@@ -98,42 +94,47 @@ export default function AdminSchoolOverview() {
   };
 
   const summaryCards = [
-  {
-    title: "Total Teachers",
-    icon: <FaUserTie />,
-    count: summary.totalTeachers,
-    color: "bg-orange-500",
-  },
-  {
-    title: "Total Students",
-    icon: <FaUsers />,
-    count: summary.totalStudents,
-    color: "bg-blue-500",
-  },
-  {
-    title: "Total Classes",
-    icon: <FaChalkboard />,
-    count: summary.totalClasses,
-    color: "bg-green-500",
-  },
-  {
-    title: "Total Books",
-    icon: <FaBook />,
-    count: summary.totalBooks,
-    color: "bg-yellow-500",
-  },
-];
-
+    {
+      title: "Total Teachers",
+      icon: <FaUserTie />,
+      count: summary.totalTeachers,
+      color: "bg-orange-500",
+    },
+    {
+      title: "Total Students",
+      icon: <FaUsers />,
+      count: summary.totalStudents,
+      color: "bg-blue-500",
+    },
+    {
+      title: "Total Classes",
+      icon: <FaChalkboard />,
+      count: summary.totalClasses,
+      color: "bg-green-500",
+    },
+    {
+      title: "Total Books",
+      icon: <FaBook />,
+      count: summary.totalBooks,
+      color: "bg-yellow-500",
+    },
+  ];
 
   return (
     <div className="flex min-h-screen bg-darkBg text-primaryWhite">
       {/* Sidebar */}
-      <AdminSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <AdminSidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
 
       <main className="flex-1 lg:pl-[280px] py-6 px-5 w-full">
         {/* Mobile Menu */}
         <div className="lg:hidden px-4 mb-4">
-          <button onClick={() => setIsSidebarOpen(true)} className="text-primaryWhite">
+          <button
+            onClick={() => setIsSidebarOpen(true)}
+            className="text-primaryWhite"
+          >
             <FiMenu size={28} />
           </button>
         </div>
@@ -143,7 +144,9 @@ export default function AdminSchoolOverview() {
         <div className="p-4">
           {/* Header */}
           <h1 className="text-3xl font-bold mb-1">School Overview</h1>
-          <p className="text-primaryWhite/70 mb-6">Track your school’s usage and digital performance.</p>
+          <p className="text-primaryWhite/70 mb-6">
+            Track your school’s usage and digital performance.
+          </p>
 
           {/* Summary Cards */}
           <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
@@ -173,7 +176,9 @@ export default function AdminSchoolOverview() {
                 </div>
 
                 <div className="border border-gray600 rounded p-4">
-                  <p className="text-primaryWhite/70 text-sm">Pending Uploads</p>
+                  <p className="text-primaryWhite/70 text-sm">
+                    Pending Uploads
+                  </p>
                   <p className="text-lightYellow font-bold">
                     {data.pendingUploads ?? 0} files
                   </p>
@@ -198,14 +203,21 @@ export default function AdminSchoolOverview() {
           <h2 className="text-2xl font-bold mb-4">School Analytics</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
             {/* Performance Chart */}
             <div className="bg-cardBg p-5 rounded-2xl shadow">
-              <h3 className="text-lg font-semibold mb-3">Overall Performance</h3>
+              <h3 className="text-lg font-semibold mb-3">
+                Overall Performance
+              </h3>
               <ResponsiveContainer width="100%" height={220}>
                 <AreaChart data={performance}>
                   <defs>
-                    <linearGradient id="perfGradient" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient
+                      id="perfGradient"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
                       <stop offset="5%" stopColor="#38BDF8" stopOpacity={0.8} />
                       <stop offset="95%" stopColor="#38BDF8" stopOpacity={0} />
                     </linearGradient>
@@ -214,7 +226,12 @@ export default function AdminSchoolOverview() {
                   <YAxis stroke="#9CA3AF" />
                   <CartesianGrid strokeDasharray="3 3" />
                   <Tooltip />
-                  <Area type="monotone" dataKey="value" stroke="#3B82F6" fill="url(#perfGradient)" />
+                  <Area
+                    type="monotone"
+                    dataKey="value"
+                    stroke="#3B82F6"
+                    fill="url(#perfGradient)"
+                  />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -263,14 +280,22 @@ export default function AdminSchoolOverview() {
                   <XAxis dataKey="day" stroke="#9CA3AF" />
                   <YAxis stroke="#9CA3AF" />
                   <Tooltip />
-                  <Line type="monotone" dataKey="time" stroke="#FACC15" strokeWidth={3} dot={{ r: 5 }} />
+                  <Line
+                    type="monotone"
+                    dataKey="time"
+                    stroke="#FACC15"
+                    strokeWidth={3}
+                    dot={{ r: 5 }}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </div>
 
             {/* Leaderboard */}
             <div className="bg-cardBg p-5 rounded-2xl shadow md:col-span-2">
-              <h3 className="text-lg font-semibold mb-4">Top Performing Students</h3>
+              <h3 className="text-lg font-semibold mb-4">
+                Top Performing Students
+              </h3>
               <table className="w-full text-left border-separate border-spacing-y-2">
                 <thead>
                   <tr className="text-gray300 text-sm">
@@ -280,15 +305,19 @@ export default function AdminSchoolOverview() {
                 </thead>
                 <tbody>
                   {leaderboard.map((s, i) => (
-                    <tr key={i} className="bg-[#1f2231] hover:bg-[#3a3e5a] transition">
+                    <tr
+                      key={i}
+                      className="bg-[#1f2231] hover:bg-[#3a3e5a] transition"
+                    >
                       <td className="py-2 px-3">{s.name}</td>
-                      <td className="py-2 px-3 text-sky-400 font-semibold">{s.score}%</td>
+                      <td className="py-2 px-3 text-sky-400 font-semibold">
+                        {s.score}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-
           </div>
         </div>
       </main>
