@@ -1041,7 +1041,7 @@ export class StudentService {
     let externalAnnouncements: any[] = [];
     try {
       const response = await fetch(
-        'https://e-gyan-9tky.onrender.com/annoucements',
+        'https://e-gyan-y8je.onrender.com/annoucements',
       );
 
       if (response.ok) {
