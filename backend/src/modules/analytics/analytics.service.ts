@@ -135,6 +135,7 @@ export class AnalyticsService {
     return data;
   }
 
+  // 6️⃣ Leaderboard (Top Students by total timeSpent)
   async getLeaderboard() {
     const users = await this.userRepo.find({
       where: { role: UserRole.STUDENT },
@@ -152,8 +153,8 @@ export class AnalyticsService {
 
       return {
         name: user.username,
-        time: `${hours}h ${minutes}m`,
-        totalSeconds,
+        score: `${hours}h ${minutes}m`,
+        totalSeconds, // sorting ke liye
       };
     });
 
